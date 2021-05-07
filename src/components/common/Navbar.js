@@ -116,6 +116,9 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 14,
     fontWeight: 700,
     textTransform: "none",
+    "&:hover": {
+      background: "rgba(255, 255, 255, 0.7)",
+    },
   },
   mobileButton: {
     borderRadius: "50px",
@@ -224,7 +227,7 @@ const Navbar = () => {
             <Avatar
               variant="square"
               src="img/logo-white.png"
-              style={{ height: 55, width: 110 }}
+              style={{ height: 38, width: 150 }}
             />
 
             <div className={classes.grow} />

@@ -1,8 +1,10 @@
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import React from "react";
-import { Avatar, Button, Divider } from "@material-ui/core";
-import bal from "../assets/balance.png";
-import supply from "../assets/supply.png";
+import { Avatar } from "@material-ui/core";
+
+import Staking from "./Cards/Staking";
+import Balance from "./Cards/Balance";
+import StakeDialog from "./common/StakeDialog";
 
 const useStyles = makeStyles((theme) => ({
   background: {
@@ -21,6 +23,9 @@ const useStyles = makeStyles((theme) => ({
 
     marginTop: 8,
     marginBottom: 8,
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 18,
+    },
   },
   numbers: {
     color: "#E0077D",
@@ -34,57 +39,33 @@ const useStyles = makeStyles((theme) => ({
     backgroundColor: "#f9f9f9",
     padding: 12,
   },
-  card: {
-    width: 370,
-    height: 100,
-    paddingLeft: 10,
-    paddingRight: 10,
-  },
-
   cardsContainer: {
     marginTop: 30,
     display: "flex",
-  },
-  cardContents: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-evenly",
-    height: "100%",
-  },
-  avatar: {
-    zIndex: 2,
-    position: "relative",
-    width: "auto",
-    height: 50,
-  },
-  options: {
-    marginTop: 200,
-  },
-  actionCard: {
-    width: 320,
-    height: 350,
-    paddingLeft: 10,
-    paddingRight: 10,
-  },
-  actionCardAvatar: {
-    zIndex: 2,
-    position: "relative",
-    width: "auto",
-    height: 55,
-    marginLeft: 3,
-    marginRight: 3,
-  },
-  actionCardContainer: {
-    display: "flex",
-    flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    height: "100%",
+    flexWrap: "wrap",
+    [theme.breakpoints.down("sm")]: {
+      flexDirection: "column-reverse",
+    },
+  },
+  card: {
+    marginTop: 5,
+    marginBottom: 5,
   },
 }));
 
 const Home = () => {
   const classes = useStyles();
+  const [open, setOpen] = React.useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   return (
     <div className={classes.background}>
       <Avatar className={classes.logo} src="img/symbol.png" />
@@ -103,100 +84,12 @@ const Home = () => {
 
       <div className={classes.cardsContainer}>
         <div className={classes.card}>
-          <div className="card-theme">
-            <div className={classes.cardContents}>
-              <img className={classes.avatar} src={bal} />
-              <div>
-                <p className="card__text">Your Available PBR Balence</p>
-                <div className="card__text">
-                  <strong className={classes.numbers}>Locked</strong>
-                </div>
-              </div>
-            </div>
-          </div>
+          <Staking onStake={handleClickOpen} onUnstake={handleClickOpen} />
         </div>
         <div className={classes.card}>
-          <div className="card-theme">
-            <div className={classes.cardContents}>
-              <img className={classes.avatar} src={supply} />
-              <div>
-                <p className="card__text">PBR Circulating supply</p>
-                <div className="card__text">
-                  <strong className={classes.numbers}>24,039,938</strong>
-                </div>
-              </div>
-            </div>
-          </div>
+          <Balance />
         </div>
-      </div>
-      {/* <hr style={{ height: 0.02, width: "80%" }} /> */}
-      <div className={classes.options}>
-        <div className={classes.actionCard}>
-          <div className="card-theme">
-            <div className={classes.actionCardContainer}>
-              <div>
-                <img
-                  className={classes.actionCardAvatar}
-                  src="img/tokens/pbr.png"
-                />
-                <img
-                  className={classes.actionCardAvatar}
-                  src="img/tokens/eth.png"
-                />
-              </div>
-
-              <div className="card__text">
-                <p>PBR - ETH</p> <span>Deposit PBR-ETH LP Earn PBR</span>
-              </div>
-              <Button
-                style={{
-                  backgroundColor: "#E0077D",
-                  color: "black",
-                  width: "80%",
-                  height: 45,
-                  textTransform: "none",
-                  fontSize: 18,
-                  borderRadius: 8,
-                  marginTop: 25,
-                  marginBottom: 25,
-                }}
-              >
-                Select
-              </Button>
-              <div
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                  fontSize: 12,
-                  fontWeight: 200,
-                }}
-                className="card__text"
-              >
-                <table style={{ width: "88%" }}>
-                  <tr>
-                    <td align="left">Total Locked Value</td>
-                    <td align="right">1550560 USD</td>
-                  </tr>
-                  <tr>
-                    <td align="left">Avg. reward</td>
-                    <td align="right">0.668 PBR / block</td>
-                  </tr>
-                  <tr>
-                    <td align="left">Multiplier</td>
-                    <td align="right">40x</td>
-                  </tr>
-                  <tr>
-                    <td align="left">APY</td>
-                    <td align="right" style={{ color: "#4CAF50" }}>
-                      34.010%
-                    </td>
-                  </tr>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
+        <StakeDialog open={open} handleClose={handleClose} />
       </div>
     </div>
   );

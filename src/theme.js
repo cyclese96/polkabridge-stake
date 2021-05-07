@@ -22,8 +22,8 @@ export const theme = createMuiTheme({
       red500: "#e0077d", // #d16c00
     },
     textColors: {
-      primary: "#C80C81",
-      secondary: "#C80C81",
+      primary: "#E0077D",
+      secondary: "#E0077D",
       textPrimary: "#ffffff",
       textSecondary: "#1e1e1e",
       textLight: "#212121",
