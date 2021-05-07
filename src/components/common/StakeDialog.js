@@ -53,22 +53,16 @@ const useStyles = makeStyles((theme) => ({
   input: {
     "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
       borderColor: "white",
-      color: "white",
     },
     "& label.Mui-focused": {
-      color: "white",
-    },
-    "& label.Mui-": {
       color: "white",
     },
     width: 200,
     height: 50,
     color: "#f9f9f9",
-    // backgroundColor: "#f9f9f9",
   },
   inputText: {
     color: "#f8f8f8",
-    backgroundColor: "red",
   },
   maxBtn: {
     backgroundColor: "rgba(224, 7, 125, 0.9)",
@@ -100,7 +94,9 @@ export default function StakeDialog({ open, handleClose }) {
           <p>Avaialable balence: 122234 $PBR</p>
           <div>
             <TextField
-              inputProps={classes.inputText}
+              InputProps={{
+                className: classes.inputText,
+              }}
               className={classes.input}
               id="outlined-basic"
               variant="outlined"
