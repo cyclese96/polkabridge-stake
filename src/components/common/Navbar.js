@@ -198,8 +198,8 @@ const Navbar = () => {
         <Toolbar className={classes.sectionDesktop}>
           <Avatar
             variant="square"
-            src="assets/logo.png"
-            style={{ height: 60, width: 112 }}
+            src="img/logo-white.png"
+            style={{ height: 38, width: 150 }}
           />
 
           <div className={classes.leftMargin} />
@@ -223,7 +223,7 @@ const Navbar = () => {
 
             <Avatar
               variant="square"
-              src="assets/logo.png"
+              src="img/logo-white.png"
               style={{ height: 55, width: 110 }}
             />
 

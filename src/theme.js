@@ -15,6 +15,12 @@ export const theme = createMuiTheme({
       light: "rgba(89, 210, 188, 1)",
       main: "#674293",
     },
+    red: {
+      red100: "#FFFDFE",
+      red200: "#070F23", //#ffc2a8
+      red300: "#252E44",
+      red500: "#e0077d", // #d16c00
+    },
     textColors: {
       primary: "#C80C81",
       secondary: "#C80C81",
