@@ -48,7 +48,10 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     width: 400,
-    height: 300,
+    height: 400,
+  },
+  inputGroup: {
+    marginTop: 40,
   },
   input: {
     "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
@@ -69,13 +72,14 @@ const useStyles = makeStyles((theme) => ({
     height: 50,
     borderRadius: 10,
     marginLeft: 20,
+    color: "#f9f9f9",
     "&:hover": {
       background: "rgba(224, 7, 125, 0.7)",
     },
   },
   buttons: {
-    marginTop: 40,
-    marginBottom: 30,
+    marginTop: 80,
+    marginBottom: 20,
   },
 }));
 export default function StakeDialog({ open, handleClose }) {
@@ -92,7 +96,7 @@ export default function StakeDialog({ open, handleClose }) {
           <DialogTitle onClose={handleClose}>Stake Liquidity</DialogTitle>
 
           <p>Avaialable balence: 122234 $PBR</p>
-          <div>
+          <div className={classes.inputGroup}>
             <TextField
               InputProps={{
                 className: classes.inputText,
