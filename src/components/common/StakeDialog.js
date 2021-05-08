@@ -49,6 +49,10 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     width: 400,
     height: 400,
+    [theme.breakpoints.down("sm")]: {
+      width: 320,
+      height: 350,
+    },
   },
   inputGroup: {
     marginTop: 40,

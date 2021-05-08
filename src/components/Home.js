@@ -24,12 +24,15 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 8,
     marginBottom: 8,
     [theme.breakpoints.down("sm")]: {
-      fontSize: 18,
+      fontSize: 14,
     },
   },
   numbers: {
     color: "#E0077D",
     fontSize: 26,
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 16,
+    },
   },
   logo: {
     width: 95,

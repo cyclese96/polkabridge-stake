@@ -84,6 +84,7 @@ const useStyles = makeStyles((theme) => ({
     width: "250px",
     height: "100%",
     backgroundColor: "transparent",
+    color: "#f9f9f9",
   },
   fullList: {
     width: "auto",
@@ -118,6 +119,11 @@ const useStyles = makeStyles((theme) => ({
     textTransform: "none",
     "&:hover": {
       background: "rgba(255, 255, 255, 0.7)",
+    },
+    [theme.breakpoints.down("sm")]: {
+      marginRight: 0,
+      marginLeft: 15,
+      width: 150,
     },
   },
   mobileButton: {
@@ -181,11 +187,7 @@ const Navbar = () => {
       <Divider />
       <List>
         <ListItem button style={{ marginTop: 15 }}>
-          <a style={{ textDecoration: "none" }}>
-            <Button color="light" startIcon={<DescriptionOutlined />}>
-              Unlock Wallet
-            </Button>
-          </a>
+          <Button className={classes.navbarButton}>Unlock Wallet</Button>
         </ListItem>
       </List>
     </div>
@@ -249,6 +251,7 @@ const Navbar = () => {
                     open={state[anchor]}
                     onClose={toggleDrawer(anchor, false)}
                     onOpen={toggleDrawer(anchor, true)}
+                    classes={{ paper: classes.appBarBackground }}
                   >
                     {list(anchor)}
                   </SwipeableDrawer>
