@@ -27,10 +27,10 @@ const useStyles = makeStyles((theme) => ({
     position: "relative",
     width: "auto",
     height: 60,
-    paddingTop: 30,
   },
   cardHeading: {
-    fontSize: 18,
+    fontSize: 24,
+    fontWeight:400
   },
   cardText: {
     fontSize: 16,

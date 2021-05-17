@@ -43,30 +43,54 @@ const DialogTitle = withStyles(styles)((props) => {
 const useStyles = makeStyles((theme) => ({
   background: {
     backgroundColor: "#121827",
-
+    color:'#f9f9f9',
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    width: 400,
+    width: 500,
     height: 400,
     [theme.breakpoints.down("sm")]: {
       width: 320,
       height: 350,
     },
   },
+  heading: {
+    fontSize:24,
+    fontWeight:400,
+    color:'#919191'
+  },
+  subheading: {
+    fontSize:18,
+    fontWeight:400,
+    color:'#919191'
+  },
   inputGroup: {
     marginTop: 40,
   },
   input: {
-    "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-      borderColor: "white",
-    },
     "& label.Mui-focused": {
-      color: "white",
+      color: "#616161",
     },
     width: 200,
     height: 50,
-    color: "#f9f9f9",
+  },
+  cssInputLabel: {
+    color:'#616161'
+  },
+  cssInputFocused: {
+
+  },
+  cssOutlinedInput: {
+    '&$cssFocused $notchedOutline': {
+      borderColor: `#616161 !important`,
+    }
+  },
+  cssFocused: {
+    color:'#f1f1f1'
+  },
+  notchedOutline: {
+    borderWidth: '1px',
+    borderColor: '#616161 !important'
   },
   inputText: {
     color: "#f8f8f8",
@@ -95,15 +119,29 @@ export default function StakeDialog({ open, handleClose }) {
         open={open}
         disableBackdropClick
         className={classes.dialog}
+        color="transparent"
+        PaperProps={{
+          style: { borderRadius: 15 }
+        }}
       >
         <div className={classes.background}>
-          <DialogTitle onClose={handleClose}>Stake Liquidity</DialogTitle>
+          <DialogTitle onClose={handleClose}><span className={classes.heading}>Stake Liquidity</span></DialogTitle>
 
-          <p>Avaialable balence: 122234 $PBR</p>
+          <p className={classes.subheading}>Avaialable balence: 122234 $PBR</p>
           <div className={classes.inputGroup}>
             <TextField
-              InputProps={{
-                className: classes.inputText,
+                InputProps={{
+                  classes: {
+                    root: classes.cssOutlinedInput,
+                    focused: classes.cssFocused,
+                    notchedOutline: classes.notchedOutline,
+                  },
+                }}
+              InputLabelProps={{
+                classes: {
+                  root: classes.cssInputLabel,
+                  focused: classes.cssInputFocused,
+                },
               }}
               className={classes.input}
               id="outlined-basic"

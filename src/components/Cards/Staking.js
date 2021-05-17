@@ -23,10 +23,11 @@ const useStyles = makeStyles((theme) => ({
     height: "100%",
   },
   avatar: {
-    zIndex: 2,
     position: "relative",
-    width: "auto",
-    height: 50,
+    width: 25,
+    height: 'auto',
+    alignSelf:'start',
+    marginLeft: 60,
   },
   cardHeading: {
     fontSize: 18,
