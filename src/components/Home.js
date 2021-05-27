@@ -19,7 +19,7 @@ import Wallet from "./common/Wallet";
 const useStyles = makeStyles((theme) => ({
   background: {
     padding: 80,
-    height: "100vh",
+    minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -197,42 +197,42 @@ const Home = () => {
     poolObj.apy = apy;
 
     setPoolData(poolObj);
-    // let apy = tokenprice * (  )
-    // const APY = tokenprice
-    // .times(new BigNumber(NUMBER_BLOCKS_PER_YEAR))
-    // .times(avg pbr per block )
-    //     .div(total lock value in pool (usd) )
-    //     .times(100)
-    //       .toFixed(3).toLocaleString()
   };
 
   const getAccountBalance = async (accountAddr) => {
-    await updatePoolInfo();
+    setLoading(true);
     const pbrWei = await pbrContract.methods.balanceOf(accountAddr).call();
     setPbrBal(fromWei(pbrWei));
 
     const stakedData = await stakeContract.methods
       .userInfo(0, accountAddr)
       .call();
-    console.log("staked data", stakedData);
-    setStakeData({
-      amount: fromWei(stakedData.amount),
-      rewardClaimed: fromWei(stakedData.rewardClaimed),
-      rewardDebt: fromWei(stakedData.rewardDebt),
-    });
+    const pendingReward = await stakeContract.methods
+      .pendingReward(0, accountAddr)
+      .call();
+
+    if (stakedData) {
+      setStakeData({
+        amount: fromWei(stakedData.amount),
+        rewardClaimed: fromWei(stakedData.rewardClaimed),
+        rewardDebt: fromWei(pendingReward),
+      });
+    }
+    setLoading(false);
   };
 
-  const checkAllowance = async () => {
-    const owner = await stakeContract.methods.owner().call();
-    let allowance = await pbrContract.methods.allowance(owner, account).call();
-    return allowance;
-  };
-
-  const confirmAllowance = async () => {
-    const res = await pbrContract.methods
-      .approve(stakeContract._address, "9999999999999999999999")
-      .send({ from: account });
-    console.log("approved trx", res);
+  const confirmAllowance = async (balance) => {
+    try {
+      setLoading(true);
+      const res = await pbrContract.methods
+        .approve(stakeContract._address, balance)
+        .send({ from: account });
+      localStorage.setItem(`approved_${account}`, true);
+      setLoading(false);
+    } catch (error) {
+      console.log("allowance error", error);
+      setLoading(false);
+    }
   };
 
   const handleStakeConfirm = async (enteredTokens) => {
@@ -248,7 +248,6 @@ const Home = () => {
       setDialog({ open: false });
       setLoading(false);
     } catch (error) {
-      console.log("transaction failed", error);
       setLoading(false);
     }
   };
@@ -258,7 +257,6 @@ const Home = () => {
     const depositTokens = toWei(enteredTokens, "ether");
 
     try {
-      console.log("deposit token stake", depositTokens);
       const res = await stakeContract.methods
         .withdraw(poolId, depositTokens)
         .send({ from: account });
@@ -269,26 +267,31 @@ const Home = () => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      console.log("transaction failed", error);
     }
   };
 
   useEffect(async () => {
-    if (web3 !== undefined) {
+    window.ethereum.on("accountsChanged", async (accounts) => {
+      console.log("account changes", accounts);
+      setAccount(accounts[0]);
+      getAccountBalance(accounts[0]);
+    });
+  }, []);
+
+  useEffect(async () => {
+    if (web3 === undefined) {
       console.log("web3 is there", web3);
-      try {
-        await updatePoolInfo();
-        const accounts = await web3.eth.requestAccounts();
-        setAccount(accounts[0]);
-        getAccountBalance(accounts[0]);
-        setConnected(true);
-      } catch (error) {
-        alert("Connect Meta Mask");
-        // console.log("meta mask not connected", error);
-      }
-    } else {
-      // console.log("web3", web3);
       alert("Install Meta Mask to connect your wallet");
+      return;
+    }
+    try {
+      await updatePoolInfo();
+      const accounts = await web3.eth.requestAccounts();
+      setAccount(accounts[0]);
+      getAccountBalance(accounts[0]);
+      setConnected(true);
+    } catch (error) {
+      alert("Connect Meta Mask");
     }
   }, []);
 
@@ -340,10 +343,13 @@ const Home = () => {
                 stakeData={stakedData}
                 onStake={onStake}
                 onUnstake={onUnStake}
+                account={account}
+                loading={loading}
+                handleApprove={() => confirmAllowance(toWei(pbrBalance))}
               />
             </div>
             <div className={classes.card}>
-              <Balance balance={pbrBalance} />
+              <Balance balance={pbrBalance} loading={loading} />
             </div>
             <StakeDialog
               loading={loading}

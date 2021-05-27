@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    width: 500,
+    width: 450,
     height: 400,
     [theme.breakpoints.down("sm")]: {
       width: 320,
@@ -104,12 +104,19 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   buttons: {
-    marginTop: 80,
+    marginTop: 60,
     marginBottom: 20,
+    [theme.breakpoints.down("sm")]: {
+      marginTop: 20,
+      marginBottom: 5,
+    },
   },
   numbers: {
     color: "#E0077D",
     fontSize: 26,
+  },
+  error: {
+    paddingTop: 20,
   },
 }));
 
@@ -122,38 +129,77 @@ export default function StakeDialog({
   handleOnStake,
   handleOnUnstake,
   type,
-  error,
   loading,
 }) {
   const classes = useStyles();
-  const [pbrTokens, setTokenValue] = useState(null);
+  const [pbrTokens, setTokenValue] = useState(0);
+  const [error, setError] = useState({ status: false, message: "" });
 
   const handleInputChange = (e) => {
-    setTokenValue(e.target.value.toString());
+    setTokenValue(e.target.value);
   };
 
+  const onConfirm = () => {
+    console.log(type);
+    if (
+      type !== "stake" &&
+      (pbrTokens <= 0 || pbrTokens > parseFloat(stakedData.amount))
+    ) {
+      setError({
+        status: true,
+        message: "Invalid amount to Withdraw!",
+      });
+      return;
+    }
+
+    if (
+      (type === "stake" && pbrTokens <= 0) ||
+      pbrTokens > parseFloat(balance)
+    ) {
+      console.log(pbrTokens);
+      setError({
+        status: true,
+        message: "Invalid amount to Stake!",
+      });
+      return;
+    }
+    setError({});
+    if (type === "stake") {
+      handleOnStake(pbrTokens);
+    } else {
+      handleOnUnstake(pbrTokens);
+    }
+  };
+  const handleMax = () => {
+    if (type === "stake") {
+      setTokenValue(balance);
+    } else {
+      setTokenValue(stakedData.amount);
+    }
+    console.log(balance);
+  };
+  const onClose = () => {
+    console.log("close event", balance);
+    handleClose();
+    setTokenValue(null);
+    setError({});
+  };
   return (
     <div>
       <Dialog
-        onClose={() => {
-          handleClose();
-          setTokenValue(null);
-        }}
+        // onClose={onClose}
+        onExited={onClose}
         open={open}
         disableBackdropClick
         className={classes.dialog}
         color="transparent"
+        disableRestoreFocus={true}
         PaperProps={{
           style: { borderRadius: 15 },
         }}
       >
         <div className={classes.background}>
-          <DialogTitle
-            onClose={() => {
-              handleClose();
-              setTokenValue(null);
-            }}
-          >
+          <DialogTitle onClose={handleClose}>
             <span className={classes.heading}>
               {type === "stake" ? "Stake tokens" : "Withdraw tokens"}
             </span>
@@ -184,33 +230,29 @@ export default function StakeDialog({
               variant="outlined"
               placeholder="0"
               value={pbrTokens}
+              name={[pbrTokens]}
               onChange={handleInputChange}
               label="Enter PBR tokens"
               focused={true}
             />
-            <Button
-              className={classes.maxBtn}
-              onClick={() => setTokenValue(balance)}
-            >
+            <Button className={classes.maxBtn} onClick={handleMax}>
               Max
             </Button>
           </div>
-
+          {error.status ? (
+            <span className={classes.error}>{error.message}</span>
+          ) : (
+            ""
+          )}
           <div className={classes.buttons}>
             {loading ? (
               <CircularProgress className={classes.numbers} />
             ) : (
               <>
-                <CustomButton variant="light" onClick={handleClose}>
+                <CustomButton variant="light" onClick={onClose}>
                   Cancel
                 </CustomButton>
-                <CustomButton
-                  onClick={() =>
-                    type === "stake"
-                      ? handleOnStake(pbrTokens)
-                      : handleOnUnstake(pbrTokens)
-                  }
-                >
+                <CustomButton onClick={onConfirm}>
                   <p>Confirm</p>
                 </CustomButton>
               </>
