@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import Button from "@material-ui/core/Button";
 import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
-import Tooltip from "@material-ui/core/Tooltip";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
 import List from "@material-ui/core/List";
 import Divider from "@material-ui/core/Divider";
@@ -15,12 +14,22 @@ import clsx from "clsx";
 import MenuIcon from "@material-ui/icons/Menu";
 import PeopleAltOutlined from "@material-ui/icons/PeopleAltOutlined";
 import FlareOutlined from "@material-ui/icons/FlareOutlined";
-import TimelineOutlined from "@material-ui/icons/TimelineOutlined";
 import TouchAppOutlined from "@material-ui/icons/TouchAppOutlined";
 import VpnLockOutlined from "@material-ui/icons/VpnLockOutlined";
-import DescriptionOutlined from "@material-ui/icons/DescriptionOutlined";
 import CategoryIcon from "@material-ui/icons/Category";
-import TimerIcon from "@material-ui/icons/Timer";
+
+import web3 from "../../web3";
+import stakingContract from "../../utils/stakeConnection";
+import pbrContract from "../../utils/pbrConnection";
+import BigNumber from "big-number";
+import CustomSnackBar from "./CustomSnackbar";
+import {
+  AccountBalance,
+  AccountBalanceWalletOutlined,
+  EqualizerOutlined,
+  GraphicEqTwoTone,
+} from "@material-ui/icons";
+import Wallet from "./Wallet";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -99,9 +108,9 @@ const useStyles = makeStyles((theme) => ({
   },
   navbarItemsDesktop: {
     paddingTop: 15,
-    height: 50,
-    marginLeft: 7,
-    marginRight: 7,
+    height: 35,
+    marginLeft: 20,
+    marginRight: 20,
     textTransform: "none",
     fontSize: 16,
     fontWeight: 600,
@@ -113,7 +122,7 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 10,
     height: 35,
     marginRight: 40,
-    padding: 15,
+    padding: 20,
     fontSize: 14,
     fontWeight: 700,
     textTransform: "none",
@@ -140,19 +149,33 @@ const useStyles = makeStyles((theme) => ({
   leftMargin: {
     marginLeft: 159,
   },
+  numbers: {
+    color: "#E0077D",
+    fontSize: 26,
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 16,
+    },
+  },
 }));
 
-const Navbar = () => {
+const Navbar = ({ pbrBalance, account, handleConnectWallet }) => {
   const classes = useStyles();
 
   const [state, setState] = React.useState({
     right: false,
   });
 
+  const [alertObject, showAlert] = React.useState({
+    status: false,
+    message: "",
+  });
   const toggleDrawer = (anchor, open) => (event) => {
     setState({ ...state, [anchor]: open });
   };
 
+  const handleClose = () => {
+    showAlert({ status: false, message: "" });
+  };
   const list = (anchor) => (
     <div
       className={clsx(classes.list, {
@@ -164,6 +187,7 @@ const Navbar = () => {
     >
       <List>
         {[
+          { name: "Staking", id: "staking", icon: <EqualizerOutlined /> },
           { name: "Farm", id: "intro", icon: <TouchAppOutlined /> },
           {
             name: "Launchpad",
@@ -187,7 +211,7 @@ const Navbar = () => {
       <Divider />
       <List>
         <ListItem button style={{ marginTop: 15 }}>
-          <Button className={classes.navbarButton}>Unlock Wallet</Button>
+          <Wallet onClick={handleConnectWallet} amount={pbrBalance} />
         </ListItem>
       </List>
     </div>
@@ -195,6 +219,11 @@ const Navbar = () => {
 
   return (
     <div className={classes.grow}>
+      <CustomSnackBar
+        handleClose={handleClose}
+        status={alertObject.status}
+        message={alertObject.message}
+      />
       <AppBar
         color="transparent"
         position="fixed"
@@ -209,17 +238,31 @@ const Navbar = () => {
 
           <div className={classes.leftMargin} />
 
-          <Button className={classes.navbarItemsDesktop}>Farm</Button>
+          <a href="#" className={classes.navbarItemsDesktop}>
+            Staking
+          </a>
 
-          <Button className={classes.navbarItemsDesktop}>Launchpad</Button>
+          <a href="#" className={classes.navbarItemsDesktop}>
+            Farm
+          </a>
 
-          <Button className={classes.navbarItemsDesktop}>Swap</Button>
+          <a href="#" className={classes.navbarItemsDesktop}>
+            Launchpad
+          </a>
 
-          <Button className={classes.navbarItemsDesktop}>Lending</Button>
+          <a href="#" className={classes.navbarItemsDesktop}>
+            Swap
+          </a>
 
-          <Button className={classes.navbarItemsDesktop}>Prediction</Button>
+          <a href="#" className={classes.navbarItemsDesktop}>
+            Lending
+          </a>
+
+          <a href="#" className={classes.navbarItemsDesktop}>
+            Prediction
+          </a>
           <div className={classes.grow} />
-          <Button className={classes.navbarButton}>Unlock Wallet</Button>
+          <Wallet onClick={handleConnectWallet} amount={pbrBalance} />
         </Toolbar>
 
         <Toolbar className={classes.sectionMobile}>

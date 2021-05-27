@@ -37,7 +37,6 @@ const CustomButton = ({ onClick, children, variant = "primary" }) => {
   return (
     <Button
       onClick={onClick}
-      //   variant="contained"
       color="primary"
       className={
         variant == "primary" ? classes.stakeButton : classes.unstakeButton

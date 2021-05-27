@@ -1,4 +1,4 @@
-import { makeStyles } from "@material-ui/core";
+import { CircularProgress, makeStyles } from "@material-ui/core";
 import supply from "../../assets/supply.png";
 
 const useStyles = makeStyles((theme) => ({
@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-
+    justifyContent: "space-evenly",
     height: "100%",
     paddingTop: 8,
   },
@@ -30,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
   },
   cardHeading: {
     fontSize: 24,
-    fontWeight:400
+    fontWeight: 400,
   },
   cardText: {
     fontSize: 16,
@@ -43,15 +43,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Balance = () => {
+const Balance = ({ balance }) => {
   const classes = useStyles();
   return (
     <div className={classes.card}>
       <div className="card-theme">
         <div className={classes.cardContents}>
-          <p className={classes.cardHeading}>Balance</p>
-          <img className={classes.avatar} src={supply} />
-          <h4 className={classes.numbers}>150,000 $PBR</h4>
+          {!balance ? (
+            <CircularProgress className={classes.numbers} />
+          ) : (
+            <>
+              <p className={classes.cardHeading}>Balance</p>
+              <img className={classes.avatar} src={supply} />
+              <h4 className={classes.numbers}>{balance} PBR</h4>
+            </>
+          )}
         </div>
       </div>
     </div>

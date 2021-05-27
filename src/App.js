@@ -10,9 +10,7 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <Fragment>
-        <section className="appbar-section">
-          <Navbar />
-        </section>
+
         <Home />
       </Fragment>
     </ThemeProvider>
