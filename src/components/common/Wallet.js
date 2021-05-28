@@ -8,6 +8,13 @@ const useStyles = makeStyles((theme) => ({
     border: "0.5px solid white",
     borderRadius: 15,
     padding: 2,
+    paddingLeft: 10,
+    paddingRight: 10,
+    cursor: "pointer",
+    [theme.breakpoints.down("sm")]: {
+      paddingLeft: 30,
+      paddingRight: 30,
+    },
   },
   item: {
     marginLeft: 10,
@@ -49,7 +56,7 @@ const Wallet = ({ account, amount, onClick, onWalletClick }) => {
       ) : (
         <a onClick={onWalletClick} className={classes.root}>
           <strong className={classes.numbers}>
-            {account.toString().slice(0, 6)}..
+            {account ? account.toString().slice(0, 6) : "."}..
           </strong>
           <AccountBalanceWalletOutlined
             style={{ color: "#f9f9f9" }}

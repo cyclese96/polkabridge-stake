@@ -64,18 +64,10 @@ const Staking = ({
   handleApprove,
   account,
   loading,
+  approved,
 }) => {
   const classes = useStyles();
-  const [approved, setApproved] = useState(false);
 
-  useEffect(() => {
-    console.log("staking");
-    const apr = localStorage.getItem(`approved_${account}`);
-    if (parseFloat(stakeData.amount) > 0 || apr == "true") {
-      setApproved(true);
-      localStorage.setItem(`approved_${account}`, true);
-    }
-  }, []);
   return (
     <div className={classes.card}>
       <div className="card-theme">

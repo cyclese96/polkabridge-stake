@@ -97,6 +97,7 @@ const Home = () => {
   const [loading, setLoading] = useState(false);
   const [poolData, setPoolData] = useState({});
   const [connected, setConnected] = useState(false);
+  const [approved, setApproved] = useState(false);
 
   const onStake = () => {
     console.log(stakedData);
@@ -125,7 +126,7 @@ const Home = () => {
       return web3.utils.fromWei("0", "ether");
     }
     let amount = web3.utils.fromWei(tokens, "ether");
-    return parseFloat(amount).toFixed(3).toString();
+    return new BigNumber(amount).toFixed(1).toString();
   };
 
   const toWei = (tokens) => {
@@ -177,7 +178,9 @@ const Home = () => {
       "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
     );
 
-    poolObj.tokenPrice = data.polkabridge ? data.polkabridge.usd : "---";
+    poolObj.tokenPrice = data.polkabridge
+      ? new BigNumber(data.polkabridge.usd).toFixed(1).toString()
+      : "---";
 
     const NUMBER_BLOCKS_PER_YEAR = 2400000;
     const avg_pbr_perblock = 1.5;
@@ -191,7 +194,7 @@ const Home = () => {
       .times(new BigNumber(avg_pbr_perblock))
       .div(total_value_locked_usd)
       .times(100)
-      .toFixed(3)
+      .toFixed(1)
       .toString();
 
     poolObj.apy = apy;
@@ -201,6 +204,7 @@ const Home = () => {
 
   const getAccountBalance = async (accountAddr) => {
     setLoading(true);
+    await checkAllowance(accountAddr);
     const pbrWei = await pbrContract.methods.balanceOf(accountAddr).call();
     setPbrBal(fromWei(pbrWei));
 
@@ -221,14 +225,32 @@ const Home = () => {
     setLoading(false);
   };
 
+  const checkAllowance = async (account) => {
+    try {
+      setApproved(false);
+      const allowance = await pbrContract.methods
+        .allowance(account, stakeContract._address)
+        .call();
+
+      console.log(allowance);
+      if (new BigNumber(allowance).gt(0)) {
+        setApproved(true);
+      }
+      console.log("allowance", new BigNumber(allowance).gt(0));
+    } catch (error) {
+      console.log("allowance error", error);
+    }
+  };
+
   const confirmAllowance = async (balance) => {
     try {
+      console.log(balance);
       setLoading(true);
       const res = await pbrContract.methods
         .approve(stakeContract._address, balance)
         .send({ from: account });
-      localStorage.setItem(`approved_${account}`, true);
       setLoading(false);
+      setApproved(true);
     } catch (error) {
       console.log("allowance error", error);
       setLoading(false);
@@ -278,6 +300,10 @@ const Home = () => {
     });
   }, []);
 
+  const signOut = async () => {
+    // setAccount(null);
+    // getAccountBalance(null);
+  };
   useEffect(async () => {
     if (web3 === undefined) {
       console.log("web3 is there", web3);
@@ -300,6 +326,7 @@ const Home = () => {
       <section className="appbar-section">
         <Navbar
           handleConnectWallet={connectWallet}
+          handleSignOut={signOut}
           account={account}
           pbrBalance={pbrBalance}
         />
@@ -345,7 +372,8 @@ const Home = () => {
                 onUnstake={onUnStake}
                 account={account}
                 loading={loading}
-                handleApprove={() => confirmAllowance(toWei(pbrBalance))}
+                approved={approved}
+                handleApprove={() => confirmAllowance(toWei("999999999"))}
               />
             </div>
             <div className={classes.card}>
