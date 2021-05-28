@@ -259,15 +259,15 @@ const Navbar = ({
 
           <div className={classes.leftMargin} />
 
-          <a href="#" className={classes.navbarItemsDesktop}>
+          <a href="/" className={classes.navbarItemsDesktop}>
             Staking
           </a>
 
-          <a href="#" className={classes.navbarItemsDesktop}>
+          <a href="https://farm.polkabridge.org" target="_blank" className={classes.navbarItemsDesktop}>
             Farm
           </a>
 
-          <a href="#" className={classes.navbarItemsDesktop}>
+          <a href="https://launchpad.polkabridge.org" target="_blank" className={classes.navbarItemsDesktop}>
             Launchpad
           </a>
 
