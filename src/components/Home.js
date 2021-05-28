@@ -174,7 +174,7 @@ const Home = () => {
 
     const { data } = await axios.get(
       config.coingecko +
-        "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+      "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
     );
 
     poolObj.tokenPrice = data.polkabridge ? data.polkabridge.usd : "---";
@@ -309,7 +309,7 @@ const Home = () => {
           <strong className={classes.numbers}> ${poolData.tokenPrice}</strong>
         </p>
         <p className={classes.heading}>
-          Annual Percentage Yield:
+          APY:
           <strong className={classes.numbers}>{poolData.apy} %</strong>
         </p>
         <p className={classes.heading}>
