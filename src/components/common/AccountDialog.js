@@ -113,7 +113,10 @@ export default function AccountDialog({
   handleSignOut,
 }) {
   const classes = useStyles();
-
+  const onSingOut = () => {
+    handleClose();
+    handleSignOut();
+  };
   return (
     <div>
       <Dialog
@@ -162,7 +165,7 @@ export default function AccountDialog({
             <CustomButton variant="light" onClick={handleClose}>
               Cancel
             </CustomButton>
-            <CustomButton onClick={handleSignOut}>
+            <CustomButton onClick={onSingOut}>
               <p>Sign out</p>
             </CustomButton>
           </div>

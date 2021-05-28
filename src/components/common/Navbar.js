@@ -159,7 +159,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Navbar = ({ pbrBalance, account, handleConnectWallet }) => {
+const Navbar = ({
+  pbrBalance,
+  account,
+  handleConnectWallet,
+  handleSignOut,
+}) => {
   const classes = useStyles();
 
   const [state, setState] = React.useState({
@@ -215,7 +220,12 @@ const Navbar = ({ pbrBalance, account, handleConnectWallet }) => {
       <Divider />
       <List>
         <ListItem button style={{ marginTop: 15 }}>
-          <Wallet onClick={handleConnectWallet} amount={pbrBalance} />
+          <Wallet
+            onClick={handleConnectWallet}
+            amount={pbrBalance}
+            account={account}
+            onWalletClick={() => setAccountDialog(true)}
+          />
         </ListItem>
       </List>
     </div>
@@ -233,7 +243,7 @@ const Navbar = ({ pbrBalance, account, handleConnectWallet }) => {
         balance={pbrBalance}
         account={account}
         handleClose={() => setAccountDialog(false)}
-        handleSignOut={() => {}}
+        handleSignOut={handleSignOut}
       />
       <AppBar
         color="transparent"
