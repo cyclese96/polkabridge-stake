@@ -30,6 +30,7 @@ import {
   GraphicEqTwoTone,
 } from "@material-ui/icons";
 import Wallet from "./Wallet";
+import AccountDialog from "./AccountDialog";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -169,6 +170,9 @@ const Navbar = ({ pbrBalance, account, handleConnectWallet }) => {
     status: false,
     message: "",
   });
+
+  const [accountDialog, setAccountDialog] = useState(false);
+
   const toggleDrawer = (anchor, open) => (event) => {
     setState({ ...state, [anchor]: open });
   };
@@ -224,6 +228,13 @@ const Navbar = ({ pbrBalance, account, handleConnectWallet }) => {
         status={alertObject.status}
         message={alertObject.message}
       />
+      <AccountDialog
+        open={accountDialog}
+        balance={pbrBalance}
+        account={account}
+        handleClose={() => setAccountDialog(false)}
+        handleSignOut={() => {}}
+      />
       <AppBar
         color="transparent"
         position="fixed"
@@ -262,7 +273,12 @@ const Navbar = ({ pbrBalance, account, handleConnectWallet }) => {
             Prediction
           </a>
           <div className={classes.grow} />
-          <Wallet onClick={handleConnectWallet} amount={pbrBalance} />
+          <Wallet
+            onClick={handleConnectWallet}
+            amount={pbrBalance}
+            account={account}
+            onWalletClick={() => setAccountDialog(true)}
+          />
         </Toolbar>
 
         <Toolbar className={classes.sectionMobile}>

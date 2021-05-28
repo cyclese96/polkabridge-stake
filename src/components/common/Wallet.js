@@ -5,6 +5,9 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
     alignItems: "center",
+    border: "0.5px solid white",
+    borderRadius: 15,
+    padding: 2,
   },
   item: {
     marginLeft: 10,
@@ -31,11 +34,11 @@ const useStyles = makeStyles((theme) => ({
   },
   numbers: {
     color: "#E0077D",
-    fontSize: 18,
+    fontSize: 12,
   },
 }));
 
-const Wallet = ({ account, amount, onClick }) => {
+const Wallet = ({ account, amount, onClick, onWalletClick }) => {
   const classes = useStyles();
   return (
     <div>
@@ -44,8 +47,10 @@ const Wallet = ({ account, amount, onClick }) => {
           Unlock Wallet
         </Button>
       ) : (
-        <a href="#" className={classes.root}>
-          <strong className={classes.numbers}>{amount} PBR</strong>
+        <a onClick={onWalletClick} className={classes.root}>
+          <strong className={classes.numbers}>
+            {account.toString().slice(0, 6)}..
+          </strong>
           <AccountBalanceWalletOutlined
             style={{ color: "#f9f9f9" }}
             fontSize="large"

@@ -43,13 +43,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Balance = ({ balance }) => {
+const Balance = ({ balance, loading }) => {
   const classes = useStyles();
   return (
     <div className={classes.card}>
       <div className="card-theme">
         <div className={classes.cardContents}>
-          {!balance ? (
+          {loading ? (
             <CircularProgress className={classes.numbers} />
           ) : (
             <>

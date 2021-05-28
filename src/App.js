@@ -10,7 +10,6 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <Fragment>
-
         <Home />
       </Fragment>
     </ThemeProvider>

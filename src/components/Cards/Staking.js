@@ -1,4 +1,5 @@
 import { CircularProgress, makeStyles } from "@material-ui/core";
+import { useEffect, useState } from "react";
 import bal from "../../assets/balance.png";
 import CustomButton from "../Buttons/CustomButton";
 
@@ -46,16 +47,40 @@ const useStyles = makeStyles((theme) => ({
     color: "#E0077D",
     fontSize: 26,
   },
+  hint: {
+    fontSize: 10,
+    fontWeight: 400,
+    color: "#919191",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 10,
+    },
+  },
 }));
 
-const Staking = ({ onStake, onUnstake, stakeData }) => {
+const Staking = ({
+  onStake,
+  onUnstake,
+  stakeData,
+  handleApprove,
+  account,
+  loading,
+}) => {
   const classes = useStyles();
+  const [approved, setApproved] = useState(false);
 
+  useEffect(() => {
+    console.log("staking");
+    const apr = localStorage.getItem(`approved_${account}`);
+    if (parseFloat(stakeData.amount) > 0 || apr == "true") {
+      setApproved(true);
+      localStorage.setItem(`approved_${account}`, true);
+    }
+  }, []);
   return (
     <div className={classes.card}>
       <div className="card-theme">
         <div className={classes.cardContents}>
-          {!stakeData.amount ? (
+          {loading ? (
             <div>
               <CircularProgress className={classes.numbers} />
             </div>
@@ -76,10 +101,21 @@ const Staking = ({ onStake, onUnstake, stakeData }) => {
             <strong>Earning rate: </strong> 28 $PBR / hour
           </p> */}
               <div className={classes.buttons}>
-                <CustomButton onClick={onUnstake} variant="light">
-                  Unstake
-                </CustomButton>
-                <CustomButton onClick={onStake}>Stake</CustomButton>
+                {!approved === true ? (
+                  <div>
+                    <CustomButton onClick={handleApprove}>Approve</CustomButton>
+                    <p className={classes.hint}>
+                      ! Approve PBR tokens to start staking
+                    </p>
+                  </div>
+                ) : (
+                  <>
+                    <CustomButton onClick={onUnstake} variant="light">
+                      Unstake
+                    </CustomButton>
+                    <CustomButton onClick={onStake}>Stake</CustomButton>
+                  </>
+                )}
               </div>
             </>
           )}
