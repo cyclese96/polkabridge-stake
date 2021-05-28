@@ -19,15 +19,22 @@ const Footer = () => {
       <a className={classes.item} href="#">
         Contract
       </a>
-      <a className={classes.item} href="#">
+      <a className={classes.item} href="https://github.com/cyclese96" target="_blank">
         Github
       </a>
-      <a className={classes.item} href="#">
+      <a className={classes.item} href="https://twitter.com/realpolkabridge" target="_blank">
         Twitter
       </a>
-      <a className={classes.item} href="#">
+      <a className={classes.item} href="https://t.me/polkabridgegroup" target="_blank">
         Telegram
       </a>
+      <a className={classes.item} href="https://discord.gg/G3NDrcq6GW" target="_blank">
+        Discord
+      </a>
+      <a className={classes.item} href="https://polkabridge.org" target="_blank">
+        Landing Page
+      </a>
+
     </div>
   );
 };
