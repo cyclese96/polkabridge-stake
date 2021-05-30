@@ -1,6 +1,6 @@
 import web3 from "../web3";
 
-const address = "0xdA6bc4EEf7ae0950CE1D73C8AB92b967918AD155";
+const address = "0x55950cF279Ba5b43263f4Df54833b85F684B333F";
 
 const abi = [
   {
@@ -82,6 +82,7 @@ const abi = [
         type: "address",
       },
       { internalType: "uint256", name: "_rewardPerBlock", type: "uint256" },
+      { internalType: "uint256", name: "_endDate", type: "uint256" },
       { internalType: "bool", name: "_withUpdate", type: "bool" },
     ],
     name: "addPool",
@@ -203,6 +204,7 @@ const abi = [
       { internalType: "uint256", name: "_pid", type: "uint256" },
       { internalType: "uint256", name: "_allocPoint", type: "uint256" },
       { internalType: "uint256", name: "_rewardPerBlock", type: "uint256" },
+      { internalType: "uint256", name: "_endDate", type: "uint256" },
       { internalType: "bool", name: "_withUpdate", type: "bool" },
     ],
     name: "setPool",
@@ -213,6 +215,13 @@ const abi = [
   {
     inputs: [],
     name: "startBlock",
+    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [],
+    name: "totalUser",
     outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
     stateMutability: "view",
     type: "function",
@@ -242,6 +251,8 @@ const abi = [
       { internalType: "uint256", name: "rewardDebt", type: "uint256" },
       { internalType: "uint256", name: "rewardClaimed", type: "uint256" },
       { internalType: "uint256", name: "lastBlock", type: "uint256" },
+      { internalType: "uint256", name: "beginTime", type: "uint256" },
+      { internalType: "uint256", name: "endTime", type: "uint256" },
     ],
     stateMutability: "view",
     type: "function",
