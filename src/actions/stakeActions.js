@@ -106,7 +106,6 @@ export const confirmAllowance = (balance) => async (dispatch) => {
       type: SHOW_LOADING,
     });
     const account = await getCurrentAccount();
-
     const res = await pbrContract.methods
       .approve(stakeContract._address, balance)
       .send({ from: account });
@@ -136,6 +135,9 @@ export const updateAcountData = () => async (dispatch) => {
     const account = await getCurrentAccount();
 
     if (account == localStorage.getItem("loggedOut")) {
+      dispatch({
+        type: HIDE_LOADING,
+      });
       return;
     }
 
@@ -155,6 +157,9 @@ export const updateAcountData = () => async (dispatch) => {
         type: APPROVE_TOKENS,
       });
     } else {
+      dispatch({
+        type: HIDE_LOADING,
+      });
       return;
     }
 

@@ -33,14 +33,6 @@ export const connectWallet = () => async (dispatch) => {
     if (checkNetwork()) {
       try {
         const accountAddress = await getCurrentAccount();
-        if (
-          accountAddress == localStorage.getItem("loggedOut", accountAddress)
-        ) {
-          dispatch({
-            type: DISCONNECT_WALLET,
-          });
-          return;
-        }
         dispatch({
           type: CONNECT_WALLET,
         });
@@ -49,14 +41,22 @@ export const connectWallet = () => async (dispatch) => {
           payload: accountAddress,
         });
 
-        const pbrWei = await pbrContract.methods
-          .balanceOf(accountAddress)
-          .call();
+        if (
+          accountAddress == localStorage.getItem("loggedOut", accountAddress)
+        ) {
+          dispatch({
+            type: DISCONNECT_WALLET,
+          });
+        } else {
+          const pbrWei = await pbrContract.methods
+            .balanceOf(accountAddress)
+            .call();
 
-        dispatch({
-          type: LOAD_BALANCE,
-          payload: pbrWei,
-        });
+          dispatch({
+            type: LOAD_BALANCE,
+            payload: pbrWei,
+          });
+        }
 
         // await updateAcountData();
       } catch (error) {

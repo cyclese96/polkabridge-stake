@@ -4,6 +4,7 @@ import {
   GET_USER_STAKE,
   STAKE_TOKENS,
   UNSTAKE_TOKENS,
+  RESET_USER_STAKE,
 } from "../actions/types";
 
 const initalState = {
@@ -24,6 +25,12 @@ export default function (state = initalState, action) {
       return {
         ...state,
         approved: true,
+      };
+    case RESET_USER_STAKE:
+      return {
+        ...state,
+        approved: false,
+        stakeData: {},
       };
     case GET_USER_STAKE:
       return {

@@ -5,14 +5,8 @@ import { Avatar } from "@material-ui/core";
 import Staking from "./Cards/Staking";
 import Balance from "./Cards/Balance";
 import StakeDialog from "./common/StakeDialog";
-import stakeContract from "../utils/stakeConnection";
-import web3 from "../web3";
-import pbrContract from "../utils/pbrConnection";
 import Navbar from "./common/Navbar";
 import Footer from "./common/Footer";
-import axios from "axios";
-import config from "../config";
-import BigNumber from "bignumber.js";
 
 import Wallet from "./common/Wallet";
 import PropTypes from "prop-types";
@@ -32,8 +26,7 @@ import {
 import { connect } from "react-redux";
 import store from "../store";
 import { fromWei, toWei, formatCurrency } from "../actions/helper";
-import { SET_ACCOUNT } from "../actions/types";
-// const web3 = web3Config.web3;
+import { RESET_USER_STAKE } from "../actions/types";
 
 const useStyles = makeStyles((theme) => ({
   background: {
@@ -148,9 +141,12 @@ const Home = ({
       if (accounts.length === 0) {
         return;
       }
+      // store.dispatch({
+      //   type: SET_ACCOUNT,
+      //   payload: accounts[0],
+      // });
       store.dispatch({
-        type: SET_ACCOUNT,
-        payload: accounts[0],
+        type: RESET_USER_STAKE,
       });
       await connectWallet();
       await updateAcountData();
