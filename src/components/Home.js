@@ -215,7 +215,7 @@ const Home = ({
         {!connected ? (
           <div className={classes.cardsContainer2}>
             <Wallet
-              onClick={connectWallet}
+              onClick={handleConnectWallet}
               account={currentAccount}
               connected={connected}
             />
