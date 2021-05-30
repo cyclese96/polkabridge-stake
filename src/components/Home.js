@@ -76,13 +76,13 @@ const useStyles = makeStyles((theme) => ({
   logo: {
     width: 95,
     height: 95,
-    marginTop: 30,
+    marginTop: 5,
     marginBottom: 40,
     backgroundColor: "#f9f9f9",
     padding: 12,
   },
   cardsContainer: {
-    marginTop: 30,
+    marginTop: 15,
     display: "flex",
     alignItems: "center",
     justifyContent: "center",

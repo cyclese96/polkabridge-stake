@@ -13,8 +13,8 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("sm")]: {
       paddingLeft: 0,
       paddingRight: 0,
-      width: 350,
-      height: 240,
+      width: 300,
+      height: 220,
     },
   },
   cardContents: {
