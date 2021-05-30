@@ -8,6 +8,8 @@ import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 import { CircularProgress, TextField } from "@material-ui/core";
 import CustomButton from "../Buttons/CustomButton";
+import { formatCurrency, fromWei } from "../../actions/helper";
+import BigNumber from "bignumber.js";
 
 const styles = (theme) => ({
   root: {
@@ -132,7 +134,7 @@ export default function StakeDialog({
   loading,
 }) {
   const classes = useStyles();
-  const [pbrTokens, setTokenValue] = useState(0);
+  const [pbrTokens, setTokenValue] = useState("0");
   const [error, setError] = useState({ status: false, message: "" });
 
   const handleInputChange = (e) => {
@@ -140,10 +142,13 @@ export default function StakeDialog({
   };
 
   const onConfirm = () => {
-    console.log(type);
+    const enteredTokens = pbrTokens;
+    const stakedTokens = parseFloat(fromWei(stakedData.amount));
+    const balanceTokens = parseFloat(fromWei(balance));
+
     if (
       type !== "stake" &&
-      (pbrTokens <= 0 || pbrTokens > parseFloat(stakedData.amount))
+      (enteredTokens <= 0 || enteredTokens > stakedTokens)
     ) {
       setError({
         status: true,
@@ -153,10 +158,9 @@ export default function StakeDialog({
     }
 
     if (
-      (type === "stake" && pbrTokens <= 0) ||
-      pbrTokens > parseFloat(balance)
+      type === "stake" &&
+      (enteredTokens <= 0 || enteredTokens > balanceTokens)
     ) {
-      console.log(pbrTokens);
       setError({
         status: true,
         message: "Invalid amount to Stake!",
@@ -172,14 +176,12 @@ export default function StakeDialog({
   };
   const handleMax = () => {
     if (type === "stake") {
-      setTokenValue(balance);
+      setTokenValue(fromWei(balance));
     } else {
-      setTokenValue(stakedData.amount);
+      setTokenValue(fromWei(stakedData.amount));
     }
-    console.log(balance);
   };
   const onClose = () => {
-    console.log("close event", balance);
     handleClose();
     setTokenValue(null);
     setError({});
@@ -207,8 +209,10 @@ export default function StakeDialog({
 
           <p className={classes.subheading}>
             {type === "stake"
-              ? `Avaialable tokens: ${balance} $PBR`
-              : `Staked tokens: ${stakedData.amount} $PBR`}
+              ? `Avaialable tokens: ${formatCurrency(fromWei(balance))} $PBR`
+              : `Staked tokens: ${formatCurrency(
+                  fromWei(stakedData.amount)
+                )} $PBR`}
           </p>
           <div className={classes.inputGroup}>
             <TextField
@@ -230,7 +234,7 @@ export default function StakeDialog({
               variant="outlined"
               placeholder="0"
               value={pbrTokens}
-              name={[pbrTokens]}
+              // name={[pbrTokens]}
               onChange={handleInputChange}
               label="Enter PBR tokens"
               focused={true}

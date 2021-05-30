@@ -164,6 +164,7 @@ const Navbar = ({
   account,
   handleConnectWallet,
   handleSignOut,
+  connected,
 }) => {
   const classes = useStyles();
 
@@ -224,6 +225,7 @@ const Navbar = ({
             onClick={handleConnectWallet}
             amount={pbrBalance}
             account={account}
+            connected={connected}
             onWalletClick={() => setAccountDialog(true)}
           />
         </ListItem>
@@ -287,6 +289,7 @@ const Navbar = ({
             onClick={handleConnectWallet}
             amount={pbrBalance}
             account={account}
+            connected={connected}
             onWalletClick={() => setAccountDialog(true)}
           />
         </Toolbar>

@@ -1,5 +1,6 @@
 import { CircularProgress, makeStyles } from "@material-ui/core";
 import supply from "../../assets/supply.png";
+import { fromWei, formatCurrency } from "../../actions/helper";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -55,7 +56,9 @@ const Balance = ({ balance, loading }) => {
             <>
               <p className={classes.cardHeading}>Balance</p>
               <img className={classes.avatar} src={supply} />
-              <h4 className={classes.numbers}>{balance} PBR</h4>
+              <h4 className={classes.numbers}>
+                {formatCurrency(fromWei(balance))} PBR
+              </h4>
             </>
           )}
         </div>

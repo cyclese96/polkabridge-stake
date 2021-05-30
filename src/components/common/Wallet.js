@@ -11,6 +11,9 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: 10,
     paddingRight: 10,
     cursor: "pointer",
+    "&:hover": {
+      background: "rgba(255, 255, 255, 0.1)",
+    },
     [theme.breakpoints.down("sm")]: {
       paddingLeft: 30,
       paddingRight: 30,
@@ -45,11 +48,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Wallet = ({ account, amount, onClick, onWalletClick }) => {
+const Wallet = ({ account, amount, connected, onClick, onWalletClick }) => {
   const classes = useStyles();
   return (
     <div>
-      {!amount ? (
+      {!connected ? (
         <Button onClick={onClick} className={classes.navbarButton}>
           Unlock Wallet
         </Button>

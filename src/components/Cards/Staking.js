@@ -2,6 +2,7 @@ import { CircularProgress, makeStyles } from "@material-ui/core";
 import { useEffect, useState } from "react";
 import bal from "../../assets/balance.png";
 import CustomButton from "../Buttons/CustomButton";
+import { formatCurrency, fromWei } from "../../actions/helper";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -81,13 +82,16 @@ const Staking = ({
               <p className={classes.cardHeading}>Staking Pool</p>
               <img className={classes.avatar} src={bal} />
               <p className={classes.cardText}>
-                <strong>Staked: </strong> {stakeData.amount} PBR
+                <strong>Staked: </strong>{" "}
+                {formatCurrency(fromWei(stakeData.amount))} PBR
               </p>
               <p className={classes.cardText}>
-                <strong>Claimed rewards: </strong> {stakeData.rewardClaimed} PBR
+                <strong>Claimed rewards: </strong>{" "}
+                {formatCurrency(fromWei(stakeData.rewardClaimed))} PBR
               </p>
               <p className={classes.cardText}>
-                <strong>Pending rewards: </strong> {stakeData.rewardDebt} PBR
+                <strong>Pending rewards: </strong>{" "}
+                {formatCurrency(fromWei(stakeData.pendingReward))} PBR
               </p>
               {/* <p className={classes.cardText}>
             <strong>Earning rate: </strong> 28 $PBR / hour
