@@ -270,7 +270,7 @@ const Home = ({
             tokenType="BITE"
           />
           <div className={classes.card}>
-            <Balance balance={balance} loading={false} tokenType="BITE" />
+            <Balance balance={"0"} loading={false} tokenType="BITE" />
           </div>
         </div>
         <Footer />
