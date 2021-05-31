@@ -128,11 +128,13 @@ const Home = ({
 
   const handleStakeConfirm = async (enteredTokens) => {
     await stakeTokens(enteredTokens, currentAccount);
+    await getPoolInfo();
     setDialog({ open: false, type: "" });
   };
 
   const handleUnstakeConfirm = async (enteredTokens) => {
     await unstakeTokens(enteredTokens, currentAccount);
+    await getPoolInfo();
     setDialog({ open: false, type: "" });
   };
 
