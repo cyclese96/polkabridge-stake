@@ -97,6 +97,12 @@ const useStyles = makeStyles((theme) => ({
     marginTop: 5,
     marginBottom: 5,
   },
+  card2: {
+    marginTop: 25,
+    marginBottom: 5,
+    alignSelf: "center",
+    justifySelf: "center",
+  },
 }));
 
 const Home = ({
@@ -222,34 +228,51 @@ const Home = ({
             </p>
           </div>
         ) : (
-          <div className={classes.cardsContainer}>
-            <div className={classes.card}>
-              <Staking
-                stakeData={stakeData}
-                onStake={onStake}
-                onUnstake={onUnStake}
-                account={currentAccount}
+          <div>
+            <div className={classes.cardsContainer}>
+              <div className={classes.card}>
+                <Staking
+                  stakeData={stakeData}
+                  onStake={onStake}
+                  onUnstake={onUnStake}
+                  account={currentAccount}
+                  loading={loading}
+                  approved={approved}
+                  tokenType="PBR"
+                  handleApprove={() => confirmAllowance(toWei("999999999"))}
+                />
+              </div>
+              <div className={classes.card}>
+                <Balance balance={balance} loading={loading} tokenType="PBR" />
+              </div>
+              <StakeDialog
                 loading={loading}
-                approved={approved}
-                handleApprove={() => confirmAllowance(toWei("999999999"))}
+                balance={balance}
+                stakedData={stakeData}
+                account={currentAccount}
+                open={dialog.open}
+                type={dialog.type}
+                handleClose={handleClose}
+                handleOnStake={handleStakeConfirm}
+                handleOnUnstake={handleUnstakeConfirm}
               />
             </div>
-            <div className={classes.card}>
-              <Balance balance={balance} loading={loading} />
-            </div>
-            <StakeDialog
-              loading={loading}
-              balance={balance}
-              stakedData={stakeData}
-              account={currentAccount}
-              open={dialog.open}
-              type={dialog.type}
-              handleClose={handleClose}
-              handleOnStake={handleStakeConfirm}
-              handleOnUnstake={handleUnstakeConfirm}
-            />
           </div>
         )}
+        <div className={classes.cardsContainer}>
+          <Staking
+            stakeData={stakeData}
+            onStake={onStake}
+            onUnstake={onUnStake}
+            account={currentAccount}
+            loading={false}
+            approved={approved}
+            tokenType="BITE"
+          />
+          <div className={classes.card}>
+            <Balance balance={balance} loading={false} tokenType="BITE" />
+          </div>
+        </div>
         <Footer />
       </div>
     </div>

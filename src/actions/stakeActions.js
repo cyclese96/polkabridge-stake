@@ -43,6 +43,7 @@ export const getPoolInfo = () => async (dispatch) => {
         "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
     );
 
+    console.log(data);
     poolObj.tokenPrice = data.polkabridge
       ? new BigNumber(data.polkabridge.usd).toFixed(1).toString()
       : "---";
@@ -69,6 +70,7 @@ export const getPoolInfo = () => async (dispatch) => {
       payload: poolObj,
     });
   } catch (error) {
+    // console.log("pool info: ", error);
     dispatch({
       type: ERROR,
       payload: "Failed to load Pool data!",
