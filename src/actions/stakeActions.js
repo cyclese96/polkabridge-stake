@@ -10,6 +10,8 @@ import {
   SHOW_LOADING,
   HIDE_LOADING,
   LOAD_BALANCE,
+  SHOW_POOL_LOADING,
+  HIDE_POOL_LOADING,
 } from "./types";
 
 import stakeContract from "../utils/stakeConnection";
@@ -25,7 +27,7 @@ const POOL_ID = 0;
 //GET all characters
 export const getPoolInfo = () => async (dispatch) => {
   dispatch({
-    type: SHOW_LOADING,
+    type: SHOW_POOL_LOADING,
   });
   try {
     // console.log('g')
@@ -43,10 +45,7 @@ export const getPoolInfo = () => async (dispatch) => {
         "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
     );
 
-    console.log(data);
-    poolObj.tokenPrice = data.polkabridge
-      ? new BigNumber(data.polkabridge.usd).toFixed(1).toString()
-      : "---";
+    poolObj.tokenPrice = data.polkabridge ? data.polkabridge.usd : "---";
 
     const NUMBER_BLOCKS_PER_YEAR = 2400000;
     const avg_pbr_perblock = 1.5;
@@ -77,7 +76,7 @@ export const getPoolInfo = () => async (dispatch) => {
     });
   }
   dispatch({
-    type: HIDE_LOADING,
+    type: HIDE_POOL_LOADING,
   });
 };
 

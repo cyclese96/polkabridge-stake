@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import Button from "@material-ui/core/Button";
+// import Button from "@material-ui/core/Button";
 import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
@@ -18,17 +18,8 @@ import TouchAppOutlined from "@material-ui/icons/TouchAppOutlined";
 import VpnLockOutlined from "@material-ui/icons/VpnLockOutlined";
 import CategoryIcon from "@material-ui/icons/Category";
 
-import web3 from "../../web3";
-import stakingContract from "../../utils/stakeConnection";
-import pbrContract from "../../utils/pbrConnection";
-import BigNumber from "big-number";
 import CustomSnackBar from "./CustomSnackbar";
-import {
-  AccountBalance,
-  AccountBalanceWalletOutlined,
-  EqualizerOutlined,
-  GraphicEqTwoTone,
-} from "@material-ui/icons";
+import { EqualizerOutlined } from "@material-ui/icons";
 import Wallet from "./Wallet";
 import AccountDialog from "./AccountDialog";
 
@@ -265,11 +256,19 @@ const Navbar = ({
             Staking
           </a>
 
-          <a href="https://farm.polkabridge.org" target="_blank" className={classes.navbarItemsDesktop}>
+          <a
+            href="https://farm.polkabridge.org"
+            target="_blank"
+            className={classes.navbarItemsDesktop}
+          >
             Farm
           </a>
 
-          <a href="https://launchpad.polkabridge.org" target="_blank" className={classes.navbarItemsDesktop}>
+          <a
+            href="https://launchpad.polkabridge.org"
+            target="_blank"
+            className={classes.navbarItemsDesktop}
+          >
             Launchpad
           </a>
 

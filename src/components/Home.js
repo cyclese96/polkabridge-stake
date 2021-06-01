@@ -1,6 +1,6 @@
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import React, { useEffect, useState } from "react";
-import { Avatar } from "@material-ui/core";
+import { Avatar, CircularProgress } from "@material-ui/core";
 
 import Staking from "./Cards/Staking";
 import Balance from "./Cards/Balance";
@@ -27,6 +27,7 @@ import { connect } from "react-redux";
 import store from "../store";
 import { fromWei, toWei, formatCurrency } from "../actions/helper";
 import { RESET_USER_STAKE } from "../actions/types";
+import web3 from "../web3";
 
 const useStyles = makeStyles((theme) => ({
   background: {
@@ -115,7 +116,7 @@ const Home = ({
   unstakeTokens,
   logout,
   account: { currentAccount, balance, loading, connected },
-  stake: { stakeData, poolData, approved },
+  stake: { stakeData, poolData, approved, poolLoading },
 }) => {
   const classes = useStyles();
   const [dialog, setDialog] = React.useState({ open: false, type: null });
@@ -145,20 +146,18 @@ const Home = ({
   };
 
   useEffect(async () => {
-    window.ethereum.on("accountsChanged", async (accounts) => {
-      if (accounts.length === 0) {
-        return;
-      }
-      // store.dispatch({
-      //   type: SET_ACCOUNT,
-      //   payload: accounts[0],
-      // });
-      store.dispatch({
-        type: RESET_USER_STAKE,
+    if (typeof window.web3 !== "undefined") {
+      window.ethereum.on("accountsChanged", async (accounts) => {
+        if (accounts.length === 0) {
+          return;
+        }
+        store.dispatch({
+          type: RESET_USER_STAKE,
+        });
+        await connectWallet();
+        await updateAcountData();
       });
-      await connectWallet();
-      await updateAcountData();
-    });
+    }
   }, []);
 
   const signOut = async () => {
@@ -167,13 +166,21 @@ const Home = ({
   };
   const handleConnectWallet = async () => {
     localStorage.setItem("loggedOut", "");
+    console.log("trying wallet connect", typeof window.web3 === "undefined");
+
+    if (typeof window.web3 === "undefined") {
+      alert("Please install Meta Mask to connect");
+      return;
+    }
     await connectWallet();
     await updateAcountData();
   };
   useEffect(async () => {
     await getPoolInfo();
-    await connectWallet();
-    await updateAcountData();
+    if (connected) {
+      await updateAcountData();
+    }
+    // await connectWallet();
   }, []);
 
   return (
@@ -190,31 +197,39 @@ const Home = ({
 
       <div className={classes.background}>
         <Avatar className={classes.logo} src="img/symbol.png" />
-        <p className={classes.heading}>
-          PBR price:
-          <strong className={classes.numbers}>
-            {formatCurrency(poolData.tokenPrice, true)}
-          </strong>
-        </p>
-        <p className={classes.heading}>
-          APY:
-          <strong className={classes.numbers}>
-            {formatCurrency(poolData.apy)} %
-          </strong>
-        </p>
-        <p className={classes.heading}>
-          Total Token Staked :
-          <strong className={classes.numbers}>
-            {formatCurrency(fromWei(poolData.totalTokenStaked))} PBR
-          </strong>
-        </p>
+        {poolLoading ? (
+          <div style={{ marginTop: 132, marginBottom: 16 }}>
+            <CircularProgress className={classes.numbers} />
+          </div>
+        ) : (
+          <>
+            <p className={classes.heading}>
+              PBR price:
+              <strong className={classes.numbers}>
+                {formatCurrency(poolData.tokenPrice, true, 3)}
+              </strong>
+            </p>
+            <p className={classes.heading}>
+              APY:
+              <strong className={classes.numbers}>
+                {formatCurrency(poolData.apy)} %
+              </strong>
+            </p>
+            <p className={classes.heading}>
+              Total Token Staked :
+              <strong className={classes.numbers}>
+                {formatCurrency(fromWei(poolData.totalTokenStaked))} PBR
+              </strong>
+            </p>
 
-        <p className={classes.heading}>
-          Total Rewards Claimed:
-          <strong className={classes.numbers}>
-            {formatCurrency(fromWei(poolData.totalTokenClaimed))} PBR
-          </strong>
-        </p>
+            <p className={classes.heading}>
+              Total Rewards Claimed:
+              <strong className={classes.numbers}>
+                {formatCurrency(fromWei(poolData.totalTokenClaimed))} PBR
+              </strong>
+            </p>
+          </>
+        )}
 
         {!connected ? (
           <div className={classes.cardsContainer2}>

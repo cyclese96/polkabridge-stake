@@ -22,11 +22,11 @@ export const getCurrentAccount = async () => {
   return accountAddress;
 };
 
-export const formatCurrency = (value, usd = false) => {
+export const formatCurrency = (value, usd = false, fractionDigits = 1) => {
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
-    minimumFractionDigits: 1,
+    minimumFractionDigits: fractionDigits,
   });
   if (usd) {
     return formatter.format(value ? value : 0);

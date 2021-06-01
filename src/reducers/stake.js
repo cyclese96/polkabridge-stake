@@ -5,6 +5,8 @@ import {
   STAKE_TOKENS,
   UNSTAKE_TOKENS,
   RESET_USER_STAKE,
+  SHOW_POOL_LOADING,
+  HIDE_POOL_LOADING,
 } from "../actions/types";
 
 const initalState = {
@@ -12,6 +14,7 @@ const initalState = {
   stakeData: {}, // store current account stake
   poolData: {},
   poolID: 0,
+  poolLoading: false,
 };
 
 export default function (state = initalState, action) {
@@ -46,6 +49,16 @@ export default function (state = initalState, action) {
       return {
         ...state,
         stakeData: action.payload,
+      };
+    case SHOW_POOL_LOADING:
+      return {
+        ...state,
+        poolLoading: true,
+      };
+    case HIDE_POOL_LOADING:
+      return {
+        ...state,
+        poolLoading: false,
       };
     default:
       return state;
