@@ -10,6 +10,13 @@ import { CircularProgress, TextField } from "@material-ui/core";
 import CustomButton from "../Buttons/CustomButton";
 import { formatCurrency, fromWei } from "../../actions/helper";
 import BigNumber from "bignumber.js";
+import { connect } from "react-redux";
+import {
+  getPoolInfo,
+  stakeTokens,
+  unstakeTokens,
+} from "../../actions/stakeActions";
+import { getAccountBalance } from "../../actions/accountActions";
 
 const styles = (theme) => ({
   root: {
@@ -122,17 +129,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function StakeDialog({
+const StakeDialog = ({
+  account: { currentAccount, balance, loading },
+  stake: { stakeData, approved, poolLoading },
+  stakeTokens,
+  unstakeTokens,
+  getAccountBalance,
+  getPoolInfo,
   open,
   handleClose,
-  balance,
-  stakedData,
-  account,
-  handleOnStake,
-  handleOnUnstake,
   type,
-  loading,
-}) {
+}) => {
   const classes = useStyles();
   const [pbrTokens, setTokenValue] = useState("0");
   const [error, setError] = useState({ status: false, message: "" });
@@ -141,9 +148,9 @@ export default function StakeDialog({
     setTokenValue(e.target.value);
   };
 
-  const onConfirm = () => {
+  const onConfirm = async () => {
     const enteredTokens = pbrTokens;
-    const stakedTokens = parseFloat(fromWei(stakedData.amount));
+    const stakedTokens = parseFloat(fromWei(stakeData.amount));
     const balanceTokens = parseFloat(fromWei(balance));
 
     if (
@@ -169,23 +176,29 @@ export default function StakeDialog({
     }
     setError({});
     if (type === "stake") {
-      handleOnStake(pbrTokens);
+      await stakeTokens(pbrTokens, currentAccount);
     } else {
-      handleOnUnstake(pbrTokens);
+      await unstakeTokens(pbrTokens, currentAccount);
     }
+    await getPoolInfo();
+    await getAccountBalance();
+    handleClose();
   };
+
   const handleMax = () => {
     if (type === "stake") {
       setTokenValue(fromWei(balance));
     } else {
-      setTokenValue(fromWei(stakedData.amount));
+      setTokenValue(fromWei(stakeData.amount));
     }
   };
+
   const onClose = () => {
     handleClose();
     setTokenValue(null);
     setError({});
   };
+
   return (
     <div>
       <Dialog
@@ -211,7 +224,7 @@ export default function StakeDialog({
             {type === "stake"
               ? `Avaialable tokens: ${formatCurrency(fromWei(balance))} $PBR`
               : `Staked tokens: ${formatCurrency(
-                  fromWei(stakedData.amount)
+                  fromWei(stakeData.amount)
                 )} $PBR`}
           </p>
           <div className={classes.inputGroup}>
@@ -266,4 +279,16 @@ export default function StakeDialog({
       </Dialog>
     </div>
   );
-}
+};
+
+const mapStateToProps = (state) => ({
+  stake: state.stake,
+  account: state.account,
+});
+
+export default connect(mapStateToProps, {
+  stakeTokens,
+  unstakeTokens,
+  getAccountBalance,
+  getPoolInfo,
+})(StakeDialog);

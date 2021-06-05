@@ -3,7 +3,14 @@ import { useEffect, useState } from "react";
 import pbrImg from "../../assets/balance.png";
 import biteImg from "../../assets/bite.png";
 import CustomButton from "../Buttons/CustomButton";
-import { formatCurrency, fromWei } from "../../actions/helper";
+import { formatCurrency, fromWei, toWei } from "../../actions/helper";
+import { connect } from "react-redux";
+import {
+  confirmAllowance,
+  getUserStakedData,
+  stakeTokens,
+  unstakeTokens,
+} from "../../actions/stakeActions";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -67,16 +74,23 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Staking = ({
+  stake: { stakeData, approved },
+  account: { loading },
+  tokenType,
+  getUserStakedData,
+  confirmAllowance,
   onStake,
   onUnstake,
-  stakeData,
-  handleApprove,
-  account,
-  loading,
-  approved,
-  tokenType,
 }) => {
   const classes = useStyles();
+
+  useEffect(async () => {
+    if (tokenType === "PBR") {
+      await getUserStakedData();
+    }
+  }, []);
+
+  const handleApprove = () => confirmAllowance(toWei("999999999"));
 
   return (
     <div className={classes.card}>
@@ -151,7 +165,7 @@ const Staking = ({
                 <div className={classes.buttons}>
                   {true ? (
                     <div>
-                      <CustomButton onClick={handleApprove}>
+                      <CustomButton onClick={() => {}}>
                         Coming soon
                       </CustomButton>
                       <p className={classes.hint}>
@@ -176,4 +190,12 @@ const Staking = ({
   );
 };
 
-export default Staking;
+const mapStateToProps = (state) => ({
+  stake: state.stake,
+  account: state.account,
+});
+
+export default connect(mapStateToProps, {
+  getUserStakedData,
+  confirmAllowance,
+})(Staking);

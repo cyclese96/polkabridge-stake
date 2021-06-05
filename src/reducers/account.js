@@ -23,6 +23,7 @@ export default function (state = initalState, action) {
       return {
         ...state,
         connected: true,
+        currentAccount: action.payload,
       };
     case DISCONNECT_WALLET:
       return {

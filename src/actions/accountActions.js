@@ -25,62 +25,62 @@ const checkNetwork = () => {
 };
 
 //GET user authenticated
-export const connectWallet = () => async (dispatch) => {
-  dispatch({
-    type: SHOW_LOADING,
-  });
-  if (web3 !== undefined) {
-    if (checkNetwork()) {
-      try {
-        const accountAddress = await getCurrentAccount();
+export const connectWallet =
+  (connect = false) =>
+  async (dispatch) => {
+    try {
+      const accountAddress = await getCurrentAccount();
+      console.log("connect wallet", accountAddress);
+      if (
+        localStorage.getItem(`logout${accountAddress}`) == accountAddress &&
+        !connect
+      ) {
         dispatch({
-          type: CONNECT_WALLET,
+          type: DISCONNECT_WALLET,
         });
-        dispatch({
-          type: SET_ACCOUNT,
-          payload: accountAddress,
-        });
-
-        if (
-          accountAddress == localStorage.getItem("loggedOut", accountAddress)
-        ) {
-          dispatch({
-            type: DISCONNECT_WALLET,
-          });
-        } else {
-          const pbrWei = await pbrContract.methods
-            .balanceOf(accountAddress)
-            .call();
-
-          dispatch({
-            type: LOAD_BALANCE,
-            payload: pbrWei,
-          });
-        }
-
-        // await updateAcountData();
-      } catch (error) {
-        dispatch({
-          type: ERROR,
-          payload: "Failed to connect Meta Mask!",
-        });
+        return;
+      } else if (
+        localStorage.getItem(`logout${accountAddress}`) == accountAddress &&
+        connect
+      ) {
+        localStorage.removeItem(`logout${accountAddress}`);
+        console.log("removing logged out user");
       }
-    } else {
+
+      if (!accountAddress) {
+        dispatch({
+          type: DISCONNECT_WALLET,
+        });
+        return;
+      }
+      dispatch({
+        type: CONNECT_WALLET,
+        payload: accountAddress,
+      });
+      dispatch({
+        type: SHOW_LOADING,
+      });
+
+      const pbrWei = await pbrContract.methods.balanceOf(accountAddress).call();
+
+      dispatch({
+        type: LOAD_BALANCE,
+        payload: pbrWei,
+      });
+
+      // await updateAcountData();
+    } catch (error) {
+      console.log("connectWallet ", error);
       dispatch({
         type: ERROR,
-        payload: "Wrong network!",
+        payload: "Failed to connect Meta Mask!",
       });
     }
-  } else {
+
     dispatch({
-      type: ERROR,
-      payload: "Please Install Meta Mask first!",
+      type: HIDE_LOADING,
     });
-  }
-  dispatch({
-    type: HIDE_LOADING,
-  });
-};
+  };
 
 export const getAccountBalance = (address) => async (dispatch) => {
   dispatch({

@@ -3,6 +3,9 @@ import supply from "../../assets/supply.png";
 import { fromWei, formatCurrency } from "../../actions/helper";
 // import pbrImg from "../../assets/balance.png";
 import biteImg from "../../assets/bite.png";
+import { connect } from "react-redux";
+import { useEffect } from "react";
+import { getAccountBalance } from "../../actions/accountActions";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -46,8 +49,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Balance = ({ balance, loading, tokenType }) => {
+const Balance = ({
+  account: { balance, loading },
+  tokenType,
+  getAccountBalance,
+}) => {
   const classes = useStyles();
+
+  useEffect(async () => {
+    if (tokenType === "PBR") {
+      await getAccountBalance();
+    }
+  }, []);
+
   return (
     <div className={classes.card}>
       <div className="card-theme">
@@ -62,7 +76,8 @@ const Balance = ({ balance, loading, tokenType }) => {
                 src={tokenType == "PBR" ? supply : biteImg}
               />
               <h4 className={classes.numbers}>
-                {formatCurrency(fromWei(balance))} {tokenType}
+                {formatCurrency(fromWei(tokenType === "BITE" ? "0" : balance))}{" "}
+                {tokenType}
               </h4>
             </>
           )}
@@ -72,4 +87,8 @@ const Balance = ({ balance, loading, tokenType }) => {
   );
 };
 
-export default Balance;
+const mapStateToProps = (state) => ({
+  account: state.account,
+});
+
+export default connect(mapStateToProps, { getAccountBalance })(Balance);

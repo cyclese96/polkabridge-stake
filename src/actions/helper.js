@@ -17,8 +17,14 @@ export const toWei = (tokens) => {
 };
 
 export const getCurrentAccount = async () => {
-  const accounts = await web3.eth.requestAccounts();
-  const accountAddress = accounts[0];
+  let accounts = [];
+  // if (isMetaMaskInstalled()) {
+  //   accounts = await web3.eth.requestAccounts();
+  // } else {
+  //   accounts = await web3.eth.getAccounts();
+  // }
+  accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+  const accountAddress = accounts.length > 0 ? accounts[0] : null;
   return accountAddress;
 };
 
@@ -32,4 +38,8 @@ export const formatCurrency = (value, usd = false, fractionDigits = 1) => {
     return formatter.format(value ? value : 0);
   }
   return formatter.format(value ? value : 0).slice(1);
+};
+
+export const isMetaMaskInstalled = () => {
+  return typeof window.web3 !== "undefined";
 };

@@ -1,6 +1,10 @@
+import { stakingAddressKoven, stakingAddressMainnet } from "../constants";
 import web3 from "../web3";
 
-const address = "0x1b46b72c5280f30Fbe8A958B4f3c348FD0fD2E55";
+const address = stakingAddressKoven;
+// process.env.NODE_ENV == "development"
+//   ? stakingAddressKoven
+//   : stakingAddressMainnet; //"0x1b46b72c5280f30Fbe8A958B4f3c348FD0fD2E55";
 
 const abi = [
   {

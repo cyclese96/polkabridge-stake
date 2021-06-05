@@ -1,5 +1,5 @@
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Avatar, CircularProgress } from "@material-ui/core";
 
 import Staking from "./Cards/Staking";
@@ -10,24 +10,14 @@ import Footer from "./common/Footer";
 
 import Wallet from "./common/Wallet";
 import PropTypes from "prop-types";
-import {
-  connectWallet,
-  getAccountBalance,
-  logout,
-} from "../actions/accountActions";
-import {
-  stakeTokens,
-  unstakeTokens,
-  getPoolInfo,
-  updateAcountData,
-  checkAllowance,
-  confirmAllowance,
-} from "../actions/stakeActions";
+import { connectWallet, logout } from "../actions/accountActions";
+import { getPoolInfo } from "../actions/stakeActions";
 import { connect } from "react-redux";
-import store from "../store";
-import { fromWei, toWei, formatCurrency } from "../actions/helper";
-import { RESET_USER_STAKE } from "../actions/types";
-import web3 from "../web3";
+import {
+  fromWei,
+  formatCurrency,
+  isMetaMaskInstalled,
+} from "../actions/helper";
 
 const useStyles = makeStyles((theme) => ({
   background: {
@@ -109,14 +99,9 @@ const useStyles = makeStyles((theme) => ({
 const Home = ({
   connectWallet,
   getPoolInfo,
-  updateAcountData,
-  checkAllowance,
-  confirmAllowance,
-  stakeTokens,
-  unstakeTokens,
   logout,
-  account: { currentAccount, balance, loading, connected },
-  stake: { stakeData, poolData, approved, poolLoading },
+  account: { currentAccount, balance, connected },
+  stake: { poolData, poolLoading },
 }) => {
   const classes = useStyles();
   const [dialog, setDialog] = React.useState({ open: false, type: null });
@@ -133,17 +118,17 @@ const Home = ({
     setDialog({ open: false, type: null });
   };
 
-  const handleStakeConfirm = async (enteredTokens) => {
-    await stakeTokens(enteredTokens, currentAccount);
-    await getPoolInfo();
-    setDialog({ open: false, type: "" });
-  };
+  // const handleStakeConfirm = async (enteredTokens) => {
+  //   await stakeTokens(enteredTokens, currentAccount);
+  //   await getPoolInfo();
+  //   setDialog({ open: false, type: "" });
+  // };
 
-  const handleUnstakeConfirm = async (enteredTokens) => {
-    await unstakeTokens(enteredTokens, currentAccount);
-    await getPoolInfo();
-    setDialog({ open: false, type: "" });
-  };
+  // const handleUnstakeConfirm = async (enteredTokens) => {
+  //   await unstakeTokens(enteredTokens, currentAccount);
+  //   await getPoolInfo();
+  //   setDialog({ open: false, type: "" });
+  // };
 
   useEffect(async () => {
     if (typeof window.web3 !== "undefined") {
@@ -151,36 +136,34 @@ const Home = ({
         if (accounts.length === 0) {
           return;
         }
-        store.dispatch({
-          type: RESET_USER_STAKE,
-        });
+        console.log("account changed");
+
         await connectWallet();
-        await updateAcountData();
       });
     }
   }, []);
 
   const signOut = async () => {
-    localStorage.setItem("loggedOut", currentAccount);
+    localStorage.setItem(`logout${currentAccount}`, currentAccount);
     logout();
   };
-  const handleConnectWallet = async () => {
-    localStorage.setItem("loggedOut", "");
-    console.log("trying wallet connect", typeof window.web3 === "undefined");
 
-    if (typeof window.web3 === "undefined") {
+  const handleConnectWallet = async () => {
+    if (!isMetaMaskInstalled()) {
       alert("Please install Meta Mask to connect");
       return;
     }
-    await connectWallet();
-    await updateAcountData();
+    await connectWallet(true);
   };
+
   useEffect(async () => {
     await getPoolInfo();
-    if (connected) {
-      await updateAcountData();
+
+    if (!isMetaMaskInstalled()) {
+      return;
     }
-    // await connectWallet();
+
+    await connectWallet();
   }, []);
 
   return (
@@ -247,45 +230,26 @@ const Home = ({
             <div className={classes.cardsContainer}>
               <div className={classes.card}>
                 <Staking
-                  stakeData={stakeData}
                   onStake={onStake}
                   onUnstake={onUnStake}
-                  account={currentAccount}
-                  loading={loading}
-                  approved={approved}
                   tokenType="PBR"
-                  handleApprove={() => confirmAllowance(toWei("999999999"))}
                 />
               </div>
               <div className={classes.card}>
-                <Balance balance={balance} loading={loading} tokenType="PBR" />
+                <Balance tokenType="PBR" />
               </div>
               <StakeDialog
-                loading={loading}
-                balance={balance}
-                stakedData={stakeData}
-                account={currentAccount}
                 open={dialog.open}
                 type={dialog.type}
                 handleClose={handleClose}
-                handleOnStake={handleStakeConfirm}
-                handleOnUnstake={handleUnstakeConfirm}
               />
             </div>
           </div>
         )}
         <div className={classes.cardsContainer}>
-          <Staking
-            stakeData={stakeData}
-            onStake={onStake}
-            onUnstake={onUnStake}
-            account={currentAccount}
-            loading={false}
-            approved={approved}
-            tokenType="BITE"
-          />
+          <Staking tokenType="BITE" />
           <div className={classes.card}>
-            <Balance balance={"0"} loading={false} tokenType="BITE" />
+            <Balance tokenType="BITE" />
           </div>
         </div>
         <Footer />
@@ -307,12 +271,6 @@ const mapStateToProps = (state) => ({
 
 export default connect(mapStateToProps, {
   connectWallet,
-  getAccountBalance,
-  updateAcountData,
-  stakeTokens,
-  unstakeTokens,
   getPoolInfo,
-  checkAllowance,
-  confirmAllowance,
   logout,
 })(Home);

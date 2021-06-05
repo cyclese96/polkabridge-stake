@@ -101,12 +101,16 @@ const useStyles = makeStyles((theme) => ({
   navbarItemsDesktop: {
     paddingTop: 15,
     height: 35,
-    marginLeft: 20,
-    marginRight: 20,
+    marginLeft: 18,
+    marginRight: 18,
     textTransform: "none",
     fontSize: 16,
     fontWeight: 600,
     color: "#f9f9f9",
+    [theme.breakpoints.down("md")]: {
+      marginLeft: 10,
+      marginRight: 10,
+    },
   },
   navbarButton: {
     backgroundColor: "#f9f9f9",
@@ -140,6 +144,9 @@ const useStyles = makeStyles((theme) => ({
   },
   leftMargin: {
     marginLeft: 159,
+    [theme.breakpoints.down("lg")]: {
+      marginLeft: 100,
+    },
   },
   numbers: {
     color: "#E0077D",

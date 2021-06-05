@@ -1,6 +1,7 @@
 import web3 from "../web3";
-
-const address = "0x298d492e8c1d909D3F63Bc4A36C66c64ACB3d695";
+import { pbrAddressKoven, pbrAddressMainnet } from "../constants";
+const address = pbrAddressKoven;
+//process.env.NODE_ENV == "development" ? pbrAddressKoven : pbrAddressMainnet; //"0x298d492e8c1d909D3F63Bc4A36C66c64ACB3d695";
 
 const abi = [
   {

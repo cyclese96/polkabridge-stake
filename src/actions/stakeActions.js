@@ -17,10 +17,8 @@ import {
 import stakeContract from "../utils/stakeConnection";
 import pbrContract from "../utils/pbrConnection";
 import { fromWei, toWei, getCurrentAccount } from "./helper";
-import { getAccountBalance } from "./accountActions";
 import BigNumber from "bignumber.js";
 import config from "../config";
-import web3 from "../web3";
 
 const POOL_ID = 0;
 
@@ -69,7 +67,7 @@ export const getPoolInfo = () => async (dispatch) => {
       payload: poolObj,
     });
   } catch (error) {
-    // console.log("pool info: ", error);
+    console.log("pool info: ", error);
     dispatch({
       type: ERROR,
       payload: "Failed to load Pool data!",
@@ -116,9 +114,8 @@ export const confirmAllowance = (balance) => async (dispatch) => {
     dispatch({
       type: APPROVE_TOKENS,
     });
-
-    await updateAcountData();
   } catch (error) {
+    console.log("confirmAllowance ", error);
     dispatch({
       type: ERROR,
       payload: "Failed to confirm allowance!",
@@ -129,27 +126,13 @@ export const confirmAllowance = (balance) => async (dispatch) => {
   });
 };
 
-export const updateAcountData = () => async (dispatch) => {
+export const getUserStakedData = () => async (dispatch) => {
   dispatch({
     type: SHOW_LOADING,
   });
 
   try {
     const account = await getCurrentAccount();
-
-    if (account == localStorage.getItem("loggedOut")) {
-      dispatch({
-        type: HIDE_LOADING,
-      });
-      return;
-    }
-
-    const pbrWei = await pbrContract.methods.balanceOf(account).call();
-
-    dispatch({
-      type: LOAD_BALANCE,
-      payload: pbrWei,
-    });
 
     const allowance = await pbrContract.methods
       .allowance(account, stakeContract._address)
