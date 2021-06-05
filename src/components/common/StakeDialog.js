@@ -9,7 +9,6 @@ import Typography from "@material-ui/core/Typography";
 import { CircularProgress, TextField } from "@material-ui/core";
 import CustomButton from "../Buttons/CustomButton";
 import { formatCurrency, fromWei } from "../../utils/helper";
-import BigNumber from "bignumber.js";
 import { connect } from "react-redux";
 import {
   getPoolInfo,

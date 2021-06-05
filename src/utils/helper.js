@@ -1,12 +1,11 @@
 import web3 from "../web3";
-import BigNumber from "bignumber.js";
 
 export const fromWei = (tokens) => {
   if (!tokens) {
     return web3.utils.fromWei("0", "ether");
   }
   let amount = web3.utils.fromWei(tokens, "ether");
-  return new BigNumber(amount).toFixed(1).toString();
+  return amount;
 };
 
 export const toWei = (tokens) => {

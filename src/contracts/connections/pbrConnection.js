@@ -3,7 +3,7 @@ import PolkaBridge from "../PolkaBridge.json";
 import { pbrAddressKoven, pbrAddressMainnet } from "../../constants";
 
 const address =
-  process.env.NODE_ENV == "development" ? pbrAddressKoven : pbrAddressMainnet;
+  process.env.NODE_ENV === "development" ? pbrAddressKoven : pbrAddressMainnet;
 //"0x298d492e8c1d909D3F63Bc4A36C66c64ACB3d695";
 const abi = PolkaBridge;
 
