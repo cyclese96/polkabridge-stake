@@ -1,6 +1,6 @@
 import { CircularProgress, makeStyles } from "@material-ui/core";
 import supply from "../../assets/supply.png";
-import { fromWei, formatCurrency } from "../../actions/helper";
+import { fromWei, formatCurrency } from "../../utils/helper";
 // import pbrImg from "../../assets/balance.png";
 import biteImg from "../../assets/bite.png";
 import { connect } from "react-redux";

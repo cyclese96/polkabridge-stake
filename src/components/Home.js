@@ -13,11 +13,7 @@ import PropTypes from "prop-types";
 import { connectWallet, logout } from "../actions/accountActions";
 import { getPoolInfo } from "../actions/stakeActions";
 import { connect } from "react-redux";
-import {
-  fromWei,
-  formatCurrency,
-  isMetaMaskInstalled,
-} from "../actions/helper";
+import { fromWei, formatCurrency, isMetaMaskInstalled } from "../utils/helper";
 
 const useStyles = makeStyles((theme) => ({
   background: {

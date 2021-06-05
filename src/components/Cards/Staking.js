@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import pbrImg from "../../assets/balance.png";
 import biteImg from "../../assets/bite.png";
 import CustomButton from "../Buttons/CustomButton";
-import { formatCurrency, fromWei, toWei } from "../../actions/helper";
+import { formatCurrency, fromWei, toWei } from "../../utils/helper";
 import { connect } from "react-redux";
 import {
   confirmAllowance,

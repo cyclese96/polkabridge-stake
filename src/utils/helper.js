@@ -18,11 +18,6 @@ export const toWei = (tokens) => {
 
 export const getCurrentAccount = async () => {
   let accounts = [];
-  // if (isMetaMaskInstalled()) {
-  //   accounts = await web3.eth.requestAccounts();
-  // } else {
-  //   accounts = await web3.eth.getAccounts();
-  // }
   accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
   const accountAddress = accounts.length > 0 ? accounts[0] : null;
   return accountAddress;

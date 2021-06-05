@@ -11,9 +11,9 @@ import {
   SET_ACCOUNT,
 } from "./types";
 import web3 from "../web3";
-import pbrContract from "../utils/pbrConnection";
+import pbrContract from "../contracts/connections/pbrConnection";
 import { updateAcountData } from "./stakeActions";
-import { getCurrentAccount } from "./helper";
+import { getCurrentAccount } from "../utils/helper";
 const checkNetwork = () => {
   // console.log("web3 provider", web3.currentProvider.networkVersion);
   // if (web3.currentProvider.networkVersion === "42") {

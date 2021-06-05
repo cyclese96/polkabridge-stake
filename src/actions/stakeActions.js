@@ -14,9 +14,9 @@ import {
   HIDE_POOL_LOADING,
 } from "./types";
 
-import stakeContract from "../utils/stakeConnection";
-import pbrContract from "../utils/pbrConnection";
-import { fromWei, toWei, getCurrentAccount } from "./helper";
+import stakeContract from "../contracts/connections/stakeConnection";
+import pbrContract from "../contracts/connections/pbrConnection";
+import { fromWei, toWei, getCurrentAccount } from "../utils/helper";
 import BigNumber from "bignumber.js";
 import config from "../config";
 
