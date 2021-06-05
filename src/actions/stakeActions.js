@@ -30,7 +30,7 @@ export const getPoolInfo = () => async (dispatch) => {
   try {
     // console.log('g')
     const pool = await stakeContract.methods.getPoolInfo(POOL_ID).call();
-    console.log(pool);
+    // console.log(pool);
     const poolObj = {
       accTokenPerShare: pool[0],
       lastRewardBlock: pool[1],

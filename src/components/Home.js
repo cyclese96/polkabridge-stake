@@ -118,18 +118,6 @@ const Home = ({
     setDialog({ open: false, type: null });
   };
 
-  // const handleStakeConfirm = async (enteredTokens) => {
-  //   await stakeTokens(enteredTokens, currentAccount);
-  //   await getPoolInfo();
-  //   setDialog({ open: false, type: "" });
-  // };
-
-  // const handleUnstakeConfirm = async (enteredTokens) => {
-  //   await unstakeTokens(enteredTokens, currentAccount);
-  //   await getPoolInfo();
-  //   setDialog({ open: false, type: "" });
-  // };
-
   useEffect(async () => {
     if (typeof window.web3 !== "undefined") {
       window.ethereum.on("accountsChanged", async (accounts) => {
