@@ -1,17 +1,15 @@
 import axios from "axios";
 import {
   LOAD_PPOL_INFO,
-  CHECK_ALLOWANCE,
   APPROVE_TOKENS,
-  GET_USER_STAKE,
   STAKE_TOKENS,
-  UNSTAKE_TOKENS,
   ERROR,
   SHOW_LOADING,
   HIDE_LOADING,
   LOAD_BALANCE,
   SHOW_POOL_LOADING,
   HIDE_POOL_LOADING,
+  DISAPPROVE_TOKENS,
 } from "./types";
 
 import stakeContract from "../contracts/connections/stakeConnection";
@@ -118,7 +116,7 @@ export const confirmAllowance = (balance) => async (dispatch) => {
     console.log("confirmAllowance ", error);
     dispatch({
       type: ERROR,
-      payload: "Failed to confirm allowance!",
+      payload: error.toString(),
     });
   }
   dispatch({
@@ -143,6 +141,9 @@ export const getUserStakedData = () => async (dispatch) => {
         type: APPROVE_TOKENS,
       });
     } else {
+      dispatch({
+        type: DISAPPROVE_TOKENS,
+      });
       dispatch({
         type: HIDE_LOADING,
       });

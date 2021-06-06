@@ -1,4 +1,4 @@
-import web3 from "../web3";
+import web3 from "../web";
 
 export const fromWei = (tokens) => {
   if (!tokens) {

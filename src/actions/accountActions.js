@@ -10,7 +10,7 @@ import {
   HIDE_LOADING,
   SET_ACCOUNT,
 } from "./types";
-import web3 from "../web3";
+import web3 from "../web";
 import pbrContract from "../contracts/connections/pbrConnection";
 import { updateAcountData } from "./stakeActions";
 import { getCurrentAccount } from "../utils/helper";

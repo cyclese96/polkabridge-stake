@@ -7,6 +7,7 @@ import {
   RESET_USER_STAKE,
   SHOW_POOL_LOADING,
   HIDE_POOL_LOADING,
+  DISAPPROVE_TOKENS,
 } from "../actions/types";
 
 const initalState = {
@@ -28,6 +29,11 @@ export default function (state = initalState, action) {
       return {
         ...state,
         approved: true,
+      };
+    case DISAPPROVE_TOKENS:
+      return {
+        ...state,
+        approved: false,
       };
     case RESET_USER_STAKE:
       return {

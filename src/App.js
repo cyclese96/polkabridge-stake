@@ -6,12 +6,9 @@ import { Fragment } from "react";
 import Home from "./components/Home";
 import { Provider } from "react-redux";
 import store from "./store";
-// import loadWeb3 from "./loadWeb3";
+import "./web";
 
 function App() {
-  // useEffect(async () => {
-  //   await loadWeb3();
-  // }, []);
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme}>

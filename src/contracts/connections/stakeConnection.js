@@ -1,12 +1,13 @@
 import { stakingAddressKoven, stakingAddressMainnet } from "../../constants";
-import web3 from "../../web3";
+import Web3 from "web3";
 import PolkaBridgeStaking from "../PolkaBridgeStaking.json";
 
-const address =
-  process.env.NODE_ENV === "development"
-    ? stakingAddressKoven
-    : stakingAddressMainnet;
+const address = stakingAddressMainnet;
+// process.env.NODE_ENV === "development"
+//   ? stakingAddressKoven
+//   : stakingAddressMainnet;
 
 const abi = PolkaBridgeStaking;
 
+const web3 = new Web3(window.ethereum);
 export default new web3.eth.Contract(abi, address);

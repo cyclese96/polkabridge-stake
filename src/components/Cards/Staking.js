@@ -8,8 +8,6 @@ import { connect } from "react-redux";
 import {
   confirmAllowance,
   getUserStakedData,
-  stakeTokens,
-  unstakeTokens,
 } from "../../actions/stakeActions";
 
 const useStyles = makeStyles((theme) => ({
@@ -75,7 +73,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Staking = ({
   stake: { stakeData, approved },
-  account: { loading },
+  account: { currentAccount, loading, error },
   tokenType,
   getUserStakedData,
   confirmAllowance,
@@ -88,9 +86,12 @@ const Staking = ({
     if (tokenType === "PBR") {
       await getUserStakedData();
     }
-  }, []);
+  }, [currentAccount]);
 
-  const handleApprove = () => confirmAllowance(toWei("999999999"));
+  const handleApprove = async () => {
+    await confirmAllowance(toWei("999999999"));
+    await getUserStakedData();
+  };
 
   return (
     <div className={classes.card}>
