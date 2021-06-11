@@ -180,9 +180,9 @@ const StakeDialog = ({
     } else {
       await unstakeTokens(pbrTokens, currentAccount, tokenType);
     }
-    await getPoolInfo();
-    await getAccountBalance();
     handleClose();
+    getPoolInfo();
+    getAccountBalance();
   };
 
   const handleMax = () => {
