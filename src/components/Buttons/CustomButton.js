@@ -11,6 +11,8 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 10,
     marginLeft: 10,
     marginRight: 10,
+    marginTop: 5,
+    marginBottom: 5,
     "&:hover": {
       background: "rgba(224, 7, 125, 0.7)",
     },
@@ -26,18 +28,21 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: 10,
     marginLeft: 10,
     marginRight: 10,
+    marginTop: 5,
+    marginBottom: 5,
     "&:hover": {
       background: "rgba(255, 255, 255, 0.3)",
     },
   },
 }));
 
-const CustomButton = ({ onClick, children, variant = "primary" }) => {
+const CustomButton = ({ onClick, children, variant = "primary", disabled = false }) => {
   const classes = useStyles();
   return (
     <Button
       onClick={onClick}
       color="primary"
+      disabled={disabled}
       className={
         variant == "primary" ? classes.stakeButton : classes.unstakeButton
       }

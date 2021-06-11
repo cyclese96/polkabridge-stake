@@ -12,7 +12,7 @@ import {
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    width: 400,
+    width: 450,
     height: 300,
     paddingLeft: 10,
     paddingRight: 10,
@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
       paddingLeft: 0,
       paddingRight: 0,
       width: 300,
-      height: 280,
+      height: 320,
     },
   },
   cardHeader: {
@@ -78,6 +78,12 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: 60,
     margin: 0,
   },
+  stakeButtons: { display: 'flex', justifyContent: 'center', flexWrap: 'wrap-reverse' },
+  stakeButton: {
+    marginTop: 5,
+    alignSelf: 'center',
+    justifySelf: 'center'
+  }
 }));
 
 const Staking = ({
@@ -88,6 +94,7 @@ const Staking = ({
   confirmAllowance,
   onStake,
   onUnstake,
+  onClaim
 }) => {
   const classes = useStyles();
 
@@ -176,12 +183,15 @@ const Staking = ({
                       </p>
                     </div>
                   ) : (
-                    <>
+                    <div className={classes.stakeButtons}>
+                      <CustomButton disabled={pbrStake.amount == 0} onClick={() => onClaim('PBR')} >
+                        Claim
+                      </CustomButton>
                       <CustomButton onClick={() => onUnstake('PBR')} variant="light">
                         Unstake
                       </CustomButton>
                       <CustomButton onClick={() => onStake('PBR')}>Stake</CustomButton>
-                    </>
+                    </div>
                   )}
                 </div>
               ) : (
@@ -196,12 +206,15 @@ const Staking = ({
                       </p>
                     </div>
                   ) : (
-                    <>
+                    <div className={classes.stakeButtons}>
+                      <CustomButton onClick={() => onClaim('BITE')} >
+                        Claim
+                      </CustomButton>
                       <CustomButton onClick={() => onUnstake('BITE')} variant="light">
                         Unstake
                       </CustomButton>
                       <CustomButton onClick={() => onStake('BITE')}>Stake</CustomButton>
-                    </>
+                    </div>
                   )}
                 </div>
               )}

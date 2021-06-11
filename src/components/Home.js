@@ -10,8 +10,8 @@ import Footer from "./common/Footer";
 
 import Wallet from "./common/Wallet";
 import PropTypes from "prop-types";
-import { connectWallet, logout } from "../actions/accountActions";
-import { getPoolInfo } from "../actions/stakeActions";
+import { connectWallet, getAccountBalance, logout } from "../actions/accountActions";
+import { getPoolInfo, unstakeTokens } from "../actions/stakeActions";
 import { connect } from "react-redux";
 import { fromWei, formatCurrency, isMetaMaskInstalled } from "../utils/helper";
 
@@ -97,7 +97,9 @@ const Home = ({
   getPoolInfo,
   logout,
   account: { currentAccount, pbrBalance, biteBalance, connected },
+  getAccountBalance,
   stake: { pbrPoolData, poolLoading },
+  unstakeTokens
 }) => {
   const classes = useStyles();
   const [dialog, setDialog] = React.useState({ open: false, type: null, tokenType: null });
@@ -140,6 +142,17 @@ const Home = ({
     await connectWallet(true);
   };
 
+  const handleClaim = async (tokenType) => {
+
+    const tokensToClaim = fromWei('1', 'ether');
+
+    await unstakeTokens(tokensToClaim, currentAccount, tokenType);
+    await Promise.all([
+      getPoolInfo(),
+      getAccountBalance()
+    ])
+
+  }
   useEffect(async () => {
     await getPoolInfo();
 
@@ -218,6 +231,7 @@ const Home = ({
                   onStake={onStake}
                   onUnstake={onUnStake}
                   tokenType="PBR"
+                  onClaim={handleClaim}
                 />
               </div>
               <div className={classes.card}>
@@ -232,8 +246,12 @@ const Home = ({
             </div>
 
             <div className={classes.cardsContainer}>
-              <Staking tokenType="BITE" onStake={onStake}
-                onUnstake={onUnStake} />
+              <Staking
+                tokenType="BITE"
+                onStake={onStake}
+                onUnstake={onUnStake}
+                onClaim={handleClaim}
+              />
               <div className={classes.card}>
                 <Balance tokenType="BITE" />
               </div>
@@ -263,4 +281,6 @@ export default connect(mapStateToProps, {
   connectWallet,
   getPoolInfo,
   logout,
+  unstakeTokens,
+  getAccountBalance
 })(Home);
