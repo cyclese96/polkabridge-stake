@@ -22,3 +22,5 @@ export const BITE_PRICE = 2;
 
 export const infuraKovenApi = `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`
 export const infuraMainnetApi = `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`
+
+export const currentConnection = 'koven'

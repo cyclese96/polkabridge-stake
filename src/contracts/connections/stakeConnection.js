@@ -1,8 +1,8 @@
-import { stakingAddressKoven, stakingAddressMainnet } from "../../constants";
+import { currentConnection, stakingAddressKoven, stakingAddressMainnet } from "../../constants";
 import Web3 from "web3";
 import PolkaBridgeStaking from "../abi/PolkaBridgeStaking.json";
 
-const address = stakingAddressMainnet;
+const address = currentConnection === 'koven' ? stakingAddressKoven : stakingAddressMainnet;
 // process.env.NODE_ENV === "development"
 //   ? stakingAddressKoven
 //   : stakingAddressMainnet;

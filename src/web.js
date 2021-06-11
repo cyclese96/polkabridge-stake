@@ -1,4 +1,5 @@
 import Web3 from "web3";
+import { currentConnection } from "./constants";
 import provider from "./provider";
 
 var web3;
@@ -11,8 +12,8 @@ if (typeof window.web3 !== "undefined") {
     web3 = new Web3(provider);
   } else {
 
-    // const infura = `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`;
-    const infura = `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`;
+    const infura = currentConnection === 'koven' ? `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}` : `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`;
+    // const infura = `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`;
     // process.env.NODE_ENV === "development"
     //   ? "https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}"
     //   : `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`;
