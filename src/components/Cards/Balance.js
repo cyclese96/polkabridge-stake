@@ -9,15 +9,15 @@ import { getAccountBalance } from "../../actions/accountActions";
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    width: 370,
-    height: 260,
+    width: 400,
+    height: 300,
     paddingLeft: 10,
     paddingRight: 10,
     [theme.breakpoints.down("sm")]: {
       paddingLeft: 0,
       paddingRight: 0,
       width: 300,
-      height: 220,
+      height: 280,
     },
   },
   cardContents: {
@@ -50,7 +50,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Balance = ({
-  account: { balance, loading },
+  account: { pbrBalance, biteBalance, loading },
   tokenType,
   getAccountBalance,
 }) => {
@@ -76,7 +76,7 @@ const Balance = ({
                 src={tokenType == "PBR" ? supply : biteImg}
               />
               <h4 className={classes.numbers}>
-                {formatCurrency(fromWei(tokenType === "BITE" ? "0" : balance))}{" "}
+                {formatCurrency(fromWei(tokenType === "BITE" ? biteBalance : pbrBalance))}{" "}
                 {tokenType}
               </h4>
             </>

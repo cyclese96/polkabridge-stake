@@ -129,8 +129,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const StakeDialog = ({
-  account: { currentAccount, balance, loading },
-  stake: { stakeData, approved, poolLoading },
+  account: { currentAccount, pbrBalance, biteBalance, loading, biteLoading, pbrLoading },
+  stake: { pbrStake, biteStake, pbrApproved, biteApproved, poolLoading },
   stakeTokens,
   unstakeTokens,
   getAccountBalance,
@@ -138,6 +138,7 @@ const StakeDialog = ({
   open,
   handleClose,
   type,
+  tokenType
 }) => {
   const classes = useStyles();
   const [pbrTokens, setTokenValue] = useState("0");
@@ -149,8 +150,8 @@ const StakeDialog = ({
 
   const onConfirm = async () => {
     const enteredTokens = pbrTokens;
-    const stakedTokens = parseFloat(fromWei(stakeData.amount));
-    const balanceTokens = parseFloat(fromWei(balance));
+    const stakedTokens = parseFloat(currentStakedAmount());
+    const balanceTokens = parseFloat(currentBalance());
 
     if (
       type !== "stake" &&
@@ -175,9 +176,9 @@ const StakeDialog = ({
     }
     setError({});
     if (type === "stake") {
-      await stakeTokens(pbrTokens, currentAccount);
+      await stakeTokens(pbrTokens, currentAccount, tokenType);
     } else {
-      await unstakeTokens(pbrTokens, currentAccount);
+      await unstakeTokens(pbrTokens, currentAccount, tokenType);
     }
     await getPoolInfo();
     await getAccountBalance();
@@ -186,9 +187,9 @@ const StakeDialog = ({
 
   const handleMax = () => {
     if (type === "stake") {
-      setTokenValue(fromWei(balance));
+      setTokenValue(currentBalance());
     } else {
-      setTokenValue(fromWei(stakeData.amount));
+      setTokenValue(currentStakedAmount());
     }
   };
 
@@ -198,6 +199,13 @@ const StakeDialog = ({
     setError({});
   };
 
+  const currentBalance = () => {
+    return tokenType === 'PBR' ? fromWei(pbrBalance) : fromWei(biteBalance)
+  }
+
+  const currentStakedAmount = () => {
+    return tokenType === 'PBR' ? fromWei(pbrStake.amount) : fromWei(biteStake.amount)
+  }
   return (
     <div>
       <Dialog
@@ -221,10 +229,8 @@ const StakeDialog = ({
 
           <p className={classes.subheading}>
             {type === "stake"
-              ? `Avaialable tokens: ${formatCurrency(fromWei(balance))} $PBR`
-              : `Staked tokens: ${formatCurrency(
-                  fromWei(stakeData.amount)
-                )} $PBR`}
+              ? `Avaialable tokens: ${formatCurrency(currentBalance())}  ${tokenType}`
+              : `Staked tokens: ${formatCurrency(currentStakedAmount())} ${tokenType}`}
           </p>
           <div className={classes.inputGroup}>
             <TextField
@@ -261,7 +267,7 @@ const StakeDialog = ({
             ""
           )}
           <div className={classes.buttons}>
-            {loading ? (
+            {biteLoading || pbrLoading ? (
               <CircularProgress className={classes.numbers} />
             ) : (
               <>

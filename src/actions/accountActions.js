@@ -12,6 +12,7 @@ import {
 } from "./types";
 import web3 from "../web";
 import pbrContract from "../contracts/connections/pbrConnection";
+import biteContract from "../contracts/connections/biteConnection";
 import { updateAcountData } from "./stakeActions";
 import { getCurrentAccount } from "../utils/helper";
 const checkNetwork = () => {
@@ -61,11 +62,13 @@ export const connectWallet =
         type: SHOW_LOADING,
       });
 
-      const pbrWei = await pbrContract.methods.balanceOf(accountAddress).call();
-
+      const [pbrWei, biteWei] = await Promise.all([
+        pbrContract.methods.balanceOf(accountAddress).call(),
+        biteContract.methods.balanceOf(accountAddress).call()
+      ])
       dispatch({
         type: LOAD_BALANCE,
-        payload: pbrWei,
+        payload: {pbr: pbrWei, bite: biteWei},
       });
 
       // await updateAcountData();
@@ -87,12 +90,16 @@ export const getAccountBalance = (address) => async (dispatch) => {
     type: SHOW_LOADING,
   });
   try {
-    const pbrWei = await pbrContract.methods.balanceOf(address).call();
+    const [pbrWei, biteWei] = await Promise.all([
+      pbrContract.methods.balanceOf(address).call(),
+      biteContract.methods.balanceOf(address).call()
+    ])
 
     dispatch({
       type: LOAD_BALANCE,
-      payload: pbrWei,
+      payload: {pbr: pbrWei, bite: biteWei},
     });
+
   } catch (error) {
     dispatch({
       type: ERROR,

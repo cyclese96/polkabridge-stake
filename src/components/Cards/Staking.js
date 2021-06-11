@@ -12,15 +12,15 @@ import {
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    width: 370,
-    height: 260,
+    width: 400,
+    height: 300,
     paddingLeft: 10,
     paddingRight: 10,
     [theme.breakpoints.down("sm")]: {
       paddingLeft: 0,
       paddingRight: 0,
       width: 300,
-      height: 230,
+      height: 280,
     },
   },
   cardHeader: {
@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
     margin: 0,
   },
   buttons: {
-    marginTop: 30,
+    marginTop: 20,
     marginBottom: 20,
   },
   numbers: {
@@ -69,11 +69,20 @@ const useStyles = makeStyles((theme) => ({
       fontSize: 10,
     },
   },
+  bitePool: {
+    marginBottom: 20,
+    alignSelf: 'start',
+  },
+  poolItemText: {
+    fontSize: 12,
+    marginLeft: 60,
+    margin: 0,
+  },
 }));
 
 const Staking = ({
-  stake: { stakeData, approved },
-  account: { currentAccount, loading, error },
+  stake: { pbrStake, biteStake, bitePoolData, pbrApproved, biteApproved },
+  account: { currentAccount, loading, biteLoading, pbrLoading, error },
   tokenType,
   getUserStakedData,
   confirmAllowance,
@@ -83,21 +92,24 @@ const Staking = ({
   const classes = useStyles();
 
   useEffect(async () => {
-    if (tokenType === "PBR") {
-      await getUserStakedData();
-    }
+
+    getUserStakedData(tokenType)
+
   }, [currentAccount]);
 
-  const handleApprove = async () => {
-    await confirmAllowance(toWei("999999999"));
-    await getUserStakedData();
+  const handleApprove = async (tokenType) => {
+    await confirmAllowance(toWei("999999999"), tokenType);
+    await getUserStakedData(tokenType);
   };
 
+  const currentStake = () => {
+    return tokenType === 'PBR' ? pbrStake : biteStake
+  }
   return (
     <div className={classes.card}>
       <div className="card-theme">
         <div className={classes.cardContents}>
-          {loading ? (
+          {(tokenType === 'PBR' ? pbrLoading : biteLoading) ? (
             <div>
               <CircularProgress className={classes.numbers} />
             </div>
@@ -121,32 +133,42 @@ const Staking = ({
                 <h6 className={classes.cardHeading}>Staking Pool</h6>
               </div>
 
-              {tokenType == "PBR" ? (
-                <>
-                  <p className={classes.cardText}>
-                    <strong>Staked: </strong>{" "}
-                    {formatCurrency(fromWei(stakeData.amount))} {tokenType}
+              {tokenType === 'BITE' ? (
+                <div className={classes.bitePool}>
+                  <p className={classes.poolItemText}>
+                    <strong>BITE APY: </strong>{" "}
+                    {bitePoolData.biteApy}
                   </p>
-                  <p className={classes.cardText}>
-                    <strong>Claimed rewards: </strong>{" "}
-                    {formatCurrency(fromWei(stakeData.rewardClaimed))}{" "}
-                    {tokenType}
+                  <p className={classes.poolItemText}>
+                    <strong>Total token staked: </strong>{" "}
+                    {formatCurrency(fromWei(bitePoolData.totalTokenStaked))} {tokenType}
                   </p>
-                  <p className={classes.cardText}>
-                    <strong>Pending rewards: </strong>{" "}
-                    {formatCurrency(fromWei(stakeData.pendingReward))}{" "}
-                    {tokenType}
-                  </p>
-                </>
-              ) : (
-                ""
-              )}
+                </div>
+              ) : ""}
+
+              <>
+                <p className={classes.cardText}>
+                  <strong>Staked: </strong>{" "}
+                  {formatCurrency(fromWei(currentStake().amount))} {tokenType}
+                </p>
+                <p className={classes.cardText}>
+                  <strong>Claimed rewards: </strong>{" "}
+                  {formatCurrency(fromWei(currentStake().rewardClaimed))}{" "}
+                  {tokenType}
+                </p>
+                <p className={classes.cardText}>
+                  <strong>Pending rewards: </strong>{" "}
+                  {formatCurrency(fromWei(currentStake().pendingReward))}{" "}
+                  {tokenType}
+                </p>
+              </>
+
 
               {tokenType === "PBR" ? (
                 <div className={classes.buttons}>
-                  {!approved === true ? (
+                  {!pbrApproved === true ? (
                     <div>
-                      <CustomButton onClick={handleApprove}>
+                      <CustomButton onClick={() => handleApprove('PBR')}>
                         Approve
                       </CustomButton>
                       <p className={classes.hint}>
@@ -155,30 +177,30 @@ const Staking = ({
                     </div>
                   ) : (
                     <>
-                      <CustomButton onClick={onUnstake} variant="light">
+                      <CustomButton onClick={() => onUnstake('PBR')} variant="light">
                         Unstake
                       </CustomButton>
-                      <CustomButton onClick={onStake}>Stake</CustomButton>
+                      <CustomButton onClick={() => onStake('PBR')}>Stake</CustomButton>
                     </>
                   )}
                 </div>
               ) : (
                 <div className={classes.buttons}>
-                  {true ? (
+                  {!biteApproved === true ? (
                     <div>
-                      <CustomButton onClick={() => {}}>
-                        Coming soon
+                      <CustomButton onClick={() => handleApprove('BITE')}>
+                        Approve
                       </CustomButton>
                       <p className={classes.hint}>
-                        ! BITE tokens will available soon to stake
+                        ! Approve BITE tokens to start staking
                       </p>
                     </div>
                   ) : (
                     <>
-                      <CustomButton onClick={onUnstake} variant="light">
+                      <CustomButton onClick={() => onUnstake('BITE')} variant="light">
                         Unstake
                       </CustomButton>
-                      <CustomButton onClick={onStake}>Stake</CustomButton>
+                      <CustomButton onClick={() => onStake('BITE')}>Stake</CustomButton>
                     </>
                   )}
                 </div>

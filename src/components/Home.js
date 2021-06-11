@@ -96,18 +96,18 @@ const Home = ({
   connectWallet,
   getPoolInfo,
   logout,
-  account: { currentAccount, balance, connected },
-  stake: { poolData, poolLoading },
+  account: { currentAccount, pbrBalance, biteBalance, connected },
+  stake: { pbrPoolData, poolLoading },
 }) => {
   const classes = useStyles();
-  const [dialog, setDialog] = React.useState({ open: false, type: null });
+  const [dialog, setDialog] = React.useState({ open: false, type: null, tokenType: null });
 
-  const onStake = () => {
-    setDialog({ open: true, type: "stake" });
+  const onStake = (tokenType) => {
+    setDialog({ open: true, type: "stake", tokenType: tokenType });
   };
 
-  const onUnStake = () => {
-    setDialog({ open: true, type: "unstake" });
+  const onUnStake = (tokenType) => {
+    setDialog({ open: true, type: "unstake", tokenType: tokenType });
   };
 
   const handleClose = () => {
@@ -158,7 +158,8 @@ const Home = ({
           handleSignOut={signOut}
           account={currentAccount}
           connected={connected}
-          pbrBalance={formatCurrency(fromWei(balance))}
+          pbrBalance={formatCurrency(fromWei(pbrBalance))}
+          biteBalance={formatCurrency(fromWei(biteBalance))}
         />
       </section>
 
@@ -173,26 +174,26 @@ const Home = ({
             <p className={classes.heading}>
               PBR price:
               <strong className={classes.numbers}>
-                {formatCurrency(poolData.tokenPrice, true, 3)}
+                {formatCurrency(pbrPoolData.tokenPrice, true, 3)}
               </strong>
             </p>
             <p className={classes.heading}>
-              APY:
+              PBR APY:
               <strong className={classes.numbers}>
-                {formatCurrency(poolData.apy)} %
+                {formatCurrency(pbrPoolData.pbrApy)} %
               </strong>
             </p>
             <p className={classes.heading}>
               Total Token Staked :
               <strong className={classes.numbers}>
-                {formatCurrency(fromWei(poolData.totalTokenStaked))} PBR
+                {formatCurrency(fromWei(pbrPoolData.totalTokenStaked))} PBR
               </strong>
             </p>
 
             <p className={classes.heading}>
               Total Rewards Claimed:
               <strong className={classes.numbers}>
-                {formatCurrency(fromWei(poolData.totalTokenClaimed))} PBR
+                {formatCurrency(fromWei(pbrPoolData.totalTokenClaimed))} PBR
               </strong>
             </p>
           </>
@@ -225,17 +226,22 @@ const Home = ({
               <StakeDialog
                 open={dialog.open}
                 type={dialog.type}
+                tokenType={dialog.tokenType}
                 handleClose={handleClose}
               />
             </div>
+
+            <div className={classes.cardsContainer}>
+              <Staking tokenType="BITE" onStake={onStake}
+                onUnstake={onUnStake} />
+              <div className={classes.card}>
+                <Balance tokenType="BITE" />
+              </div>
+            </div>
+
           </div>
         )}
-        <div className={classes.cardsContainer}>
-          <Staking tokenType="BITE" />
-          <div className={classes.card}>
-            <Balance tokenType="BITE" />
-          </div>
-        </div>
+
         <Footer />
       </div>
     </div>

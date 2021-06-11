@@ -10,6 +10,7 @@ import {
   AccountBalanceOutlined,
   ContactMailOutlined,
 } from "@material-ui/icons";
+import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 
 const styles = (theme) => ({
   root: {
@@ -107,6 +108,8 @@ export default function AccountDialog({
   open,
   handleClose,
   balance,
+  pbr,
+  bite,
   account,
   handleSignOut,
 }) {
@@ -139,12 +142,28 @@ export default function AccountDialog({
                 justifyContent: "start",
               }}
             >
-              <AccountBalanceOutlined
+              <>
+                <MonetizationOnIcon
+                  fontSize="small"
+                  className={classes.icon}
+                />
+                <span className={classes.icon}>PBR</span>
+                <p className={classes.numbers}>{pbr}</p>
+              </>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "start",
+              }}
+            >
+              <MonetizationOnIcon
                 fontSize="small"
                 className={classes.icon}
               />
-              <span className={classes.icon}>Balance</span>
-              <p className={classes.numbers}>{balance} PBR</p>
+              <span className={classes.icon}>BITE</span>
+              <p className={classes.numbers}>{bite}</p>
             </div>
 
             <div

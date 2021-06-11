@@ -159,6 +159,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Navbar = ({
   pbrBalance,
+  biteBalance,
   account,
   handleConnectWallet,
   handleSignOut,
@@ -241,6 +242,8 @@ const Navbar = ({
       <AccountDialog
         open={accountDialog}
         balance={pbrBalance}
+        pbr={pbrBalance}
+        bite={biteBalance}
         account={account}
         handleClose={() => setAccountDialog(false)}
         handleSignOut={handleSignOut}

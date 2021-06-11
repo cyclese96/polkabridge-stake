@@ -1,6 +1,7 @@
 import {
   LOAD_PPOL_INFO,
-  APPROVE_TOKENS,
+  APPROVE_BITE_TOKENS,
+  APPROVE_PBR_TOKENS,
   GET_USER_STAKE,
   STAKE_TOKENS,
   UNSTAKE_TOKENS,
@@ -8,13 +9,21 @@ import {
   SHOW_POOL_LOADING,
   HIDE_POOL_LOADING,
   DISAPPROVE_TOKENS,
+  RESET_PBR_TOKEN,
+  RESET_BITE_TOKEN,
+  STAKE_PBR_TOKENS,
+  UNSTAKE_PBR_TOKENS,
+  STAKE_BITE_TOKENS,
+  UNSTAKE_BITE_TOKENS,
 } from "../actions/types";
 
 const initalState = {
-  approved: false,
-  stakeData: {}, // store current account stake
-  poolData: {},
-  poolID: 0,
+  pbrApproved: false,
+  biteApproved: false,
+  pbrStake: {},
+  biteStake: {},
+  pbrPoolData: {},
+  bitePoolData: {},
   poolLoading: false,
 };
 
@@ -23,38 +32,56 @@ export default function (state = initalState, action) {
     case LOAD_PPOL_INFO:
       return {
         ...state,
-        poolData: action.payload,
+        pbrPoolData: action.payload.pbr,
+        bitePoolData: action.payload.bite,
       };
-    case APPROVE_TOKENS:
+    case APPROVE_PBR_TOKENS:
       return {
         ...state,
-        approved: true,
+        pbrApproved: true,
       };
-    case DISAPPROVE_TOKENS:
+    case APPROVE_BITE_TOKENS:
       return {
         ...state,
-        approved: false,
+        biteApproved: true,
+      };
+    case RESET_PBR_TOKEN:
+      return {
+        ...state,
+        pbrApproved: false,
+      };
+    case RESET_BITE_TOKEN:
+      return {
+        ...state,
+        biteApproved: false,
       };
     case RESET_USER_STAKE:
       return {
         ...state,
-        approved: false,
-        stakeData: {},
+        pbrApproved: false,
+        biteApproved: false,
+        pbrStake: {},
+        biteStake: {}
       };
-    case GET_USER_STAKE:
+    case STAKE_PBR_TOKENS:
       return {
         ...state,
-        stakeData: action.payload,
+        pbrStake: action.payload,
       };
-    case STAKE_TOKENS:
+    case UNSTAKE_PBR_TOKENS:
       return {
         ...state,
-        stakeData: action.payload,
+        pbrStake: action.payload,
       };
-    case UNSTAKE_TOKENS:
+    case STAKE_BITE_TOKENS:
       return {
         ...state,
-        stakeData: action.payload,
+        biteStake: action.payload,
+      };
+    case UNSTAKE_BITE_TOKENS:
+      return {
+        ...state,
+        biteStake: action.payload,
       };
     case SHOW_POOL_LOADING:
       return {
