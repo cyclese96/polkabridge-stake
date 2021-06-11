@@ -137,7 +137,7 @@ const Staking = ({
                 <div className={classes.bitePool}>
                   <p className={classes.poolItemText}>
                     <strong>BITE APY: </strong>{" "}
-                    {bitePoolData.biteApy}
+                    {formatCurrency(bitePoolData.biteApy)} %
                   </p>
                   <p className={classes.poolItemText}>
                     <strong>Total token staked: </strong>{" "}

@@ -1,6 +1,6 @@
 //mainnet contracts
 export const pbrAddressMainnet = "0x298d492e8c1d909D3F63Bc4A36C66c64ACB3d695";
-export const biteAddressMainnet = "0x4eED0fa8dE12D5a86517f214C2f11586Ba2ED88D";
+export const biteAddressMainnet = "0x4eed0fa8de12d5a86517f214c2f11586ba2ed88d";
 export const stakingAddressMainnet =
   "0x1b46b72c5280f30Fbe8A958B4f3c348FD0fD2E55";
 

@@ -2,7 +2,7 @@ import Web3 from "web3";
 import PolkaBridge from "../abi/PolkaBridge.json";
 import { pbrAddressKoven, pbrAddressMainnet } from "../../constants";
 
-const address = pbrAddressKoven;
+const address = pbrAddressMainnet;
 // process.env.NODE_ENV === "development" ? pbrAddressKoven : ;
 //"0x298d492e8c1d909D3F63Bc4A36C66c64ACB3d695";
 const abi = PolkaBridge;
