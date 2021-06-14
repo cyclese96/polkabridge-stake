@@ -22,6 +22,8 @@ import CustomSnackBar from "./CustomSnackbar";
 import { EqualizerOutlined } from "@material-ui/icons";
 import Wallet from "./Wallet";
 import AccountDialog from "./AccountDialog";
+import etherIcon from '../../assets/ether.png'
+import binanceIcon from '../../assets/binance.png'
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -155,12 +157,31 @@ const useStyles = makeStyles((theme) => ({
       fontSize: 16,
     },
   },
+  network: {
+    display: 'flex',
+    marginRight: 30,
+    alignItems: 'center',
+    border: "0.5px solid white",
+    borderRadius: 15,
+    padding: 4,
+    paddingLeft: 7,
+    paddingRight: 7,
+    cursor: "pointer",
+    "&:hover": {
+      background: "rgba(255, 255, 255, 0.1)",
+    },
+  },
+  networkIcon: {
+    width: 30,
+    height: 'auto'
+  }
 }));
 
 const Navbar = ({
   pbrBalance,
   biteBalance,
   account,
+  currentNetwork,
   handleConnectWallet,
   handleSignOut,
   connected,
@@ -294,6 +315,10 @@ const Navbar = ({
             Prediction
           </a>
           <div className={classes.grow} />
+          <div className={classes.network}>
+            <img className={classes.networkIcon} src={etherIcon} alt={currentNetwork} />
+            <span style={{ color: 'white', marginLeft: 5 }}>{"Etherium"}</span>
+          </div>
           <Wallet
             onClick={handleConnectWallet}
             amount={pbrBalance}

@@ -6,10 +6,8 @@ import {
   ERROR,
   SHOW_LOADING,
   HIDE_LOADING,
-  LOAD_BALANCE,
   SHOW_POOL_LOADING,
   HIDE_POOL_LOADING,
-  DISAPPROVE_TOKENS,
   RESET_PBR_TOKEN,
   STAKE_PBR_TOKENS,
   RESET_BITE_TOKEN,
@@ -19,27 +17,25 @@ import {
 
 } from "./types";
 
-import stakeContract from "../contracts/connections/stakeConnection";
-import pbrContract from "../contracts/connections/pbrConnection";
-import { fromWei, toWei, getCurrentAccount, getApy } from "../utils/helper";
+import { biteContract, pbrContract, stakeContract } from '../contracts/connections'
+import { toWei, getCurrentAccount, getApy } from "../utils/helper";
 import BigNumber from "bignumber.js";
 import config from "../config";
-import biteContract from "../contracts/connections/biteConnection";
-import { BITE_PRICE, poolId } from "../constants";
+import { BITE_PRICE, etheriumNetwork, poolId } from "../constants";
 
 
 //GET all characters
-export const getPoolInfo = () => async (dispatch) => {
+export const getPoolInfo = (network = etheriumNetwork) => async (dispatch) => {
   dispatch({
     type: SHOW_POOL_LOADING,
   });
   try {
     // console.log('g')
     const [pbrPool, bitePool] = await Promise.all([
-      stakeContract.methods.getPoolInfo(0).call(),
-      stakeContract.methods.getPoolInfo(1).call()
+      stakeContract(network).methods.getPoolInfo(0).call(),
+      stakeContract(network).methods.getPoolInfo(1).call()
     ])
-    // console.log(pool);
+
     const pbrPoolObj = {
       accTokenPerShare: pbrPool[0],
       lastRewardBlock: pbrPool[1],
@@ -54,20 +50,7 @@ export const getPoolInfo = () => async (dispatch) => {
 
     pbrPoolObj.tokenPrice = data.polkabridge ? data.polkabridge.usd : "---";
 
-    // const NUMBER_BLOCKS_PER_YEAR = 2400000;
-    // const avg_pbr_perblock = 1.5;
 
-    // let tokenPrice = new BigNumber(pbrPoolObj.tokenPrice);
-    // const total_value_locked_usd = tokenPrice.times(
-    //   new BigNumber(fromWei(pbrPoolObj.totalTokenStaked))
-    // );
-    // const pbrApy = tokenPrice
-    //   .times(new BigNumber(NUMBER_BLOCKS_PER_YEAR))
-    //   .times(new BigNumber(avg_pbr_perblock))
-    //   .div(total_value_locked_usd)
-    //   .times(100)
-    //   .toFixed(1)
-    //   .toString();
     const pbrApy = getApy('PBR', pbrPoolObj)
     pbrPoolObj.pbrApy = pbrApy;
 
@@ -99,23 +82,21 @@ export const getPoolInfo = () => async (dispatch) => {
   });
 };
 
-export const checkAllowance = (account) => async (dispatch) => {
+export const checkAllowance = (account, network = etheriumNetwork) => async (dispatch) => {
   try {
     if (!account) {
       return;
     }
 
     const [pbrAllowance, biteAllowance] = await Promise.all([
-      pbrContract.methods
-        .allowance(account, stakeContract._address)
+      pbrContract(network).methods
+        .allowance(account, stakeContract(network)._address)
         .call(),
-      biteContract.methods
-        .allowance(account, stakeContract._address)
+      biteContract(network).methods
+        .allowance(account, stakeContract(network)._address)
         .call()
     ])
 
-    console.log('checking allowances', pbrAllowance)
-    console.log('checking allowances', biteAllowance)
 
     if (new BigNumber(pbrAllowance).gt(0)) {
       dispatch({
@@ -135,16 +116,16 @@ export const checkAllowance = (account) => async (dispatch) => {
   }
 };
 
-export const confirmAllowance = (balance, tokenType) => async (dispatch) => {
+export const confirmAllowance = (balance, tokenType, network = etheriumNetwork) => async (dispatch) => {
   try {
     dispatch({
       type: SHOW_LOADING,
       payload: tokenType
     });
     const account = await getCurrentAccount();
-    const contract = tokenType === 'PBR' ? pbrContract : biteContract
+    const contract = tokenType === 'PBR' ? pbrContract(network) : biteContract(network)
     const res = await contract.methods
-      .approve(stakeContract._address, balance)
+      .approve(stakeContract(network)._address, balance)
       .send({ from: account });
 
     dispatch({
@@ -163,7 +144,7 @@ export const confirmAllowance = (balance, tokenType) => async (dispatch) => {
   });
 };
 
-export const getUserStakedData = (tokenType) => async (dispatch) => {
+export const getUserStakedData = (tokenType, network = etheriumNetwork) => async (dispatch) => {
   dispatch({
     type: SHOW_LOADING,
     payload: tokenType
@@ -172,15 +153,13 @@ export const getUserStakedData = (tokenType) => async (dispatch) => {
   try {
     const account = await getCurrentAccount();
 
-    const contract = tokenType === 'PBR' ? pbrContract : biteContract;
+    const contract = tokenType === 'PBR' ? pbrContract(network) : biteContract(network);
     const pool = poolId[tokenType]
 
-    console.log(`pool ${pool}   token type ${tokenType}`)
     const allowance = await contract.methods
-      .allowance(account, stakeContract._address)
+      .allowance(account, stakeContract(network)._address)
       .call();
-    console.log('token ', tokenType)
-    console.log('checking allowances', allowance)
+
     if (new BigNumber(allowance).gt(0)) {
       dispatch({
         type: tokenType === 'PBR' ? APPROVE_PBR_TOKENS : APPROVE_BITE_TOKENS,
@@ -195,11 +174,11 @@ export const getUserStakedData = (tokenType) => async (dispatch) => {
       return;
     }
 
-    const stakedData = await stakeContract.methods.userInfo(pool, account).call();
+    const [stakedData, pendingReward] = await Promise.all([
+      stakeContract(network).methods.userInfo(pool, account).call(),
+      stakeContract(network).methods.pendingReward(pool, account).call()
+    ])
 
-    const pendingReward = await stakeContract.methods
-      .pendingReward(pool, account)
-      .call();
 
     const stakeObj = {
       amount: stakedData.amount,
@@ -222,7 +201,7 @@ export const getUserStakedData = (tokenType) => async (dispatch) => {
   });
 };
 
-export const stakeTokens = (tokens, account, tokenType) => async (dispatch) => {
+export const stakeTokens = (tokens, account, tokenType, network = etheriumNetwork) => async (dispatch) => {
   dispatch({
     type: SHOW_LOADING,
     payload: tokenType
@@ -232,24 +211,24 @@ export const stakeTokens = (tokens, account, tokenType) => async (dispatch) => {
   const pool = poolId[tokenType]
 
   try {
-    const res = await stakeContract.methods
+    const res = await stakeContract(network).methods
       .deposit(pool, depositTokens)
       .send({ from: account });
 
-    const currTokenContract = tokenType === 'PBR' ? pbrContract : biteContract;
+    const currTokenContract = tokenType === 'PBR' ? pbrContract(network) : biteContract(network);
 
-    const balanceWei = await currTokenContract.methods.balanceOf(account).call();
+    const [balanceWei, stakedData, pendingReward] = await Promise.all([
+      currTokenContract.methods.balanceOf(account).call(),
+      stakeContract(network).methods.userInfo(pool, account).call(),
+      stakeContract(network).methods.pendingReward(pool, account).call()
+    ])
+
 
     dispatch({
       type: tokenType === 'PBR' ? LOAD_PBR_BALANCE : LOAD_BITE_BALANCE,
       payload: balanceWei
     });
 
-    const stakedData = await stakeContract.methods.userInfo(pool, account).call();
-
-    const pendingReward = await stakeContract.methods
-      .pendingReward(pool, account)
-      .call();
 
     const stakeObj = {
       amount: stakedData.amount,
@@ -272,40 +251,40 @@ export const stakeTokens = (tokens, account, tokenType) => async (dispatch) => {
   });
 };
 
-export const unstakeTokens = (tokens, account, tokenType) => async (dispatch) => {
+export const unstakeTokens = (tokens, account, tokenType, network = etheriumNetwork) => async (dispatch) => {
   dispatch({
     type: SHOW_LOADING,
     payload: tokenType
   });
 
   const depositTokens = toWei(tokens, "ether");
-
   const pool = poolId[tokenType]
+  const currStakeContract = stakeContract(network)
+  const currTokenContract = tokenType === 'PBR' ? pbrContract(network) : biteContract(network);
+
 
   try {
-    const res = await stakeContract.methods
+    const res = await currStakeContract.methods
       .withdraw(pool, depositTokens)
       .send({ from: account });
 
-    const currTokenContract = tokenType === 'PBR' ? pbrContract : biteContract;
-    const balanceWei = await currTokenContract.methods.balanceOf(account).call();
+    const [balanceWei, stakedData, pendingReward] = await Promise.all([
+      currTokenContract.methods.balanceOf(account).call(),
+      currStakeContract.methods.userInfo(pool, account).call(),
+      currStakeContract.methods.pendingReward(pool, account).call()
+    ])
 
     dispatch({
       type: tokenType === 'PBR' ? LOAD_PBR_BALANCE : LOAD_BITE_BALANCE,
       payload: balanceWei,
     });
 
-    const stakedData = await stakeContract.methods.userInfo(pool, account).call();
-
-    const pendingReward = await stakeContract.methods
-      .pendingReward(pool, account)
-      .call();
-
     const stakeObj = {
       amount: stakedData.amount,
       rewardClaimed: stakedData.rewardClaimed,
       pendingReward: pendingReward,
     };
+
     dispatch({
       type: tokenType === 'PBR' ? STAKE_PBR_TOKENS : STAKE_BITE_TOKENS,
       payload: stakeObj,

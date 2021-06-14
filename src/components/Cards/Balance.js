@@ -1,11 +1,8 @@
 import { CircularProgress, makeStyles } from "@material-ui/core";
 import supply from "../../assets/supply.png";
 import { fromWei, formatCurrency } from "../../utils/helper";
-// import pbrImg from "../../assets/balance.png";
 import biteImg from "../../assets/bite.png";
 import { connect } from "react-redux";
-import { useEffect } from "react";
-import { getAccountBalance } from "../../actions/accountActions";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -52,15 +49,9 @@ const useStyles = makeStyles((theme) => ({
 const Balance = ({
   account: { pbrBalance, biteBalance, loading },
   tokenType,
-  getAccountBalance,
 }) => {
   const classes = useStyles();
 
-  useEffect(async () => {
-    if (tokenType === "PBR") {
-      await getAccountBalance();
-    }
-  }, []);
 
   return (
     <div className={classes.card}>
@@ -91,4 +82,4 @@ const mapStateToProps = (state) => ({
   account: state.account,
 });
 
-export default connect(mapStateToProps, { getAccountBalance })(Balance);
+export default connect(mapStateToProps, {})(Balance);

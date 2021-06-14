@@ -14,6 +14,9 @@ import { connectWallet, getAccountBalance, logout } from "../actions/accountActi
 import { getPoolInfo, unstakeTokens } from "../actions/stakeActions";
 import { connect } from "react-redux";
 import { fromWei, formatCurrency, isMetaMaskInstalled } from "../utils/helper";
+import { bscConfig, bscNetwork, claimTokens, etherConfig, etheriumNetwork } from "../constants";
+import { CHANGE_NETWORK } from "../actions/types";
+import store from '../store'
 
 const useStyles = makeStyles((theme) => ({
   background: {
@@ -96,7 +99,7 @@ const Home = ({
   connectWallet,
   getPoolInfo,
   logout,
-  account: { currentAccount, pbrBalance, biteBalance, connected },
+  account: { currentAccount, pbrBalance, biteBalance, connected, currentNetwork },
   getAccountBalance,
   stake: { pbrPoolData, poolLoading },
   unstakeTokens
@@ -126,6 +129,28 @@ const Home = ({
 
         await connectWallet();
       });
+
+      window.ethereum.on("networkChanged", async (networkId) => {
+        // if (accounts.length === 0) {
+        //   return;
+        // }
+        console.log("network changed", networkId);
+        if (networkId === bscConfig.network_id.mainnet) {
+          store.dispatch({
+            type: CHANGE_NETWORK,
+            payload: bscNetwork
+          })
+        } else if (networkId === etherConfig.network_id.mainet) {
+          store.dispatch({
+            type: CHANGE_NETWORK,
+            payload: etheriumNetwork
+          })
+        }
+
+
+        await connectWallet();
+
+      });
     }
   }, []);
 
@@ -144,7 +169,7 @@ const Home = ({
 
   const handleClaim = async (tokenType) => {
 
-    const tokensToClaim = fromWei('1', 'ether');
+    const tokensToClaim = claimTokens
 
     await unstakeTokens(tokensToClaim, currentAccount, tokenType);
     await Promise.all([
@@ -161,6 +186,7 @@ const Home = ({
     }
 
     await connectWallet();
+    await getAccountBalance()
   }, []);
 
   return (
@@ -171,6 +197,7 @@ const Home = ({
           handleSignOut={signOut}
           account={currentAccount}
           connected={connected}
+          currentNetwork={currentNetwork}
           pbrBalance={formatCurrency(fromWei(pbrBalance))}
           biteBalance={formatCurrency(fromWei(biteBalance))}
         />

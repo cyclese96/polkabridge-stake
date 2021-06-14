@@ -9,7 +9,9 @@ import {
   SET_ACCOUNT,
   LOAD_PBR_BALANCE,
   LOAD_BITE_BALANCE,
+  CHANGE_NETWORK,
 } from "../actions/types";
+import { etheriumNetwork } from "../constants";
 
 const initalState = {
   connected: false,
@@ -19,7 +21,8 @@ const initalState = {
   error: null,
   loading: false,
   biteLoading: false,
-  pbrLoading: false
+  pbrLoading: false,
+  currentNetwork: etheriumNetwork
 };
 
 export default function (state = initalState, action) {
@@ -73,6 +76,11 @@ export default function (state = initalState, action) {
         ...state,
         loading: true
       };
+    case CHANGE_NETWORK:
+      return {
+        ...state,
+        currentAccount: action.payload
+      }
     case HIDE_LOADING:
       return {
         ...state,

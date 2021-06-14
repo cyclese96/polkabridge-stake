@@ -207,7 +207,7 @@ const Staking = ({
                     </div>
                   ) : (
                     <div className={classes.stakeButtons}>
-                      <CustomButton onClick={() => onClaim('BITE')} >
+                      <CustomButton disabled={biteStake.amount == 0} onClick={() => onClaim('BITE')} >
                         Claim
                       </CustomButton>
                       <CustomButton onClick={() => onUnstake('BITE')} variant="light">

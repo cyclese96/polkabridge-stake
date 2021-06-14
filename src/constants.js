@@ -18,9 +18,29 @@ export const NUMBER_BLOCKS_PER_YEAR = 2400000;
 export const AVG_PBR_PER_BLOCK = 1.5;
 export const AVG_BITE_PER_BLOCK = 2;
 
-export const BITE_PRICE = 2;
+export const BITE_PRICE = 0.1;
 
 export const infuraKovenApi = `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`
 export const infuraMainnetApi = `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`
 
-export const currentConnection = 'koven'
+export const currentConnection = 'koven' //mainnet
+
+export const etheriumNetwork = 'etherium'
+export const bscNetwork = 'bsc'
+
+export const etherConfig = {
+  network_id: {
+    mainet: '1',
+    koven: '42'
+  }
+}
+
+export const bscConfig = {
+  network_id: {
+    mainnet: '97',
+    testnet: '56'
+  },
+  network_address: 'https://data-seed-prebsc-1-s1.binance.org:8545/',
+};
+
+export const claimTokens = '1'
