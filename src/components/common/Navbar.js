@@ -293,6 +293,9 @@ const Navbar = ({
           <a href="#" className={classes.navbarItemsDesktop}>
             Prediction
           </a>
+          <a href="https://corgib.polkabridge.org/bet" className={classes.navbarItemsDesktop}>
+            Betting
+          </a>
           <div className={classes.grow} />
           <Wallet
             onClick={handleConnectWallet}
