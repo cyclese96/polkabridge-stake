@@ -241,7 +241,14 @@ const Navbar = ({
         ))}
       </List>
       <Divider />
+
       <List>
+        <ListItem button style={{ marginTop: 15 }}>
+          <div className={classes.network}>
+            <img className={classes.networkIcon} src={currentNetwork === etheriumNetwork ? etherIcon : binanceIcon} alt={currentNetwork} />
+            <span style={{ color: 'white', marginLeft: 5 }}>{currentNetwork === etheriumNetwork ? "Etherium" : "Binance Smart Chain"}</span>
+          </div>
+        </ListItem>
         <ListItem button style={{ marginTop: 15 }}>
           <Wallet
             onClick={handleConnectWallet}
@@ -318,6 +325,9 @@ const Navbar = ({
 
           <a href="#" className={classes.navbarItemsDesktop}>
             Prediction
+          </a>
+          <a href="https://corgib.polkabridge.org/bet" className={classes.navbarItemsDesktop}>
+            Betting
           </a>
           <div className={classes.grow} />
           <div className={classes.network}>

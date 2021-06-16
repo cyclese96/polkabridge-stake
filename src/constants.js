@@ -36,7 +36,7 @@ export const infuraKovenApi = `https://kovan.infura.io/v3/${process.env.REACT_AP
 export const infuraMainnetApi = `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`
 
 /**
- *    'koven'  ETH koven net testing
+ *  
  *    'testnet'  BSC testnet testing
  *    'mainnet'  BSC/ETH mainent deployment
  */
