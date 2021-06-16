@@ -6,16 +6,17 @@ import {
   ERROR,
   SHOW_LOADING,
   HIDE_LOADING,
+  LOAD_CORGIB_BALANCE,
 } from "./types";
 // import pbrContract from "../contracts/connections/pbrConnection";
 // import biteContract from "../contracts/connections/biteConnection";
 import { getCurrentAccount } from "../utils/helper";
-import { pbrContract, biteContract } from '../contracts/connections'
+import { pbrContract, biteContract, corgibCoinContract } from '../contracts/connections'
 import { etheriumNetwork } from "../constants";
 
 //GET user authenticated
 export const connectWallet =
-  (connect = false, network = etheriumNetwork) =>
+  (connect = false, network) =>
     async (dispatch) => {
       try {
         const accountAddress = await getCurrentAccount();
@@ -50,14 +51,23 @@ export const connectWallet =
           type: SHOW_LOADING,
         });
 
-        const [pbrWei, biteWei] = await Promise.all([
-          pbrContract(network).methods.balanceOf(accountAddress).call(),
-          biteContract(network).methods.balanceOf(accountAddress).call()
-        ])
-        dispatch({
-          type: LOAD_BALANCE,
-          payload: { pbr: pbrWei, bite: biteWei },
-        });
+        if (network === etheriumNetwork) {
+          console.log('connectWallet: fetching from', network)
+          const [pbrWei, biteWei] = await Promise.all([
+            pbrContract(network).methods.balanceOf(accountAddress).call(),
+            biteContract(network).methods.balanceOf(accountAddress).call()
+          ])
+          dispatch({
+            type: LOAD_BALANCE,
+            payload: { pbr: pbrWei, bite: biteWei },
+          });
+        } else {
+          const corgibWei = await corgibCoinContract(network).methods.balanceOf(accountAddress).call();
+          dispatch({
+            type: LOAD_CORGIB_BALANCE,
+            payload: corgibWei,
+          });
+        }
 
         // await updateAcountData();
       } catch (error) {
@@ -73,22 +83,39 @@ export const connectWallet =
       });
     };
 
-export const getAccountBalance = (address, network = etheriumNetwork) => async (dispatch) => {
+export const getAccountBalance = (network) => async (dispatch) => {
   dispatch({
     type: SHOW_LOADING,
   });
   try {
-    const [pbrWei, biteWei] = await Promise.all([
-      pbrContract(network).methods.balanceOf(address).call(),
-      biteContract(network).methods.balanceOf(address).call()
-    ])
 
-    dispatch({
-      type: LOAD_BALANCE,
-      payload: { pbr: pbrWei, bite: biteWei },
-    });
+    const address = await getCurrentAccount()
+    if (network === etheriumNetwork) {
+
+      const [pbrWei, biteWei] = await Promise.all([
+        pbrContract(network).methods.balanceOf(address).call(),
+        biteContract(network).methods.balanceOf(address).call()
+      ])
+
+      dispatch({
+        type: LOAD_BALANCE,
+        payload: { pbr: pbrWei, bite: biteWei },
+      });
+    } else {
+      console.log('account', address)
+      console.log('network', network)
+      const [corgibWei] = await Promise.all([
+        corgibCoinContract(network).methods.balanceOf(address).call()
+      ])
+
+      dispatch({
+        type: LOAD_CORGIB_BALANCE,
+        payload: corgibWei,
+      });
+    }
 
   } catch (error) {
+    console.log('getAccountBalance', error)
     dispatch({
       type: ERROR,
       payload: "Failed to load balance!",

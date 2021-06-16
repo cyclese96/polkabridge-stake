@@ -10,7 +10,9 @@ import {
   AccountBalanceOutlined,
   ContactMailOutlined,
 } from "@material-ui/icons";
+import VisibilityIcon from '@material-ui/icons/Visibility';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+import { etheriumNetwork } from "../../constants";
 
 const styles = (theme) => ({
   root: {
@@ -110,6 +112,8 @@ export default function AccountDialog({
   balance,
   pbr,
   bite,
+  corgib,
+  network,
   account,
   handleSignOut,
 }) {
@@ -118,6 +122,14 @@ export default function AccountDialog({
     handleClose();
     handleSignOut();
   };
+
+  const getCoins = () => {
+    if (network === etheriumNetwork) {
+      return [{ coin: 'PBR', balance: pbr }, { coin: 'BITE', balance: bite }]
+    } else {
+      return [{ coin: 'CORGIB', balance: corgib }]
+    }
+  }
   return (
     <div>
       <Dialog
@@ -135,36 +147,24 @@ export default function AccountDialog({
             <span className={classes.heading}>My Wallet</span>
           </DialogTitle>
           <div className={classes.balanceCard}>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "start",
-              }}
-            >
-              <>
-                <MonetizationOnIcon
-                  fontSize="small"
-                  className={classes.icon}
-                />
-                <span className={classes.icon}>PBR</span>
-                <p className={classes.numbers}>{pbr}</p>
-              </>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "start",
-              }}
-            >
-              <MonetizationOnIcon
-                fontSize="small"
-                className={classes.icon}
-              />
-              <span className={classes.icon}>BITE</span>
-              <p className={classes.numbers}>{bite}</p>
-            </div>
+            {getCoins().map(item => (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "start",
+                }}
+              >
+                <>
+                  <VisibilityIcon
+                    fontSize="small"
+                    className={classes.icon}
+                  />
+                  <span className={classes.icon}>{item.coin}</span>
+                  <p className={classes.numbers}>{item.balance}</p>
+                </>
+              </div>
+            ))}
 
             <div
               style={{

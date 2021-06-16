@@ -2,6 +2,7 @@ import { CircularProgress, makeStyles } from "@material-ui/core";
 import supply from "../../assets/supply.png";
 import { fromWei, formatCurrency } from "../../utils/helper";
 import biteImg from "../../assets/bite.png";
+import corgibImg from "../../assets/corgi.png";
 import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
@@ -47,11 +48,22 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Balance = ({
-  account: { pbrBalance, biteBalance, loading },
+  account: { pbrBalance, biteBalance, corgibBalance, loading },
   tokenType,
 }) => {
   const classes = useStyles();
 
+  const tokenLogo = {
+    'PBR': supply,
+    'BITE': biteImg,
+    'CORGIB': corgibImg
+  }
+
+  const tokenBalance = {
+    'PBR': pbrBalance,
+    'BITE': biteBalance,
+    'CORGIB': corgibBalance
+  }
 
   return (
     <div className={classes.card}>
@@ -64,10 +76,10 @@ const Balance = ({
               <p className={classes.cardHeading}>Balance</p>
               <img
                 className={classes.avatar}
-                src={tokenType == "PBR" ? supply : biteImg}
+                src={tokenLogo[tokenType]}
               />
               <h4 className={classes.numbers}>
-                {formatCurrency(fromWei(tokenType === "BITE" ? biteBalance : pbrBalance))}{" "}
+                {formatCurrency(fromWei(tokenBalance[tokenType]))}{" "}
                 {tokenType}
               </h4>
             </>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -24,6 +24,7 @@ import Wallet from "./Wallet";
 import AccountDialog from "./AccountDialog";
 import etherIcon from '../../assets/ether.png'
 import binanceIcon from '../../assets/binance.png'
+import { etheriumNetwork } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -166,7 +167,7 @@ const useStyles = makeStyles((theme) => ({
     padding: 4,
     paddingLeft: 7,
     paddingRight: 7,
-    cursor: "pointer",
+    // cursor: "pointer",
     "&:hover": {
       background: "rgba(255, 255, 255, 0.1)",
     },
@@ -180,6 +181,7 @@ const useStyles = makeStyles((theme) => ({
 const Navbar = ({
   pbrBalance,
   biteBalance,
+  corgibBalance,
   account,
   currentNetwork,
   handleConnectWallet,
@@ -265,6 +267,8 @@ const Navbar = ({
         balance={pbrBalance}
         pbr={pbrBalance}
         bite={biteBalance}
+        network={currentNetwork}
+        corgib={corgibBalance}
         account={account}
         handleClose={() => setAccountDialog(false)}
         handleSignOut={handleSignOut}
@@ -290,6 +294,7 @@ const Navbar = ({
           <a
             href="https://farm.polkabridge.org"
             target="_blank"
+            rel="noreferrer"
             className={classes.navbarItemsDesktop}
           >
             Farm
@@ -316,8 +321,8 @@ const Navbar = ({
           </a>
           <div className={classes.grow} />
           <div className={classes.network}>
-            <img className={classes.networkIcon} src={etherIcon} alt={currentNetwork} />
-            <span style={{ color: 'white', marginLeft: 5 }}>{"Etherium"}</span>
+            <img className={classes.networkIcon} src={currentNetwork === etheriumNetwork ? etherIcon : binanceIcon} alt={currentNetwork} />
+            <span style={{ color: 'white', marginLeft: 5 }}>{currentNetwork === etheriumNetwork ? "Etherium" : "Binance Smart Chain"}</span>
           </div>
           <Wallet
             onClick={handleConnectWallet}

@@ -13,10 +13,12 @@ import PropTypes from "prop-types";
 import { connectWallet, getAccountBalance, logout } from "../actions/accountActions";
 import { getPoolInfo, unstakeTokens } from "../actions/stakeActions";
 import { connect } from "react-redux";
-import { fromWei, formatCurrency, isMetaMaskInstalled } from "../utils/helper";
-import { bscConfig, bscNetwork, claimTokens, etherConfig, etheriumNetwork } from "../constants";
-import { CHANGE_NETWORK } from "../actions/types";
+import { fromWei, formatCurrency, isMetaMaskInstalled, getCurrentNetworkId, getCurrentAccount } from "../utils/helper";
+import { bscConfig, bscNetwork, claimTokens, etherConfig, etheriumNetwork, supportedStaking } from "../constants";
+import { CHANGE_NETWORK, RESET_USER_STAKE } from "../actions/types";
 import store from '../store'
+// import web3 from '../web';
+// import web3 from 'web3'
 
 const useStyles = makeStyles((theme) => ({
   background: {
@@ -99,9 +101,9 @@ const Home = ({
   connectWallet,
   getPoolInfo,
   logout,
-  account: { currentAccount, pbrBalance, biteBalance, connected, currentNetwork },
+  account: { currentAccount, pbrBalance, corgibBalance, biteBalance, connected, currentNetwork },
   getAccountBalance,
-  stake: { pbrPoolData, poolLoading },
+  stake: { pbrPoolData, corgibPoolData, poolLoading },
   unstakeTokens
 }) => {
   const classes = useStyles();
@@ -119,37 +121,47 @@ const Home = ({
     setDialog({ open: false, type: null });
   };
 
+  const getCurrentNetwork = (networkId) => {
+    if (networkId === bscConfig.network_id.mainnet || networkId === bscConfig.network_id.testnet) {
+      return bscNetwork;
+
+    } else if (networkId === etherConfig.network_id.mainet || networkId === etherConfig.network_id.koven) {
+      return etheriumNetwork
+    } else {
+      return etheriumNetwork
+    }
+  }
   useEffect(async () => {
     if (typeof window.web3 !== "undefined") {
       window.ethereum.on("accountsChanged", async (accounts) => {
         if (accounts.length === 0) {
           return;
         }
-        console.log("account changed");
-
-        await connectWallet();
+        store.dispatch({
+          type: RESET_USER_STAKE
+        })
+        await getPoolInfo(currentNetwork);
+        await connectWallet(false, currentNetwork);
+        await getAccountBalance(currentNetwork)
       });
 
       window.ethereum.on("networkChanged", async (networkId) => {
-        // if (accounts.length === 0) {
-        //   return;
-        // }
-        console.log("network changed", networkId);
-        if (networkId === bscConfig.network_id.mainnet) {
-          store.dispatch({
-            type: CHANGE_NETWORK,
-            payload: bscNetwork
-          })
-        } else if (networkId === etherConfig.network_id.mainet) {
-          store.dispatch({
-            type: CHANGE_NETWORK,
-            payload: etheriumNetwork
-          })
-        }
 
 
-        await connectWallet();
+        // setCurrentNetwork(networkId)
+        const network = getCurrentNetwork(networkId)
 
+        store.dispatch({
+          type: CHANGE_NETWORK,
+          payload: network
+        })
+
+        store.dispatch({
+          type: RESET_USER_STAKE
+        })
+        await getPoolInfo(network);
+        await connectWallet(false, network);
+        await getAccountBalance(network)
       });
     }
   }, []);
@@ -164,7 +176,7 @@ const Home = ({
       alert("Please install Meta Mask to connect");
       return;
     }
-    await connectWallet(true);
+    await connectWallet(true, currentNetwork);
   };
 
   const handleClaim = async (tokenType) => {
@@ -173,20 +185,47 @@ const Home = ({
 
     await unstakeTokens(tokensToClaim, currentAccount, tokenType);
     await Promise.all([
-      getPoolInfo(),
-      getAccountBalance()
+      getPoolInfo(currentNetwork),
+      getAccountBalance(currentNetwork)
     ])
 
   }
+
+  const getCurrentTokenType = () => {
+    return currentNetwork === etheriumNetwork ? 'PBR' : 'CORGIB';
+  }
+
+  const getCurrentPool = () => {
+    return currentNetwork === etheriumNetwork ? pbrPoolData : corgibPoolData;
+  }
+
+  const getCurrentApy = () => {
+    return currentNetwork === etheriumNetwork ? getCurrentPool().pbrApy : getCurrentPool().corgibApy
+  }
+
+  const getCurrentTokenPrice = () => {
+    return currentNetwork === etheriumNetwork ? formatCurrency(getCurrentPool().tokenPrice, true, 3) : formatCurrency(getCurrentPool().tokenPrice, true, 9)
+  }
   useEffect(async () => {
-    await getPoolInfo();
+
+    const account = await getCurrentAccount()
+    const networkId = await window.ethereum.networkVersion
+
+    const network = getCurrentNetwork(networkId.toString())
+
+    store.dispatch({
+      type: CHANGE_NETWORK,
+      payload: network
+    })
+
+    await getPoolInfo(network);
 
     if (!isMetaMaskInstalled()) {
       return;
     }
 
-    await connectWallet();
-    await getAccountBalance()
+    await connectWallet(false, network);
+    await getAccountBalance(network);
   }, []);
 
   return (
@@ -198,6 +237,7 @@ const Home = ({
           account={currentAccount}
           connected={connected}
           currentNetwork={currentNetwork}
+          corgibBalance={formatCurrency(fromWei(corgibBalance))}
           pbrBalance={formatCurrency(fromWei(pbrBalance))}
           biteBalance={formatCurrency(fromWei(biteBalance))}
         />
@@ -212,28 +252,28 @@ const Home = ({
         ) : (
           <>
             <p className={classes.heading}>
-              PBR price:
+              {getCurrentTokenType()} price:
               <strong className={classes.numbers}>
-                {formatCurrency(pbrPoolData.tokenPrice, true, 3)}
+                {getCurrentTokenPrice()}
               </strong>
             </p>
             <p className={classes.heading}>
-              PBR APY:
+              {getCurrentTokenType()} APY:
               <strong className={classes.numbers}>
-                {formatCurrency(pbrPoolData.pbrApy)} %
+                {formatCurrency(getCurrentApy())} %
               </strong>
             </p>
             <p className={classes.heading}>
               Total Token Staked :
               <strong className={classes.numbers}>
-                {formatCurrency(fromWei(pbrPoolData.totalTokenStaked))} PBR
+                {formatCurrency(fromWei(getCurrentPool().totalTokenStaked))} {getCurrentTokenType()}
               </strong>
             </p>
 
             <p className={classes.heading}>
               Total Rewards Claimed:
               <strong className={classes.numbers}>
-                {formatCurrency(fromWei(pbrPoolData.totalTokenClaimed))} PBR
+                {formatCurrency(fromWei(getCurrentPool().totalTokenClaimed))} {getCurrentTokenType()}
               </strong>
             </p>
           </>
@@ -252,41 +292,31 @@ const Home = ({
           </div>
         ) : (
           <div>
-            <div className={classes.cardsContainer}>
-              <div className={classes.card}>
-                <Staking
-                  onStake={onStake}
-                  onUnstake={onUnStake}
-                  tokenType="PBR"
-                  onClaim={handleClaim}
-                />
-              </div>
-              <div className={classes.card}>
-                <Balance tokenType="PBR" />
-              </div>
-              <StakeDialog
-                open={dialog.open}
-                type={dialog.type}
-                tokenType={dialog.tokenType}
-                handleClose={handleClose}
-              />
-            </div>
+            {supportedStaking[currentNetwork].map(token => (
+              <div className={classes.cardsContainer}>
+                <div className={classes.card}>
+                  <Staking
+                    onStake={onStake}
+                    onUnstake={onUnStake}
+                    tokenType={token}
+                    onClaim={handleClaim}
+                  />
+                </div>
+                <div className={classes.card}>
+                  <Balance tokenType={token} />
+                </div>
 
-            <div className={classes.cardsContainer}>
-              <Staking
-                tokenType="BITE"
-                onStake={onStake}
-                onUnstake={onUnStake}
-                onClaim={handleClaim}
-              />
-              <div className={classes.card}>
-                <Balance tokenType="BITE" />
               </div>
-            </div>
+            ))}
 
           </div>
         )}
-
+        <StakeDialog
+          open={dialog.open}
+          type={dialog.type}
+          tokenType={dialog.tokenType}
+          handleClose={handleClose}
+        />
         <Footer />
       </div>
     </div>

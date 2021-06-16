@@ -2,12 +2,14 @@ import Web3 from "web3";
 import Bite from "../abi/Bite.json";
 import PolkaBridge from "../abi/PolkaBridge.json";
 import PolkaBridgeStaking from "../abi/PolkaBridgeStaking.json";
-import { biteAddressKoven, biteAddressMainnet, bscConfig, currentConnection, etheriumNetwork, pbrAddressKoven, pbrAddressMainnet, stakingAddressKoven, stakingAddressMainnet } from "../../constants";
+import CorgibStaking from '../abi/CorgibStaking.json'
+import PolkaBridgeMemeToken from '../abi/PolkaBridgeMemeToken.json'
+import { biteAddressKoven, biteAddressMainnet, bscConfig, bscNetwork, corgibMemeCoinMainnet, corgibMemeCoinTestent, corgibStakingMainent, corgibStakingTestent, currentConnection, etheriumNetwork, pbrAddressKoven, pbrAddressMainnet, stakingAddressKoven, stakingAddressMainnet } from "../../constants";
 
 
 export const biteContract = (network) => {
 
-    const address = currentConnection === 'koven' ? biteAddressKoven : biteAddressMainnet;
+    const address = currentConnection === 'testnet' ? biteAddressKoven : biteAddressMainnet;
 
     const abi = Bite;
 
@@ -17,7 +19,7 @@ export const biteContract = (network) => {
 
 export const pbrContract = (network) => {
 
-    const address = currentConnection === 'koven' ? pbrAddressKoven : pbrAddressMainnet;
+    const address = currentConnection === 'testnet' ? pbrAddressKoven : pbrAddressMainnet;
 
     const abi = PolkaBridge;
     const connection = getCurrentConnection(network, abi, address)
@@ -25,23 +27,44 @@ export const pbrContract = (network) => {
 
 }
 
-export const stakeContract = (network) => {
+export const corgibCoinContract = (network) => {
 
-    const address = currentConnection === 'koven' ? stakingAddressKoven : stakingAddressMainnet;
+    const address = currentConnection === 'testnet' ? corgibMemeCoinTestent : corgibMemeCoinMainnet;
 
-    const abi = PolkaBridgeStaking;
+    const abi = PolkaBridgeMemeToken;
     const connection = getCurrentConnection(network, abi, address)
     return connection;
+
 }
 
-const getCurrentConnection = (network, abi, contractAddress) => {
-    if (network === etheriumNetwork) {
+export const stakeContract = (network) => {
 
+    if (network === bscNetwork) {
+
+        const address = currentConnection === 'testnet' ? corgibStakingTestent : corgibStakingMainent;
+
+        const abi = CorgibStaking;
+        const connection = getCurrentConnection(network, abi, address)
+        return connection;
+    } else {
+        const address = currentConnection === 'testnet' ? stakingAddressKoven : stakingAddressMainnet;
+
+        const abi = PolkaBridgeStaking;
+        const connection = getCurrentConnection(network, abi, address)
+        return connection;
+    }
+}
+
+const getCurrentConnection = (blockChainNetwork, abi, contractAddress) => {
+
+    if (blockChainNetwork === etheriumNetwork) {
         const web3 = new Web3(window.ethereum);
         return new web3.eth.Contract(abi, contractAddress);
 
     } else {
-        const web3 = new Web3(new Web3.providers.HttpProvider(bscConfig.network_address));
+        // const web3 = new Web3(new Web3.providers.HttpProvider(bscConfig.network_rpc_testnet));
+        // const web3 = new Web3('https://data-seed-prebsc-1-s1.binance.org:8545');
+        const web3 = new Web3(window.ethereum)
         return new web3.eth.Contract(abi, contractAddress);
     }
 }

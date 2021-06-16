@@ -129,8 +129,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const StakeDialog = ({
-  account: { currentAccount, pbrBalance, biteBalance, loading, biteLoading, pbrLoading },
-  stake: { pbrStake, biteStake, pbrApproved, biteApproved, poolLoading },
+  account: { currentAccount, currentNetwork, pbrBalance, biteBalance, corgibBalance, loading, biteLoading, pbrLoading, corgibLoading },
+  stake: { pbrStake, biteStake, corgibStake, pbrApproved, biteApproved, poolLoading },
   stakeTokens,
   unstakeTokens,
   getAccountBalance,
@@ -176,17 +176,19 @@ const StakeDialog = ({
     }
     setError({});
     if (type === "stake") {
-      await stakeTokens(pbrTokens, currentAccount, tokenType);
+      console.log('staking tokens', { pbrTokens, currentAccount, tokenType, currentNetwork })
+      await stakeTokens(pbrTokens, currentAccount, tokenType, currentNetwork);
     } else {
-      await unstakeTokens(pbrTokens, currentAccount, tokenType);
+      await unstakeTokens(pbrTokens, currentAccount, tokenType, currentNetwork);
     }
     handleClose();
-    getPoolInfo();
-    getAccountBalance();
+    getPoolInfo(currentNetwork);
+    getAccountBalance(currentNetwork);
   };
 
   const handleMax = () => {
     if (type === "stake") {
+
       setTokenValue(currentBalance());
     } else {
       setTokenValue(currentStakedAmount());
@@ -200,11 +202,24 @@ const StakeDialog = ({
   };
 
   const currentBalance = () => {
-    return tokenType === 'PBR' ? fromWei(pbrBalance) : fromWei(biteBalance)
+    if (tokenType === 'PBR') {
+      return fromWei(pbrBalance)
+    } else if (tokenType === 'BITE') {
+      return fromWei(biteBalance)
+    } else {
+      return fromWei(corgibBalance)
+    }
   }
 
   const currentStakedAmount = () => {
-    return tokenType === 'PBR' ? fromWei(pbrStake.amount) : fromWei(biteStake.amount)
+
+    if (tokenType === 'PBR') {
+      return fromWei(pbrStake.amount)
+    } else if (tokenType === 'BITE') {
+      return fromWei(biteStake.amount)
+    } else {
+      return fromWei(corgibStake.amount)
+    }
   }
   return (
     <div>

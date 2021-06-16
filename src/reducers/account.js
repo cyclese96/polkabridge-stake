@@ -1,7 +1,6 @@
 import {
   CONNECT_WALLET,
   DISCONNECT_WALLET,
-  CHANGE_ACCOUNT,
   LOAD_BALANCE,
   ERROR,
   SHOW_LOADING,
@@ -10,6 +9,7 @@ import {
   LOAD_PBR_BALANCE,
   LOAD_BITE_BALANCE,
   CHANGE_NETWORK,
+  LOAD_CORGIB_BALANCE,
 } from "../actions/types";
 import { etheriumNetwork } from "../constants";
 
@@ -18,10 +18,12 @@ const initalState = {
   currentAccount: "",
   pbrBalance: null,
   biteBalance: null,
+  corgibBalance: null,
   error: null,
   loading: false,
   biteLoading: false,
   pbrLoading: false,
+  corgibLoading: false,
   currentNetwork: etheriumNetwork
 };
 
@@ -60,6 +62,11 @@ export default function (state = initalState, action) {
         ...state,
         biteBalance: action.payload,
       };
+    case LOAD_CORGIB_BALANCE:
+      return {
+        ...state,
+        corgibBalance: action.payload,
+      };
     case SHOW_LOADING:
       if (action.payload === 'BITE') {
         return {
@@ -72,6 +79,12 @@ export default function (state = initalState, action) {
           pbrLoading: true
         }
       }
+      else if (action.payload === 'CORGIB') {
+        return {
+          ...state,
+          corgibLoading: true
+        }
+      }
       return {
         ...state,
         loading: true
@@ -79,14 +92,15 @@ export default function (state = initalState, action) {
     case CHANGE_NETWORK:
       return {
         ...state,
-        currentAccount: action.payload
+        currentNetwork: action.payload
       }
     case HIDE_LOADING:
       return {
         ...state,
         loading: false,
         biteLoading: false,
-        pbrLoading: false
+        pbrLoading: false,
+        corgibLoading: false
       };
     case ERROR:
       return {
