@@ -40,7 +40,7 @@ export const formatCurrency = (value, usd = false, fractionDigits = 1) => {
   }
 
   const netId = window.ethereum.networkVersion
-  if (['97', '54'].includes(netId)) {  // for bsc network only
+  if (['97', '56'].includes(netId)) {  // for bsc network only
     return convertToInternationalCurrencySystem(value ? value : 0)
   }
   return formatter.format(value ? value : 0).slice(1);

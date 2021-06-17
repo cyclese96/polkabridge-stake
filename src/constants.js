@@ -72,3 +72,9 @@ export const supportedStaking = {
     'CORGIB'
   ]
 }
+
+export const minimumStakingAmount = {
+  'CORGIB':100000000,
+  'BITE':1,
+  'PBR':1
+}

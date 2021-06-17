@@ -16,6 +16,7 @@ import {
   unstakeTokens,
 } from "../../actions/stakeActions";
 import { getAccountBalance } from "../../actions/accountActions";
+import { minimumStakingAmount } from "../../constants";
 
 const styles = (theme) => ({
   root: {
@@ -166,14 +167,27 @@ const StakeDialog = ({
 
     if (
       type === "stake" &&
-      (enteredTokens <= 0 || enteredTokens > balanceTokens)
+      (enteredTokens <  minimumStakingAmount[tokenType] )
     ) {
       setError({
         status: true,
-        message: "Invalid amount to Stake!",
+        message: `Minimum ${formatCurrency(minimumStakingAmount[tokenType]) } ${tokenType} required to stake!`,
       });
       return;
     }
+
+    if (
+      type === "stake" &&
+      (enteredTokens > balanceTokens)
+    ) {
+      setError({
+        status: true,
+        message: `Can not stake more that ${formatCurrency(balanceTokens)} ${tokenType}!`,
+      });
+      return;
+    }
+
+
     setError({});
     if (type === "stake") {
       console.log('staking tokens', { pbrTokens, currentAccount, tokenType, currentNetwork })
@@ -269,7 +283,7 @@ const StakeDialog = ({
               value={pbrTokens}
               // name={[pbrTokens]}
               onChange={handleInputChange}
-              label="Enter PBR tokens"
+              label={`Enter ${tokenType} tokens`}
               focused={true}
             />
             <Button className={classes.maxBtn} onClick={handleMax}>
