@@ -29,18 +29,20 @@ export const getCurrentNetworkId = async () => {
   return await window.ethereum.networkVersion;
 };
 
-export const formatCurrency = (value, usd = false, fractionDigits = 1) => {
+export const formatCurrency = (value, usd = false, fractionDigits = 1, currencyFormat = false) => {
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: fractionDigits,
   });
+
+  //for currency format with $symbol
   if (usd) {
     return formatter.format(value ? value : 0);
   }
 
   const netId = window.ethereum.networkVersion
-  if (['97', '56'].includes(netId)) {  // for bsc network only
+  if (['97', '56'].includes(netId) && !currencyFormat ) {  // for bsc network only
     return convertToInternationalCurrencySystem(value ? value : 0)
   }
   return formatter.format(value ? value : 0).slice(1);

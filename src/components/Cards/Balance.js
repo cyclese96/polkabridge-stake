@@ -32,15 +32,20 @@ const useStyles = makeStyles((theme) => ({
     width: "auto",
     height: 60,
   },
+  avatar_corgib: {
+    zIndex: 2,
+    // position: "relative",
+    width: "auto",
+    height: 160,
+  },
   cardHeading: {
     fontSize: 24,
     fontWeight: 400,
+    padding:0,
+    margin:0,
+    marginTop:10
   },
-  cardText: {
-    fontSize: 16,
-    margin: 0,
-    paddingTop: 20,
-  },
+  
   numbers: {
     color: "#E0077D",
     fontSize: 26,
@@ -75,7 +80,7 @@ const Balance = ({
             <>
               <p className={classes.cardHeading}>Balance</p>
               <img
-                className={classes.avatar}
+                className={tokenType === 'CORGIB' ? classes.avatar_corgib : classes.avatar}
                 src={tokenLogo[tokenType]}
               />
               <h4 className={classes.numbers}>

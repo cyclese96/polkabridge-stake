@@ -140,7 +140,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       // fetch pool for corgib on bsc
       const corgibPool = await currStakingContract.methods.getPoolInfo(0).call()
 
-      console.log('pool data', corgibPool)
+      // console.log('pool data', corgibPool)
       const poolObj = {
         accTokenPerShare: corgibPool[0],
         lastRewardBlock: corgibPool[1],
@@ -157,7 +157,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       const corgibApy = getApy('CORGIB', poolObj)
       poolObj.corgibApy = corgibApy;
 
-      console.log('final pool data', poolObj)
+      // console.log('final pool data', poolObj)
       dispatch({
         type: LOAD_CORGIB_POOL,
         payload: poolObj
@@ -165,7 +165,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
 
     }
   } catch (error) {
-    console.log("pool info: ", error);
+    // console.log("pool info: ", error);
     dispatch({
       type: ERROR,
       payload: "Failed to load Pool data!",
@@ -250,9 +250,9 @@ export const confirmAllowance = (balance, tokenType, network) => async (dispatch
       type: tokenToApprove(tokenType),
     });
 
-    console.log('allowance confirmed ', res)
+    // console.log('allowance confirmed ', res)
   } catch (error) {
-    console.log("confirmAllowance ", error);
+    // console.log("confirmAllowance ", error);
     dispatch({
       type: ERROR,
       payload: error.toString(),
@@ -339,7 +339,7 @@ export const stakeTokens = (tokens, account, tokenType, network) => async (dispa
 
     const res = await currStakeContract.methods.deposit(pool, depositTokens).send({ from: account });
 
-    console.log(res)
+    // console.log(res)
     const [balanceWei, stakedData, pendingReward] = await Promise.all([
       currTokenContract.methods.balanceOf(account).call(),
       currStakeContract.methods.userInfo(pool, account).call(),
@@ -373,7 +373,7 @@ export const stakeTokens = (tokens, account, tokenType, network) => async (dispa
   });
 };
 
-export const unstakeTokens = (tokens, account, tokenType, network = etheriumNetwork) => async (dispatch) => {
+export const unstakeTokens = (tokens, account, tokenType, network) => async (dispatch) => {
   dispatch({
     type: SHOW_LOADING,
     payload: tokenType

@@ -183,7 +183,7 @@ const Home = ({
 
     const tokensToClaim = claimTokens
 
-    await unstakeTokens(tokensToClaim, currentAccount, tokenType);
+    await unstakeTokens(tokensToClaim, currentAccount, tokenType, currentNetwork);
     await Promise.all([
       getPoolInfo(currentNetwork),
       getAccountBalance(currentNetwork)
@@ -260,7 +260,7 @@ const Home = ({
             <p className={classes.heading}>
               {getCurrentTokenType()} APY:
               <strong className={classes.numbers}>
-                {formatCurrency(getCurrentApy())} %
+                {formatCurrency(getCurrentApy(), false, 1 , true)} %
               </strong>
             </p>
             <p className={classes.heading}>
