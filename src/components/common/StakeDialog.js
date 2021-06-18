@@ -8,7 +8,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 import { CircularProgress, TextField } from "@material-ui/core";
 import CustomButton from "../Buttons/CustomButton";
-import { formatCurrency, fromWei } from "../../utils/helper";
+import { formatCurrency, fromWei, isNumber, resetCurrencyFormatting } from "../../utils/helper";
 import { connect } from "react-redux";
 import {
   getPoolInfo,
@@ -142,25 +142,45 @@ const StakeDialog = ({
   tokenType
 }) => {
   const classes = useStyles();
-  const [pbrTokens, setTokenValue] = useState("0");
+  const [inputTokens, setTokenValue] = useState("");
+  const [formattedInputTokens, setFormattedValue] = useState("");
   const [error, setError] = useState({ status: false, message: "" });
 
   const handleInputChange = (e) => {
-    setTokenValue(e.target.value);
+
+    if (  !isNumber(e.nativeEvent.data) && e.nativeEvent.inputType !== 'deleteContentBackward'  ){
+      setError({status:true, message:"Please enter numbers only!"})
+      return
+    }
+    setTokenValue(resetCurrencyFormatting(e.target.value));
+
+    if(error.status){
+      setError({status:false, message:''})
+    }
+  
   };
 
   const onConfirm = async () => {
-    const enteredTokens = pbrTokens;
+    const enteredTokens = inputTokens;
     const stakedTokens = parseFloat(currentStakedAmount());
     const balanceTokens = parseFloat(currentBalance());
 
+
+    if ( enteredTokens === "" ) {
+      setError({
+        status: true,
+        message: `Please enter some ${tokenType} to ${type} !`,
+      });
+      return;
+    }
+
     if (
       type !== "stake" &&
-      (enteredTokens <= 0 || enteredTokens > stakedTokens)
+      ( enteredTokens > stakedTokens)
     ) {
       setError({
         status: true,
-        message: "Invalid amount to Withdraw!",
+        message: `Maximum withdraw amount can not exceed ${formatCurrency(stakedTokens)} !`,
       });
       return;
     }
@@ -190,10 +210,10 @@ const StakeDialog = ({
 
     setError({});
     if (type === "stake") {
-      console.log('staking tokens', { pbrTokens, currentAccount, tokenType, currentNetwork })
-      await stakeTokens(pbrTokens, currentAccount, tokenType, currentNetwork);
+      console.log('staking tokens', { inputTokens, currentAccount, tokenType, currentNetwork })
+      await stakeTokens(inputTokens, currentAccount, tokenType, currentNetwork);
     } else {
-      await unstakeTokens(pbrTokens, currentAccount, tokenType, currentNetwork);
+      await unstakeTokens(inputTokens, currentAccount, tokenType, currentNetwork);
     }
     handleClose();
     getPoolInfo(currentNetwork);
@@ -211,7 +231,7 @@ const StakeDialog = ({
 
   const onClose = () => {
     handleClose();
-    setTokenValue(null);
+    setTokenValue("");
     setError({});
   };
 
@@ -280,7 +300,7 @@ const StakeDialog = ({
               id="outlined-basic"
               variant="outlined"
               placeholder="0"
-              value={pbrTokens}
+              value={inputTokens ?  formatCurrency(inputTokens, false, 0 , true) : ""}
               // name={[pbrTokens]}
               onChange={handleInputChange}
               label={`Enter ${tokenType} tokens`}
