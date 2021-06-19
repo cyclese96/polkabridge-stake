@@ -14,7 +14,7 @@ import { connectWallet, getAccountBalance, logout } from "../actions/accountActi
 import { getPoolInfo, unstakeTokens } from "../actions/stakeActions";
 import { connect } from "react-redux";
 import { fromWei, formatCurrency, isMetaMaskInstalled, getCurrentNetworkId, getCurrentAccount } from "../utils/helper";
-import { bscConfig, bscNetwork, claimTokens, etherConfig, etheriumNetwork, supportedStaking } from "../constants";
+import { bscConfig, bscNetwork, claimTokens, etherConfig, etheriumNetwork, supportedNetworks, supportedStaking } from "../constants";
 import { CHANGE_NETWORK, RESET_USER_STAKE } from "../actions/types";
 import store from '../store'
 import web3 from '../web';
@@ -206,17 +206,21 @@ const Home = ({
   const getCurrentTokenPrice = () => {
     return currentNetwork === etheriumNetwork ? formatCurrency(getCurrentPool().tokenPrice, true, 3) : formatCurrency(getCurrentPool().tokenPrice, true, 9)
   }
+
   useEffect(async () => {
     let network = '';
     const account = await getCurrentAccount()
-
+    
     // alert(account)
     if (isMetaMaskInstalled()) {
 
-      const networkId = window.ethereum.networkVersion;
-  
-      network = getCurrentNetwork(networkId.toString())
-  
+      const networkId = await getCurrentNetworkId()
+
+      if (! supportedNetworks.includes(networkId.toString())) {
+        alert('This network is not supported yet! Please switch to Ethereum or Smart Chain network')
+      }
+      network =   getCurrentNetwork(networkId.toString())
+      // alert(`current network set to  ${network}` )
       store.dispatch({
         type: CHANGE_NETWORK,
         payload: network

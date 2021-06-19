@@ -42,7 +42,7 @@ export const infuraMainnetApi = `https://mainnet.infura.io/v3/${process.env.REAC
  */
 export const currentConnection = 'mainnet'
 
-export const etheriumNetwork = 'etherium'
+export const etheriumNetwork = 'ethereum'
 export const bscNetwork = 'bsc'
 
 export const etherConfig = {
@@ -63,8 +63,10 @@ export const bscConfig = {
 
 export const claimTokens = '1'
 
+export const supportedNetworks = ['1','56']
+
 export const supportedStaking = {
-  'etherium': [
+  'ethereum': [
     'PBR',
     'BITE'
   ],

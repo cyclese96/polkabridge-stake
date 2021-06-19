@@ -36,7 +36,17 @@ export const getCurrentAccount = async () => {
 
 export const getCurrentNetworkId = async () => {
 
-  return await window.ethereum.networkVersion;
+  if (window.ethereum) {
+    const id =  await window.ethereum.networkVersion;
+
+    if (id) {
+      return id
+    }else{
+      return await web3.eth.getChainId()
+    }
+  }else{
+    return await web3.eth.getChainId()
+  }
 };
 
 export const formatCurrency = (value, usd = false, fractionDigits = 1, currencyFormat = false) => {
