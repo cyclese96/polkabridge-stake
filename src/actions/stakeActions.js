@@ -165,7 +165,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
 
     }
   } catch (error) {
-    // console.log("pool info: ", error);
+    console.log("pool info: ", error);
     dispatch({
       type: ERROR,
       payload: "Failed to load Pool data!",

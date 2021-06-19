@@ -19,9 +19,19 @@ export const toWei = (tokens) => {
 
 export const getCurrentAccount = async () => {
   let accounts = [];
-  accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-  const accountAddress = accounts.length > 0 ? accounts[0] : null;
-  return accountAddress;
+  
+  try {
+    
+    accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+    // accounts = await web3.eth.getAccounts();
+    // console.log('accounts', accounts)
+    const accountAddress = accounts.length > 0 ? accounts[0] : null;
+    return accountAddress
+  } catch (error) {
+    console.log('getAccounts', error)
+    return error;
+  }
+
 };
 
 export const getCurrentNetworkId = async () => {
@@ -41,6 +51,9 @@ export const formatCurrency = (value, usd = false, fractionDigits = 1, currencyF
     return formatter.format(value ? value : 0);
   }
 
+  if (typeof window.web3 === "undefined") {
+    return formatter.format(value ? value : 0).slice(1);
+  }
   const netId = window.ethereum.networkVersion
   if (['97', '56'].includes(netId) && !currencyFormat ) {  // for bsc network only
     return convertToInternationalCurrencySystem(value ? value : 0, formatter)

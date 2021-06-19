@@ -17,7 +17,7 @@ import { fromWei, formatCurrency, isMetaMaskInstalled, getCurrentNetworkId, getC
 import { bscConfig, bscNetwork, claimTokens, etherConfig, etheriumNetwork, supportedStaking } from "../constants";
 import { CHANGE_NETWORK, RESET_USER_STAKE } from "../actions/types";
 import store from '../store'
-// import web3 from '../web';
+import web3 from '../web';
 // import web3 from 'web3'
 
 const useStyles = makeStyles((theme) => ({
@@ -207,18 +207,27 @@ const Home = ({
     return currentNetwork === etheriumNetwork ? formatCurrency(getCurrentPool().tokenPrice, true, 3) : formatCurrency(getCurrentPool().tokenPrice, true, 9)
   }
   useEffect(async () => {
-
+    let network = '';
     const account = await getCurrentAccount()
-    const networkId = await window.ethereum.networkVersion
 
-    const network = getCurrentNetwork(networkId.toString())
+    // alert(account)
+    if (isMetaMaskInstalled()) {
 
-    store.dispatch({
-      type: CHANGE_NETWORK,
-      payload: network
-    })
-
-    await getPoolInfo(network);
+      const networkId = window.ethereum.networkVersion;
+  
+      network = getCurrentNetwork(networkId.toString())
+  
+      store.dispatch({
+        type: CHANGE_NETWORK,
+        payload: network
+      })
+      await getPoolInfo(network);
+    }else{
+      // alert('meta mask not installed')
+      network = etheriumNetwork;
+      await getPoolInfo(network)
+    }
+    
 
     if (!isMetaMaskInstalled()) {
       return;

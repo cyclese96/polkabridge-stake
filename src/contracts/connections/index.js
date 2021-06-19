@@ -5,6 +5,7 @@ import PolkaBridgeStaking from "../abi/PolkaBridgeStaking.json";
 import CorgibStaking from '../abi/CorgibStaking.json'
 import PolkaBridgeMemeToken from '../abi/PolkaBridgeMemeToken.json'
 import { biteAddressKoven, biteAddressMainnet, bscConfig, bscNetwork, corgibMemeCoinMainnet, corgibMemeCoinTestent, corgibStakingMainent, corgibStakingTestent, currentConnection, etheriumNetwork, pbrAddressKoven, pbrAddressMainnet, stakingAddressKoven, stakingAddressMainnet } from "../../constants";
+import { isMetaMaskInstalled } from "../../utils/helper";
 
 
 export const biteContract = (network) => {
@@ -58,8 +59,17 @@ export const stakeContract = (network) => {
 const getCurrentConnection = (blockChainNetwork, abi, contractAddress) => {
 
     if (blockChainNetwork === etheriumNetwork) {
-        const web3 = new Web3(window.ethereum);
-        return new web3.eth.Contract(abi, contractAddress);
+
+        if (isMetaMaskInstalled()) {
+
+            const web3 = new Web3(window.ethereum);
+            return new web3.eth.Contract(abi, contractAddress);
+        }else{
+            const infura = currentConnection === 'testnet' ? `https://kovan.infura.io/v3/6f0ba6da417340e6b1511be0f2bc389b` : `https://mainnet.infura.io/v3/6f0ba6da417340e6b1511be0f2bc389b`;
+    
+            const web3 = new Web3(new Web3.providers.HttpProvider(infura))
+            return new web3.eth.Contract(abi, contractAddress);
+        }
 
     } else {
         // const web3 = new Web3(new Web3.providers.HttpProvider(bscConfig.network_rpc_testnet));

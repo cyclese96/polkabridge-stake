@@ -11,6 +11,7 @@ export const LOAD_PBR_BALANCE = "LOAD_PBR_BALANCE";
 export const LOAD_BITE_BALANCE = "LOAD_BITE_BALANCE";
 export const LOAD_CORGIB_BALANCE = "LOAD_CORGIB_BALANCE";
 export const SET_ACCOUNT = "SET_ACCOUNT";
+export const RESET_ACCOUNT = "RESET_ACCOUNT";
 
 //stake reducers
 export const LOAD_PPOL_INFO = "LOAD_PPOL_INFO";
