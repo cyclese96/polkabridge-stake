@@ -4,7 +4,9 @@ import PolkaBridge from "../abi/PolkaBridge.json";
 import PolkaBridgeStaking from "../abi/PolkaBridgeStaking.json";
 import CorgibStaking from '../abi/CorgibStaking.json'
 import PolkaBridgeMemeToken from '../abi/PolkaBridgeMemeToken.json'
-import { biteAddressKoven, biteAddressMainnet, bscConfig, bscNetwork, corgibMemeCoinMainnet, corgibMemeCoinTestent, corgibStakingMainent, corgibStakingTestent, currentConnection, etheriumNetwork, pbrAddressKoven, pbrAddressMainnet, stakingAddressKoven, stakingAddressMainnet } from "../../constants";
+import pwarCoin  from '../abi/Pwar.json'
+
+import { biteAddressKoven, biteAddressMainnet, bscConfig, bscNetwork, corgibMemeCoinMainnet, corgibMemeCoinTestent, corgibStakingMainent, corgibStakingTestent, currentConnection, etheriumNetwork, pbrAddressKoven, pbrAddressMainnet, pwarAddressMainnet, pwarAddressTestnet, stakingAddressKoven, stakingAddressMainnet } from "../../constants";
 import { isMetaMaskInstalled } from "../../utils/helper";
 
 
@@ -33,6 +35,16 @@ export const corgibCoinContract = (network) => {
     const address = currentConnection === 'testnet' ? corgibMemeCoinTestent : corgibMemeCoinMainnet;
 
     const abi = PolkaBridgeMemeToken;
+    const connection = getCurrentConnection(network, abi, address)
+    return connection;
+
+}
+
+export const pwarCoinContract = (network) => {
+
+    const address = currentConnection === 'testnet' ? pwarAddressTestnet : pwarAddressMainnet;
+
+    const abi = pwarCoin;
     const connection = getCurrentConnection(network, abi, address)
     return connection;
 

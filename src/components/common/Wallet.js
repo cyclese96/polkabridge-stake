@@ -48,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Wallet = ({ account, amount, connected, onClick, onWalletClick }) => {
+const Wallet = ({ account, connected, onClick, onWalletClick }) => {
   const classes = useStyles();
   return (
     <div>

@@ -15,10 +15,21 @@ export const corgibStakingMainent = "0x064dE1e65df3F40Afd7fb9E8A1Af61bD4545f4a1"
 export const corgibMemeCoinTestent = "0xE428Cc8A06Cdba0ad5074180f8E80ec6D4083b24"
 export const corgibMemeCoinMainnet = "0x1cfd6813a59d7b90c41dd5990ed99c3bf2eb8f55"
 
+//pwar
+
+export const pwarAddressTestnet = "0x16153214E683018D5aA318864c8e692b66E16778"
+export const pwarAddressMainnet = "0x16153214E683018D5aA318864c8e692b66E16778"
+
+export const PBR = 'PBR'
+export const BITE = 'BITE'
+export const CORGIB = 'CORGIB'
+export const PWAR = 'PWAR'
+
 export const poolId = {
-  'PBR': 0,
-  'BITE': 1,
-  'CORGIB': 0
+  PBR: 0,
+  BITE: 1,
+  CORGIB: 0,
+  PWAR:1
 }
 
 export const NUMBER_BLOCKS_PER_YEAR = 2400000;
@@ -26,11 +37,15 @@ export const AVG_PBR_PER_BLOCK = 1.5;
 export const AVG_BITE_PER_BLOCK = 2;
 
 export const BITE_PRICE = 0.1;
+export const PWAR_PRICE = 0.1;
 
 //corgib
 export const CORGIB_BLOCKS_PER_YEAR = 10000000;
 export const AVG_CORGIB_PER_BLOCK = 285000
 
+//pwar
+export const PWAR_BLOCKS_PER_YEAR = 10000000
+export const AVG_PWAR_PER_BLOCK = 0.35;
 
 export const infuraKovenApi = `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`
 export const infuraMainnetApi = `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`
@@ -40,7 +55,8 @@ export const infuraMainnetApi = `https://mainnet.infura.io/v3/${process.env.REAC
  *    'testnet'  BSC testnet testing
  *    'mainnet'  BSC/ETH mainent deployment
  */
-export const currentConnection = 'mainnet'
+// export const currentConnection = 'mainnet'
+export const currentConnection = 'testnet'
 
 export const etheriumNetwork = 'ethereum'
 export const bscNetwork = 'bsc'
@@ -71,12 +87,14 @@ export const supportedStaking = {
     'BITE'
   ],
   'bsc': [
-    'CORGIB'
+    'CORGIB',
+    'PWAR'
   ]
 }
 
 export const minimumStakingAmount = {
   'CORGIB':100000000,
   'BITE':1,
-  'PBR':1
+  'PBR':1,
+  'PWAR':1
 }

@@ -13,6 +13,7 @@ import {
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
 import { etheriumNetwork } from "../../constants";
+import { formatCurrency, fromWei } from "../../utils/helper";
 
 const styles = (theme) => ({
   root: {
@@ -109,10 +110,10 @@ const useStyles = makeStyles((theme) => ({
 export default function AccountDialog({
   open,
   handleClose,
-  balance,
   pbr,
   bite,
   corgib,
+  pwar,
   network,
   account,
   handleSignOut,
@@ -125,9 +126,9 @@ export default function AccountDialog({
 
   const getCoins = () => {
     if (network === etheriumNetwork) {
-      return [{ coin: 'PBR', balance: pbr }, { coin: 'BITE', balance: bite }]
+      return [{ coin: 'PBR', balance: formatCurrency(fromWei(pbr))  }, { coin: 'BITE', balance: formatCurrency(fromWei(bite))  }]
     } else {
-      return [{ coin: 'CORGIB', balance: corgib }]
+      return [{ coin: 'CORGIB', balance: formatCurrency(fromWei(corgib))  }, { coin: 'PWAR', balance: formatCurrency(fromWei(pwar), false, 1 , true )  } ]
     }
   }
   return (

@@ -1,5 +1,5 @@
 import BigNumber from "bignumber.js";
-import { AVG_BITE_PER_BLOCK, AVG_CORGIB_PER_BLOCK, AVG_PBR_PER_BLOCK, CORGIB_BLOCKS_PER_YEAR, NUMBER_BLOCKS_PER_YEAR } from "../constants";
+import { AVG_BITE_PER_BLOCK, AVG_CORGIB_PER_BLOCK, AVG_PBR_PER_BLOCK, AVG_PWAR_PER_BLOCK, CORGIB_BLOCKS_PER_YEAR, NUMBER_BLOCKS_PER_YEAR, PWAR_BLOCKS_PER_YEAR } from "../constants";
 import web3 from "../web";
 
 export const fromWei = (tokens) => {
@@ -110,14 +110,26 @@ export const getApy = (tokenType, poolObj) => {
 
   if (tokenType === 'CORGIB') {
 
-    const avg_tokens_perblock = AVG_CORGIB_PER_BLOCK;
-
     const total_value_locked_usd = tokenPrice.times(
       new BigNumber(fromWei(poolObj.totalTokenStaked))
     );
     const apy = tokenPrice
       .times(new BigNumber(CORGIB_BLOCKS_PER_YEAR))
-      .times(new BigNumber(avg_tokens_perblock))
+      .times(new BigNumber(AVG_CORGIB_PER_BLOCK))
+      .div(total_value_locked_usd)
+      .times(100)
+      .toFixed(1)
+      .toString();
+    return apy
+
+  }else if(tokenType === 'PWAR'){
+
+    const total_value_locked_usd = tokenPrice.times(
+      new BigNumber(fromWei(poolObj.totalTokenStaked))
+    );
+    const apy = tokenPrice
+      .times(new BigNumber(PWAR_BLOCKS_PER_YEAR))
+      .times(new BigNumber(AVG_PWAR_PER_BLOCK))
       .div(total_value_locked_usd)
       .times(100)
       .toFixed(1)

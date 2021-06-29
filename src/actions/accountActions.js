@@ -7,11 +7,12 @@ import {
   SHOW_LOADING,
   HIDE_LOADING,
   LOAD_CORGIB_BALANCE,
+  LOAD_PWAR_BALANCE,
 } from "./types";
 // import pbrContract from "../contracts/connections/pbrConnection";
 // import biteContract from "../contracts/connections/biteConnection";
 import { getCurrentAccount } from "../utils/helper";
-import { pbrContract, biteContract, corgibCoinContract } from '../contracts/connections'
+import { pbrContract, biteContract, corgibCoinContract, pwarCoinContract } from '../contracts/connections'
 import { etheriumNetwork } from "../constants";
 
 //GET user authenticated
@@ -49,6 +50,7 @@ export const connectWallet =
         });
         dispatch({
           type: SHOW_LOADING,
+          payload: 'BITE'
         });
 
         if (network === etheriumNetwork) {
@@ -62,10 +64,18 @@ export const connectWallet =
             payload: { pbr: pbrWei, bite: biteWei },
           });
         } else {
-          const corgibWei = await corgibCoinContract(network).methods.balanceOf(accountAddress).call();
+          const [corgibWei, pwarWei ] = await Promise.all([
+            corgibCoinContract(network).methods.balanceOf(accountAddress).call(),
+            pwarCoinContract(network).methods.balanceOf(accountAddress).call()
+          ]) 
+
           dispatch({
             type: LOAD_CORGIB_BALANCE,
             payload: corgibWei,
+          });
+          dispatch({
+            type: LOAD_PWAR_BALANCE,
+            payload: pwarWei,
           });
         }
 
@@ -104,14 +114,19 @@ export const getAccountBalance = (network) => async (dispatch) => {
     } else {
       console.log('account', address)
       console.log('network', network)
-      const [corgibWei] = await Promise.all([
-        corgibCoinContract(network).methods.balanceOf(address).call()
-      ])
+      const [corgibWei, pwarWei ] = await Promise.all([
+        corgibCoinContract(network).methods.balanceOf(address).call(),
+        pwarCoinContract(network).methods.balanceOf(address).call()
+      ]) 
 
       dispatch({
         type: LOAD_CORGIB_BALANCE,
         payload: corgibWei,
       });
+      dispatch({
+        type: LOAD_PWAR_BALANCE,
+        payload: pwarWei
+      })
     }
 
   } catch (error) {

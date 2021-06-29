@@ -56,6 +56,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
+    justifyContent:'center',
     width: 450,
     height: 400,
     [theme.breakpoints.down("sm")]: {
@@ -125,13 +126,15 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 26,
   },
   error: {
+    alignSelf:'center',
+    justifySelf:'center',
     paddingTop: 20,
   },
 }));
 
 const StakeDialog = ({
-  account: { currentAccount, currentNetwork, pbrBalance, biteBalance, corgibBalance, loading, biteLoading, pbrLoading, corgibLoading },
-  stake: { pbrStake, biteStake, corgibStake, pbrApproved, biteApproved, poolLoading },
+  account: { currentAccount, currentNetwork, balance, loading, },
+  stake: { stake },
   stakeTokens,
   unstakeTokens,
   getAccountBalance,
@@ -162,8 +165,8 @@ const StakeDialog = ({
 
   const onConfirm = async () => {
     const enteredTokens = inputTokens;
-    const stakedTokens = parseFloat(currentStakedAmount());
-    const balanceTokens = parseFloat(currentBalance());
+    const stakedTokens = parseFloat( fromWei(stake[tokenType].amount) );
+    const balanceTokens = parseFloat(  fromWei(balance[tokenType]) );
 
 
     if ( enteredTokens === "" ) {
@@ -180,7 +183,7 @@ const StakeDialog = ({
     ) {
       setError({
         status: true,
-        message: `Maximum withdraw amount can not exceed ${formatCurrency(stakedTokens)} !`,
+        message: `Maximum withdraw amount can not exceed ${formatCurrency((stakedTokens))} !`,
       });
       return;
     }
@@ -210,7 +213,7 @@ const StakeDialog = ({
 
     setError({});
     if (type === "stake") {
-      console.log('staking tokens', { inputTokens, currentAccount, tokenType, currentNetwork })
+      // console.log('staking tokens', { inputTokens, currentAccount, tokenType, currentNetwork })
       await stakeTokens(inputTokens, currentAccount, tokenType, currentNetwork);
     } else {
       await unstakeTokens(inputTokens, currentAccount, tokenType, currentNetwork);
@@ -223,9 +226,9 @@ const StakeDialog = ({
   const handleMax = () => {
     if (type === "stake") {
 
-      setTokenValue(currentBalance());
+      setTokenValue( fromWei(balance[tokenType]));
     } else {
-      setTokenValue(currentStakedAmount());
+      setTokenValue( fromWei(stake[tokenType].amount) );
     }
   };
 
@@ -235,26 +238,21 @@ const StakeDialog = ({
     setError({});
   };
 
-  const currentBalance = () => {
-    if (tokenType === 'PBR') {
-      return fromWei(pbrBalance)
-    } else if (tokenType === 'BITE') {
-      return fromWei(biteBalance)
-    } else {
-      return fromWei(corgibBalance)
-    }
-  }
+  // const currentBalance = () => {
+  //   // if (tokenType === 'PBR') {
+  //   //   return fromWei(pbrBalance)
+  //   // } else if (tokenType === 'BITE') {
+  //   //   return fromWei(biteBalance)
+  //   // } else {
+  //   //   return fromWei(corgibBalance)
+  //   // }
+  //   return balance[tokenType]
+  // }
 
-  const currentStakedAmount = () => {
+  // const currentStakedAmount = () => {
 
-    if (tokenType === 'PBR') {
-      return fromWei(pbrStake.amount)
-    } else if (tokenType === 'BITE') {
-      return fromWei(biteStake.amount)
-    } else {
-      return fromWei(corgibStake.amount)
-    }
-  }
+  //   return stake[tokenType].amount
+  // }
   return (
     <div>
       <Dialog
@@ -278,8 +276,8 @@ const StakeDialog = ({
 
           <p className={classes.subheading}>
             {type === "stake"
-              ? `Avaialable tokens: ${formatCurrency(currentBalance())}  ${tokenType}`
-              : `Staked tokens: ${formatCurrency(currentStakedAmount())} ${tokenType}`}
+              ? `Avaialable tokens: ${formatCurrency( fromWei( balance[tokenType]  )  )}  ${tokenType}`
+              : `Staked tokens: ${formatCurrency( fromWei(  stake[tokenType] ?  stake[tokenType].amount : 0 ) )} ${tokenType}`}
           </p>
           <div className={classes.inputGroup}>
             <TextField
@@ -316,7 +314,7 @@ const StakeDialog = ({
             ""
           )}
           <div className={classes.buttons}>
-            {biteLoading || pbrLoading ? (
+            {loading[tokenType] ? (
               <CircularProgress className={classes.numbers} />
             ) : (
               <>

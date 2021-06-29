@@ -10,6 +10,7 @@ import {
   LOAD_BITE_BALANCE,
   CHANGE_NETWORK,
   LOAD_CORGIB_BALANCE,
+  LOAD_PWAR_BALANCE,
 } from "../actions/types";
 import { etheriumNetwork } from "../constants";
 
@@ -19,11 +20,23 @@ const initalState = {
   pbrBalance: null,
   biteBalance: null,
   corgibBalance: null,
+  balance: {
+    BITE:null,
+    PBR:null,
+    CORGIB:null,
+    PWAR:null
+  },
   error: null,
-  loading: false,
-  biteLoading: false,
-  pbrLoading: false,
-  corgibLoading: false,
+  // loading: false,
+  // biteLoading: false,
+  // pbrLoading: false,
+  // corgibLoading: false,
+  loading: {
+    BITE:false,
+    PBR:false,
+    CORGIB:false,
+    PWAR:false
+  },
   currentNetwork: etheriumNetwork
 };
 
@@ -49,46 +62,91 @@ export default function (state = initalState, action) {
     case LOAD_BALANCE:
       return {
         ...state,
-        pbrBalance: action.payload.pbr,
-        biteBalance: action.payload.bite,
+        balance: {
+          ...state.balance,
+          PBR: action.payload.pbr,
+          BITE: action.payload.bite
+        }
       };
     case LOAD_PBR_BALANCE:
       return {
         ...state,
-        pbrBalance: action.payload,
+        balance: {
+          ...state.balance,
+          PBR: action.payload
+        }
       };
     case LOAD_BITE_BALANCE:
       return {
         ...state,
-        biteBalance: action.payload,
+        balance: {
+          ...state.balance,
+          BITE: action.payload
+        }
       };
     case LOAD_CORGIB_BALANCE:
       return {
         ...state,
-        corgibBalance: action.payload,
+        balance: {
+          ...state.balance,
+          CORGIB: action.payload
+        }
+      };
+    case LOAD_PWAR_BALANCE:
+      return {
+        ...state,
+        balance: {
+          ...state.balance,
+          PWAR: action.payload
+        }
       };
     case SHOW_LOADING:
       if (action.payload === 'BITE') {
         return {
           ...state,
-          biteLoading: true
+          loading:{
+            ...state.loading,
+            BITE:true
+          }
         }
       } else if (action.payload === 'PBR') {
         return {
           ...state,
-          pbrLoading: true
+          loading: {
+            ...state.loading,
+            PBR: true
+          }
         }
       }
       else if (action.payload === 'CORGIB') {
         return {
           ...state,
-          corgibLoading: true
+          loading : {
+            ...state.loading,
+            CORGIB: true
+          }
         }
       }
-      return {
-        ...state,
-        loading: true
-      };
+      else if (action.payload === 'PWAR') {
+        return {
+          ...state,
+          loading : {
+            ...state.loading,
+            PWAR: true
+          }
+        }
+      }else{
+        return {
+          ...state,
+          loading : {
+            ...state.loading,
+            PBR: true,
+            BITE: true,
+            CORGIB: true,
+            PWAR: true
+          }
+        }
+      }  
     case CHANGE_NETWORK:
       return {
         ...state,
@@ -97,10 +155,13 @@ export default function (state = initalState, action) {
     case HIDE_LOADING:
       return {
         ...state,
-        loading: false,
-        biteLoading: false,
-        pbrLoading: false,
-        corgibLoading: false
+        loading: {
+          ...state.loading,
+          PBR: false,
+          BITE: false,
+          CORGIB: false,
+          PWAR: false
+        }
       };
     case ERROR:
       return {

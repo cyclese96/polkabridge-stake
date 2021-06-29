@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import pbrImg from "../../assets/balance.png";
 import biteImg from "../../assets/bite.png";
 import corgiImg from "../../assets/corgi.png";
+import pwarImg from "../../assets/pwar.png";
 import CustomButton from "../Buttons/CustomButton";
 import { formatCurrency, fromWei, toWei } from "../../utils/helper";
 import { connect } from "react-redux";
@@ -39,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     // position: "relative",
-    width: 20,
+    width: 35,
     height: "auto",
     // justifySelf: "start",
     marginLeft: 60,
@@ -79,6 +80,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 12,
     marginLeft: 60,
     margin: 0,
+    marginTop:2
   },
   stakeButtons: { display: 'flex', justifyContent: 'center', flexWrap: 'wrap-reverse' },
   stakeButton: {
@@ -89,8 +91,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Staking = ({
-  stake: { pbrStake, biteStake, corgibStake, bitePoolData, pbrApproved, biteApproved, corgibApproved },
-  account: { currentAccount, currentNetwork, loading, biteLoading, pbrLoading, corgibLoading, error },
+  stake: { stake, pool, approved  },
+  account: { currentAccount, currentNetwork, loading, error },
   tokenType,
   getUserStakedData,
   confirmAllowance,
@@ -112,64 +114,32 @@ const Staking = ({
     await getUserStakedData(tokenType, currentNetwork);
   };
 
-  const currentStake = (tokenType) => {
-
-    if (tokenType === 'PBR') {
-      return pbrStake
-    } else if (tokenType === 'BITE') {
-      return biteStake
-    } else {
-      return corgibStake
-    }
-  }
-
-  const currentLoading = (tokenType) => {
-    if (tokenType === 'PBR') {
-      return pbrLoading
-    } else if (tokenType === 'BITE') {
-      return biteLoading
-    } else {
-      return corgibLoading
-    }
-  }
-
-  const currentApprove = (tokenType) => {
-    if (tokenType === 'PBR') {
-      return pbrApproved
-    } else if (tokenType === 'BITE') {
-      return biteApproved
-    } else {
-      return corgibApproved
-    }
-  }
-  // const currentApprove = {
-  //   'PBR': pbrApproved,
-  //   'BITE': biteApproved,
-  //   'CORGIB': corgibApproved
-  // }
 
   const currentAmount = (tokenType) => {
-    if (tokenType === 'PBR') {
-      return pbrStake.amount
-    } else if (tokenType === 'BITE') {
-      return biteStake.amount
-    } else {
-      return corgibStake.amount
-    }
+    return stake[tokenType] ? stake[tokenType].amount : 0
   }
 
   const tokenLogo = {
     'PBR': pbrImg,
     'BITE': biteImg,
-    'CORGIB': corgiImg
+    'CORGIB': corgiImg,
+    'PWAR': pwarImg
   }
 
+  const getCurrentApy = () => {
+    if (tokenType === 'BITE'){
+      return pool[tokenType].biteApy
+    }else{
+      return pool[tokenType].pwarApy
+    }
+    
+  }
 
   return (
     <div className={classes.card}>
       <div className="card-theme">
         <div className={classes.cardContents}>
-          {(currentLoading(tokenType)) ? (
+          { loading[tokenType]  ? (
             <div>
               <CircularProgress className={classes.numbers} />
             </div>
@@ -193,32 +163,39 @@ const Staking = ({
                 <h6 className={classes.cardHeading}>Staking Pool</h6>
               </div>
 
-              {tokenType === 'BITE' ? (
+              {['BITE', 'PWAR'].includes(tokenType) ? (
                 <div className={classes.bitePool}>
                   <p className={classes.poolItemText}>
-                    <strong>BITE APY: </strong>{" "}
-                    {formatCurrency(bitePoolData.biteApy)} %
+                    <strong>{tokenType} APY: </strong>{" "}
+                    {formatCurrency( getCurrentApy(), false, 1 , true )} %
                   </p>
                   <p className={classes.poolItemText}>
-                    <strong>Total token staked: </strong>{" "}
-                    {formatCurrency(fromWei(bitePoolData.totalTokenStaked))} {tokenType}
+                    <strong>Total token staked:</strong>{" "}
+                    {tokenType === 'PWAR' ?  formatCurrency(fromWei(pool[tokenType].totalTokenStaked), false, 1, true ) : formatCurrency(fromWei(pool[tokenType].totalTokenStaked)) } {tokenType}
                   </p>
+                  {tokenType === 'PWAR' ? (
+                    <p className={classes.poolItemText}>
+                    <strong style={{marginTop:5}}>Total token claimed:</strong>{" "}
+                    {formatCurrency(fromWei(pool[tokenType].totalTokenClaimed), false, 1, true )} {tokenType}
+                  </p>
+                  ) : ""}
+                  
                 </div>
               ) : ""}
 
               <>
                 <p className={classes.cardText}>
                   <strong>Staked: </strong>{" "}
-                  {formatCurrency(fromWei(currentStake(tokenType).amount))} {tokenType}
+                  {tokenType === 'PWAR' ?  formatCurrency(fromWei(stake[tokenType].amount), false, 1, true ): formatCurrency(fromWei(stake[tokenType].amount)) } {tokenType}
                 </p>
                 <p className={classes.cardText}>
                   <strong>Claimed rewards: </strong>{" "}
-                  {formatCurrency(fromWei(currentStake(tokenType).rewardClaimed))}{" "}
+                  {tokenType === 'PWAR' ? formatCurrency(fromWei(stake[tokenType].rewardClaimed), false, 1, true ) : formatCurrency(fromWei(stake[tokenType].rewardClaimed))}{" "}
                   {tokenType}
                 </p>
                 <p className={classes.cardText}>
                   <strong>Pending rewards: </strong>{" "}
-                  {formatCurrency(fromWei(currentStake(tokenType).pendingReward))}{" "}
+                  {tokenType === 'PWAR' ? formatCurrency(fromWei(stake[tokenType].pendingReward), false, 1, true ) : formatCurrency(fromWei(stake[tokenType].pendingReward)) }{" "}
                   {tokenType}
                 </p>
               </>
@@ -226,7 +203,7 @@ const Staking = ({
 
 
               <div className={classes.buttons}>
-                {!currentApprove(tokenType) ? (
+                {!approved[tokenType] ? (
                   <div>
                     <CustomButton onClick={() => handleApprove(tokenType)}>
                       Approve
@@ -248,32 +225,6 @@ const Staking = ({
                 )}
               </div>
 
-              {/* {tokenType === "PBR" ? (
-               
-              ) : (
-                <div className={classes.buttons}>
-                  {!biteApproved === true ? (
-                    <div>
-                      <CustomButton onClick={() => handleApprove('BITE')}>
-                        Approve
-                      </CustomButton>
-                      <p className={classes.hint}>
-                        ! Approve BITE tokens to start staking
-                      </p>
-                    </div>
-                  ) : (
-                    <div className={classes.stakeButtons}>
-                      <CustomButton disabled={biteStake.amount == 0} onClick={() => onClaim('BITE')} >
-                        Claim
-                      </CustomButton>
-                      <CustomButton onClick={() => onUnstake('BITE')} variant="light">
-                        Unstake
-                      </CustomButton>
-                      <CustomButton onClick={() => onStake('BITE')}>Stake</CustomButton>
-                    </div>
-                  )}
-                </div>
-              )} */}
             </>
           )}
         </div>

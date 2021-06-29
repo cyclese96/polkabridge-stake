@@ -18,15 +18,19 @@ import {
   RESET_CORGIB_TOKEN,
   STAKE_CORGIB_TOKENS,
   LOAD_CORGIB_BALANCE,
-  LOAD_CORGIB_POOL,
+  LOAD_BSC_POOL,
+  APPROVE_PWAR_TOKENS,
+  LOAD_PWAR_BALANCE,
+  STAKE_PWAR_TOKENS,
+  RESET_PWAR_TOKEN,
 
 } from "./types";
 
-import { biteContract, corgibCoinContract, pbrContract, stakeContract } from '../contracts/connections'
+import { biteContract, corgibCoinContract, pbrContract, stakeContract, pwarCoinContract } from '../contracts/connections'
 import { toWei, getCurrentAccount, getApy } from "../utils/helper";
 import BigNumber from "bignumber.js";
 import config from "../config";
-import { BITE_PRICE, etheriumNetwork, poolId } from "../constants";
+import { BITE_PRICE, etheriumNetwork, poolId, PWAR_PRICE } from "../constants";
 
 
 // current token contract
@@ -35,25 +39,29 @@ const getTokenContract = (network, tokenType) => {
   if (network === etheriumNetwork) {
     return tokenType === 'PBR' ? pbrContract(network) : biteContract(network)
   } else {
-    return corgibCoinContract(network)
+    return tokenType === 'CORGIB' ? corgibCoinContract(network) : pwarCoinContract(network)
   }
 
 }
 
 const tokenToApprove = (tokenType) => {
   if (tokenType === 'CORGIB') {
-    return APPROVE_CORGIB_TOKENS
+    return APPROVE_CORGIB_TOKENS;
+  }else if(tokenType === 'PWAR') {
+    return APPROVE_PWAR_TOKENS;
   }
   else if (tokenType === 'PBR') {
-    return APPROVE_PBR_TOKENS
+    return APPROVE_PBR_TOKENS;
   } else {
-    return APPROVE_BITE_TOKENS
+    return APPROVE_BITE_TOKENS;
   }
 }
 
 const tokenToReset = (tokenType) => {
   if (tokenType === 'CORGIB') {
     return RESET_CORGIB_TOKEN
+  }else if(tokenType === 'PWAR') {
+    return RESET_PWAR_TOKEN
   }
   else if (tokenType === 'PBR') {
     return RESET_PBR_TOKEN
@@ -65,6 +73,8 @@ const tokenToReset = (tokenType) => {
 const tokenToStake = (tokenType) => {
   if (tokenType === 'CORGIB') {
     return STAKE_CORGIB_TOKENS
+  }else if(tokenType === 'PWAR') {
+    return STAKE_PWAR_TOKENS
   }
   else if (tokenType === 'PBR') {
     return STAKE_PBR_TOKENS
@@ -76,6 +86,8 @@ const tokenToStake = (tokenType) => {
 const tokenToLoad = (tokenType) => {
   if (tokenType === 'CORGIB') {
     return LOAD_CORGIB_BALANCE
+  }else if(tokenType === 'PWAR') {
+    return LOAD_PWAR_BALANCE
   }
   else if (tokenType === 'PBR') {
     return LOAD_PBR_BALANCE
@@ -96,8 +108,8 @@ export const getPoolInfo = (network) => async (dispatch) => {
     if (network === etheriumNetwork) {
       // console.log('g')
       const [pbrPool, bitePool] = await Promise.all([
-        currStakingContract.methods.getPoolInfo(0).call(),
-        currStakingContract.methods.getPoolInfo(1).call()
+        currStakingContract.methods.getPoolInfo(poolId.PBR).call(),
+        currStakingContract.methods.getPoolInfo(poolId.BITE).call()
       ])
 
       const pbrPoolObj = {
@@ -138,15 +150,20 @@ export const getPoolInfo = (network) => async (dispatch) => {
     } else {
 
       // fetch pool for corgib on bsc
-      const corgibPool = await currStakingContract.methods.getPoolInfo(0).call()
+      const [corgibPoolData, pwarPoolData ] = await Promise.all([
+        currStakingContract.methods.getPoolInfo(poolId.CORGIB).call(),
+        currStakingContract.methods.getPoolInfo(poolId.PWAR).call(),
+
+      ]) 
 
       // console.log('pool data', corgibPool)
+      //prepare corgib Pool
       const poolObj = {
-        accTokenPerShare: corgibPool[0],
-        lastRewardBlock: corgibPool[1],
-        rewardPerBlock: corgibPool[2],
-        totalTokenStaked: corgibPool[3],
-        totalTokenClaimed: corgibPool[4],
+        accTokenPerShare: corgibPoolData[0],
+        lastRewardBlock: corgibPoolData[1],
+        rewardPerBlock: corgibPoolData[2],
+        totalTokenStaked: corgibPoolData[3],
+        totalTokenClaimed: corgibPoolData[4],
       };
       const { data } = await axios.get(
         config.coingecko +
@@ -156,11 +173,27 @@ export const getPoolInfo = (network) => async (dispatch) => {
       poolObj.tokenPrice = data['the-corgi-of-polkabridge'] ? data['the-corgi-of-polkabridge'].usd : "---";
       const corgibApy = getApy('CORGIB', poolObj)
       poolObj.corgibApy = corgibApy;
+      
+      
+      //prepare pwar Pool
+      const pwarPoolObj = {
+        accTokenPerShare: pwarPoolData[0],
+        lastRewardBlock: pwarPoolData[1],
+        rewardPerBlock: pwarPoolData[2],
+        totalTokenStaked: pwarPoolData[3],
+        totalTokenClaimed: pwarPoolData[4],
+      };
 
-      // console.log('final pool data', poolObj)
+      pwarPoolObj.tokenPrice = PWAR_PRICE
+      const pwarApy = getApy('PWAR', pwarPoolObj)
+      console.log('pwarapy', pwarApy)
+      pwarPoolObj.pwarApy = pwarApy;
+      
+        
+      console.log('final PWAR pool data', pwarPoolObj)
       dispatch({
-        type: LOAD_CORGIB_POOL,
-        payload: poolObj
+        type: LOAD_BSC_POOL,
+        payload: {corgib: poolObj, pwar: pwarPoolObj }
       })
 
     }
@@ -209,16 +242,23 @@ export const checkAllowance = (account, network) => async (dispatch) => {
 
     } else {
       // bsc network
-      const [corgibAllowance] = await Promise.all([
+      const [corgibAllowance, pwarAllowance] = await Promise.all([
         corgibCoinContract(network).methods
           .allowance(account, currStakingContract._address)
-          .call()
+          .call(),
+        pwarCoinContract(network).methods
+        .allowance(account, currStakingContract._address)
+        .call(),
       ])
 
       if (new BigNumber(corgibAllowance).gt(0)) {
         dispatch({
           type: APPROVE_CORGIB_TOKENS,
         });
+      }else if(new BigNumber(pwarAllowance).gt(0)) {
+        dispatch({
+          type: APPROVE_CORGIB_TOKENS
+        })
       }
 
     }
