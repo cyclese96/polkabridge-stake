@@ -253,6 +253,24 @@ const StakeDialog = ({
 
   //   return stake[tokenType].amount
   // }
+  const currentFormattedBalance = () => {
+    
+    if(tokenType === 'PWAR') {
+      return formatCurrency( fromWei( balance[tokenType] ), false, 1, true )
+    }
+
+      return formatCurrency(fromWei( balance[tokenType]))
+    
+  }
+
+  const currentFormattedStakedBal = () => {
+    if (tokenType === 'PWAR') {
+      return formatCurrency( fromWei(stake[tokenType] ?  stake[tokenType].amount : 0 ), false, 1, true  )
+    }
+
+    return formatCurrency( fromWei(  stake[tokenType] ?  stake[tokenType].amount : 0 ) )
+
+  }
   return (
     <div>
       <Dialog
@@ -276,8 +294,8 @@ const StakeDialog = ({
 
           <p className={classes.subheading}>
             {type === "stake"
-              ? `Avaialable tokens: ${formatCurrency( fromWei( balance[tokenType]  )  )}  ${tokenType}`
-              : `Staked tokens: ${formatCurrency( fromWei(  stake[tokenType] ?  stake[tokenType].amount : 0 ) )} ${tokenType}`}
+              ? `Avaialable tokens: ${currentFormattedBalance()}  ${tokenType}`
+              : `Staked tokens: ${currentFormattedStakedBal()} ${tokenType}`}
           </p>
           <div className={classes.inputGroup}>
             <TextField
