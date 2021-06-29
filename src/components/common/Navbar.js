@@ -179,9 +179,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Navbar = ({
-  pbrBalance,
-  biteBalance,
-  corgibBalance,
+  balance,
   account,
   currentNetwork,
   handleConnectWallet,
@@ -252,7 +250,6 @@ const Navbar = ({
         <ListItem button style={{ marginTop: 15 }}>
           <Wallet
             onClick={handleConnectWallet}
-            amount={pbrBalance}
             account={account}
             connected={connected}
             onWalletClick={() => setAccountDialog(true)}
@@ -271,11 +268,11 @@ const Navbar = ({
       />
       <AccountDialog
         open={accountDialog}
-        balance={pbrBalance}
-        pbr={pbrBalance}
-        bite={biteBalance}
+        pbr={balance.PBR}
+        bite={balance.BITE}
+        corgib={balance.CORGIB}
+        pwar={balance.PWAR}
         network={currentNetwork}
-        corgib={corgibBalance}
         account={account}
         handleClose={() => setAccountDialog(false)}
         handleSignOut={handleSignOut}
@@ -336,7 +333,6 @@ const Navbar = ({
           </div>
           <Wallet
             onClick={handleConnectWallet}
-            amount={pbrBalance}
             account={account}
             connected={connected}
             onWalletClick={() => setAccountDialog(true)}

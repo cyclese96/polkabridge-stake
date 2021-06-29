@@ -101,9 +101,9 @@ const Home = ({
   connectWallet,
   getPoolInfo,
   logout,
-  account: { currentAccount, pbrBalance, corgibBalance, biteBalance, connected, currentNetwork },
+  account: { currentAccount, balance, connected, currentNetwork },
   getAccountBalance,
-  stake: { pbrPoolData, corgibPoolData, poolLoading },
+  stake: { pool, poolLoading },
   unstakeTokens
 }) => {
   const classes = useStyles();
@@ -196,7 +196,7 @@ const Home = ({
   }
 
   const getCurrentPool = () => {
-    return currentNetwork === etheriumNetwork ? pbrPoolData : corgibPoolData;
+    return currentNetwork === etheriumNetwork ? pool.PBR : pool.CORGIB;
   }
 
   const getCurrentApy = () => {
@@ -217,7 +217,7 @@ const Home = ({
       const networkId = await getCurrentNetworkId()
 
       if (! supportedNetworks.includes(networkId.toString())) {
-        alert('This network is not supported yet! Please switch to Ethereum or Smart Chain network')
+        // alert('This network is not supported yet! Please switch to Ethereum or Smart Chain network')
       }
       network =   getCurrentNetwork(networkId.toString())
       // alert(`current network set to  ${network}` )
@@ -250,9 +250,10 @@ const Home = ({
           account={currentAccount}
           connected={connected}
           currentNetwork={currentNetwork}
-          corgibBalance={formatCurrency(fromWei(corgibBalance))}
-          pbrBalance={formatCurrency(fromWei(pbrBalance))}
-          biteBalance={formatCurrency(fromWei(biteBalance))}
+          // corgibBalance={formatCurrency(fromWei(corgibBalance))}
+          // pbrBalance={formatCurrency(fromWei(pbrBalance))}
+          // biteBalance={formatCurrency(fromWei(biteBalance))}
+          balance = {balance}
         />
       </section>
 

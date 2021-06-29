@@ -3,6 +3,7 @@ import supply from "../../assets/supply.png";
 import { fromWei, formatCurrency } from "../../utils/helper";
 import biteImg from "../../assets/bite.png";
 import corgibImg from "../../assets/corgi.png";
+import pwarImg from "../../assets/pwar.png";
 import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
@@ -53,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Balance = ({
-  account: { pbrBalance, biteBalance, corgibBalance, loading },
+  account: { balance, loading },
   tokenType,
 }) => {
   const classes = useStyles();
@@ -61,20 +62,16 @@ const Balance = ({
   const tokenLogo = {
     'PBR': supply,
     'BITE': biteImg,
-    'CORGIB': corgibImg
+    'CORGIB': corgibImg,
+    'PWAR': pwarImg
   }
 
-  const tokenBalance = {
-    'PBR': pbrBalance,
-    'BITE': biteBalance,
-    'CORGIB': corgibBalance
-  }
 
   return (
     <div className={classes.card}>
       <div className="card-theme">
         <div className={classes.cardContents}>
-          {loading ? (
+          {loading[tokenType] ? (
             <CircularProgress className={classes.numbers} />
           ) : (
             <>
@@ -84,7 +81,7 @@ const Balance = ({
                 src={tokenLogo[tokenType]}
               />
               <h4 className={classes.numbers}>
-                {formatCurrency(fromWei(tokenBalance[tokenType]))}{" "}
+                {tokenType === 'PWAR' ?  formatCurrency(fromWei(balance[tokenType]), false, 1 , true ) : formatCurrency(fromWei(balance[tokenType])) }
                 {tokenType}
               </h4>
             </>
