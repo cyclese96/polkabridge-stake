@@ -17,9 +17,6 @@ import { etheriumNetwork } from "../constants";
 const initalState = {
   connected: false,
   currentAccount: "",
-  pbrBalance: null,
-  biteBalance: null,
-  corgibBalance: null,
   balance: {
     BITE:null,
     PBR:null,
@@ -27,10 +24,6 @@ const initalState = {
     PWAR:null
   },
   error: null,
-  // loading: false,
-  // biteLoading: false,
-  // pbrLoading: false,
-  // corgibLoading: false,
   loading: {
     BITE:false,
     PBR:false,

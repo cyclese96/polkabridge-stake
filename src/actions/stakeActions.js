@@ -322,7 +322,9 @@ export const getUserStakedData = (tokenType, network) => async (dispatch) => {
       .allowance(account, currStakeContract._address)
       .call();
 
+    console.log({tokenType,allowance})
     if (new BigNumber(allowance).gt(0)) {
+      console.log({approving:tokenType})
       dispatch({
         type: tokenToApprove(tokenType),
       });

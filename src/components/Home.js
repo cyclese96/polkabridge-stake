@@ -142,7 +142,7 @@ const Home = ({
         })
         await getPoolInfo(currentNetwork);
         await connectWallet(false, currentNetwork);
-        await getAccountBalance(currentNetwork)
+        // await getAccountBalance(currentNetwork)
       });
 
       window.ethereum.on("networkChanged", async (networkId) => {
@@ -161,7 +161,7 @@ const Home = ({
         })
         await getPoolInfo(network);
         await connectWallet(false, network);
-        await getAccountBalance(network)
+        // await getAccountBalance(network)
       });
     }
   }, []);

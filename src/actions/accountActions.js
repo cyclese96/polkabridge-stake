@@ -112,8 +112,8 @@ export const getAccountBalance = (network) => async (dispatch) => {
         payload: { pbr: pbrWei, bite: biteWei },
       });
     } else {
-      console.log('account', address)
-      console.log('network', network)
+      // console.log('account', address)
+      // console.log('network', network)
       const [corgibWei, pwarWei ] = await Promise.all([
         corgibCoinContract(network).methods.balanceOf(address).call(),
         pwarCoinContract(network).methods.balanceOf(address).call()
