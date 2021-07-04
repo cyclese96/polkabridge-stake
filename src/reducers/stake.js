@@ -16,6 +16,7 @@ import {
   APPROVE_PWAR_TOKENS,
   STAKE_PWAR_TOKENS,
   LOAD_BSC_POOL,
+  RESET_PWAR_TOKEN,
 } from "../actions/types";
 
 const initalState = {
@@ -100,7 +101,7 @@ export default function (state = initalState, action) {
         ...state,
         approved: {
           ...state.approved,
-          BITE: true
+          BITE: false
         }
       };
     case APPROVE_CORGIB_TOKENS:
@@ -116,7 +117,7 @@ export default function (state = initalState, action) {
         ...state,
         approved: {
           ...state.approved,
-          CORGIB: true
+          CORGIB: false
         }
       };
     case APPROVE_PWAR_TOKENS:
@@ -127,12 +128,12 @@ export default function (state = initalState, action) {
           PWAR: true
         }
       };     
-    case APPROVE_PWAR_TOKENS:
+    case RESET_PWAR_TOKEN:
       return {
         ...state,
         approved: {
           ...state.approved,
-          PWAR: true
+          PWAR: false
         }
       };   
     case RESET_USER_STAKE:
