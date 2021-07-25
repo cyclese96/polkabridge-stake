@@ -8,7 +8,12 @@ import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 import { CircularProgress, TextField } from "@material-ui/core";
 import CustomButton from "../Buttons/CustomButton";
-import { formatCurrency, fromWei, isNumber, resetCurrencyFormatting } from "../../utils/helper";
+import {
+  formatCurrency,
+  fromWei,
+  isNumber,
+  resetCurrencyFormatting,
+} from "../../utils/helper";
 import { connect } from "react-redux";
 import {
   getPoolInfo,
@@ -56,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent:'center',
+    justifyContent: "center",
     width: 450,
     height: 400,
     [theme.breakpoints.down("sm")]: {
@@ -126,14 +131,14 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 26,
   },
   error: {
-    alignSelf:'center',
-    justifySelf:'center',
+    alignSelf: "center",
+    justifySelf: "center",
     paddingTop: 20,
   },
 }));
 
 const StakeDialog = ({
-  account: { currentAccount, currentNetwork, balance, loading, },
+  account: { currentAccount, currentNetwork, balance, loading },
   stake: { stake },
   stakeTokens,
   unstakeTokens,
@@ -142,7 +147,7 @@ const StakeDialog = ({
   open,
   handleClose,
   type,
-  tokenType
+  tokenType,
 }) => {
   const classes = useStyles();
   const [inputTokens, setTokenValue] = useState("");
@@ -150,26 +155,26 @@ const StakeDialog = ({
   const [error, setError] = useState({ status: false, message: "" });
 
   const handleInputChange = (e) => {
-
-    if (  !isNumber(e.nativeEvent.data) && e.nativeEvent.inputType !== 'deleteContentBackward'  ){
-      setError({status:true, message:"Please enter numbers only!"})
-      return
+    if (
+      !isNumber(e.nativeEvent.data) &&
+      e.nativeEvent.inputType !== "deleteContentBackward"
+    ) {
+      setError({ status: true, message: "Please enter numbers only!" });
+      return;
     }
     setTokenValue(resetCurrencyFormatting(e.target.value));
 
-    if(error.status){
-      setError({status:false, message:''})
+    if (error.status) {
+      setError({ status: false, message: "" });
     }
-  
   };
 
   const onConfirm = async () => {
-    const enteredTokens = inputTokens;
-    const stakedTokens = parseFloat( fromWei(stake[tokenType].amount) );
-    const balanceTokens = parseFloat(  fromWei(balance[tokenType]) );
+    let enteredTokens = inputTokens;
+    const stakedTokens = parseFloat(fromWei(stake[tokenType].amount));
+    const balanceTokens = parseFloat(fromWei(balance[tokenType]));
 
-
-    if ( enteredTokens === "" ) {
+    if (enteredTokens === "") {
       setError({
         status: true,
         message: `Please enter some ${tokenType} to ${type} !`,
@@ -177,46 +182,66 @@ const StakeDialog = ({
       return;
     }
 
-    if (
-      type !== "stake" &&
-      ( enteredTokens > stakedTokens)
-    ) {
+    if (type !== "stake" && enteredTokens > stakedTokens) {
       setError({
         status: true,
-        message: `Maximum withdraw amount can not exceed ${formatCurrency((stakedTokens))} !`,
+        message: `Maximum withdraw amount can not exceed ${formatCurrency(
+          stakedTokens
+        )} !`,
       });
       return;
     }
 
-    if (
-      type === "stake" &&
-      (enteredTokens <  minimumStakingAmount[tokenType] )
-    ) {
+    if (type === "stake" && enteredTokens < minimumStakingAmount[tokenType]) {
       setError({
         status: true,
-        message: `Minimum ${formatCurrency(minimumStakingAmount[tokenType]) } ${tokenType} required to stake!`,
+        message: `Minimum ${formatCurrency(
+          minimumStakingAmount[tokenType]
+        )} ${tokenType} required to stake!`,
       });
       return;
     }
 
-    if (
-      type === "stake" &&
-      (enteredTokens > balanceTokens)
-    ) {
+    if (type === "stake" && enteredTokens > balanceTokens) {
       setError({
         status: true,
-        message: `Can not stake more that ${formatCurrency(balanceTokens)} ${tokenType}!`,
+        message: `Can not stake more that ${formatCurrency(
+          balanceTokens
+        )} ${tokenType}!`,
       });
       return;
     }
-
 
     setError({});
+
     if (type === "stake") {
       // console.log('staking tokens', { inputTokens, currentAccount, tokenType, currentNetwork })
-      await stakeTokens(inputTokens, currentAccount, tokenType, currentNetwork);
+
+      if (
+        parseFloat(enteredTokens) === parseFloat(fromWei(balance[tokenType]))
+      ) {
+        // console.log("max ");
+        enteredTokens -= 1;
+      }
+
+      // console.log({
+      //   entered: enteredTokens,
+      //   input: inputTokens,
+      //   bal: parseFloat(fromWei(balance[tokenType])),
+      // });
+      await stakeTokens(
+        enteredTokens.toString(),
+        currentAccount,
+        tokenType,
+        currentNetwork
+      );
     } else {
-      await unstakeTokens(inputTokens, currentAccount, tokenType, currentNetwork);
+      await unstakeTokens(
+        inputTokens,
+        currentAccount,
+        tokenType,
+        currentNetwork
+      );
     }
     handleClose();
     getPoolInfo(currentNetwork);
@@ -225,10 +250,9 @@ const StakeDialog = ({
 
   const handleMax = () => {
     if (type === "stake") {
-
-      setTokenValue( fromWei(balance[tokenType]));
+      setTokenValue(fromWei(balance[tokenType]));
     } else {
-      setTokenValue( fromWei(stake[tokenType].amount) );
+      setTokenValue(fromWei(stake[tokenType].amount));
     }
   };
 
@@ -254,23 +278,27 @@ const StakeDialog = ({
   //   return stake[tokenType].amount
   // }
   const currentFormattedBalance = () => {
-    
-    if(tokenType === 'PWAR') {
-      return formatCurrency( fromWei( balance[tokenType] ), false, 1, true )
+    if (tokenType === "PWAR") {
+      return formatCurrency(fromWei(balance[tokenType]), false, 1, true);
     }
 
-      return formatCurrency(fromWei( balance[tokenType]))
-    
-  }
+    return formatCurrency(fromWei(balance[tokenType]));
+  };
 
   const currentFormattedStakedBal = () => {
-    if (tokenType === 'PWAR') {
-      return formatCurrency( fromWei(stake[tokenType] ?  stake[tokenType].amount : 0 ), false, 1, true  )
+    if (tokenType === "PWAR") {
+      return formatCurrency(
+        fromWei(stake[tokenType] ? stake[tokenType].amount : 0),
+        false,
+        1,
+        true
+      );
     }
 
-    return formatCurrency( fromWei(  stake[tokenType] ?  stake[tokenType].amount : 0 ) )
-
-  }
+    return formatCurrency(
+      fromWei(stake[tokenType] ? stake[tokenType].amount : 0)
+    );
+  };
   return (
     <div>
       <Dialog
@@ -316,7 +344,9 @@ const StakeDialog = ({
               id="outlined-basic"
               variant="outlined"
               placeholder="0"
-              value={inputTokens ?  formatCurrency(inputTokens, false, 0 , true) : ""}
+              value={
+                inputTokens ? formatCurrency(inputTokens, false, 0, true) : ""
+              }
               // name={[pbrTokens]}
               onChange={handleInputChange}
               label={`Enter ${tokenType} tokens`}
