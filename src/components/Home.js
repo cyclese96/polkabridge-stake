@@ -10,14 +10,32 @@ import Footer from "./common/Footer";
 
 import Wallet from "./common/Wallet";
 import PropTypes from "prop-types";
-import { connectWallet, getAccountBalance, logout } from "../actions/accountActions";
+import {
+  connectWallet,
+  getAccountBalance,
+  logout,
+} from "../actions/accountActions";
 import { getPoolInfo, unstakeTokens } from "../actions/stakeActions";
 import { connect } from "react-redux";
-import { fromWei, formatCurrency, isMetaMaskInstalled, getCurrentNetworkId, getCurrentAccount } from "../utils/helper";
-import { bscConfig, bscNetwork, claimTokens, etherConfig, etheriumNetwork, supportedNetworks, supportedStaking } from "../constants";
+import {
+  fromWei,
+  formatCurrency,
+  isMetaMaskInstalled,
+  getCurrentNetworkId,
+  getCurrentAccount,
+} from "../utils/helper";
+import {
+  bscConfig,
+  bscNetwork,
+  claimTokens,
+  etherConfig,
+  etheriumNetwork,
+  supportedNetworks,
+  supportedStaking,
+} from "../constants";
 import { CHANGE_NETWORK, RESET_USER_STAKE } from "../actions/types";
-import store from '../store'
-import web3 from '../web';
+import store from "../store";
+import web3 from "../web";
 // import web3 from 'web3'
 
 const useStyles = makeStyles((theme) => ({
@@ -104,10 +122,14 @@ const Home = ({
   account: { currentAccount, balance, connected, currentNetwork },
   getAccountBalance,
   stake: { pool, poolLoading },
-  unstakeTokens
+  unstakeTokens,
 }) => {
   const classes = useStyles();
-  const [dialog, setDialog] = React.useState({ open: false, type: null, tokenType: null });
+  const [dialog, setDialog] = React.useState({
+    open: false,
+    type: null,
+    tokenType: null,
+  });
 
   const onStake = (tokenType) => {
     setDialog({ open: true, type: "stake", tokenType: tokenType });
@@ -122,15 +144,20 @@ const Home = ({
   };
 
   const getCurrentNetwork = (networkId) => {
-    if (networkId === bscConfig.network_id.mainnet || networkId === bscConfig.network_id.testnet) {
+    if (
+      networkId === bscConfig.network_id.mainnet ||
+      networkId === bscConfig.network_id.testnet
+    ) {
       return bscNetwork;
-
-    } else if (networkId === etherConfig.network_id.mainet || networkId === etherConfig.network_id.koven) {
-      return etheriumNetwork
+    } else if (
+      networkId === etherConfig.network_id.mainet ||
+      networkId === etherConfig.network_id.koven
+    ) {
+      return etheriumNetwork;
     } else {
-      return etheriumNetwork
+      return etheriumNetwork;
     }
-  }
+  };
   useEffect(async () => {
     if (typeof window.web3 !== "undefined") {
       window.ethereum.on("accountsChanged", async (accounts) => {
@@ -138,27 +165,25 @@ const Home = ({
           return;
         }
         store.dispatch({
-          type: RESET_USER_STAKE
-        })
+          type: RESET_USER_STAKE,
+        });
         await getPoolInfo(currentNetwork);
         await connectWallet(false, currentNetwork);
         // await getAccountBalance(currentNetwork)
       });
 
       window.ethereum.on("networkChanged", async (networkId) => {
-
-
         // setCurrentNetwork(networkId)
-        const network = getCurrentNetwork(networkId)
+        const network = getCurrentNetwork(networkId);
 
         store.dispatch({
           type: CHANGE_NETWORK,
-          payload: network
-        })
+          payload: network,
+        });
 
         store.dispatch({
-          type: RESET_USER_STAKE
-        })
+          type: RESET_USER_STAKE,
+        });
         await getPoolInfo(network);
         await connectWallet(false, network);
         // await getAccountBalance(network)
@@ -180,58 +205,63 @@ const Home = ({
   };
 
   const handleClaim = async (tokenType) => {
+    const tokensToClaim = claimTokens;
 
-    const tokensToClaim = claimTokens
-
-    await unstakeTokens(tokensToClaim, currentAccount, tokenType, currentNetwork);
+    await unstakeTokens(
+      tokensToClaim,
+      currentAccount,
+      tokenType,
+      currentNetwork
+    );
     await Promise.all([
       getPoolInfo(currentNetwork),
-      getAccountBalance(currentNetwork)
-    ])
-
-  }
+      getAccountBalance(currentNetwork),
+    ]);
+  };
 
   const getCurrentTokenType = () => {
-    return currentNetwork === etheriumNetwork ? 'PBR' : 'CORGIB';
-  }
+    return currentNetwork === etheriumNetwork ? "PBR" : "CORGIB";
+  };
 
   const getCurrentPool = () => {
     return currentNetwork === etheriumNetwork ? pool.PBR : pool.CORGIB;
-  }
+  };
 
   const getCurrentApy = () => {
-    return currentNetwork === etheriumNetwork ? getCurrentPool().pbrApy : getCurrentPool().corgibApy
-  }
+    return currentNetwork === etheriumNetwork
+      ? getCurrentPool().pbrApy
+      : getCurrentPool().corgibApy;
+  };
 
   const getCurrentTokenPrice = () => {
-    return currentNetwork === etheriumNetwork ? formatCurrency(getCurrentPool().tokenPrice, true, 3) : formatCurrency(getCurrentPool().tokenPrice, true, 9)
-  }
+    return currentNetwork === etheriumNetwork
+      ? formatCurrency(getCurrentPool().tokenPrice, true, 3)
+      : formatCurrency(getCurrentPool().tokenPrice, true, 9);
+  };
 
   useEffect(async () => {
-    let network = '';
-    const account = await getCurrentAccount()
-    
+    let network = "";
+    const account = await getCurrentAccount();
+
     // alert(account)
     if (isMetaMaskInstalled()) {
+      const networkId = await getCurrentNetworkId();
 
-      const networkId = await getCurrentNetworkId()
-
-      if (! supportedNetworks.includes(networkId.toString())) {
+      if (!supportedNetworks.includes(networkId.toString())) {
         // alert('This network is not supported yet! Please switch to Ethereum or Smart Chain network')
       }
-      network =   getCurrentNetwork(networkId.toString())
+      network = getCurrentNetwork(networkId.toString());
       // alert(`current network set to  ${network}` )
       store.dispatch({
         type: CHANGE_NETWORK,
-        payload: network
-      })
+        payload: network,
+      });
       await getPoolInfo(network);
-    }else{
+    } else {
       // alert('meta mask not installed')
       network = etheriumNetwork;
-      await getPoolInfo(network)
+      await getPoolInfo(network);
     }
-    
 
     if (!isMetaMaskInstalled()) {
       return;
@@ -253,7 +283,7 @@ const Home = ({
           // corgibBalance={formatCurrency(fromWei(corgibBalance))}
           // pbrBalance={formatCurrency(fromWei(pbrBalance))}
           // biteBalance={formatCurrency(fromWei(biteBalance))}
-          balance = {balance}
+          balance={balance}
         />
       </section>
 
@@ -274,20 +304,22 @@ const Home = ({
             <p className={classes.heading}>
               {getCurrentTokenType()} APY:
               <strong className={classes.numbers}>
-                {formatCurrency(getCurrentApy(), false, 1 , true)} %
+                {formatCurrency(getCurrentApy(), false, 1, true)} %
               </strong>
             </p>
             <p className={classes.heading}>
               Total Token Staked :
               <strong className={classes.numbers}>
-                {formatCurrency(fromWei(getCurrentPool().totalTokenStaked))} {getCurrentTokenType()}
+                {formatCurrency(fromWei(getCurrentPool().totalTokenStaked))}{" "}
+                {getCurrentTokenType()}
               </strong>
             </p>
 
             <p className={classes.heading}>
               Total Rewards Claimed:
               <strong className={classes.numbers}>
-                {formatCurrency(fromWei(getCurrentPool().totalTokenClaimed))} {getCurrentTokenType()}
+                {formatCurrency(fromWei(getCurrentPool().totalTokenClaimed))}{" "}
+                {getCurrentTokenType()}
               </strong>
             </p>
           </>
@@ -306,7 +338,7 @@ const Home = ({
           </div>
         ) : (
           <div>
-            {supportedStaking[currentNetwork].map(token => (
+            {supportedStaking[currentNetwork].map((token) => (
               <div className={classes.cardsContainer}>
                 <div className={classes.card}>
                   <Staking
@@ -319,10 +351,8 @@ const Home = ({
                 <div className={classes.card}>
                   <Balance tokenType={token} />
                 </div>
-
               </div>
             ))}
-
           </div>
         )}
         <StakeDialog
@@ -353,5 +383,5 @@ export default connect(mapStateToProps, {
   getPoolInfo,
   logout,
   unstakeTokens,
-  getAccountBalance
+  getAccountBalance,
 })(Home);
