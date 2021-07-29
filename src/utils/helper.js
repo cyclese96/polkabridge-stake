@@ -34,6 +34,17 @@ export const getCurrentAccount = async () => {
 
 };
 
+export const getNetworkBalance = async (accountAddress) => {
+  try {
+    const bal = web3.eth.getBalance(accountAddress);
+    return bal;
+  } catch (error) {
+    console.log("getAccountBalance", error);
+    return null;
+  }
+};
+
+
 export const getCurrentNetworkId = async () => {
 
   if (window.ethereum) {

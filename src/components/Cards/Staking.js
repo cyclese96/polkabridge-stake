@@ -10,8 +10,11 @@ import { connect } from "react-redux";
 import {
   confirmAllowance,
   getUserStakedData,
+  getPoolInfo,
+  unstakeTokens,
 } from "../../actions/stakeActions";
-import { etheriumNetwork } from "../../constants";
+import { getAccountBalance } from "../../actions/accountActions";
+import { claimTokens, etheriumNetwork } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -74,82 +77,110 @@ const useStyles = makeStyles((theme) => ({
   },
   bitePool: {
     marginBottom: 20,
-    alignSelf: 'start',
+    alignSelf: "start",
   },
   poolItemText: {
     fontSize: 12,
     marginLeft: 60,
     margin: 0,
-    marginTop:2
+    marginTop: 2,
   },
-  stakeButtons: { display: 'flex', justifyContent: 'center', flexWrap: 'wrap-reverse' },
+  stakeButtons: {
+    display: "flex",
+    justifyContent: "center",
+    flexWrap: "wrap-reverse",
+  },
   stakeButton: {
     marginTop: 5,
-    alignSelf: 'center',
-    justifySelf: 'center'
-  }
+    alignSelf: "center",
+    justifySelf: "center",
+  },
 }));
 
 const Staking = ({
-  stake: { stake, pool, approved  },
+  stake: { stake, pool, approved },
   account: { currentAccount, currentNetwork, loading, error },
   tokenType,
   getUserStakedData,
   confirmAllowance,
+  getPoolInfo,
+  getAccountBalance,
+  unstakeTokens,
   onStake,
   onUnstake,
-  onClaim
 }) => {
   const classes = useStyles();
 
   useEffect(async () => {
-
-    getUserStakedData(tokenType, currentNetwork)
-
+    getUserStakedData(tokenType, currentNetwork);
   }, [currentAccount, currentNetwork]);
 
   const handleApprove = async (tokenType) => {
-    const tokenWeiAmountToApprove = currentNetwork === etheriumNetwork ? toWei("999999999") : "999999999999999999999999999999999999"
-    await confirmAllowance(tokenWeiAmountToApprove, tokenType, currentNetwork);
+    const tokenWeiAmountToApprove =
+      currentNetwork === etheriumNetwork
+        ? toWei("999999999")
+        : "999999999999999999999999999999999999";
+   
+    await confirmAllowance(
+      tokenWeiAmountToApprove,
+      tokenType,
+      currentNetwork,
+      currentAccount
+    );
+    // alert(
+    //   `tokenType: ${tokenType}  currentNetwork: ${currentNetwork} tokenAmount:  ${tokenWeiAmountToApprove}`
+    // );
     await getUserStakedData(tokenType, currentNetwork);
   };
 
+  const handleClaim = async (tokenType) => {
+    const tokensToClaim = claimTokens;
+
+    await unstakeTokens(
+      tokensToClaim,
+      currentAccount,
+      tokenType,
+      currentNetwork
+    );
+    await Promise.all([
+      getPoolInfo(currentNetwork),
+      getAccountBalance(currentNetwork),
+    ]);
+  };
+
+
 
   const currentAmount = (tokenType) => {
-    return stake[tokenType] ? stake[tokenType].amount : 0
-  }
+    return stake[tokenType] ? stake[tokenType].amount : 0;
+  };
 
   const tokenLogo = {
-    'PBR': pbrImg,
-    'BITE': biteImg,
-    'CORGIB': corgiImg,
-    'PWAR': pwarImg
-  }
+    PBR: pbrImg,
+    BITE: biteImg,
+    CORGIB: corgiImg,
+    PWAR: pwarImg,
+  };
 
   const getCurrentApy = () => {
-    if (tokenType === 'BITE'){
-      return pool[tokenType].biteApy
-    }else{
-      return pool[tokenType].pwarApy
+    if (tokenType === "BITE") {
+      return pool[tokenType].biteApy;
+    } else {
+      return pool[tokenType].pwarApy;
     }
-    
-  }
+  };
 
   return (
     <div className={classes.card}>
       <div className="card-theme">
         <div className={classes.cardContents}>
-          { loading[tokenType]  ? (
+          {loading[tokenType] ? (
             <div>
               <CircularProgress className={classes.numbers} />
             </div>
           ) : (
             <>
               <div className={classes.cardHeader}>
-                <img
-                  className={classes.avatar}
-                  src={tokenLogo[tokenType]}
-                />
+                <img className={classes.avatar} src={tokenLogo[tokenType]} />
                 <small
                   style={{
                     color: "#f9f9f9",
@@ -163,44 +194,89 @@ const Staking = ({
                 <h6 className={classes.cardHeading}>Staking Pool</h6>
               </div>
 
-              {['BITE', 'PWAR'].includes(tokenType) ? (
+              {["BITE", "PWAR"].includes(tokenType) ? (
                 <div className={classes.bitePool}>
                   <p className={classes.poolItemText}>
                     <strong>{tokenType} APY: </strong>{" "}
-                    {formatCurrency( getCurrentApy(), false, 1 , true )} %
+                    {formatCurrency(getCurrentApy(), false, 1, true)} %
                   </p>
                   <p className={classes.poolItemText}>
                     <strong>Total token staked:</strong>{" "}
-                    {tokenType === 'PWAR' ?  formatCurrency(fromWei(pool[tokenType].totalTokenStaked), false, 1, true ) : formatCurrency(fromWei(pool[tokenType].totalTokenStaked)) } {tokenType}
+                    {tokenType === "PWAR"
+                      ? formatCurrency(
+                          fromWei(pool[tokenType].totalTokenStaked),
+                          false,
+                          1,
+                          true
+                        )
+                      : formatCurrency(
+                          fromWei(pool[tokenType].totalTokenStaked)
+                        )}{" "}
+                    {tokenType}
                   </p>
-                  {tokenType === 'PWAR' ? (
+                  {tokenType === "PWAR" ? (
                     <p className={classes.poolItemText}>
-                    <strong style={{marginTop:5}}>Total token claimed:</strong>{" "}
-                    {formatCurrency(fromWei(pool[tokenType].totalTokenClaimed), false, 1, true )} {tokenType}
-                  </p>
-                  ) : ""}
-                  
+                      <strong style={{ marginTop: 5 }}>
+                        Total token claimed:
+                      </strong>{" "}
+                      {formatCurrency(
+                        fromWei(pool[tokenType].totalTokenClaimed),
+                        false,
+                        1,
+                        true
+                      )}{" "}
+                      {tokenType}
+                    </p>
+                  ) : (
+                    ""
+                  )}
                 </div>
-              ) : ""}
+              ) : (
+                ""
+              )}
 
               <>
                 <p className={classes.cardText}>
                   <strong>Staked: </strong>{" "}
-                  {tokenType === 'PWAR' ?  formatCurrency(fromWei(stake[tokenType].amount), false, 1, true ): formatCurrency(fromWei(stake[tokenType].amount)) } {tokenType}
+                  {tokenType === "PWAR"
+                    ? formatCurrency(
+                        fromWei(stake[tokenType].amount),
+                        false,
+                        1,
+                        true
+                      )
+                    : formatCurrency(fromWei(stake[tokenType].amount))}{" "}
+                  {tokenType}
                 </p>
                 <p className={classes.cardText}>
                   <strong>Claimed rewards: </strong>{" "}
-                  {tokenType === 'PWAR' ? formatCurrency(fromWei(stake[tokenType].rewardClaimed), false, 1, true ) : formatCurrency(fromWei(stake[tokenType].rewardClaimed))}{" "}
+                  {tokenType === "PWAR"
+                    ? formatCurrency(
+                        fromWei(stake[tokenType].rewardClaimed),
+                        false,
+                        1,
+                        true
+                      )
+                    : formatCurrency(
+                        fromWei(stake[tokenType].rewardClaimed)
+                      )}{" "}
                   {tokenType}
                 </p>
                 <p className={classes.cardText}>
                   <strong>Pending rewards: </strong>{" "}
-                  {tokenType === 'PWAR' ? formatCurrency(fromWei(stake[tokenType].pendingReward), false, 1, true ) : formatCurrency(fromWei(stake[tokenType].pendingReward)) }{" "}
+                  {tokenType === "PWAR"
+                    ? formatCurrency(
+                        fromWei(stake[tokenType].pendingReward),
+                        false,
+                        1,
+                        true
+                      )
+                    : formatCurrency(
+                        fromWei(stake[tokenType].pendingReward)
+                      )}{" "}
                   {tokenType}
                 </p>
               </>
-
-
 
               <div className={classes.buttons}>
                 {!approved[tokenType] ? (
@@ -214,17 +290,24 @@ const Staking = ({
                   </div>
                 ) : (
                   <div className={classes.stakeButtons}>
-                    <CustomButton disabled={currentAmount(tokenType) == 0} onClick={() => onClaim(tokenType)} >
+                    <CustomButton
+                      disabled={currentAmount(tokenType) == 0}
+                      onClick={() => handleClaim(tokenType)}
+                    >
                       Claim
                     </CustomButton>
-                    <CustomButton onClick={() => onUnstake(tokenType)} variant="light">
+                    <CustomButton
+                      onClick={() => onUnstake(tokenType)}
+                      variant="light"
+                    >
                       Unstake
                     </CustomButton>
-                    <CustomButton onClick={() => onStake(tokenType)}>Stake</CustomButton>
+                    <CustomButton onClick={() => onStake(tokenType)}>
+                      Stake
+                    </CustomButton>
                   </div>
                 )}
               </div>
-
             </>
           )}
         </div>
@@ -241,4 +324,7 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   getUserStakedData,
   confirmAllowance,
+  getPoolInfo,
+  getAccountBalance,
+  unstakeTokens
 })(Staking);

@@ -10,12 +10,8 @@ import Footer from "./common/Footer";
 
 import Wallet from "./common/Wallet";
 import PropTypes from "prop-types";
-import {
-  connectWallet,
-  getAccountBalance,
-  logout,
-} from "../actions/accountActions";
-import { getPoolInfo, unstakeTokens } from "../actions/stakeActions";
+import { connectWallet, getAccountBalance } from "../actions/accountActions";
+import { getPoolInfo } from "../actions/stakeActions";
 import { connect } from "react-redux";
 import {
   fromWei,
@@ -27,7 +23,6 @@ import {
 import {
   bscConfig,
   bscNetwork,
-  claimTokens,
   etherConfig,
   etheriumNetwork,
   supportedNetworks,
@@ -36,8 +31,6 @@ import {
 import { CHANGE_NETWORK, RESET_USER_STAKE } from "../actions/types";
 import store from "../store";
 import web3 from "../web";
-// import web3 from 'web3'
-
 const useStyles = makeStyles((theme) => ({
   background: {
     padding: 80,
@@ -118,11 +111,9 @@ const useStyles = makeStyles((theme) => ({
 const Home = ({
   connectWallet,
   getPoolInfo,
-  logout,
-  account: { currentAccount, balance, connected, currentNetwork },
+  account: { currentAccount, connected, currentNetwork, error },
   getAccountBalance,
   stake: { pool, poolLoading },
-  unstakeTokens,
 }) => {
   const classes = useStyles();
   const [dialog, setDialog] = React.useState({
@@ -191,33 +182,6 @@ const Home = ({
     }
   }, []);
 
-  const signOut = async () => {
-    localStorage.setItem(`logout${currentAccount}`, currentAccount);
-    logout();
-  };
-
-  const handleConnectWallet = async () => {
-    if (!isMetaMaskInstalled()) {
-      alert("Please install Meta Mask to connect");
-      return;
-    }
-    await connectWallet(true, currentNetwork);
-  };
-
-  const handleClaim = async (tokenType) => {
-    const tokensToClaim = claimTokens;
-
-    await unstakeTokens(
-      tokensToClaim,
-      currentAccount,
-      tokenType,
-      currentNetwork
-    );
-    await Promise.all([
-      getPoolInfo(currentNetwork),
-      getAccountBalance(currentNetwork),
-    ]);
-  };
 
   const getCurrentTokenType = () => {
     return currentNetwork === etheriumNetwork ? "PBR" : "CORGIB";
@@ -271,20 +235,17 @@ const Home = ({
     await getAccountBalance(network);
   }, []);
 
+  useEffect( () => {
+    if (error && error.code === -32000){
+      alert(`${error.message}`)
+    }
+
+  }, [error])
+
   return (
     <div>
       <section className="appbar-section">
-        <Navbar
-          handleConnectWallet={handleConnectWallet}
-          handleSignOut={signOut}
-          account={currentAccount}
-          connected={connected}
-          currentNetwork={currentNetwork}
-          // corgibBalance={formatCurrency(fromWei(corgibBalance))}
-          // pbrBalance={formatCurrency(fromWei(pbrBalance))}
-          // biteBalance={formatCurrency(fromWei(biteBalance))}
-          balance={balance}
-        />
+        <Navbar currentNetwork={currentNetwork} />
       </section>
 
       <div className={classes.background}>
@@ -327,11 +288,7 @@ const Home = ({
 
         {!connected ? (
           <div className={classes.cardsContainer2}>
-            <Wallet
-              onClick={handleConnectWallet}
-              account={currentAccount}
-              connected={connected}
-            />
+            <Wallet />
             <p className={classes.subheading}>
               Unlock your Wallet to stake tokens
             </p>
@@ -345,7 +302,6 @@ const Home = ({
                     onStake={onStake}
                     onUnstake={onUnStake}
                     tokenType={token}
-                    onClaim={handleClaim}
                   />
                 </div>
                 <div className={classes.card}>
@@ -381,7 +337,5 @@ const mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
   connectWallet,
   getPoolInfo,
-  logout,
-  unstakeTokens,
   getAccountBalance,
 })(Home);
