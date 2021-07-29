@@ -244,7 +244,7 @@ const Navbar = ({
         <ListItem button style={{ marginTop: 15 }}>
           <div className={classes.network}>
             <img className={classes.networkIcon} src={currentNetwork === etheriumNetwork ? etherIcon : binanceIcon} alt={currentNetwork} />
-            <span style={{ color: 'white', marginLeft: 5 }}>{currentNetwork === etheriumNetwork ? "Ethereum" : "Binance Smart Chain"}</span>
+            <span style={{ color: 'white', marginLeft: 5 }}>{currentNetwork === etheriumNetwork ? "Etherium" : "Binance Smart Chain"}</span>
           </div>
         </ListItem>
         <ListItem button style={{ marginTop: 15 }}>
@@ -329,7 +329,7 @@ const Navbar = ({
           <div className={classes.grow} />
           <div className={classes.network}>
             <img className={classes.networkIcon} src={currentNetwork === etheriumNetwork ? etherIcon : binanceIcon} alt={currentNetwork} />
-            <span style={{ color: 'white', marginLeft: 5 }}>{currentNetwork === etheriumNetwork ? "Ethereum" : "Binance Smart Chain"}</span>
+            <span style={{ color: 'white', marginLeft: 5 }}>{currentNetwork === etheriumNetwork ? "Etherium" : "Binance Smart Chain"}</span>
           </div>
           <Wallet
             onClick={handleConnectWallet}
