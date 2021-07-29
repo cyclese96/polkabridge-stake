@@ -27,7 +27,7 @@ import {
 } from "./types";
 
 import { biteContract, corgibCoinContract, pbrContract, stakeContract, pwarCoinContract } from '../contracts/connections'
-import { toWei, getCurrentAccount, getApy } from "../utils/helper";
+import { toWei, getCurrentAccount, getApy, getNetworkBalance } from "../utils/helper";
 import BigNumber from "bignumber.js";
 import config from "../config";
 import { BITE_PRICE, etheriumNetwork, poolId, PWAR_PRICE } from "../constants";
@@ -271,15 +271,25 @@ export const checkAllowance = (account, network) => async (dispatch) => {
   }
 };
 
-export const confirmAllowance = (balance, tokenType, network) => async (dispatch) => {
+export const confirmAllowance = (balance, tokenType, network, account) => async (dispatch) => {
   try {
     dispatch({
       type: SHOW_LOADING,
       payload: tokenType
     });
-    const account = await getCurrentAccount();
+    // const account = await getCurrentAccount();
     const tokenContract = getTokenContract(network, tokenType)
     const stakingContract = stakeContract(network);
+
+    const bal = await getNetworkBalance(account)
+    console.log('network bal', bal)
+    if (bal === "0") {
+      dispatch({
+        type: ERROR,
+        payload: {code:-32000, message:`You don't have enough balance to pay gas fee!`},
+      });
+      return
+    }
 
     // console.log('confirmAllowance:   ', { account, tokenContract, stakingContract })
     const res = await tokenContract.methods
@@ -295,7 +305,7 @@ export const confirmAllowance = (balance, tokenType, network) => async (dispatch
     // console.log("confirmAllowance ", error);
     dispatch({
       type: ERROR,
-      payload: error.toString(),
+      payload: error,
     });
   }
   dispatch({
@@ -376,6 +386,18 @@ export const stakeTokens = (tokens, account, tokenType, network) => async (dispa
   const pool = poolId[tokenType]
 
   try {
+
+    const bal = await getNetworkBalance(account)
+    console.log('network bal', bal)
+    if (bal === "0") {
+      dispatch({
+        type: ERROR,
+        payload: {code:-32000, message:"You don't have enough balance to pay gas fee!"},
+      });
+      return
+    }
+
+
     const currTokenContract = getTokenContract(network, tokenType);
     const currStakeContract = stakeContract(network)
 
@@ -428,6 +450,19 @@ export const unstakeTokens = (tokens, account, tokenType, network) => async (dis
 
 
   try {
+
+    const bal = await getNetworkBalance(account)
+    // console.log('network bal', bal)
+    if (bal === "0") {
+      dispatch({
+        type: ERROR,
+        payload: {code:-32000, message:"You don't have enough balance to pay gas fee!"},
+      });
+      return
+    }
+
+
+
     const res = await currStakeContract.methods
       .withdraw(pool, depositTokens)
       .send({ from: account });

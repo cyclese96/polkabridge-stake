@@ -1,5 +1,11 @@
 import { Button, makeStyles } from "@material-ui/core";
 import { AccountBalanceWalletOutlined } from "@material-ui/icons";
+import etherIcon from "../../assets/ether.png";
+import binanceIcon from "../../assets/binance.png";
+import { connect } from "react-redux";
+import { isMetaMaskInstalled } from "../../utils/helper";
+import { etheriumNetwork } from "../../constants";
+import { connectWallet } from "../../actions/accountActions";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -15,8 +21,8 @@ const useStyles = makeStyles((theme) => ({
       background: "rgba(255, 255, 255, 0.1)",
     },
     [theme.breakpoints.down("sm")]: {
-      paddingLeft: 30,
-      paddingRight: 30,
+      paddingLeft: 5,
+      paddingRight: 15,
     },
   },
   item: {
@@ -46,20 +52,46 @@ const useStyles = makeStyles((theme) => ({
     color: "#E0077D",
     fontSize: 12,
   },
+  networkIcon: {
+    width: 25,
+    marginRight: 5,
+    height: "auto",
+    [theme.breakpoints.up("sm")]: {
+      display: "none",
+    },
+  },
 }));
 
-const Wallet = ({ account, connected, onClick, onWalletClick }) => {
+const Wallet = ({
+  connectWallet,
+  onWalletClick,
+  account: { connected, currentNetwork, currentAccount },
+}) => {
   const classes = useStyles();
+
+  const handleConnectWallet = async () => {
+    if (!isMetaMaskInstalled()) {
+      alert("Please install Meta Mask to connect");
+      return;
+    }
+    await connectWallet(true, currentNetwork);
+  };
+
   return (
     <div>
       {!connected ? (
-        <Button onClick={onClick} className={classes.navbarButton}>
+        <Button onClick={handleConnectWallet} className={classes.navbarButton}>
           Unlock Wallet
         </Button>
       ) : (
         <a onClick={onWalletClick} className={classes.root}>
+          <img
+            className={classes.networkIcon}
+            src={currentNetwork === etheriumNetwork ? etherIcon : binanceIcon}
+            alt={currentNetwork}
+          />
           <strong className={classes.numbers}>
-            {account ? account.toString().slice(0, 6) : "."}..
+            {currentAccount ? currentAccount.toString().slice(0, 6) : "."}..
           </strong>
           <AccountBalanceWalletOutlined
             style={{ color: "#f9f9f9" }}
@@ -71,4 +103,8 @@ const Wallet = ({ account, connected, onClick, onWalletClick }) => {
   );
 };
 
-export default Wallet;
+const mapStateToProps = (state) => ({
+  account: state.account,
+});
+
+export default connect(mapStateToProps, { connectWallet })(Wallet);

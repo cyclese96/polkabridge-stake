@@ -7,13 +7,13 @@ import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 import CustomButton from "../Buttons/CustomButton";
 import {
-  AccountBalanceOutlined,
   ContactMailOutlined,
 } from "@material-ui/icons";
-import VisibilityIcon from '@material-ui/icons/Visibility';
-import MonetizationOnIcon from '@material-ui/icons/MonetizationOn';
+import VisibilityIcon from "@material-ui/icons/Visibility";
 import { etheriumNetwork } from "../../constants";
 import { formatCurrency, fromWei } from "../../utils/helper";
+import { connect } from "react-redux";
+import { logout } from "../../actions/accountActions";
 
 const styles = (theme) => ({
   root: {
@@ -107,30 +107,35 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function AccountDialog({
+const AccountDialog = ({
   open,
   handleClose,
-  pbr,
-  bite,
-  corgib,
-  pwar,
-  network,
-  account,
-  handleSignOut,
-}) {
+  logout,
+  account: { currentAccount, balance, connected, currentNetwork },
+}) => {
   const classes = useStyles();
   const onSingOut = () => {
+    localStorage.setItem(`logout${currentAccount}`, currentAccount);
+    logout();
     handleClose();
-    handleSignOut();
   };
 
   const getCoins = () => {
-    if (network === etheriumNetwork) {
-      return [{ coin: 'PBR', balance: formatCurrency(fromWei(pbr))  }, { coin: 'BITE', balance: formatCurrency(fromWei(bite))  }]
+    if (currentNetwork === etheriumNetwork) {
+      return [
+        { coin: "PBR", balance: formatCurrency(fromWei(balance["PBR"])) },
+        { coin: "BITE", balance: formatCurrency(fromWei(balance["BITE"])) },
+      ];
     } else {
-      return [{ coin: 'CORGIB', balance: formatCurrency(fromWei(corgib))  }, { coin: 'PWAR', balance: formatCurrency(fromWei(pwar), false, 1 , true )  } ]
+      return [
+        { coin: "CORGIB", balance: formatCurrency(fromWei(balance["CORGIB"])) },
+        {
+          coin: "PWAR",
+          balance: formatCurrency(fromWei(balance["PWAR"]), false, 1, true),
+        },
+      ];
     }
-  }
+  };
   return (
     <div>
       <Dialog
@@ -144,11 +149,11 @@ export default function AccountDialog({
         }}
       >
         <div className={classes.background}>
-          <DialogTitle onClose={() => handleClose()}>
+          <DialogTitle onClose={handleClose}>
             <span className={classes.heading}>My Wallet</span>
           </DialogTitle>
           <div className={classes.balanceCard}>
-            {getCoins().map(item => (
+            {getCoins().map((item) => (
               <div
                 style={{
                   display: "flex",
@@ -157,10 +162,7 @@ export default function AccountDialog({
                 }}
               >
                 <>
-                  <VisibilityIcon
-                    fontSize="small"
-                    className={classes.icon}
-                  />
+                  <VisibilityIcon fontSize="small" className={classes.icon} />
                   <span className={classes.icon}>{item.coin}</span>
                   <p className={classes.numbers}>{item.balance}</p>
                 </>
@@ -177,7 +179,7 @@ export default function AccountDialog({
               <ContactMailOutlined fontSize="small" className={classes.icon} />
               <span className={classes.icon}>Address</span>
             </div>
-            <p className={classes.subheading}>{account}</p>
+            <p className={classes.subheading}>{currentAccount}</p>
           </div>
           <div className={classes.buttons}>
             <CustomButton variant="light" onClick={handleClose}>
@@ -191,4 +193,10 @@ export default function AccountDialog({
       </Dialog>
     </div>
   );
-}
+};
+
+const mapStateToProps = (state) => ({
+  account: state.account,
+});
+
+export default connect(mapStateToProps, { logout })(AccountDialog);
