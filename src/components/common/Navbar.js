@@ -179,12 +179,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Navbar = ({
-  balance,
-  account,
   currentNetwork,
-  handleConnectWallet,
-  handleSignOut,
-  connected,
 }) => {
   const classes = useStyles();
 
@@ -249,9 +244,6 @@ const Navbar = ({
         </ListItem>
         <ListItem button style={{ marginTop: 15 }}>
           <Wallet
-            onClick={handleConnectWallet}
-            account={account}
-            connected={connected}
             onWalletClick={() => setAccountDialog(true)}
           />
         </ListItem>
@@ -261,21 +253,14 @@ const Navbar = ({
 
   return (
     <div className={classes.grow}>
-      <CustomSnackBar
+      {/* <CustomSnackBar
         handleClose={handleClose}
         status={alertObject.status}
         message={alertObject.message}
-      />
+      /> */}
       <AccountDialog
         open={accountDialog}
-        pbr={balance.PBR}
-        bite={balance.BITE}
-        corgib={balance.CORGIB}
-        pwar={balance.PWAR}
-        network={currentNetwork}
-        account={account}
         handleClose={() => setAccountDialog(false)}
-        handleSignOut={handleSignOut}
       />
       <AppBar
         color="transparent"
@@ -332,9 +317,6 @@ const Navbar = ({
             <span style={{ color: 'white', marginLeft: 5 }}>{currentNetwork === etheriumNetwork ? "Etherium" : "Binance Smart Chain"}</span>
           </div>
           <Wallet
-            onClick={handleConnectWallet}
-            account={account}
-            connected={connected}
             onWalletClick={() => setAccountDialog(true)}
           />
         </Toolbar>
