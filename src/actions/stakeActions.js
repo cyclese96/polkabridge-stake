@@ -30,7 +30,7 @@ import { biteContract, corgibCoinContract, pbrContract, stakeContract, pwarCoinC
 import { toWei, getCurrentAccount, getApy, getNetworkBalance } from "../utils/helper";
 import BigNumber from "bignumber.js";
 import config from "../config";
-import { BITE_PRICE, etheriumNetwork, poolId, PWAR_PRICE } from "../constants";
+import { BITE_PRICE, bscNetwork, etheriumNetwork, poolId, PWAR_PRICE } from "../constants";
 
 
 // current token contract
@@ -280,16 +280,17 @@ export const confirmAllowance = (balance, tokenType, network, account) => async 
     // const account = await getCurrentAccount();
     const tokenContract = getTokenContract(network, tokenType)
     const stakingContract = stakeContract(network);
+    
+    // const bal = await getNetworkBalance(account)
+    // console.log('network bal', bal)
 
-    const bal = await getNetworkBalance(account)
-    console.log('network bal', bal)
-    if (bal === "0") {
-      dispatch({
-        type: ERROR,
-        payload: {code:-32000, message:`You don't have enough balance to pay gas fee!`},
-      });
-      return
-    }
+    // if (bal === "0") {
+    //   dispatch({
+    //     type: ERROR,
+    //     payload: {code:-32000, message:`You don't have enough balance to pay gas fee!`},
+    //   });
+    //   return
+    // }
 
     // console.log('confirmAllowance:   ', { account, tokenContract, stakingContract })
     const res = await tokenContract.methods
@@ -305,7 +306,7 @@ export const confirmAllowance = (balance, tokenType, network, account) => async 
     // console.log("confirmAllowance ", error);
     dispatch({
       type: ERROR,
-      payload: error,
+      payload: network === bscNetwork ? error.message : error,
     });
   }
   dispatch({
@@ -387,15 +388,15 @@ export const stakeTokens = (tokens, account, tokenType, network) => async (dispa
 
   try {
 
-    const bal = await getNetworkBalance(account)
-    console.log('network bal', bal)
-    if (bal === "0") {
-      dispatch({
-        type: ERROR,
-        payload: {code:-32000, message:"You don't have enough balance to pay gas fee!"},
-      });
-      return
-    }
+    // const bal = await getNetworkBalance(account)
+    // console.log('network bal', bal)
+    // if (bal === "0") {
+    //   dispatch({
+    //     type: ERROR,
+    //     payload: {code:-32000, message:"You don't have enough balance to pay gas fee!"},
+    //   });
+    //   return
+    // }
 
 
     const currTokenContract = getTokenContract(network, tokenType);
@@ -428,7 +429,7 @@ export const stakeTokens = (tokens, account, tokenType, network) => async (dispa
   } catch (error) {
     dispatch({
       type: ERROR,
-      payload: "Failed to stake tokens",
+      payload: network === bscNetwork ? error.message : error,
     });
   }
   dispatch({
@@ -451,15 +452,15 @@ export const unstakeTokens = (tokens, account, tokenType, network) => async (dis
 
   try {
 
-    const bal = await getNetworkBalance(account)
-    // console.log('network bal', bal)
-    if (bal === "0") {
-      dispatch({
-        type: ERROR,
-        payload: {code:-32000, message:"You don't have enough balance to pay gas fee!"},
-      });
-      return
-    }
+    // const bal = await getNetworkBalance(account)
+    // // console.log('network bal', bal)
+    // if (bal === "0") {
+    //   dispatch({
+    //     type: ERROR,
+    //     payload: {code:-32000, message:"You don't have enough balance to pay gas fee!"},
+    //   });
+    //   return
+    // }
 
 
 
@@ -491,7 +492,7 @@ export const unstakeTokens = (tokens, account, tokenType, network) => async (dis
   } catch (error) {
     dispatch({
       type: ERROR,
-      payload: "Failed to stake tokens",
+      payload: network === bscNetwork ? error.message : error,
     });
   }
   dispatch({

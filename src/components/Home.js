@@ -236,11 +236,14 @@ const Home = ({
   }, []);
 
   useEffect( () => {
-    if (error && error.code === -32000){
-      alert(`${error.message}`)
+    if (JSON.stringify(error).includes("-32000")  ){
+      alert(`You don't have enough balance to pay gas fee for the transaction!`)
+    }else if (JSON.stringify(error).includes("User rejected transaction")) {
+      alert(`Transaction cancelled`)
     }
+    // alert(JSON.stringify(error))
 
-  }, [error])
+  }, [JSON.stringify(error)])
 
   return (
     <div>

@@ -100,7 +100,8 @@ export default function (state = initalState, action) {
           loading:{
             ...state.loading,
             BITE:true
-          }
+          },
+          error: {}
         }
       } else if (action.payload === 'PBR') {
         return {
@@ -108,7 +109,8 @@ export default function (state = initalState, action) {
           loading: {
             ...state.loading,
             PBR: true
-          }
+          },
+          error: {}
         }
       }
       else if (action.payload === 'CORGIB') {
@@ -117,7 +119,8 @@ export default function (state = initalState, action) {
           loading : {
             ...state.loading,
             CORGIB: true
-          }
+          },
+          error: {}
         }
       }
       else if (action.payload === 'PWAR') {
@@ -126,7 +129,8 @@ export default function (state = initalState, action) {
           loading : {
             ...state.loading,
             PWAR: true
-          }
+          },
+          error: {}
         }
       }else{
         return {
@@ -137,7 +141,8 @@ export default function (state = initalState, action) {
             BITE: true,
             CORGIB: true,
             PWAR: true
-          }
+          },
+          error: {}
         }
       }  
     case CHANGE_NETWORK:
