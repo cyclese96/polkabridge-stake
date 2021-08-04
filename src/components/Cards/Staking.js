@@ -4,6 +4,7 @@ import pbrImg from "../../assets/balance.png";
 import biteImg from "../../assets/bite.png";
 import corgiImg from "../../assets/corgi.png";
 import pwarImg from "../../assets/pwar.png";
+import clf365Img from "../../assets/clf365.png";
 import CustomButton from "../Buttons/CustomButton";
 import { formatCurrency, fromWei, toWei } from "../../utils/helper";
 import { connect } from "react-redux";
@@ -14,7 +15,7 @@ import {
   unstakeTokens,
 } from "../../actions/stakeActions";
 import { getAccountBalance } from "../../actions/accountActions";
-import { claimTokens, etheriumNetwork } from "../../constants";
+import { claimTokens, CLF365, etheriumNetwork } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -120,7 +121,7 @@ const Staking = ({
       currentNetwork === etheriumNetwork
         ? toWei("999999999")
         : "999999999999999999999999999999999999";
-   
+
     await confirmAllowance(
       tokenWeiAmountToApprove,
       tokenType,
@@ -148,8 +149,6 @@ const Staking = ({
     ]);
   };
 
-
-
   const currentAmount = (tokenType) => {
     return stake[tokenType] ? stake[tokenType].amount : 0;
   };
@@ -159,6 +158,7 @@ const Staking = ({
     BITE: biteImg,
     CORGIB: corgiImg,
     PWAR: pwarImg,
+    CL365: clf365Img,
   };
 
   const getCurrentApy = () => {
@@ -326,5 +326,5 @@ export default connect(mapStateToProps, {
   confirmAllowance,
   getPoolInfo,
   getAccountBalance,
-  unstakeTokens
+  unstakeTokens,
 })(Staking);

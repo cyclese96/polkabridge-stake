@@ -3,6 +3,7 @@ import supply from "../../assets/supply.png";
 import { fromWei, formatCurrency } from "../../utils/helper";
 import biteImg from "../../assets/bite.png";
 import corgibImg from "../../assets/corgi.png";
+import clf365Img from "../../assets/clf365.png";
 import pwarImg from "../../assets/pwar.png";
 import { connect } from "react-redux";
 
@@ -42,30 +43,26 @@ const useStyles = makeStyles((theme) => ({
   cardHeading: {
     fontSize: 24,
     fontWeight: 400,
-    padding:0,
-    margin:0,
-    marginTop:10
+    padding: 0,
+    margin: 0,
+    marginTop: 10,
   },
-  
   numbers: {
     color: "#E0077D",
     fontSize: 26,
   },
 }));
 
-const Balance = ({
-  account: { balance, loading },
-  tokenType,
-}) => {
+const Balance = ({ account: { balance, loading }, tokenType }) => {
   const classes = useStyles();
 
   const tokenLogo = {
-    'PBR': supply,
-    'BITE': biteImg,
-    'CORGIB': corgibImg,
-    'PWAR': pwarImg
-  }
-
+    PBR: supply,
+    BITE: biteImg,
+    CORGIB: corgibImg,
+    PWAR: pwarImg,
+    CL365: clf365Img,
+  };
 
   return (
     <div className={classes.card}>
@@ -77,11 +74,17 @@ const Balance = ({
             <>
               <p className={classes.cardHeading}>Balance</p>
               <img
-                className={tokenType === 'CORGIB' ? classes.avatar_corgib : classes.avatar}
+                className={
+                  tokenType === "CORGIB"
+                    ? classes.avatar_corgib
+                    : classes.avatar
+                }
                 src={tokenLogo[tokenType]}
               />
               <h4 className={classes.numbers}>
-                {tokenType === 'PWAR' ?  formatCurrency(fromWei(balance[tokenType]), false, 1 , true ) : formatCurrency(fromWei(balance[tokenType])) }
+                {tokenType === "PWAR"
+                  ? formatCurrency(fromWei(balance[tokenType]), false, 1, true)
+                  : formatCurrency(fromWei(balance[tokenType]))}
                 {tokenType}
               </h4>
             </>
