@@ -322,7 +322,7 @@ const StakeDialog = ({
 
           <p className={classes.subheading}>
             {type === "stake"
-              ? `Avaialable tokens: ${currentFormattedBalance()}  ${tokenType}`
+              ? `Available tokens: ${currentFormattedBalance()}  ${tokenType}`
               : `Staked tokens: ${currentFormattedStakedBal()} ${tokenType}`}
           </p>
           <div className={classes.inputGroup}>
