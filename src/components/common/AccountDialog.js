@@ -6,11 +6,9 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 import CustomButton from "../Buttons/CustomButton";
-import {
-  ContactMailOutlined,
-} from "@material-ui/icons";
+import { ContactMailOutlined } from "@material-ui/icons";
 import VisibilityIcon from "@material-ui/icons/Visibility";
-import { etheriumNetwork } from "../../constants";
+import { BITE, CLF365, etheriumNetwork, PBR } from "../../constants";
 import { formatCurrency, fromWei } from "../../utils/helper";
 import { connect } from "react-redux";
 import { logout } from "../../actions/accountActions";
@@ -104,6 +102,13 @@ const useStyles = makeStyles((theme) => ({
   icon: {
     marginRight: 5,
     color: "#919191",
+    display: "inline-block",
+    // position: "relative",
+  },
+  balanceCard: {
+    display: "flex",
+    flexDirection: "column",
+    // justifyContent: "space-around",
   },
 }));
 
@@ -123,8 +128,9 @@ const AccountDialog = ({
   const getCoins = () => {
     if (currentNetwork === etheriumNetwork) {
       return [
-        { coin: "PBR", balance: formatCurrency(fromWei(balance["PBR"])) },
-        { coin: "BITE", balance: formatCurrency(fromWei(balance["BITE"])) },
+        { coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
+        { coin: BITE, balance: formatCurrency(fromWei(balance[BITE])) },
+        { coin: CLF365, balance: formatCurrency(fromWei(balance[CLF365])) },
       ];
     } else {
       return [
@@ -158,13 +164,19 @@ const AccountDialog = ({
                 style={{
                   display: "flex",
                   alignItems: "center",
-                  justifyContent: "start",
+                  justifyContent: "space-between",
+                  width: "70%",
+                  // marginTop: 7,
+                  marginBlockEnd: 15,
                 }}
               >
                 <>
-                  <VisibilityIcon fontSize="small" className={classes.icon} />
-                  <span className={classes.icon}>{item.coin}</span>
-                  <p className={classes.numbers}>{item.balance}</p>
+                  <div style={{ display: "inline-flex" }}>
+                    <VisibilityIcon fontSize="small" className={classes.icon} />{" "}
+                    <span className={classes.icon}>{item.coin} </span>
+                  </div>
+
+                  <span className={classes.numbers}>{item.balance}</span>
                 </>
               </div>
             ))}

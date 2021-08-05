@@ -50,6 +50,7 @@ import {
   BITE_PRICE,
   bscNetwork,
   CLF365,
+  CLF365_PRICE,
   CORGIB,
   etheriumNetwork,
   PBR,
@@ -154,10 +155,10 @@ export const getPoolInfo = (network) => async (dispatch) => {
 
     if (network === etheriumNetwork) {
       // console.log('g')
-      const [pbrPool, bitePool] = await Promise.all([
+      const [pbrPool, bitePool, clfPool] = await Promise.all([
         currStakingContract.methods.getPoolInfo(poolId.PBR).call(),
         currStakingContract.methods.getPoolInfo(poolId.BITE).call(),
-        //todo :set pool
+        currStakingContract.methods.getPoolInfo(poolId.CLF365).call(),
       ]);
 
       const pbrPoolObj = {
@@ -188,9 +189,19 @@ export const getPoolInfo = (network) => async (dispatch) => {
       bitePoolObj.tokenPrice = BITE_PRICE;
       bitePoolObj.biteApy = getApy("BITE", bitePoolObj);
 
+      // clf pool calculations
+      const clfPoolObj = {
+        accTokenPerShare: clfPool[0],
+        lastRewardBlock: clfPool[1],
+        rewardPerBlock: clfPool[2],
+        totalTokenStaked: clfPool[3],
+        totalTokenClaimed: clfPool[4],
+      };
+      clfPoolObj.tokenPrice = CLF365_PRICE;
+      clfPoolObj.clf365Apy = getApy(CLF365, clfPoolObj);
       dispatch({
         type: LOAD_PPOL_INFO,
-        payload: { pbr: pbrPoolObj, bite: bitePoolObj },
+        payload: { pbr: pbrPoolObj, bite: bitePoolObj, clf365: clfPoolObj },
       });
     } else {
       // fetch pool for corgib on bsc

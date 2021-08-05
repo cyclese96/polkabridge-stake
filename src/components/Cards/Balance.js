@@ -61,7 +61,7 @@ const Balance = ({ account: { balance, loading }, tokenType }) => {
     BITE: biteImg,
     CORGIB: corgibImg,
     PWAR: pwarImg,
-    CL365: clf365Img,
+    CLF365: clf365Img,
   };
 
   return (
@@ -85,7 +85,7 @@ const Balance = ({ account: { balance, loading }, tokenType }) => {
                 {tokenType === "PWAR"
                   ? formatCurrency(fromWei(balance[tokenType]), false, 1, true)
                   : formatCurrency(fromWei(balance[tokenType]))}
-                {tokenType}
+                <span style={{ marginLeft: 10 }}>{tokenType}</span>
               </h4>
             </>
           )}

@@ -37,7 +37,6 @@ const initalState = {
 };
 
 export default function (state = initalState, action) {
-  console.log(action);
   switch (action.type) {
     case CONNECT_WALLET:
       return {

@@ -47,7 +47,7 @@ export const AVG_BITE_PER_BLOCK = 2;
 
 export const BITE_PRICE = 0.1;
 export const PWAR_PRICE = 0.1;
-export const CL365_PRICE = 0.1;
+export const CLF365_PRICE = 0.1;
 
 //corgib
 export const CORGIB_BLOCKS_PER_YEAR = 10000000;

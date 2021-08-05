@@ -182,7 +182,6 @@ const Home = ({
     }
   }, []);
 
-
   const getCurrentTokenType = () => {
     return currentNetwork === etheriumNetwork ? "PBR" : "CORGIB";
   };
@@ -235,15 +234,16 @@ const Home = ({
     await getAccountBalance(network);
   }, []);
 
-  useEffect( () => {
-    if (JSON.stringify(error).includes("-32000")  ){
-      alert(`You don't have enough balance to pay gas fee for the transaction!`)
-    }else if (JSON.stringify(error).includes("User rejected transaction")) {
-      alert(`Transaction cancelled`)
+  useEffect(() => {
+    if (JSON.stringify(error).includes("-32000")) {
+      alert(
+        `You don't have enough balance to pay gas fee for the transaction!`
+      );
+    } else if (JSON.stringify(error).includes("User rejected transaction")) {
+      alert(`Transaction cancelled`);
     }
     // alert(JSON.stringify(error))
-
-  }, [JSON.stringify(error)])
+  }, [JSON.stringify(error)]);
 
   return (
     <div>

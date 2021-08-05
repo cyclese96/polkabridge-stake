@@ -15,7 +15,13 @@ import {
   unstakeTokens,
 } from "../../actions/stakeActions";
 import { getAccountBalance } from "../../actions/accountActions";
-import { claimTokens, CLF365, etheriumNetwork } from "../../constants";
+import {
+  BITE,
+  claimTokens,
+  CLF365,
+  etheriumNetwork,
+  PWAR,
+} from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -41,18 +47,15 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
     justifyContent: "space-around",
     height: "100%",
+    width: "100%",
   },
   avatar: {
-    // position: "relative",
     width: 35,
     height: "auto",
-    // justifySelf: "start",
     marginLeft: 60,
   },
   cardHeading: {
     fontSize: 18,
-    // alignSelf: "center",
-    // justifySelf: "center",
   },
   cardText: {
     fontSize: 14,
@@ -158,14 +161,26 @@ const Staking = ({
     BITE: biteImg,
     CORGIB: corgiImg,
     PWAR: pwarImg,
-    CL365: clf365Img,
+    CLF365: clf365Img,
   };
 
   const getCurrentApy = () => {
     if (tokenType === "BITE") {
       return pool[tokenType].biteApy;
-    } else {
+    } else if (tokenType === PWAR) {
       return pool[tokenType].pwarApy;
+    } else {
+      return pool[tokenType].clf365Apy;
+    }
+  };
+
+  const getCurrencyFormatForToken = (tokenType, tokens) => {
+    if (tokenType === BITE) {
+      return formatCurrency(fromWei(tokens));
+    } else if (tokenType === CLF365) {
+      return formatCurrency(fromWei(tokens));
+    } else {
+      return formatCurrency(fromWei(tokens), false, 1, true);
     }
   };
 
@@ -194,7 +209,7 @@ const Staking = ({
                 <h6 className={classes.cardHeading}>Staking Pool</h6>
               </div>
 
-              {["BITE", "PWAR"].includes(tokenType) ? (
+              {["BITE", "PWAR", CLF365].includes(tokenType) ? (
                 <div className={classes.bitePool}>
                   <p className={classes.poolItemText}>
                     <strong>{tokenType} APY: </strong>{" "}
@@ -202,7 +217,11 @@ const Staking = ({
                   </p>
                   <p className={classes.poolItemText}>
                     <strong>Total token staked:</strong>{" "}
-                    {tokenType === "PWAR"
+                    {getCurrencyFormatForToken(
+                      tokenType,
+                      pool[tokenType].totalTokenStaked
+                    )}
+                    {/* {tokenType === "PWAR"
                       ? formatCurrency(
                           fromWei(pool[tokenType].totalTokenStaked),
                           false,
@@ -211,7 +230,7 @@ const Staking = ({
                         )
                       : formatCurrency(
                           fromWei(pool[tokenType].totalTokenStaked)
-                        )}{" "}
+                        )}{" "} */}
                     {tokenType}
                   </p>
                   {tokenType === "PWAR" ? (

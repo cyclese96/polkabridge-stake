@@ -36,7 +36,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const CustomButton = ({ onClick, children, variant = "primary", disabled = false }) => {
+const CustomButton = ({
+  onClick,
+  children,
+  variant = "primary",
+  disabled = false,
+}) => {
   const classes = useStyles();
   return (
     <Button
