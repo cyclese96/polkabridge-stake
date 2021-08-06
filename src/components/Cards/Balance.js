@@ -61,7 +61,7 @@ const Balance = ({ account: { balance, loading }, tokenType }) => {
     BITE: biteImg,
     CORGIB: corgibImg,
     PWAR: pwarImg,
-    CLF365: clf365Img,
+    CFL365: clf365Img,
   };
 
   return (
