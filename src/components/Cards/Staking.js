@@ -18,7 +18,7 @@ import { getAccountBalance } from "../../actions/accountActions";
 import {
   BITE,
   claimTokens,
-  CLF365,
+  CFL365,
   etheriumNetwork,
   PWAR,
 } from "../../constants";
@@ -161,7 +161,7 @@ const Staking = ({
     BITE: biteImg,
     CORGIB: corgiImg,
     PWAR: pwarImg,
-    CLF365: clf365Img,
+    CFL365: clf365Img,
   };
 
   const getCurrentApy = () => {
@@ -177,7 +177,7 @@ const Staking = ({
   const getCurrencyFormatForToken = (tokenType, tokens) => {
     if (tokenType === BITE) {
       return formatCurrency(fromWei(tokens));
-    } else if (tokenType === CLF365) {
+    } else if (tokenType === CFL365) {
       return formatCurrency(fromWei(tokens));
     } else {
       return formatCurrency(fromWei(tokens), false, 1, true);
@@ -209,7 +209,7 @@ const Staking = ({
                 <h6 className={classes.cardHeading}>Staking Pool</h6>
               </div>
 
-              {["BITE", "PWAR", CLF365].includes(tokenType) ? (
+              {["BITE", "PWAR", CFL365].includes(tokenType) ? (
                 <div className={classes.bitePool}>
                   <p className={classes.poolItemText}>
                     <strong>{tokenType} APY: </strong>{" "}

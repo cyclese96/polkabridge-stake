@@ -13,7 +13,7 @@ import {
   LOAD_PWAR_BALANCE,
   LOAD_CLF365_BALANCE,
 } from "../actions/types";
-import { CLF365, etheriumNetwork } from "../constants";
+import { CFL365, etheriumNetwork } from "../constants";
 
 const initalState = {
   connected: false,
@@ -23,7 +23,7 @@ const initalState = {
     PBR: null,
     CORGIB: null,
     PWAR: null,
-    CLF365: null,
+    CFL365: null,
   },
   error: null,
   loading: {
@@ -31,7 +31,7 @@ const initalState = {
     PBR: false,
     CORGIB: false,
     PWAR: false,
-    CLF365: false,
+    CFL365: false,
   },
   currentNetwork: etheriumNetwork,
 };
@@ -62,7 +62,7 @@ export default function (state = initalState, action) {
           ...state.balance,
           PBR: action.payload.pbr,
           BITE: action.payload.bite,
-          CLF365: action.payload.clf365,
+          CFL365: action.payload.clf365,
         },
       };
     case LOAD_PBR_BALANCE:
@@ -102,7 +102,7 @@ export default function (state = initalState, action) {
         ...state,
         balance: {
           ...state.balance,
-          CLF365: action.payload,
+          CFL365: action.payload,
         },
       };
     case SHOW_LOADING:
@@ -142,12 +142,12 @@ export default function (state = initalState, action) {
           },
           error: {},
         };
-      } else if (action.payload === CLF365) {
+      } else if (action.payload === CFL365) {
         return {
           ...state,
           loading: {
             ...state.loading,
-            CLF365: true,
+            CFL365: true,
           },
           error: {},
         };
@@ -160,7 +160,7 @@ export default function (state = initalState, action) {
             BITE: true,
             CORGIB: true,
             PWAR: true,
-            CLF365: true,
+            CFL365: true,
           },
           error: {},
         };
@@ -179,7 +179,7 @@ export default function (state = initalState, action) {
           BITE: false,
           CORGIB: false,
           PWAR: false,
-          CLF365: false,
+          CFL365: false,
         },
       };
     case ERROR:

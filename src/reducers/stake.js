@@ -30,21 +30,21 @@ const initalState = {
     BITE: false,
     CORGIB: false,
     PWAR: false,
-    CLF365: false,
+    CFL365: false,
   },
   stake: {
     PBR: {},
     BITE: {},
     CORGIB: {},
     PWAR: {},
-    CLF365: {},
+    CFL365: {},
   },
   pool: {
     PBR: {},
     BITE: {},
     CORGIB: {},
     PWAR: {},
-    CLF365: {},
+    CFL365: {},
   },
   poolLoading: false,
 };
@@ -58,7 +58,7 @@ export default function (state = initalState, action) {
           ...state.pool,
           PBR: action.payload.pbr,
           BITE: action.payload.bite,
-          CLF365: action.payload.clf365,
+          CFL365: action.payload.clf365,
         },
         // pbrPoolData: action.payload.pbr,
         // bitePoolData: action.payload.bite,
@@ -109,7 +109,7 @@ export default function (state = initalState, action) {
         ...state,
         approved: {
           ...state.approved,
-          CLF365: true,
+          CFL365: true,
         },
       };
     case RESET_CLF365_TOKEN:
@@ -117,7 +117,7 @@ export default function (state = initalState, action) {
         ...state,
         approved: {
           ...state.approved,
-          CLF365: false,
+          CFL365: false,
         },
       };
     case APPROVE_CORGIB_TOKENS:
@@ -161,7 +161,7 @@ export default function (state = initalState, action) {
           BITE: false,
           CORGIB: false,
           PWAR: false,
-          CLF365: false,
+          CFL365: false,
         },
         stake: {
           ...state.stake,
@@ -169,7 +169,7 @@ export default function (state = initalState, action) {
           BITE: {},
           CORGIB: {},
           PWAR: {},
-          CLF365: {},
+          CFL365: {},
         },
       };
     case STAKE_PBR_TOKENS:
@@ -193,7 +193,7 @@ export default function (state = initalState, action) {
         ...state,
         stake: {
           ...state.stake,
-          CLF365: action.payload,
+          CFL365: action.payload,
         },
       };
     case STAKE_CORGIB_TOKENS:

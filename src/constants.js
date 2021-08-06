@@ -31,14 +31,14 @@ export const PBR = "PBR";
 export const BITE = "BITE";
 export const CORGIB = "CORGIB";
 export const PWAR = "PWAR";
-export const CLF365 = "CLF365";
+export const CFL365 = "CFL365";
 
 export const poolId = {
   PBR: 0,
   BITE: 1,
   CORGIB: 0,
   PWAR: 1,
-  CLF365: 2,
+  CFL365: 2,
 };
 
 export const NUMBER_BLOCKS_PER_YEAR = 2400000;
@@ -57,7 +57,7 @@ export const AVG_CORGIB_PER_BLOCK = 285000;
 export const PWAR_BLOCKS_PER_YEAR = 10000000;
 export const AVG_PWAR_PER_BLOCK = 0.35;
 
-//CLF365
+//CFL365
 export const CL6365_BLOCKS_PER_YEAR = 6500 * 365;
 export const AVG_CL365_PER_BLOCK = 30;
 
@@ -96,7 +96,7 @@ export const claimTokens = "1";
 export const supportedNetworks = ["1", "56"];
 
 export const supportedStaking = {
-  ethereum: ["PBR", "BITE", "CLF365"],
+  ethereum: ["PBR", "BITE", "CFL365"],
   bsc: ["CORGIB", "PWAR"],
 };
 
@@ -105,5 +105,5 @@ export const minimumStakingAmount = {
   BITE: 1,
   PBR: 1,
   PWAR: 1,
-  CLF365: 1,
+  CFL365: 1,
 };

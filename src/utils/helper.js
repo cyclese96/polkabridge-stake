@@ -6,7 +6,7 @@ import {
   AVG_PBR_PER_BLOCK,
   AVG_PWAR_PER_BLOCK,
   BITE,
-  CLF365,
+  CFL365,
   CORGIB,
   CORGIB_BLOCKS_PER_YEAR,
   NUMBER_BLOCKS_PER_YEAR,
@@ -188,7 +188,7 @@ export const getApy = (tokenType, poolObj) => {
         total_value_locked_usd
       );
       return biteApy;
-    case CLF365:
+    case CFL365:
       const clfApy = getCalculatedApy(
         tokenPrice,
         NUMBER_BLOCKS_PER_YEAR,

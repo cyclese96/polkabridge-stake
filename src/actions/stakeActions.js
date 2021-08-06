@@ -49,7 +49,7 @@ import {
   BITE,
   BITE_PRICE,
   bscNetwork,
-  CLF365,
+  CFL365,
   CLF365_PRICE,
   CORGIB,
   etheriumNetwork,
@@ -70,7 +70,7 @@ const getTokenContract = (network, tokenType) => {
       return corgibCoinContract(network);
     case PWAR:
       return pwarCoinContract(network);
-    case CLF365:
+    case CFL365:
       return clf365Contract(network);
     default:
       return clf365Contract(network);
@@ -87,7 +87,7 @@ const tokenToApprove = (tokenType) => {
       return APPROVE_CORGIB_TOKENS;
     case PWAR:
       return APPROVE_PWAR_TOKENS;
-    case CLF365:
+    case CFL365:
       return APPROVE_CLF365_TOKENS;
     default:
       return APPROVE_CLF365_TOKENS;
@@ -104,7 +104,7 @@ const tokenToReset = (tokenType) => {
       return RESET_CORGIB_TOKEN;
     case PWAR:
       return RESET_PWAR_TOKEN;
-    case CLF365:
+    case CFL365:
       return RESET_CLF365_TOKEN;
     default:
       return RESET_CLF365_TOKEN;
@@ -121,7 +121,7 @@ const tokenToStake = (tokenType) => {
       return STAKE_CORGIB_TOKENS;
     case PWAR:
       return STAKE_PWAR_TOKENS;
-    case CLF365:
+    case CFL365:
       return STAKE_CLF365_TOKENS;
     default:
       return STAKE_CLF365_TOKENS;
@@ -138,7 +138,7 @@ const tokenToLoad = (tokenType) => {
       return LOAD_CORGIB_BALANCE;
     case PWAR:
       return LOAD_PWAR_BALANCE;
-    case CLF365:
+    case CFL365:
       return LOAD_CLF365_BALANCE;
     default:
       return LOAD_CLF365_BALANCE;
@@ -158,7 +158,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       const [pbrPool, bitePool, clfPool] = await Promise.all([
         currStakingContract.methods.getPoolInfo(poolId.PBR).call(),
         currStakingContract.methods.getPoolInfo(poolId.BITE).call(),
-        currStakingContract.methods.getPoolInfo(poolId.CLF365).call(),
+        currStakingContract.methods.getPoolInfo(poolId.CFL365).call(),
       ]);
 
       const pbrPoolObj = {
@@ -198,7 +198,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
         totalTokenClaimed: clfPool[4],
       };
       clfPoolObj.tokenPrice = CLF365_PRICE;
-      clfPoolObj.clf365Apy = getApy(CLF365, clfPoolObj);
+      clfPoolObj.clf365Apy = getApy(CFL365, clfPoolObj);
       dispatch({
         type: LOAD_PPOL_INFO,
         payload: { pbr: pbrPoolObj, bite: bitePoolObj, clf365: clfPoolObj },

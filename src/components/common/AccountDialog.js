@@ -8,7 +8,7 @@ import Typography from "@material-ui/core/Typography";
 import CustomButton from "../Buttons/CustomButton";
 import { ContactMailOutlined } from "@material-ui/icons";
 import VisibilityIcon from "@material-ui/icons/Visibility";
-import { BITE, CLF365, etheriumNetwork, PBR } from "../../constants";
+import { BITE, CFL365, etheriumNetwork, PBR } from "../../constants";
 import { formatCurrency, fromWei } from "../../utils/helper";
 import { connect } from "react-redux";
 import { logout } from "../../actions/accountActions";
@@ -130,7 +130,7 @@ const AccountDialog = ({
       return [
         { coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
         { coin: BITE, balance: formatCurrency(fromWei(balance[BITE])) },
-        { coin: CLF365, balance: formatCurrency(fromWei(balance[CLF365])) },
+        { coin: CFL365, balance: formatCurrency(fromWei(balance[CFL365])) },
       ];
     } else {
       return [
