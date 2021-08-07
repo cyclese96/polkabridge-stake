@@ -210,24 +210,25 @@ const Navbar = ({ currentNetwork }) => {
     >
       <List>
         {[
-          { name: "Staking", id: "staking", icon: <EqualizerOutlined /> },
-          { name: "Farm", id: "intro", icon: <TouchAppOutlined /> },
+          { name: "Staking", link: "https://stake.polkabridge.org/", id: "staking", icon: <EqualizerOutlined /> },
+          { name: "Farm", link: "https://farm.polkabridge.org/", id: "intro", icon: <TouchAppOutlined /> },
           {
             name: "Launchpad",
+            link: "https://launchpad.polkabridge.org/",
             id: "characters",
             icon: <PeopleAltOutlined />,
           },
-          { name: "Swap", id: "items", icon: <VpnLockOutlined /> },
-          { name: "Lending", id: "features", icon: <FlareOutlined /> },
-          { name: "Prediction", id: "usecase", icon: <CategoryIcon /> },
+          { name: "Swap", link: "#", id: "items", icon: <VpnLockOutlined /> },
+          { name: "Lending", link: "#", id: "features", icon: <FlareOutlined /> },
+          { name: "Prediction", link: "#", id: "usecase", icon: <CategoryIcon /> },
           {},
         ].map((tab, index) => (
           <ListItem button key={tab.name} onClick={toggleDrawer(anchor, false)}>
             {tab.icon}
-            <ListItemText
+            <a href={tab.link}><ListItemText
               primary={tab.name}
               className={classes.menuTitleMobile}
-            />
+            /></a>
           </ListItem>
         ))}
       </List>
@@ -280,7 +281,7 @@ const Navbar = ({ currentNetwork }) => {
 
           <div className={classes.leftMargin} />
 
-          <a href="/" className={classes.navbarItemsDesktop}>
+          <a href="https://stake.polkabridge.org" target="_blank" className={classes.navbarItemsDesktop}>
             Staking
           </a>
 
