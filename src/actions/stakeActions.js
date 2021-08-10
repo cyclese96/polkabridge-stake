@@ -427,7 +427,7 @@ export const getUserStakedData = (tokenType, network) => async (dispatch) => {
       currStakeContract.methods.userInfo(pool, account).call(),
       currStakeContract.methods.pendingReward(pool, account).call(),
     ]);
-
+    console.log({ stakedData });
     const stakeObj = {
       amount: stakedData.amount,
       rewardClaimed: stakedData.rewardClaimed,

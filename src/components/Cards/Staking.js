@@ -233,7 +233,7 @@ const Staking = ({
                         )}{" "} */}
                     {tokenType}
                   </p>
-                  {tokenType === "PWAR" ? (
+                  {/* {tokenType === "PWAR" ? (
                     <p className={classes.poolItemText}>
                       <strong style={{ marginTop: 5 }}>
                         Total token claimed:
@@ -248,7 +248,19 @@ const Staking = ({
                     </p>
                   ) : (
                     ""
-                  )}
+                  )} */}
+                  <p className={classes.poolItemText}>
+                    <strong style={{ marginTop: 5 }}>
+                      Total token claimed:
+                    </strong>{" "}
+                    {formatCurrency(
+                      fromWei(pool[tokenType].totalTokenClaimed),
+                      false,
+                      1,
+                      true
+                    )}{" "}
+                    {tokenType}
+                  </p>
                 </div>
               ) : (
                 ""
