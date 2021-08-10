@@ -186,9 +186,19 @@ export const getPoolInfo = (network) => async (dispatch) => {
         totalTokenStaked: bitePool[3],
         totalTokenClaimed: bitePool[4],
       };
-      bitePoolObj.tokenPrice = BITE_PRICE;
+
+      const bitePriceRes = await axios.get(
+        config.coingecko +
+          "/v3/simple/price?ids=dragonbite&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+      );
+      const bitePrice = bitePriceRes.data;
+      // console.log("bite price", bitePrice);
+      bitePoolObj.tokenPrice = bitePrice["dragonbite"]
+        ? bitePrice["dragonbite"].usd
+        : "---";
       bitePoolObj.biteApy = getApy("BITE", bitePoolObj);
 
+      // console.log({ bitePoolObj });
       // clf pool calculations
       const clfPoolObj = {
         accTokenPerShare: clfPool[0],
@@ -197,7 +207,18 @@ export const getPoolInfo = (network) => async (dispatch) => {
         totalTokenStaked: clfPool[3],
         totalTokenClaimed: clfPool[4],
       };
-      clfPoolObj.tokenPrice = CLF365_PRICE;
+      // clfPoolObj.tokenPrice = CLF365_PRICE;
+      const cflPriceRes = await axios.get(
+        config.coingecko +
+          "/v3/simple/price?ids=cfl365-finance&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+      );
+      const cflPrice = cflPriceRes.data;
+      // console.log("bite price", cfl);
+      clfPoolObj.tokenPrice = cflPrice["cfl365-finance"]
+        ? cflPrice["cfl365-finance"].usd
+        : "---";
+      // console.log({ clfPoolObj });
+
       clfPoolObj.clf365Apy = getApy(CFL365, clfPoolObj);
       dispatch({
         type: LOAD_PPOL_INFO,
@@ -239,12 +260,21 @@ export const getPoolInfo = (network) => async (dispatch) => {
         totalTokenClaimed: pwarPoolData[4],
       };
 
-      pwarPoolObj.tokenPrice = PWAR_PRICE;
+      // pwarPoolObj.tokenPrice = PWAR_PRICE;
+      const pwarPriceRes = await axios.get(
+        config.coingecko +
+          "/v3/simple/price?ids=polkawar&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+      );
+      const pwarPrice = pwarPriceRes.data;
+      // console.log("polkawar price", pwarData);
+      pwarPoolObj.tokenPrice = pwarPrice["polkawar"]
+        ? pwarPrice["polkawar"].usd
+        : "---";
       const pwarApy = getApy("PWAR", pwarPoolObj);
-      console.log("pwarapy", pwarApy);
       pwarPoolObj.pwarApy = pwarApy;
+      console.log({ pwarApy });
 
-      console.log("final PWAR pool data", pwarPoolObj);
+      // console.log({ pwarPoolObj });
       dispatch({
         type: LOAD_BSC_POOL,
         payload: { corgib: poolObj, pwar: pwarPoolObj },
