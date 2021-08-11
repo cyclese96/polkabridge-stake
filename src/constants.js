@@ -58,8 +58,8 @@ export const PWAR_BLOCKS_PER_YEAR = 10000000;
 export const AVG_PWAR_PER_BLOCK = 0.35;
 
 //CFL365
-export const CL6365_BLOCKS_PER_YEAR = 6500 * 365;
-export const AVG_CL365_PER_BLOCK = 30;
+export const CL6365_BLOCKS_PER_YEAR = 2400000;
+export const AVG_CL365_PER_BLOCK = 10;
 
 export const infuraKovenApi = `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`;
 export const infuraMainnetApi = `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`;
