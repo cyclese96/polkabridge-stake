@@ -11,6 +11,16 @@ export const pbrAddressKoven = "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0";
 export const biteAddressKoven = "0xA9Bf3904f7216B4cA2BA862Ac27b9469c030C0eA";
 export const clf365AddressKoven = "0x1F6fE20C82950F5139e8b31D5C32A73EE992e9E1";
 export const stakingAddressKoven = "0x7678f0AF7304e01554E2D49D96E55C8de4975c66";
+//Matic Network
+export const pbrAddressMaticMainnet =
+  "0x6024ca0b7c12846a396a5d860ff885233ef16dd0";
+export const pbrAddressMaticTestnet =
+  "0x6024ca0b7c12846a396a5d860ff885233ef16dd0";
+
+export const pbrStakingMaticMainnet =
+  "0x6335aF028e77B574423733443678aD4cb9e15B3D";
+export const pbrStakingMaticTestnet =
+  "0x55950cF279Ba5b43263f4Df54833b85F684B333F";
 
 // corgib
 export const corgibStakingTestent =
@@ -69,11 +79,12 @@ export const infuraMainnetApi = `https://mainnet.infura.io/v3/${process.env.REAC
  *    'testnet'  BSC testnet testing
  *    'mainnet'  BSC/ETH mainent deployment
  */
-// export const currentConnection = "testnet";
-export const currentConnection = "mainnet";
+export const currentConnection = "testnet";
+// export const currentConnection = "mainnet";
 
 export const etheriumNetwork = "ethereum";
 export const bscNetwork = "bsc";
+export const maticNetwork = "matic";
 
 export const etherConfig = {
   network_id: {
@@ -91,13 +102,23 @@ export const bscConfig = {
   network_rpc_testnet: "https://data-seed-prebsc-1-s1.binance.org:8545/",
 };
 
+export const maticConfig = {
+  network_id: {
+    mainnet: "137",
+    testnet: "80001",
+  },
+  network_rpc_mainnet: "https://rpc-mumbai.matic.today",
+  network_rpc_testnet: "https://mumbai-explorer.matic.today",
+};
+
 export const claimTokens = "1";
 
-export const supportedNetworks = ["1", "56"];
+export const supportedNetworks = ["1", "56", "137"];
 
 export const supportedStaking = {
   ethereum: ["PBR", "BITE", "CFL365"],
   bsc: ["CORGIB", "PWAR"],
+  matic: ["PBR"],
 };
 
 export const minimumStakingAmount = {

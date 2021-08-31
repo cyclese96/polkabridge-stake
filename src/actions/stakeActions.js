@@ -53,6 +53,7 @@ import {
   CLF365_PRICE,
   CORGIB,
   etheriumNetwork,
+  maticNetwork,
   PBR,
   poolId,
   PWAR,
@@ -152,7 +153,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
   });
   try {
     const currStakingContract = stakeContract(network);
-
+    // ethereum pool calculations
     if (network === etheriumNetwork) {
       // console.log('g')
       const [pbrPool, bitePool, clfPool] = await Promise.all([
@@ -223,6 +224,33 @@ export const getPoolInfo = (network) => async (dispatch) => {
       dispatch({
         type: LOAD_PPOL_INFO,
         payload: { pbr: pbrPoolObj, bite: bitePoolObj, clf365: clfPoolObj },
+      });
+    } else if (network === maticNetwork) {
+      // matic pool network calculations
+      const [pbrPool] = await Promise.all([
+        currStakingContract.methods.getPoolInfo(poolId.PBR).call(),
+      ]);
+
+      const pbrPoolObj = {
+        accTokenPerShare: pbrPool[0],
+        lastRewardBlock: pbrPool[1],
+        rewardPerBlock: pbrPool[2],
+        totalTokenStaked: pbrPool[3],
+        totalTokenClaimed: pbrPool[4],
+      };
+      const { data } = await axios.get(
+        config.coingecko +
+          "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+      );
+
+      pbrPoolObj.tokenPrice = data.polkabridge ? data.polkabridge.usd : "---";
+
+      const pbrApy = getApy("PBR", pbrPoolObj);
+      pbrPoolObj.pbrApy = pbrApy;
+
+      dispatch({
+        type: LOAD_PPOL_INFO,
+        payload: { pbr: pbrPoolObj },
       });
     } else {
       // fetch pool for corgib on bsc
@@ -327,6 +355,21 @@ export const checkAllowance = (account, network) => async (dispatch) => {
         dispatch({
           type: APPROVE_CLF365_TOKENS,
         });
+      }
+
+      //matic network
+      if (network === maticNetwork) {
+        const [pbrAllowance] = await Promise.all([
+          pbrContract(network)
+            .methods.allowance(account, currStakingContract._address)
+            .call(),
+        ]);
+
+        if (new BigNumber(pbrAllowance).gt(0)) {
+          dispatch({
+            type: APPROVE_PBR_TOKENS,
+          });
+        }
       }
     } else {
       // bsc network

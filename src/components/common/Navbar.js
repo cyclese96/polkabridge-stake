@@ -24,7 +24,9 @@ import Wallet from "./Wallet";
 import AccountDialog from "./AccountDialog";
 import etherIcon from "../../assets/ether.png";
 import binanceIcon from "../../assets/binance.png";
-import { etheriumNetwork } from "../../constants";
+import polygonIcon from "../../assets/polygon.png";
+
+import { bscNetwork, etheriumNetwork, maticNetwork } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -210,8 +212,18 @@ const Navbar = ({ currentNetwork }) => {
     >
       <List>
         {[
-          { name: "Staking", link: "https://stake.polkabridge.org/", id: "staking", icon: <EqualizerOutlined /> },
-          { name: "Farm", link: "https://farm.polkabridge.org/", id: "intro", icon: <TouchAppOutlined /> },
+          {
+            name: "Staking",
+            link: "https://stake.polkabridge.org/",
+            id: "staking",
+            icon: <EqualizerOutlined />,
+          },
+          {
+            name: "Farm",
+            link: "https://farm.polkabridge.org/",
+            id: "intro",
+            icon: <TouchAppOutlined />,
+          },
           {
             name: "Launchpad",
             link: "https://launchpad.polkabridge.org/",
@@ -219,16 +231,28 @@ const Navbar = ({ currentNetwork }) => {
             icon: <PeopleAltOutlined />,
           },
           { name: "Swap", link: "#", id: "items", icon: <VpnLockOutlined /> },
-          { name: "Lending", link: "#", id: "features", icon: <FlareOutlined /> },
-          { name: "Prediction", link: "#", id: "usecase", icon: <CategoryIcon /> },
+          {
+            name: "Lending",
+            link: "#",
+            id: "features",
+            icon: <FlareOutlined />,
+          },
+          {
+            name: "Prediction",
+            link: "#",
+            id: "usecase",
+            icon: <CategoryIcon />,
+          },
           {},
         ].map((tab, index) => (
           <ListItem button key={tab.name} onClick={toggleDrawer(anchor, false)}>
             {tab.icon}
-            <a href={tab.link}><ListItemText
-              primary={tab.name}
-              className={classes.menuTitleMobile}
-            /></a>
+            <a href={tab.link}>
+              <ListItemText
+                primary={tab.name}
+                className={classes.menuTitleMobile}
+              />
+            </a>
           </ListItem>
         ))}
       </List>
@@ -256,6 +280,40 @@ const Navbar = ({ currentNetwork }) => {
     </div>
   );
 
+  const renderIcon = () => {
+    if (currentNetwork === etheriumNetwork) {
+      return (
+        <div className={classes.network}>
+          <img
+            className={classes.networkIcon}
+            src={etherIcon}
+            alt={currentNetwork}
+          />
+          <span style={{ color: "white", marginLeft: 5 }}>Ethereum</span>
+        </div>
+      );
+    } else if (currentNetwork === bscNetwork) {
+      return (
+        <div className={classes.network}>
+          <img
+            className={classes.networkIcon}
+            src={binanceIcon}
+            alt={currentNetwork}
+          />
+          <span style={{ color: "white", marginLeft: 5 }}>
+            Binance Smart Chain
+          </span>
+        </div>
+      );
+    } else
+      return (
+        <div className={classes.network}>
+          <img className={classes.networkIcon} src={polygonIcon} />
+          <span style={{ color: "white", marginLeft: 5 }}>Polygon</span>
+        </div>
+      );
+  };
+
   return (
     <div className={classes.grow}>
       {/* <CustomSnackBar
@@ -281,7 +339,11 @@ const Navbar = ({ currentNetwork }) => {
 
           <div className={classes.leftMargin} />
 
-          <a href="https://stake.polkabridge.org" target="_blank" className={classes.navbarItemsDesktop}>
+          <a
+            href="https://stake.polkabridge.org"
+            target="_blank"
+            className={classes.navbarItemsDesktop}
+          >
             Staking
           </a>
 
@@ -320,18 +382,7 @@ const Navbar = ({ currentNetwork }) => {
             Betting
           </a>
           <div className={classes.grow} />
-          <div className={classes.network}>
-            <img
-              className={classes.networkIcon}
-              src={currentNetwork === etheriumNetwork ? etherIcon : binanceIcon}
-              alt={currentNetwork}
-            />
-            <span style={{ color: "white", marginLeft: 5 }}>
-              {currentNetwork === etheriumNetwork
-                ? "Ethereum"
-                : "Binance Smart Chain"}
-            </span>
-          </div>
+          {renderIcon()}
           <Wallet onWalletClick={() => setAccountDialog(true)} />
         </Toolbar>
 

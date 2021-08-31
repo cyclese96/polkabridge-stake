@@ -25,6 +25,7 @@ import {
   bscNetwork,
   etherConfig,
   etheriumNetwork,
+  maticNetwork,
   supportedNetworks,
   supportedStaking,
 } from "../constants";
@@ -146,7 +147,7 @@ const Home = ({
     ) {
       return etheriumNetwork;
     } else {
-      return etheriumNetwork;
+      return maticNetwork;
     }
   };
   useEffect(async () => {
@@ -166,7 +167,7 @@ const Home = ({
       window.ethereum.on("networkChanged", async (networkId) => {
         // setCurrentNetwork(networkId)
         const network = getCurrentNetwork(networkId);
-
+        console.log("current network ", network);
         store.dispatch({
           type: CHANGE_NETWORK,
           payload: network,
@@ -183,23 +184,35 @@ const Home = ({
   }, []);
 
   const getCurrentTokenType = () => {
-    return currentNetwork === etheriumNetwork ? "PBR" : "CORGIB";
+    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
+      return "PBR";
+    } else {
+      return "CORGIB";
+    }
   };
 
   const getCurrentPool = () => {
-    return currentNetwork === etheriumNetwork ? pool.PBR : pool.CORGIB;
+    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
+      return pool.PBR;
+    } else {
+      return pool.CORGIB;
+    }
   };
 
   const getCurrentApy = () => {
-    return currentNetwork === etheriumNetwork
-      ? getCurrentPool().pbrApy
-      : getCurrentPool().corgibApy;
+    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
+      return getCurrentPool().pbrApy;
+    } else {
+      return getCurrentPool().corgibApy;
+    }
   };
 
   const getCurrentTokenPrice = () => {
-    return currentNetwork === etheriumNetwork
-      ? formatCurrency(getCurrentPool().tokenPrice, true, 3)
-      : formatCurrency(getCurrentPool().tokenPrice, true, 9);
+    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
+      return formatCurrency(getCurrentPool().tokenPrice, true, 3);
+    } else {
+      return formatCurrency(getCurrentPool().tokenPrice, true, 9);
+    }
   };
 
   useEffect(async () => {
@@ -209,11 +222,12 @@ const Home = ({
     // alert(account)
     if (isMetaMaskInstalled()) {
       const networkId = await getCurrentNetworkId();
-
+      console.log("network id", networkId);
       if (!supportedNetworks.includes(networkId.toString())) {
         // alert('This network is not supported yet! Please switch to Ethereum or Smart Chain network')
       }
       network = getCurrentNetwork(networkId.toString());
+      console.log("current network ", network);
       // alert(`current network set to  ${network}` )
       store.dispatch({
         type: CHANGE_NETWORK,

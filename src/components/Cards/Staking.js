@@ -166,11 +166,11 @@ const Staking = ({
 
   const getCurrentApy = () => {
     if (tokenType === "BITE") {
-      return pool[tokenType].biteApy;
+      return pool[tokenType] ? pool[tokenType].biteApy : "0";
     } else if (tokenType === PWAR) {
-      return pool[tokenType].pwarApy;
+      return pool[tokenType] ? pool[tokenType].pwarApy : "0";
     } else {
-      return pool[tokenType].clf365Apy;
+      return pool[tokenType] ? pool[tokenType].clf365Apy : "0";
     }
   };
 
@@ -219,7 +219,7 @@ const Staking = ({
                     <strong>Total token staked:</strong>{" "}
                     {getCurrencyFormatForToken(
                       tokenType,
-                      pool[tokenType].totalTokenStaked
+                      pool[tokenType] ? pool[tokenType].totalTokenStaked : "0"
                     )}
                     {/* {tokenType === "PWAR"
                       ? formatCurrency(
@@ -254,7 +254,11 @@ const Staking = ({
                       Total token claimed:
                     </strong>{" "}
                     {formatCurrency(
-                      fromWei(pool[tokenType].totalTokenClaimed),
+                      fromWei(
+                        pool[tokenType]
+                          ? pool[tokenType].totalTokenClaimed
+                          : "0"
+                      ),
                       false,
                       1,
                       true

@@ -1,7 +1,9 @@
 import Web3 from "web3";
 import Bite from "../abi/Bite.json";
 import PolkaBridge from "../abi/PolkaBridge.json";
+import PolkaBridgeMatic from "../abi/pbrMatic.json";
 import PolkaBridgeStaking from "../abi/PolkaBridgeStaking.json";
+import PolkaBridgeStakingMatic from "../abi/polkabridgeStakingMatic.json";
 import CorgibStaking from "../abi/CorgibStaking.json";
 import PolkaBridgeMemeToken from "../abi/PolkaBridgeMemeToken.json";
 import pwarCoin from "../abi/Pwar.json";
@@ -20,8 +22,14 @@ import {
   corgibStakingTestent,
   currentConnection,
   etheriumNetwork,
+  maticConfig,
+  maticNetwork,
   pbrAddressKoven,
   pbrAddressMainnet,
+  pbrAddressMaticMainnet,
+  pbrAddressMaticTestnet,
+  pbrStakingMaticMainnet,
+  pbrStakingMaticTestnet,
   pwarAddressMainnet,
   pwarAddressTestnet,
   stakingAddressKoven,
@@ -40,10 +48,20 @@ export const biteContract = (network) => {
 };
 
 export const pbrContract = (network) => {
-  const address =
-    currentConnection === "testnet" ? pbrAddressKoven : pbrAddressMainnet;
+  let address;
+  let abi;
+  if (network === maticNetwork) {
+    address =
+      currentConnection === "testnet"
+        ? pbrAddressMaticTestnet
+        : pbrAddressMaticMainnet;
+    abi = PolkaBridgeMatic;
+  } else {
+    address =
+      currentConnection === "testnet" ? pbrAddressKoven : pbrAddressMainnet;
+    abi = PolkaBridge;
+  }
 
-  const abi = PolkaBridge;
   const connection = getCurrentConnection(network, abi, address);
   return connection;
 };
@@ -87,6 +105,15 @@ export const stakeContract = (network) => {
     const abi = CorgibStaking;
     const connection = getCurrentConnection(network, abi, address);
     return connection;
+  } else if (network === maticNetwork) {
+    const address =
+      currentConnection === "testnet"
+        ? pbrStakingMaticTestnet
+        : pbrStakingMaticMainnet;
+
+    const abi = PolkaBridgeStakingMatic;
+    const connection = getCurrentConnection(network, abi, address);
+    return connection;
   } else {
     const address =
       currentConnection === "testnet"
@@ -113,6 +140,14 @@ const getCurrentConnection = (blockChainNetwork, abi, contractAddress) => {
       const web3 = new Web3(new Web3.providers.HttpProvider(infura));
       return new web3.eth.Contract(abi, contractAddress);
     }
+  } else if (blockChainNetwork === maticNetwork) {
+    const rpc =
+      currentConnection === "testnet"
+        ? maticConfig.network_rpc_testnet
+        : maticConfig.network_rpc_mainnet;
+    const web3 = new Web3(window.ethereum);
+
+    return new web3.eth.Contract(abi, contractAddress);
   } else {
     // const web3 = new Web3(new Web3.providers.HttpProvider(bscConfig.network_rpc_testnet));
     // const web3 = new Web3('https://data-seed-prebsc-1-s1.binance.org:8545');

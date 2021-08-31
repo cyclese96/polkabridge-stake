@@ -18,7 +18,7 @@ import {
   pwarCoinContract,
   clf365Contract,
 } from "../contracts/connections";
-import { etheriumNetwork } from "../constants";
+import { bscNetwork, etheriumNetwork, maticNetwork } from "../constants";
 
 //GET user authenticated
 export const connectWallet =
@@ -69,6 +69,15 @@ export const connectWallet =
           type: LOAD_BALANCE,
           payload: { pbr: pbrWei, bite: biteWei, clf365: cl365Wei },
         });
+      } else if (network === maticNetwork) {
+        console.log("connectWallet: fetching from", network);
+        const [pbrWei] = await Promise.all([
+          pbrContract(network).methods.balanceOf(accountAddress).call(),
+        ]);
+        dispatch({
+          type: LOAD_BALANCE,
+          payload: { pbr: pbrWei },
+        });
       } else {
         const [corgibWei, pwarWei] = await Promise.all([
           corgibCoinContract(network).methods.balanceOf(accountAddress).call(),
@@ -116,7 +125,7 @@ export const getAccountBalance = (network) => async (dispatch) => {
         type: LOAD_BALANCE,
         payload: { pbr: pbrWei, bite: biteWei, clf365: cl365Wei },
       });
-    } else {
+    } else if (network === bscNetwork) {
       // console.log('account', address)
       // console.log('network', network)
       const [corgibWei, pwarWei] = await Promise.all([
@@ -131,6 +140,15 @@ export const getAccountBalance = (network) => async (dispatch) => {
       dispatch({
         type: LOAD_PWAR_BALANCE,
         payload: pwarWei,
+      });
+    } else {
+      const [pbrWei] = await Promise.all([
+        pbrContract(network).methods.balanceOf(address).call(),
+      ]);
+
+      dispatch({
+        type: LOAD_BALANCE,
+        payload: { pbr: pbrWei },
       });
     }
   } catch (error) {
