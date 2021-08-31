@@ -4,12 +4,15 @@ import {
   AVG_CL365_PER_BLOCK,
   AVG_CORGIB_PER_BLOCK,
   AVG_PBR_PER_BLOCK,
+  AVG_PBR_PER_BLOCK_MATIC,
   AVG_PWAR_PER_BLOCK,
   BITE,
   CFL365,
   CORGIB,
   CORGIB_BLOCKS_PER_YEAR,
+  maticNetwork,
   NUMBER_BLOCKS_PER_YEAR,
+  NUMBER_BLOCKS_PER_YEAR_MATIC,
   PBR,
   PWAR,
   PWAR_BLOCKS_PER_YEAR,
@@ -146,7 +149,7 @@ const getCalculatedApy = (
   return apy;
 };
 
-export const getApy = (tokenType, poolObj) => {
+export const getApy = (tokenType, poolObj, network) => {
   // const NUMBER_BLOCKS_PER_YEAR = 2400000;
 
   let tokenPrice = new BigNumber(poolObj.tokenPrice);
@@ -175,8 +178,10 @@ export const getApy = (tokenType, poolObj) => {
     case PBR:
       const pbrApy = getCalculatedApy(
         tokenPrice,
-        NUMBER_BLOCKS_PER_YEAR,
-        AVG_PBR_PER_BLOCK,
+        network === maticNetwork
+          ? NUMBER_BLOCKS_PER_YEAR_MATIC
+          : NUMBER_BLOCKS_PER_YEAR,
+        network === maticNetwork ? AVG_PBR_PER_BLOCK_MATIC : AVG_PBR_PER_BLOCK,
         total_value_locked_usd
       );
       return pbrApy;

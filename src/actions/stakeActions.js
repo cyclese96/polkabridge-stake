@@ -176,7 +176,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
 
       pbrPoolObj.tokenPrice = data.polkabridge ? data.polkabridge.usd : "---";
 
-      const pbrApy = getApy("PBR", pbrPoolObj);
+      const pbrApy = getApy("PBR", pbrPoolObj, network);
       pbrPoolObj.pbrApy = pbrApy;
 
       // bite pool calculations
@@ -197,7 +197,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       bitePoolObj.tokenPrice = bitePrice["dragonbite"]
         ? bitePrice["dragonbite"].usd
         : "---";
-      bitePoolObj.biteApy = getApy("BITE", bitePoolObj);
+      bitePoolObj.biteApy = getApy("BITE", bitePoolObj, network);
 
       // console.log({ bitePoolObj });
       // clf pool calculations
@@ -220,7 +220,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
         : "---";
       // console.log({ clfPoolObj });
 
-      clfPoolObj.clf365Apy = getApy(CFL365, clfPoolObj);
+      clfPoolObj.clf365Apy = getApy(CFL365, clfPoolObj, network);
       dispatch({
         type: LOAD_PPOL_INFO,
         payload: { pbr: pbrPoolObj, bite: bitePoolObj, clf365: clfPoolObj },
@@ -245,7 +245,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
 
       pbrPoolObj.tokenPrice = data.polkabridge ? data.polkabridge.usd : "---";
 
-      const pbrApy = getApy("PBR", pbrPoolObj);
+      const pbrApy = getApy("PBR", pbrPoolObj, network);
       pbrPoolObj.pbrApy = pbrApy;
 
       dispatch({
@@ -276,7 +276,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       poolObj.tokenPrice = data["the-corgi-of-polkabridge"]
         ? data["the-corgi-of-polkabridge"].usd
         : "---";
-      const corgibApy = getApy("CORGIB", poolObj);
+      const corgibApy = getApy("CORGIB", poolObj, network);
       poolObj.corgibApy = corgibApy;
 
       //prepare pwar Pool
@@ -298,7 +298,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       pwarPoolObj.tokenPrice = pwarPrice["polkawar"]
         ? pwarPrice["polkawar"].usd
         : "---";
-      const pwarApy = getApy("PWAR", pwarPoolObj);
+      const pwarApy = getApy("PWAR", pwarPoolObj, network);
       pwarPoolObj.pwarApy = pwarApy;
       console.log({ pwarApy });
 

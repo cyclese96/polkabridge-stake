@@ -53,6 +53,10 @@ export const poolId = {
 
 export const NUMBER_BLOCKS_PER_YEAR = 2400000;
 export const AVG_PBR_PER_BLOCK = 1.5;
+
+export const NUMBER_BLOCKS_PER_YEAR_MATIC = 43200 * 365;
+export const AVG_PBR_PER_BLOCK_MATIC = 0.15;
+
 export const AVG_BITE_PER_BLOCK = 2;
 
 export const BITE_PRICE = 0.1;
@@ -79,8 +83,8 @@ export const infuraMainnetApi = `https://mainnet.infura.io/v3/${process.env.REAC
  *    'testnet'  BSC testnet testing
  *    'mainnet'  BSC/ETH mainent deployment
  */
-export const currentConnection = "testnet";
-// export const currentConnection = "mainnet";
+// export const currentConnection = "testnet";
+export const currentConnection = "mainnet";
 
 export const etheriumNetwork = "ethereum";
 export const bscNetwork = "bsc";
