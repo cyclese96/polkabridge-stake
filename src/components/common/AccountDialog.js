@@ -8,7 +8,13 @@ import Typography from "@material-ui/core/Typography";
 import CustomButton from "../Buttons/CustomButton";
 import { ContactMailOutlined } from "@material-ui/icons";
 import VisibilityIcon from "@material-ui/icons/Visibility";
-import { BITE, CFL365, etheriumNetwork, PBR } from "../../constants";
+import {
+  BITE,
+  CFL365,
+  etheriumNetwork,
+  maticNetwork,
+  PBR,
+} from "../../constants";
 import { formatCurrency, fromWei } from "../../utils/helper";
 import { connect } from "react-redux";
 import { logout } from "../../actions/accountActions";
@@ -133,13 +139,20 @@ const AccountDialog = ({
         { coin: CFL365, balance: formatCurrency(fromWei(balance[CFL365])) },
       ];
     } else {
-      return [
-        { coin: "CORGIB", balance: formatCurrency(fromWei(balance["CORGIB"])) },
-        {
-          coin: "PWAR",
-          balance: formatCurrency(fromWei(balance["PWAR"]), false, 1, true),
-        },
-      ];
+      if (currentNetwork === maticNetwork) {
+        return [{ coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) }];
+      } else {
+        return [
+          {
+            coin: "CORGIB",
+            balance: formatCurrency(fromWei(balance["CORGIB"])),
+          },
+          {
+            coin: "PWAR",
+            balance: formatCurrency(fromWei(balance["PWAR"]), false, 1, true),
+          },
+        ];
+      }
     }
   };
   return (

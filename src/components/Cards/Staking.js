@@ -202,6 +202,7 @@ const Staking = ({
                     marginTop: 8,
                     marginLeft: 5,
                     marginRight: 22,
+                    fontSize: 18,
                   }}
                 >
                   {tokenType}
@@ -331,14 +332,15 @@ const Staking = ({
                     >
                       Claim
                     </CustomButton>
+
+                    <CustomButton onClick={() => onStake(tokenType)}>
+                      Stake
+                    </CustomButton>
                     <CustomButton
                       onClick={() => onUnstake(tokenType)}
                       variant="light"
                     >
                       Unstake
-                    </CustomButton>
-                    <CustomButton onClick={() => onStake(tokenType)}>
-                      Stake
                     </CustomButton>
                   </div>
                 )}

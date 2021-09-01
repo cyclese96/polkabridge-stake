@@ -77,6 +77,11 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: 40,
     backgroundColor: "#f9f9f9",
     padding: 12,
+    [theme.breakpoints.down("sm")]: {
+      width: 50,
+      height: 50,
+      marginBottom: 10,
+    },
   },
   cardsContainer: {
     marginTop: 15,

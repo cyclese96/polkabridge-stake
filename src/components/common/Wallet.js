@@ -33,9 +33,10 @@ const useStyles = makeStyles((theme) => ({
   navbarButton: {
     backgroundColor: "#f9f9f9",
     color: "#C80C81",
+    width: 130,
     borderRadius: 10,
     height: 35,
-    marginRight: 40,
+    marginRight: 20,
     padding: 15,
     fontSize: 14,
     fontWeight: 700,
@@ -45,7 +46,7 @@ const useStyles = makeStyles((theme) => ({
     },
     [theme.breakpoints.down("sm")]: {
       marginRight: 0,
-      marginLeft: 15,
+
       width: 150,
     },
   },
