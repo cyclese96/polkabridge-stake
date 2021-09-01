@@ -83,13 +83,8 @@ export const infuraMainnetApi = `https://mainnet.infura.io/v3/${process.env.REAC
  *    'testnet'  BSC testnet testing
  *    'mainnet'  BSC/ETH mainent deployment
  */
-<<<<<<< HEAD
-export const currentConnection = "testnet";
-// export const currentConnection = "mainnet";
-=======
 //export const currentConnection = "testnet";
 export const currentConnection = "mainnet";
->>>>>>> 010bff971ebc3366342086eca39afe9ef1de373c
 
 export const etheriumNetwork = "ethereum";
 export const bscNetwork = "bsc";
