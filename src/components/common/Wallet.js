@@ -2,9 +2,10 @@ import { Button, makeStyles } from "@material-ui/core";
 import { AccountBalanceWalletOutlined } from "@material-ui/icons";
 import etherIcon from "../../assets/ether.png";
 import binanceIcon from "../../assets/binance.png";
+import polygonIcon from "../../assets/polygon.png";
 import { connect } from "react-redux";
 import { isMetaMaskInstalled } from "../../utils/helper";
-import { etheriumNetwork } from "../../constants";
+import { bscNetwork, etheriumNetwork, maticNetwork } from "../../constants";
 import { connectWallet } from "../../actions/accountActions";
 
 const useStyles = makeStyles((theme) => ({
@@ -77,6 +78,33 @@ const Wallet = ({
     await connectWallet(true, currentNetwork);
   };
 
+  const iconAddress = () => {
+    if (currentNetwork === etheriumNetwork) {
+      return (
+        <img
+          className={classes.networkIcon}
+          src={etherIcon}
+          alt={currentNetwork}
+        />
+      );
+    } else if (currentNetwork === bscNetwork) {
+      return (
+        <img
+          className={classes.networkIcon}
+          src={binanceIcon}
+          alt={currentNetwork}
+        />
+      );
+    } else
+      return (
+        <img
+          className={classes.networkIcon}
+          src={polygonIcon}
+          alt={currentNetwork}
+        />
+      );
+  };
+
   return (
     <div>
       {!connected ? (
@@ -85,11 +113,7 @@ const Wallet = ({
         </Button>
       ) : (
         <a onClick={onWalletClick} className={classes.root}>
-          <img
-            className={classes.networkIcon}
-            src={currentNetwork === etheriumNetwork ? etherIcon : binanceIcon}
-            alt={currentNetwork}
-          />
+          {iconAddress()}
           <strong className={classes.numbers}>
             {currentAccount ? currentAccount.toString().slice(0, 6) : "."}..
           </strong>

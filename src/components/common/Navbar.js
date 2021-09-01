@@ -260,18 +260,7 @@ const Navbar = ({ currentNetwork }) => {
 
       <List>
         <ListItem button style={{ marginTop: 15 }}>
-          <div className={classes.network}>
-            <img
-              className={classes.networkIcon}
-              src={currentNetwork === etheriumNetwork ? etherIcon : binanceIcon}
-              alt={currentNetwork}
-            />
-            <span style={{ color: "white", marginLeft: 5 }}>
-              {currentNetwork === etheriumNetwork
-                ? "Ethereum"
-                : "Binance Smart Chain"}
-            </span>
-          </div>
+          {renderIcon()}
         </ListItem>
         <ListItem button style={{ marginTop: 15 }}>
           <Wallet onWalletClick={() => setAccountDialog(true)} />
