@@ -61,7 +61,7 @@ const useStyles = makeStyles((theme) => ({
     width: 320,
     height: 350,
     [theme.breakpoints.down("sm")]: {
-      width: 320,
+      width: 290,
       height: 350,
     },
   },
@@ -74,6 +74,9 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 12,
     fontWeight: 400,
     color: "#919191",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 11,
+    },
   },
   inputGroup: {
     marginTop: 40,
