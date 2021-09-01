@@ -13,7 +13,7 @@ export const clf365AddressKoven = "0x1F6fE20C82950F5139e8b31D5C32A73EE992e9E1";
 export const stakingAddressKoven = "0x7678f0AF7304e01554E2D49D96E55C8de4975c66";
 //Matic Network
 export const pbrAddressMaticMainnet =
-  "0x6024ca0b7c12846a396a5d860ff885233ef16dd0";
+  "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0";
 export const pbrAddressMaticTestnet =
   "0x6024ca0b7c12846a396a5d860ff885233ef16dd0";
 
@@ -83,7 +83,7 @@ export const infuraMainnetApi = `https://mainnet.infura.io/v3/${process.env.REAC
  *    'testnet'  BSC testnet testing
  *    'mainnet'  BSC/ETH mainent deployment
  */
-// export const currentConnection = "testnet";
+//export const currentConnection = "testnet";
 export const currentConnection = "mainnet";
 
 export const etheriumNetwork = "ethereum";
