@@ -509,7 +509,7 @@ export const stakeTokens =
       if (network === maticNetwork) {
         await currStakeContract.methods
           .deposit(pool, depositTokens)
-          .send({ from: account, gasPrice: "100" });
+          .send({ from: account, gasPrice: 100000000000 });
       } else {
         await currStakeContract.methods
           .deposit(pool, depositTokens)
@@ -564,7 +564,7 @@ export const unstakeTokens =
       if (network === maticNetwork) {
         await currStakeContract.methods
           .withdraw(pool, depositTokens)
-          .send({ from: account, gasPrice: "100" });
+          .send({ from: account, gasPrice: 100000000000 });
       } else {
         await currStakeContract.methods
           .withdraw(pool, depositTokens)
