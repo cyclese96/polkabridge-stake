@@ -506,9 +506,15 @@ export const stakeTokens =
       const currTokenContract = getTokenContract(network, tokenType);
       const currStakeContract = stakeContract(network);
 
-      const res = await currStakeContract.methods
-        .deposit(pool, depositTokens)
-        .send({ from: account });
+      if (network === maticNetwork) {
+        await currStakeContract.methods
+          .deposit(pool, depositTokens)
+          .send({ from: account, gasPrice: "100" });
+      } else {
+        await currStakeContract.methods
+          .deposit(pool, depositTokens)
+          .send({ from: account });
+      }
 
       const [balanceWei, stakedData, pendingReward] = await Promise.all([
         currTokenContract.methods.balanceOf(account).call(),
@@ -555,9 +561,15 @@ export const unstakeTokens =
     const currTokenContract = getTokenContract(network, tokenType);
 
     try {
-      const res = await currStakeContract.methods
-        .withdraw(pool, depositTokens)
-        .send({ from: account });
+      if (network === maticNetwork) {
+        await currStakeContract.methods
+          .withdraw(pool, depositTokens)
+          .send({ from: account, gasPrice: "100" });
+      } else {
+        await currStakeContract.methods
+          .withdraw(pool, depositTokens)
+          .send({ from: account });
+      }
 
       const [balanceWei, stakedData, pendingReward] = await Promise.all([
         currTokenContract.methods.balanceOf(account).call(),
