@@ -83,7 +83,7 @@ export const infuraMainnetApi = `https://mainnet.infura.io/v3/${process.env.REAC
  *    'testnet'  BSC testnet testing
  *    'mainnet'  BSC/ETH mainent deployment
  */
-// export const currentConnection = "testnet";
+//export const currentConnection = "testnet";
 export const currentConnection = "mainnet";
 
 export const etheriumNetwork = "ethereum";
@@ -111,7 +111,7 @@ export const maticConfig = {
     mainnet: "137",
     testnet: "80001",
   },
-  network_rpc_mainnet: "https://rpc-mumbai.matic.today",
+  network_rpc_mainnet: `https://polygon-mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`,
   network_rpc_testnet: "https://mumbai-explorer.matic.today",
 };
 
