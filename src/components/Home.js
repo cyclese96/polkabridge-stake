@@ -1,6 +1,6 @@
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import React, { useEffect } from "react";
-import { Avatar, CircularProgress } from "@material-ui/core";
+import { Avatar, CircularProgress, Divider } from "@material-ui/core";
 
 import Staking from "./Cards/Staking";
 import Balance from "./Cards/Balance";
@@ -32,16 +32,40 @@ import {
 import { CHANGE_NETWORK, RESET_USER_STAKE } from "../actions/types";
 import store from "../store";
 import web3 from "../web";
+import BalanceCard from "./common/BalanceCard";
+import StakeCard from "./common/StakeCard";
+import PbrPool from "./common/PbrPool";
 const useStyles = makeStyles((theme) => ({
   background: {
-    padding: 80,
+    paddingTop: 100,
+    paddingLeft: 80,
+    paddingRight: 80,
+    [theme.breakpoints.down("sm")]: {
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
+  },
+  section: {
     minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    backgroundColor: "#121827",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 12,
+    },
   },
-
+  title: {
+    color: "#e5e5e5",
+    fontSize: 24,
+    fontWeight: 600,
+    textAlign: "left",
+  },
+  otherTitle: {
+    color: "#e5e5e5",
+    fontSize: 24,
+    fontWeight: 600,
+    textAlign: "center",
+  },
   heading: {
     textAlign: "center",
     fontSize: 24,
@@ -64,17 +88,17 @@ const useStyles = makeStyles((theme) => ({
   },
   numbers: {
     color: "#E0077D",
-    fontSize: 26,
+    fontSize: 24,
     marginLeft: 5,
     [theme.breakpoints.down("sm")]: {
       fontSize: 12,
     },
   },
   logo: {
-    width: 95,
-    height: 95,
+    width: 80,
+    height: 80,
     marginTop: 5,
-    marginBottom: 40,
+    marginBottom: 10,
     backgroundColor: "#f9f9f9",
     padding: 12,
     [theme.breakpoints.down("sm")]: {
@@ -104,13 +128,20 @@ const useStyles = makeStyles((theme) => ({
   },
   card: {
     marginTop: 5,
+    padding: 10,
     marginBottom: 5,
   },
   card2: {
+    padding: 10,
     marginTop: 25,
     marginBottom: 5,
     alignSelf: "center",
     justifySelf: "center",
+  },
+  divider: {
+    width: 90,
+    height: 3,
+    background: "linear-gradient(to right, #e0077d, rgba(0, 0, 0, 0.4))",
   },
 }));
 
@@ -220,126 +251,136 @@ const Home = ({
     }
   };
 
-  useEffect(async () => {
-    let network = "";
-    const account = await getCurrentAccount();
+  // useEffect(async () => {
+  //   let network = "";
+  //   const account = await getCurrentAccount();
 
-    // alert(account)
-    if (isMetaMaskInstalled()) {
-      const networkId = await getCurrentNetworkId();
-      console.log("network id", networkId);
-      if (!supportedNetworks.includes(networkId.toString())) {
-        // alert('This network is not supported yet! Please switch to Ethereum or Smart Chain network')
-      }
-      network = getCurrentNetwork(networkId.toString());
-      console.log("current network ", network);
-      // alert(`current network set to  ${network}` )
-      store.dispatch({
-        type: CHANGE_NETWORK,
-        payload: network,
-      });
-      await getPoolInfo(network);
-    } else {
-      // alert('meta mask not installed')
-      network = etheriumNetwork;
-      await getPoolInfo(network);
-    }
+  //   // alert(account)
+  //   if (isMetaMaskInstalled()) {
+  //     const networkId = await getCurrentNetworkId();
+  //     console.log("network id", networkId);
+  //     if (!supportedNetworks.includes(networkId.toString())) {
+  //       // alert('This network is not supported yet! Please switch to Ethereum or Smart Chain network')
+  //     }
+  //     network = getCurrentNetwork(networkId.toString());
+  //     console.log("current network ", network);
+  //     // alert(`current network set to  ${network}` )
+  //     store.dispatch({
+  //       type: CHANGE_NETWORK,
+  //       payload: network,
+  //     });
+  //     await getPoolInfo(network);
+  //   } else {
+  //     // alert('meta mask not installed')
+  //     network = etheriumNetwork;
+  //     await getPoolInfo(network);
+  //   }
 
-    if (!isMetaMaskInstalled()) {
-      return;
-    }
+  //   if (!isMetaMaskInstalled()) {
+  //     return;
+  //   }
 
-    await connectWallet(false, network);
-    await getAccountBalance(network);
-  }, []);
+  //   await connectWallet(false, network);
+  //   await getAccountBalance(network);
+  // }, []);
 
-  useEffect(() => {
-    if (JSON.stringify(error).includes("-32000")) {
-      alert(
-        `You don't have enough balance to pay gas fee for the transaction!`
-      );
-    } else if (JSON.stringify(error).includes("User rejected transaction")) {
-      alert(`Transaction cancelled`);
-    }
-    // alert(JSON.stringify(error))
-  }, [JSON.stringify(error)]);
+  // useEffect(() => {
+  //   if (JSON.stringify(error).includes("-32000")) {
+  //     alert(
+  //       `You don't have enough balance to pay gas fee for the transaction!`
+  //     );
+  //   } else if (JSON.stringify(error).includes("User rejected transaction")) {
+  //     alert(`Transaction cancelled`);
+  //   }
+  //   // alert(JSON.stringify(error))
+  // }, [JSON.stringify(error)]);
 
   return (
     <div>
       <section className="appbar-section">
         <Navbar currentNetwork={currentNetwork} />
       </section>
+      <div className="container">
+        <div className={classes.background}>
+          <h1 className={classes.title}>Stake Pools</h1>
+          <div className={classes.divider} />
 
-      <div className={classes.background}>
-        <Avatar className={classes.logo} src="img/symbol.png" />
-        {poolLoading ? (
-          <div style={{ marginTop: 132, marginBottom: 16 }}>
-            <CircularProgress className={classes.numbers} />
-          </div>
-        ) : (
-          <>
-            <p className={classes.heading}>
-              {getCurrentTokenType()} price:
-              <strong className={classes.numbers}>
-                {getCurrentTokenPrice()}
-              </strong>
-            </p>
-            <p className={classes.heading}>
-              {getCurrentTokenType()} APY:
-              <strong className={classes.numbers}>
-                {formatCurrency(getCurrentApy(), false, 1, true)} %
-              </strong>
-            </p>
-            <p className={classes.heading}>
-              Total Token Staked :
-              <strong className={classes.numbers}>
-                {formatCurrency(fromWei(getCurrentPool().totalTokenStaked))}{" "}
-                {getCurrentTokenType()}
-              </strong>
-            </p>
-
-            <p className={classes.heading}>
-              Total Rewards Claimed:
-              <strong className={classes.numbers}>
-                {formatCurrency(fromWei(getCurrentPool().totalTokenClaimed))}{" "}
-                {getCurrentTokenType()}
-              </strong>
-            </p>
-          </>
-        )}
-
-        {!connected ? (
-          <div className={classes.cardsContainer2}>
-            <Wallet />
-            <p className={classes.subheading}>
-              Unlock your Wallet to stake tokens
-            </p>
-          </div>
-        ) : (
-          <div>
-            {supportedStaking[currentNetwork].map((token) => (
-              <div className={classes.cardsContainer}>
-                <div className={classes.card}>
-                  <Staking
-                    onStake={onStake}
-                    onUnstake={onUnStake}
-                    tokenType={token}
+          {poolLoading ? (
+            <div style={{ marginTop: 132, marginBottom: 16 }}>
+              <CircularProgress className={classes.numbers} />
+            </div>
+          ) : (
+            <>
+              <div className="row mt-5">
+                <div className="col-md-8">
+                  <PbrPool
+                    tokenType={getCurrentTokenType()}
+                    price={getCurrentTokenPrice()}
+                    apy={formatCurrency(getCurrentApy(), false, 1, true)}
+                    tokenStaked={formatCurrency(
+                      fromWei(getCurrentPool().totalTokenStaked)
+                    )}
+                    tokenClaimed={formatCurrency(
+                      fromWei(getCurrentPool().totalTokenClaimed)
+                    )}
                   />
                 </div>
-                <div className={classes.card}>
-                  <Balance tokenType={token} />
+                <div className="col-md-4">
+                  <div>
+                    <BalanceCard tokens={supportedStaking[currentNetwork]} />
+                  </div>
                 </div>
               </div>
-            ))}
-          </div>
-        )}
-        <StakeDialog
-          open={dialog.open}
-          type={dialog.type}
-          tokenType={dialog.tokenType}
-          handleClose={handleClose}
-        />
-        <Footer />
+            </>
+          )}
+          {!connected ? (
+            <div className={classes.cardsContainer2}>
+              <Wallet />
+              <p className={classes.subheading}>
+                Connect your Wallet to stake tokens
+              </p>
+            </div>
+          ) : (
+            <div className="mt-3">
+              <div className="row">
+                {supportedStaking[currentNetwork].map((token) => (
+                  <div className="col-md-4">
+                    <div className={classes.card}>
+                      <Staking
+                        onStake={onStake}
+                        onUnstake={onUnStake}
+                        tokenType={token}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* <div className={classes.cardsContainer}>
+                  <div className={classes.card}>
+                    <Staking
+                      onStake={onStake}
+                      onUnstake={onUnStake}
+                      tokenType={token}
+                    />
+                  </div>
+                  <div className={classes.card}>
+                    <Balance tokenType={token} />
+                  </div>
+                </div> */}
+          <StakeDialog
+            open={dialog.open}
+            type={dialog.type}
+            tokenType={dialog.tokenType}
+            handleClose={handleClose}
+          />
+        </div>
+
+        <div className="d-flex justify-content-center pb-3">
+          <Footer />
+        </div>
       </div>
     </div>
   );
