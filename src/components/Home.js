@@ -1,6 +1,6 @@
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import React, { useEffect } from "react";
-import { Avatar, CircularProgress } from "@material-ui/core";
+import { Avatar, CircularProgress, Divider } from "@material-ui/core";
 
 import Staking from "./Cards/Staking";
 import Balance from "./Cards/Balance";
@@ -32,16 +32,41 @@ import {
 import { CHANGE_NETWORK, RESET_USER_STAKE } from "../actions/types";
 import store from "../store";
 import web3 from "../web";
+import BalanceCard from "./common/BalanceCard";
+import StakeCard from "./common/StakeCard";
+import PbrStats from "./common/PbrStats";
+import Loader from "./common/Loader";
 const useStyles = makeStyles((theme) => ({
   background: {
-    padding: 80,
+    paddingTop: 100,
+    paddingLeft: 80,
+    paddingRight: 80,
+    [theme.breakpoints.down("sm")]: {
+      paddingLeft: 0,
+      paddingRight: 0,
+    },
+  },
+  section: {
     minHeight: "100vh",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    backgroundColor: "#121827",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 12,
+    },
   },
-
+  title: {
+    color: "#e5e5e5",
+    fontSize: 24,
+    fontWeight: 600,
+    textAlign: "left",
+  },
+  otherTitle: {
+    color: "#e5e5e5",
+    fontSize: 24,
+    fontWeight: 600,
+    textAlign: "center",
+  },
   heading: {
     textAlign: "center",
     fontSize: 24,
@@ -56,6 +81,7 @@ const useStyles = makeStyles((theme) => ({
   },
   subheading: {
     fontSize: 16,
+    marginTop: 5,
     fontWeight: 400,
     color: "#919191",
     [theme.breakpoints.down("sm")]: {
@@ -64,17 +90,17 @@ const useStyles = makeStyles((theme) => ({
   },
   numbers: {
     color: "#E0077D",
-    fontSize: 26,
+    fontSize: 24,
     marginLeft: 5,
     [theme.breakpoints.down("sm")]: {
       fontSize: 12,
     },
   },
   logo: {
-    width: 95,
-    height: 95,
+    width: 80,
+    height: 80,
     marginTop: 5,
-    marginBottom: 40,
+    marginBottom: 10,
     backgroundColor: "#f9f9f9",
     padding: 12,
     [theme.breakpoints.down("sm")]: {
@@ -104,13 +130,20 @@ const useStyles = makeStyles((theme) => ({
   },
   card: {
     marginTop: 5,
+    padding: 10,
     marginBottom: 5,
   },
   card2: {
+    padding: 10,
     marginTop: 25,
     marginBottom: 5,
     alignSelf: "center",
     justifySelf: "center",
+  },
+  divider: {
+    width: 90,
+    height: 3,
+    background: "linear-gradient(to right, #e0077d, rgba(0, 0, 0, 0.4))",
   },
 }));
 
@@ -219,6 +252,21 @@ const Home = ({
       return formatCurrency(getCurrentPool().tokenPrice, true, 9);
     }
   };
+  const getCurrentTokenChange = () => {
+    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
+      return formatCurrency(getCurrentPool().change, true, 3);
+    } else {
+      return formatCurrency(getCurrentPool().change, true, 9);
+    }
+  };
+
+  const getCurrentTokenMCap = () => {
+    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
+      return formatCurrency(getCurrentPool().mCap, true, 3);
+    } else {
+      return formatCurrency(getCurrentPool().mCap, true, 9);
+    }
+  };
 
   useEffect(async () => {
     let network = "";
@@ -269,77 +317,64 @@ const Home = ({
       <section className="appbar-section">
         <Navbar currentNetwork={currentNetwork} />
       </section>
-
-      <div className={classes.background}>
-        <Avatar className={classes.logo} src="img/symbol.png" />
-        {poolLoading ? (
-          <div style={{ marginTop: 132, marginBottom: 16 }}>
-            <CircularProgress className={classes.numbers} />
-          </div>
-        ) : (
-          <>
-            <p className={classes.heading}>
-              {getCurrentTokenType()} price:
-              <strong className={classes.numbers}>
-                {getCurrentTokenPrice()}
-              </strong>
-            </p>
-            <p className={classes.heading}>
-              {getCurrentTokenType()} APY:
-              <strong className={classes.numbers}>
-                {formatCurrency(getCurrentApy(), false, 1, true)} %
-              </strong>
-            </p>
-            <p className={classes.heading}>
-              Total Token Staked :
-              <strong className={classes.numbers}>
-                {formatCurrency(fromWei(getCurrentPool().totalTokenStaked))}{" "}
-                {getCurrentTokenType()}
-              </strong>
-            </p>
-
-            <p className={classes.heading}>
-              Total Rewards Claimed:
-              <strong className={classes.numbers}>
-                {formatCurrency(fromWei(getCurrentPool().totalTokenClaimed))}{" "}
-                {getCurrentTokenType()}
-              </strong>
-            </p>
-          </>
-        )}
-
-        {!connected ? (
-          <div className={classes.cardsContainer2}>
-            <Wallet />
-            <p className={classes.subheading}>
-              Unlock your Wallet to stake tokens
-            </p>
-          </div>
-        ) : (
-          <div>
-            {supportedStaking[currentNetwork].map((token) => (
-              <div className={classes.cardsContainer}>
-                <div className={classes.card}>
-                  <Staking
-                    onStake={onStake}
-                    onUnstake={onUnStake}
-                    tokenType={token}
-                  />
-                </div>
-                <div className={classes.card}>
-                  <Balance tokenType={token} />
-                </div>
+      <div className="container">
+        <div className={classes.background}>
+          <h1 className={classes.title}>Stake Pools</h1>
+          <div className={classes.divider} />
+          <div className="row mt-5">
+            <div className="col-md-8 mb-3">
+              <PbrStats
+                poolLoading={poolLoading}
+                tokenType={getCurrentTokenType()}
+                price={getCurrentTokenPrice()}
+                mCap={getCurrentTokenMCap()}
+                change={getCurrentTokenChange()}
+              />
+            </div>
+            <div className="col-md-4">
+              <div>
+                <BalanceCard tokens={supportedStaking[currentNetwork]} />
               </div>
-            ))}
+            </div>
           </div>
-        )}
-        <StakeDialog
-          open={dialog.open}
-          type={dialog.type}
-          tokenType={dialog.tokenType}
-          handleClose={handleClose}
-        />
-        <Footer />
+
+          {!connected && (
+            <div className={classes.cardsContainer2}>
+              <Wallet />
+              <p className={classes.subheading}>
+                Connect your Wallet to stake tokens
+              </p>
+            </div>
+          )}
+          {connected && (
+            <div className="mt-3">
+              <div className="row">
+                {supportedStaking[currentNetwork].map((token) => (
+                  <div className="col-md-4">
+                    <div className={classes.card}>
+                      <Staking
+                        onStake={onStake}
+                        onUnstake={onUnStake}
+                        tokenType={token}
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <StakeDialog
+            open={dialog.open}
+            type={dialog.type}
+            tokenType={dialog.tokenType}
+            handleClose={handleClose}
+          />
+        </div>
+
+        <div className="d-flex justify-content-center pb-3">
+          <Footer />
+        </div>
       </div>
     </div>
   );

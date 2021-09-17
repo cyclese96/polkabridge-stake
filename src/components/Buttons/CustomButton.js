@@ -2,40 +2,42 @@ import { Button, makeStyles } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   stakeButton: {
-    backgroundColor: "rgba(224, 7, 125, 0.9)",
+    background: `linear-gradient(to bottom,#D9047C, #BF1088)`,
     color: "white",
-    width: 130,
-    height: 40,
+    width: "fit-content",
+    height: 36,
     textTransform: "none",
-    fontSize: 16,
-    borderRadius: 10,
-    marginLeft: 10,
-    marginRight: 10,
-    marginTop: 5,
-    marginBottom: 5,
+    borderRadius: 30,
+    fontSize: 15,
+    marginRight: 5,
+    marginLeft: 5,
+    padding: "5px 20px 5px 20px",
     "&:hover": {
       background: "rgba(224, 7, 125, 0.7)",
     },
     [theme.breakpoints.down("sm")]: {
-      width: 120,
-      fontSize: 15,
+      width: "fit-content",
+      fontSize: 13,
     },
   },
   unstakeButton: {
     backgroundColor: "rgba(255, 255, 255, 0.1)",
     color: "#f6f6f6",
     borderColor: "#f6f6f6",
-    width: 130,
+    width: "fit-content",
     height: 40,
+    borderRadius: 30,
     textTransform: "none",
     fontSize: 16,
-    borderRadius: 10,
-    marginLeft: 10,
-    marginRight: 10,
-    marginTop: 5,
-    marginBottom: 5,
+    marginRight: 5,
+    marginLeft: 5,
+    padding: "5px 20px 5px 20px",
     "&:hover": {
       background: "rgba(255, 255, 255, 0.3)",
+    },
+    [theme.breakpoints.down("sm")]: {
+      width: "fit-content",
+      fontSize: 15,
     },
   },
 }));
@@ -51,6 +53,7 @@ const CustomButton = ({
     <Button
       onClick={onClick}
       color="primary"
+      variant="contained"
       disabled={disabled}
       className={
         variant == "primary" ? classes.stakeButton : classes.unstakeButton
