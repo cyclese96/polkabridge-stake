@@ -247,24 +247,24 @@ const Home = ({
 
   const getCurrentTokenPrice = () => {
     if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
-      return formatCurrency(getCurrentPool().tokenPrice, true, 3);
+      return formatCurrency(getCurrentPool().tokenPrice, true, 2);
     } else {
-      return formatCurrency(getCurrentPool().tokenPrice, true, 9);
+      return formatCurrency(getCurrentPool().tokenPrice, true, 2);
     }
   };
   const getCurrentTokenChange = () => {
     if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
-      return formatCurrency(getCurrentPool().change, true, 3);
+      return formatCurrency(getCurrentPool().change, true, 2);
     } else {
-      return formatCurrency(getCurrentPool().change, true, 9);
+      return formatCurrency(getCurrentPool().change, true, 2);
     }
   };
 
   const getCurrentTokenMCap = () => {
     if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
-      return formatCurrency(getCurrentPool().mCap, true, 3);
+      return formatCurrency(getCurrentPool().mCap, false, 0);
     } else {
-      return formatCurrency(getCurrentPool().mCap, true, 9);
+      return formatCurrency(getCurrentPool().mCap, false, 0);
     }
   };
 

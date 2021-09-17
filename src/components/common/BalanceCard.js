@@ -98,8 +98,13 @@ function BalanceCard({ account }) {
 
       {account.balance && (
         <div className="mt-5">
+          {console.log("hello")}
+          {console.log(account.balance)}
           {Object.keys(account.balance).map(function (key, index) {
-            if (account.balance[key] !== null && account.balance[key] !== "0") {
+            if (
+              account.balance[key] !== null &&
+              account.balance[key] !== undefined
+            ) {
               return (
                 <div className="d-flex justify-content-between mt-4">
                   <div className="d-flex justify-content-start">

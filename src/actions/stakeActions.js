@@ -247,10 +247,16 @@ export const getPoolInfo = (network) => async (dispatch) => {
       };
       const { data } = await axios.get(
         config.coingecko +
-          "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+          "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
       );
 
       pbrPoolObj.tokenPrice = data.polkabridge ? data.polkabridge.usd : "---";
+      pbrPoolObj.mCap = data.polkabridge
+        ? data.polkabridge.usd_market_cap
+        : "---";
+      pbrPoolObj.change = data.polkabridge
+        ? data.polkabridge.usd_24h_change
+        : "---";
 
       const pbrApy = getApy("PBR", pbrPoolObj, network);
       pbrPoolObj.pbrApy = pbrApy;
@@ -277,18 +283,18 @@ export const getPoolInfo = (network) => async (dispatch) => {
       };
       const { data } = await axios.get(
         config.coingecko +
-          "/v3/simple/price?ids=the-corgi-of-polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
+          "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
       );
 
-      poolObj.tokenPrice = data["the-corgi-of-polkabridge"]
-        ? data["the-corgi-of-polkabridge"].usd
+      poolObj.tokenPrice = data.polkabridge
+        ? parseFloat(data.polkabridge.usd).toFixed(2)
         : "---";
 
-      poolObj.mCap = data["the-corgi-of-polkabridge"]
-        ? data["the-corgi-of-polkabridge"].usd_market_cap
+      poolObj.mCap = data.polkabridge
+        ? parseFloat(data.polkabridge.usd_market_cap).toFixed(2)
         : "---";
-      poolObj.change = data["the-corgi-of-polkabridge"]
-        ? data["the-corgi-of-polkabridge"].usd_24h_change
+      poolObj.change = data.polkabridge
+        ? parseFloat(data.polkabridge.usd_24h_change).toFixed(2)
         : "---";
 
       const corgibApy = getApy("CORGIB", poolObj, network);

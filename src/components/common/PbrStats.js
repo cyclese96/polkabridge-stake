@@ -117,12 +117,9 @@ export default function PbrPool({
           {" "}
           <div>
             <div className="d-flex justify-content-center">
-              <Avatar
-                className={classes.logo}
-                src={tokenType === "PBR" ? "./img/symbol.png" : corgibImg}
-              />
+              <Avatar className={classes.logo} src="./img/symbol.png" />
             </div>
-            <h6 className={classes.title}>{tokenType} Statistics</h6>
+            <h6 className={classes.title}>PBR Statistics</h6>
             <div className="d-flex justify-content-center align-items-center">
               <div
                 style={{
@@ -133,7 +130,7 @@ export default function PbrPool({
                   marginRight: 5,
                 }}
               ></div>
-              <div className={classes.earn}>Stake and Earn {tokenType}</div>
+              <div className={classes.earn}>All in one defi application</div>
             </div>
           </div>
           <div className="text-center mt-4">

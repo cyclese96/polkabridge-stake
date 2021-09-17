@@ -411,7 +411,7 @@ const Navbar = ({ currentNetwork }) => {
           </div>
 
           <div className={classes.grow} />
-          {renderIcon()}
+          <div style={{ paddingRight: 10 }}>{renderIcon()}</div>
           <Wallet onWalletClick={() => setAccountDialog(true)} />
         </Toolbar>
 

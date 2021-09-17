@@ -1,4 +1,10 @@
-import { Card, CircularProgress, Divider, makeStyles } from "@material-ui/core";
+import {
+  Button,
+  Card,
+  CircularProgress,
+  Divider,
+  makeStyles,
+} from "@material-ui/core";
 import { useEffect, useState } from "react";
 
 import biteImg from "../../assets/bite.png";
@@ -169,6 +175,26 @@ const useStyles = makeStyles((theme) => ({
       flexDirection: "row",
     },
   },
+  borderButton: {
+    background: `transparent`,
+    color: "white",
+    width: "fit-content",
+    height: 32,
+    textTransform: "none",
+    borderRadius: 30,
+    fontSize: 15,
+    marginRight: 5,
+    marginLeft: 5,
+    border: "1px solid rgba(224, 7, 125, 0.3)",
+    padding: "5px 20px 5px 20px",
+    "&:hover": {
+      background: "rgba(224, 7, 125, 0.7)",
+    },
+    [theme.breakpoints.down("sm")]: {
+      width: "fit-content",
+      fontSize: 13,
+    },
+  },
 }));
 
 const Staking = ({
@@ -241,6 +267,28 @@ const Staking = ({
     PWAR: "PolkaWar",
     CFL365: "CFL 365",
   };
+  const tokenInfo = {
+    PBR: {
+      buy: "https://app.uniswap.org/#/swap?inputCurrency=0x298d492e8c1d909d3f63bc4a36c66c64acb3d695&outputCurrency=ETH",
+      info: "https://www.coingecko.com/en/coins/polkabridge",
+    },
+    BITE: {
+      buy: "https://app.uniswap.org/#/swap?inputCurrency=0x4eed0fa8de12d5a86517f214c2f11586ba2ed88d&outputCurrency=ETH",
+      info: "https://www.coingecko.com/en/coins/dragonbite",
+    },
+    CORGIB: {
+      buy: "https://pancakeswap.finance/swap#/swap?outputCurrency=0x1cfd6813a59d7b90c41dd5990ed99c3bf2eb8f55",
+      info: "https://www.coingecko.com/en/coins/the-corgi-of-polkabridge",
+    },
+    PWAR: {
+      buy: "https://pancakeswap.finance/swap#/swap?outputCurrency=0x16153214e683018d5aa318864c8e692b66e16778",
+      info: "https://www.coingecko.com/en/coins/polkawar",
+    },
+    CFL365: {
+      buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xcd6adc6b8bd396e2d53ccd7d7257b4de55be4fbe",
+      info: "https://www.coingecko.com/en/coins/cfl365-finance",
+    },
+  };
   const getCurrentApy = () => {
     if (tokenType === "PBR") {
       return pool[tokenType] ? pool[tokenType].pbrApy : "-";
@@ -274,7 +322,7 @@ const Staking = ({
       )}
       {!loading[tokenType] && (
         <div style={{ width: "100%" }}>
-          <div className="d-flex justify-content-center align-items-center py-2">
+          <div className="d-flex justify-content-center align-items-center pt-2 pb-1">
             <img className={classes.avatar} src={tokenLogo[tokenType]} />
             <small
               style={{
@@ -299,9 +347,21 @@ const Staking = ({
             ></div>
             <div className={classes.earn}>Earn {tokenName[tokenType]}</div>
           </div>
+          <div className="d-flex justify-content-center  pt-3">
+            <a href={tokenInfo[tokenType].buy} target="_blank">
+              <Button variant="contained" className={classes.borderButton}>
+                Buy
+              </Button>
+            </a>
+            <a href={tokenInfo[tokenType].info} target="_blank">
+              <Button variant="contained" className={classes.borderButton}>
+                Info
+              </Button>
+            </a>
+          </div>
           <div style={{ minHeight: 120, paddingLeft: 10, paddingRight: 10 }}>
             {["PBR", "BITE", "PWAR", "CORGIB", CFL365].includes(tokenType) ? (
-              <div className="mt-5">
+              <div className="mt-3">
                 <div className="d-flex justify-content-between mt-1">
                   <div className="d-flex justify-content-start">
                     <div>
