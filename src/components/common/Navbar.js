@@ -25,7 +25,7 @@ import AccountDialog from "./AccountDialog";
 import etherIcon from "../../assets/ether.png";
 import binanceIcon from "../../assets/binance.png";
 import polygonIcon from "../../assets/polygon.png";
-
+import DotCircle from "./DotCircle";
 import { bscNetwork, etheriumNetwork, maticNetwork } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
@@ -34,7 +34,9 @@ const useStyles = makeStyles((theme) => ({
   },
   appBarBackground: {
     boxShadow: "none",
-    backgroundColor: "#070F23",
+    backgroundColor: "#100525",
+    display: "flex",
+    alignItems: "center",
   },
   menuButton: {
     textTransform: "none",
@@ -49,8 +51,8 @@ const useStyles = makeStyles((theme) => ({
   icon: {},
 
   sectionDesktop: {
-    marginLeft: 150,
-    marginRight: 100,
+    marginLeft: 40,
+    marginRight: 40,
     [theme.breakpoints.down("md")]: {
       marginLeft: 5,
       marginRight: 5,
@@ -60,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   sectionMobile: {
+    width: "100%",
     display: "flex",
     alignItems: "stretch",
     justifyContent: "space-between",
@@ -104,18 +107,28 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 16,
   },
   navbarItemsDesktop: {
-    paddingTop: 15,
-    height: 35,
-    marginLeft: 18,
-    marginRight: 18,
-    textTransform: "none",
-    fontSize: 16,
-    fontWeight: 600,
-    color: "#f9f9f9",
-    [theme.breakpoints.down("md")]: {
-      marginLeft: 10,
-      marginRight: 10,
-    },
+    paddingRight: 10,
+    fontWeight: 400,
+    lineHeight: "34px",
+    verticalAlign: "baseline",
+    letterSpacing: "-1px",
+    margin: 0,
+    padding: "9px 14px 0px",
+    cursor: "pointer",
+    fontSize: "1.2vw",
+    color: "#e5e5e5",
+  },
+  navbarItemsDesktopActive: {
+    paddingRight: 10,
+    fontWeight: 500,
+    lineHeight: "34px",
+    verticalAlign: "baseline",
+    letterSpacing: "-1px",
+    margin: 0,
+    padding: "9px 14px 0px",
+    cursor: "pointer",
+    fontSize: "1.2vw",
+    color: "#e0077d",
   },
   navbarButton: {
     backgroundColor: "#f9f9f9",
@@ -162,21 +175,42 @@ const useStyles = makeStyles((theme) => ({
   },
   network: {
     display: "flex",
-    marginRight: 30,
+    marginLeft: 20,
     alignItems: "center",
-    border: "0.5px solid white",
-    borderRadius: 15,
+    border: "0.5px solid #919191",
+    borderRadius: 20,
     padding: 4,
-    paddingLeft: 7,
-    paddingRight: 7,
+    paddingLeft: 6,
+    paddingRight: 10,
+    letterSpacing: 0.4,
     // cursor: "pointer",
     "&:hover": {
       background: "rgba(255, 255, 255, 0.1)",
+    },
+    [theme.breakpoints.down("sm")]: {
+      width: 140,
     },
   },
   networkIcon: {
     width: 30,
     height: "auto",
+  },
+  logo: {
+    height: 38,
+    width: 150,
+    [theme.breakpoints.down("sm")]: {
+      height: 30,
+      width: "fit-content",
+    },
+  },
+  list: {
+    paddingTop: 20,
+    width: "250px",
+    borderLeft: "5px solid pink",
+    borderColor: "#3A1242",
+    // borderColor: "#220c3d",
+    height: "100%",
+    backgroundColor: "#100525",
   },
 }));
 
@@ -213,7 +247,7 @@ const Navbar = ({ currentNetwork }) => {
       <List>
         {[
           {
-            name: "Staking",
+            name: "Stake",
             link: "https://stake.polkabridge.org/",
             id: "staking",
             icon: <EqualizerOutlined />,
@@ -246,7 +280,6 @@ const Navbar = ({ currentNetwork }) => {
           {},
         ].map((tab, index) => (
           <ListItem button key={tab.name} onClick={toggleDrawer(anchor, false)}>
-            {tab.icon}
             <a href={tab.link}>
               <ListItemText
                 primary={tab.name}
@@ -255,15 +288,12 @@ const Navbar = ({ currentNetwork }) => {
             </a>
           </ListItem>
         ))}
-      </List>
-      <Divider />
-
-      <List>
-        <ListItem button style={{ marginTop: 15 }}>
-          {renderIcon()}
-        </ListItem>
-        <ListItem button style={{ marginTop: 15 }}>
+        <Divider />
+        <ListItem button style={{ marginLeft: 20 }}>
           <Wallet onWalletClick={() => setAccountDialog(true)} />
+        </ListItem>
+        <ListItem button style={{ marginTop: 10 }}>
+          {renderIcon()}
         </ListItem>
       </List>
     </div>
@@ -289,9 +319,7 @@ const Navbar = ({ currentNetwork }) => {
             src={binanceIcon}
             alt={currentNetwork}
           />
-          <span style={{ color: "white", marginLeft: 5 }}>
-            Binance Smart Chain
-          </span>
+          <span style={{ color: "white", marginLeft: 5 }}>BSC</span>
         </div>
       );
     } else
@@ -323,94 +351,103 @@ const Navbar = ({ currentNetwork }) => {
           <Avatar
             variant="square"
             src="img/logo-white.png"
-            style={{ height: 38, width: 150 }}
+            className={classes.logo}
           />
 
           <div className={classes.leftMargin} />
 
-          <a
-            href="https://stake.polkabridge.org"
-            target="_blank"
-            className={classes.navbarItemsDesktop}
-          >
-            Staking
-          </a>
+          <div className="d-flex justify-content-end">
+            <div>
+              <a href="/" className={classes.navbarItemsDesktopActive}>
+                Stake <DotCircle active={true} />
+              </a>
+            </div>
+          </div>
+          <div>
+            <a
+              href="https://farm.polkabridge.org"
+              target="_blank"
+              rel="noreferrer"
+              className={classes.navbarItemsDesktop}
+            >
+              Farm
+              <DotCircle />
+            </a>
+          </div>
+          <div>
+            <a
+              href="https://launchpad.polkabridge.org"
+              target="_blank"
+              className={classes.navbarItemsDesktop}
+            >
+              Launchpad <DotCircle />
+            </a>
+          </div>
+          <div>
+            <a href="#" className={classes.navbarItemsDesktop}>
+              Swap <DotCircle />
+            </a>
+          </div>
 
-          <a
-            href="https://farm.polkabridge.org"
-            target="_blank"
-            rel="noreferrer"
-            className={classes.navbarItemsDesktop}
-          >
-            Farm
-          </a>
+          <div>
+            <a href="#" className={classes.navbarItemsDesktop}>
+              Lending <DotCircle />
+            </a>
+          </div>
 
-          <a
-            href="https://launchpad.polkabridge.org"
-            target="_blank"
-            className={classes.navbarItemsDesktop}
-          >
-            Launchpad
-          </a>
+          <div>
+            <a href="#" className={classes.navbarItemsDesktop}>
+              Prediction <DotCircle />
+            </a>
+          </div>
 
-          <a href="#" className={classes.navbarItemsDesktop}>
-            Swap
-          </a>
+          <div>
+            <a
+              href="https://corgib.polkabridge.org/bet"
+              className={classes.navbarItemsDesktop}
+            >
+              Betting <DotCircle />
+            </a>
+          </div>
 
-          <a href="#" className={classes.navbarItemsDesktop}>
-            Lending
-          </a>
-
-          <a href="#" className={classes.navbarItemsDesktop}>
-            Prediction
-          </a>
-          <a
-            href="https://corgib.polkabridge.org/bet"
-            className={classes.navbarItemsDesktop}
-          >
-            Betting
-          </a>
           <div className={classes.grow} />
           {renderIcon()}
           <Wallet onWalletClick={() => setAccountDialog(true)} />
         </Toolbar>
 
         <Toolbar className={classes.sectionMobile}>
-          <div className={classes.row1}>
-            <div className={classes.grow} />
-
+          <div className="d-flex justify-content-center align-items-center">
             <Avatar
               variant="square"
               src="img/logo-white.png"
               style={{ height: 38, width: 150 }}
             />
+          </div>
 
-            <div className={classes.grow} />
-            <div>
-              {["right"].map((anchor) => (
-                <React.Fragment key={anchor}>
-                  <IconButton
-                    aria-label="Menu"
-                    aria-haspopup="true"
-                    className={classes.menuIcon}
-                    onClick={toggleDrawer(anchor, true)}
-                  >
-                    <MenuIcon style={{ color: "#ffffff" }} />
-                  </IconButton>
+          <div>
+            {["right"].map((anchor) => (
+              <React.Fragment key={anchor}>
+                <IconButton
+                  aria-label="Menu"
+                  aria-haspopup="true"
+                  className={classes.menuIcon}
+                  onClick={toggleDrawer(anchor, true)}
+                >
+                  <MenuIcon style={{ color: "#ffffff" }} />
+                </IconButton>
 
-                  <SwipeableDrawer
-                    anchor={anchor}
-                    disableSwipeToOpen={false}
-                    open={state[anchor]}
-                    onClose={toggleDrawer(anchor, false)}
-                    onOpen={toggleDrawer(anchor, true)}
-                    classes={{ paper: classes.appBarBackground }}
-                  >
-                    {list(anchor)}
-                  </SwipeableDrawer>
-                </React.Fragment>
-              ))}
-            </div>
+                <SwipeableDrawer
+                  anchor={anchor}
+                  disableSwipeToOpen={false}
+                  open={state[anchor]}
+                  onClose={toggleDrawer(anchor, false)}
+                  onOpen={toggleDrawer(anchor, true)}
+                  classes={{ paper: classes.appBarBackground }}
+                >
+                  {list(anchor)}
+                </SwipeableDrawer>
+              </React.Fragment>
+            ))}
           </div>
         </Toolbar>
       </AppBar>

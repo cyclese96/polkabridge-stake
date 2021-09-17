@@ -1,5 +1,5 @@
 import { Button, makeStyles } from "@material-ui/core";
-import { AccountBalanceWalletOutlined } from "@material-ui/icons";
+import { AccountBalanceWallet } from "@material-ui/icons";
 import etherIcon from "../../assets/ether.png";
 import binanceIcon from "../../assets/binance.png";
 import polygonIcon from "../../assets/polygon.png";
@@ -11,19 +11,19 @@ import { connectWallet } from "../../actions/accountActions";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
-    alignItems: "center",
-    border: "0.5px solid white",
-    borderRadius: 15,
-    padding: 2,
+    justifyContent: "space-around",
+    background: "transparent",
+    border: "0.5px solid purple",
+    color: "white",
+    padding: 7,
     paddingLeft: 10,
-    paddingRight: 10,
-    cursor: "pointer",
-    "&:hover": {
-      background: "rgba(255, 255, 255, 0.1)",
-    },
+    paddingRight: 15,
+    borderRadius: 20,
+    fontWeight: 500,
+    letterSpacing: 0.4,
+    textTransform: "none",
     [theme.breakpoints.down("sm")]: {
-      paddingLeft: 5,
-      paddingRight: 15,
+      width: 140,
     },
   },
   item: {
@@ -31,28 +31,28 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 10,
   },
   navbarButton: {
-    backgroundColor: "#f9f9f9",
-    color: "#C80C81",
-    width: 130,
-    borderRadius: 10,
-    height: 35,
-    marginRight: 20,
-    padding: 15,
-    fontSize: 14,
-    fontWeight: 700,
+    background: "linear-gradient(to right, #C80C81,purple)",
+    color: "white",
+    padding: 8,
+    paddingLeft: 15,
+    paddingRight: 15,
+    borderRadius: 20,
+    fontWeight: 500,
+    letterSpacing: 0.4,
     textTransform: "none",
+    filter: "drop-shadow(0 0 0.5rem #414141)",
     "&:hover": {
-      background: "rgba(255, 255, 255, 0.7)",
+      background: "#C80C81",
     },
     [theme.breakpoints.down("sm")]: {
       marginRight: 0,
-
+      marginLeft: 15,
       width: 150,
     },
   },
   numbers: {
-    color: "#E0077D",
-    fontSize: 12,
+    color: "#eeeeee",
+    fontSize: 14,
   },
   networkIcon: {
     width: 25,
@@ -109,20 +109,29 @@ const Wallet = ({
   return (
     <div>
       {!connected ? (
-        <Button onClick={handleConnectWallet} className={classes.navbarButton}>
-          Unlock Wallet
+        <Button
+          onClick={handleConnectWallet}
+          className={classes.navbarButton}
+          variant="contained"
+        >
+          Connect Wallet
         </Button>
       ) : (
-        <a onClick={onWalletClick} className={classes.root}>
-          {iconAddress()}
-          <strong className={classes.numbers}>
-            {currentAccount ? currentAccount.toString().slice(0, 6) : "."}..
-          </strong>
-          <AccountBalanceWalletOutlined
-            style={{ color: "#f9f9f9" }}
-            fontSize="large"
+        <Button onClick={onWalletClick} className={classes.root}>
+          <AccountBalanceWallet
+            style={{ color: "#bdbdbd", marginRight: 5, fontSize: 20 }}
+            fontSize="medium"
           />
-        </a>
+          <strong className={classes.numbers}>
+            {currentAccount ? <span></span> : "..."}
+            {[...currentAccount.toString()].splice(0, 3)}
+            {"..."}
+            {[...currentAccount.toString()].splice(
+              [...currentAccount.toString()].length - 4,
+              4
+            )}
+          </strong>
+        </Button>
       )}
     </div>
   );

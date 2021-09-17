@@ -13,6 +13,11 @@ const useStyles = makeStyles((theme) => ({
     height: 300,
     paddingLeft: 10,
     paddingRight: 10,
+    padding: 20,
+    borderRadius: 30,
+    backgroundColor: "rgba(41, 42, 66, 0.5)",
+    border: "1px solid #212121",
+    filter: "drop-shadow(0 0 0.5rem #212121)",
     [theme.breakpoints.down("sm")]: {
       paddingLeft: 0,
       paddingRight: 0,
@@ -24,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "space-evenly",
+    justifyContent: "space-around",
     height: "100%",
     paddingTop: 8,
   },
@@ -66,30 +71,26 @@ const Balance = ({ account: { balance, loading }, tokenType }) => {
 
   return (
     <div className={classes.card}>
-      <div className="card-theme">
-        <div className={classes.cardContents}>
-          {loading[tokenType] ? (
-            <CircularProgress className={classes.numbers} />
-          ) : (
-            <>
-              <p className={classes.cardHeading}>Balance</p>
-              <img
-                className={
-                  tokenType === "CORGIB"
-                    ? classes.avatar_corgib
-                    : classes.avatar
-                }
-                src={tokenLogo[tokenType]}
-              />
-              <h4 className={classes.numbers}>
-                {tokenType === "PWAR"
-                  ? formatCurrency(fromWei(balance[tokenType]), false, 1, true)
-                  : formatCurrency(fromWei(balance[tokenType]))}
-                <span style={{ marginLeft: 10 }}>{tokenType}</span>
-              </h4>
-            </>
-          )}
-        </div>
+      <div className={classes.cardContents}>
+        {loading[tokenType] ? (
+          <CircularProgress className={classes.numbers} />
+        ) : (
+          <>
+            <p className={classes.cardHeading}>Balance</p>
+            <img
+              className={
+                tokenType === "CORGIB" ? classes.avatar_corgib : classes.avatar
+              }
+              src={tokenLogo[tokenType]}
+            />
+            <h4 className={classes.numbers}>
+              {tokenType === "PWAR"
+                ? formatCurrency(fromWei(balance[tokenType]), false, 1, true)
+                : formatCurrency(fromWei(balance[tokenType]))}
+              <span style={{ marginLeft: 10 }}>{tokenType}</span>
+            </h4>
+          </>
+        )}
       </div>
     </div>
   );
