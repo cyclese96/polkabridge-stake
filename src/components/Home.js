@@ -34,7 +34,8 @@ import store from "../store";
 import web3 from "../web";
 import BalanceCard from "./common/BalanceCard";
 import StakeCard from "./common/StakeCard";
-import PbrPool from "./common/PbrPool";
+import PbrStats from "./common/PbrStats";
+import Loader from "./common/Loader";
 const useStyles = makeStyles((theme) => ({
   background: {
     paddingTop: 100,
@@ -80,6 +81,7 @@ const useStyles = makeStyles((theme) => ({
   },
   subheading: {
     fontSize: 16,
+    marginTop: 5,
     fontWeight: 400,
     color: "#919191",
     [theme.breakpoints.down("sm")]: {
@@ -250,50 +252,65 @@ const Home = ({
       return formatCurrency(getCurrentPool().tokenPrice, true, 9);
     }
   };
+  const getCurrentTokenChange = () => {
+    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
+      return formatCurrency(getCurrentPool().change, true, 3);
+    } else {
+      return formatCurrency(getCurrentPool().change, true, 9);
+    }
+  };
 
-  // useEffect(async () => {
-  //   let network = "";
-  //   const account = await getCurrentAccount();
+  const getCurrentTokenMCap = () => {
+    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
+      return formatCurrency(getCurrentPool().mCap, true, 3);
+    } else {
+      return formatCurrency(getCurrentPool().mCap, true, 9);
+    }
+  };
 
-  //   // alert(account)
-  //   if (isMetaMaskInstalled()) {
-  //     const networkId = await getCurrentNetworkId();
-  //     console.log("network id", networkId);
-  //     if (!supportedNetworks.includes(networkId.toString())) {
-  //       // alert('This network is not supported yet! Please switch to Ethereum or Smart Chain network')
-  //     }
-  //     network = getCurrentNetwork(networkId.toString());
-  //     console.log("current network ", network);
-  //     // alert(`current network set to  ${network}` )
-  //     store.dispatch({
-  //       type: CHANGE_NETWORK,
-  //       payload: network,
-  //     });
-  //     await getPoolInfo(network);
-  //   } else {
-  //     // alert('meta mask not installed')
-  //     network = etheriumNetwork;
-  //     await getPoolInfo(network);
-  //   }
+  useEffect(async () => {
+    let network = "";
+    const account = await getCurrentAccount();
 
-  //   if (!isMetaMaskInstalled()) {
-  //     return;
-  //   }
+    // alert(account)
+    if (isMetaMaskInstalled()) {
+      const networkId = await getCurrentNetworkId();
+      console.log("network id", networkId);
+      if (!supportedNetworks.includes(networkId.toString())) {
+        // alert('This network is not supported yet! Please switch to Ethereum or Smart Chain network')
+      }
+      network = getCurrentNetwork(networkId.toString());
+      console.log("current network ", network);
+      // alert(`current network set to  ${network}` )
+      store.dispatch({
+        type: CHANGE_NETWORK,
+        payload: network,
+      });
+      await getPoolInfo(network);
+    } else {
+      // alert('meta mask not installed')
+      network = etheriumNetwork;
+      await getPoolInfo(network);
+    }
 
-  //   await connectWallet(false, network);
-  //   await getAccountBalance(network);
-  // }, []);
+    if (!isMetaMaskInstalled()) {
+      return;
+    }
 
-  // useEffect(() => {
-  //   if (JSON.stringify(error).includes("-32000")) {
-  //     alert(
-  //       `You don't have enough balance to pay gas fee for the transaction!`
-  //     );
-  //   } else if (JSON.stringify(error).includes("User rejected transaction")) {
-  //     alert(`Transaction cancelled`);
-  //   }
-  //   // alert(JSON.stringify(error))
-  // }, [JSON.stringify(error)]);
+    await connectWallet(false, network);
+    await getAccountBalance(network);
+  }, []);
+
+  useEffect(() => {
+    if (JSON.stringify(error).includes("-32000")) {
+      alert(
+        `You don't have enough balance to pay gas fee for the transaction!`
+      );
+    } else if (JSON.stringify(error).includes("User rejected transaction")) {
+      alert(`Transaction cancelled`);
+    }
+    // alert(JSON.stringify(error))
+  }, [JSON.stringify(error)]);
 
   return (
     <div>
@@ -304,43 +321,32 @@ const Home = ({
         <div className={classes.background}>
           <h1 className={classes.title}>Stake Pools</h1>
           <div className={classes.divider} />
-
-          {poolLoading ? (
-            <div style={{ marginTop: 132, marginBottom: 16 }}>
-              <CircularProgress className={classes.numbers} />
+          <div className="row mt-5">
+            <div className="col-md-8 mb-3">
+              <PbrStats
+                poolLoading={poolLoading}
+                tokenType={getCurrentTokenType()}
+                price={getCurrentTokenPrice()}
+                mCap={getCurrentTokenMCap()}
+                change={getCurrentTokenChange()}
+              />
             </div>
-          ) : (
-            <>
-              <div className="row mt-5">
-                <div className="col-md-8">
-                  <PbrPool
-                    tokenType={getCurrentTokenType()}
-                    price={getCurrentTokenPrice()}
-                    apy={formatCurrency(getCurrentApy(), false, 1, true)}
-                    tokenStaked={formatCurrency(
-                      fromWei(getCurrentPool().totalTokenStaked)
-                    )}
-                    tokenClaimed={formatCurrency(
-                      fromWei(getCurrentPool().totalTokenClaimed)
-                    )}
-                  />
-                </div>
-                <div className="col-md-4">
-                  <div>
-                    <BalanceCard tokens={supportedStaking[currentNetwork]} />
-                  </div>
-                </div>
+            <div className="col-md-4">
+              <div>
+                <BalanceCard tokens={supportedStaking[currentNetwork]} />
               </div>
-            </>
-          )}
-          {!connected ? (
+            </div>
+          </div>
+
+          {!connected && (
             <div className={classes.cardsContainer2}>
               <Wallet />
               <p className={classes.subheading}>
                 Connect your Wallet to stake tokens
               </p>
             </div>
-          ) : (
+          )}
+          {connected && (
             <div className="mt-3">
               <div className="row">
                 {supportedStaking[currentNetwork].map((token) => (
@@ -358,18 +364,6 @@ const Home = ({
             </div>
           )}
 
-          {/* <div className={classes.cardsContainer}>
-                  <div className={classes.card}>
-                    <Staking
-                      onStake={onStake}
-                      onUnstake={onUnStake}
-                      tokenType={token}
-                    />
-                  </div>
-                  <div className={classes.card}>
-                    <Balance tokenType={token} />
-                  </div>
-                </div> */}
           <StakeDialog
             open={dialog.open}
             type={dialog.type}

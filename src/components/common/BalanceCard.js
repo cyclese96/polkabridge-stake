@@ -1,16 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Card } from "@material-ui/core";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { formatCurrency, fromWei } from "../../utils/helper";
+
+import biteImg from "../../assets/bite.png";
+import corgibImg from "../../assets/corgi.png";
+import clf365Img from "../../assets/clf365.png";
+import pwarImg from "../../assets/pwar.png";
+import Loader from "./Loader";
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    minHeight: 300,
+    minHeight: 320,
     width: "100%",
     padding: 20,
     borderRadius: 30,
     backgroundColor: "rgba(41, 42, 66, 0.3)",
     border: "1px solid #212121",
     filter: "drop-shadow(0 0 0.5rem #212121)",
+    [theme.breakpoints.down("sm")]: {
+      minHeight: 200,
+      height: "100%",
+    },
   },
   title: {
     textAlign: "center",
@@ -19,7 +32,8 @@ const useStyles = makeStyles((theme) => ({
   logoWrapper: {
     height: 45,
     width: 45,
-    backgroundColor: "white",
+    backgroundColor: "#ffffff",
+    border: "1px solid #bdbdbd",
     borderRadius: "50%",
     display: "flex",
     justifyContent: "center",
@@ -54,57 +68,75 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
 }));
-export default function BalanceCard() {
+function BalanceCard({ account }) {
   const classes = useStyles();
+
+  const tokenLogo = {
+    PBR: "img/symbol.png",
+    BITE: biteImg,
+    CORGIB: corgibImg,
+    PWAR: pwarImg,
+    CFL365: clf365Img,
+  };
+
+  const tokenName = {
+    PBR: "PolkaBridge",
+    BITE: "DragonBite",
+    CORGIB: "Corgi Of PolkaBridge",
+    PWAR: "PolkaWar",
+    CFL365: "CFL 365",
+  };
 
   return (
     <Card className={classes.card} elevation={10}>
-      <h6 className={classes.title}>Balance</h6>
-      <div className="d-flex justify-content-between mt-5">
-        <div className="d-flex justify-content-start">
-          <div className={classes.logoWrapper}>
-            <img
-              src="http://localhost:3000/img/symbol.png"
-              className={classes.logo}
-            />
-          </div>
-          <div>
-            <div className={classes.tokenTitle}>PBR</div>
-            <div className={classes.tokenSubtitle}>PolkaBridge</div>
-          </div>
+      <h6 className={classes.title}>Your Balance</h6>
+      {!account.balance && (
+        <div className="text-center">
+          <Loader height={200} />
         </div>
-        <div className={classes.tokenAmount}>323</div>
-      </div>
-      <div className="d-flex justify-content-between mt-4">
-        <div className="d-flex justify-content-start">
-          <div className={classes.logoWrapper}>
-            <img
-              src="http://localhost:3000/img/symbol.png"
-              className={classes.logo}
-            />
-          </div>
-          <div>
-            <div className={classes.tokenTitle}>CFL365</div>
-            <div className={classes.tokenSubtitle}>PolkaBridge</div>
-          </div>
+      )}
+
+      {account.balance && (
+        <div className="mt-5">
+          {Object.keys(account.balance).map(function (key, index) {
+            if (account.balance[key] !== null && account.balance[key] !== "0") {
+              return (
+                <div className="d-flex justify-content-between mt-4">
+                  <div className="d-flex justify-content-start">
+                    <div className={classes.logoWrapper}>
+                      <img src={tokenLogo[key]} className={classes.logo} />
+                    </div>
+                    <div>
+                      <div className={classes.tokenTitle}>{key}</div>
+                      <div className={classes.tokenSubtitle}>
+                        {tokenName[key]}
+                      </div>
+                    </div>
+                  </div>
+                  <div className={classes.tokenAmount}>
+                    {formatCurrency(
+                      fromWei(account.balance[key]),
+                      false,
+                      1,
+                      true
+                    )}
+                  </div>
+                </div>
+              );
+            }
+          })}
         </div>
-        <div className={classes.tokenAmount}>4434</div>
-      </div>
-      <div className="d-flex justify-content-between mt-4">
-        <div className="d-flex justify-content-start">
-          <div className={classes.logoWrapper}>
-            <img
-              src="http://localhost:3000/img/symbol.png"
-              className={classes.logo}
-            />
-          </div>
-          <div>
-            <div className={classes.tokenTitle}>BITE</div>
-            <div className={classes.tokenSubtitle}>PolkaBridge</div>
-          </div>
-        </div>
-        <div className={classes.tokenAmount}>323</div>
-      </div>
+      )}
     </Card>
   );
 }
+
+BalanceCard.propTypes = {
+  account: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => ({
+  account: state.account,
+});
+
+export default connect(mapStateToProps, {})(BalanceCard);

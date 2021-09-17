@@ -62,6 +62,7 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   sectionMobile: {
+    width: "100%",
     display: "flex",
     alignItems: "stretch",
     justifyContent: "space-between",
@@ -175,7 +176,6 @@ const useStyles = makeStyles((theme) => ({
   network: {
     display: "flex",
     marginLeft: 20,
-    marginRight: 10,
     alignItems: "center",
     border: "0.5px solid #919191",
     borderRadius: 20,
@@ -202,6 +202,15 @@ const useStyles = makeStyles((theme) => ({
       height: 30,
       width: "fit-content",
     },
+  },
+  list: {
+    paddingTop: 20,
+    width: "250px",
+    borderLeft: "5px solid pink",
+    borderColor: "#3A1242",
+    // borderColor: "#220c3d",
+    height: "100%",
+    backgroundColor: "#100525",
   },
 }));
 
@@ -238,7 +247,7 @@ const Navbar = ({ currentNetwork }) => {
       <List>
         {[
           {
-            name: "Staking",
+            name: "Stake",
             link: "https://stake.polkabridge.org/",
             id: "staking",
             icon: <EqualizerOutlined />,
@@ -271,7 +280,6 @@ const Navbar = ({ currentNetwork }) => {
           {},
         ].map((tab, index) => (
           <ListItem button key={tab.name} onClick={toggleDrawer(anchor, false)}>
-            {tab.icon}
             <a href={tab.link}>
               <ListItemText
                 primary={tab.name}
@@ -280,15 +288,12 @@ const Navbar = ({ currentNetwork }) => {
             </a>
           </ListItem>
         ))}
-      </List>
-      <Divider />
-
-      <List>
-        <ListItem button style={{ marginTop: 15 }}>
-          {renderIcon()}
-        </ListItem>
-        <ListItem button style={{ marginTop: 15 }}>
+        <Divider />
+        <ListItem button style={{ marginLeft: 20 }}>
           <Wallet onWalletClick={() => setAccountDialog(true)} />
+        </ListItem>
+        <ListItem button style={{ marginTop: 10 }}>
+          {renderIcon()}
         </ListItem>
       </List>
     </div>
@@ -314,9 +319,7 @@ const Navbar = ({ currentNetwork }) => {
             src={binanceIcon}
             alt={currentNetwork}
           />
-          <span style={{ color: "white", marginLeft: 5 }}>
-            Binance Smart Chain
-          </span>
+          <span style={{ color: "white", marginLeft: 5 }}>BSC</span>
         </div>
       );
     } else
@@ -354,9 +357,11 @@ const Navbar = ({ currentNetwork }) => {
           <div className={classes.leftMargin} />
 
           <div className="d-flex justify-content-end">
-            <a href="/" className={classes.navbarItemsDesktopActive}>
-              Stake <DotCircle active={true} />
-            </a>
+            <div>
+              <a href="/" className={classes.navbarItemsDesktopActive}>
+                Stake <DotCircle active={true} />
+              </a>
+            </div>
           </div>
           <div>
             <a
@@ -411,41 +416,38 @@ const Navbar = ({ currentNetwork }) => {
         </Toolbar>
 
         <Toolbar className={classes.sectionMobile}>
-          <div className={classes.row1}>
-            <div className={classes.grow} />
-
+          <div className="d-flex justify-content-center align-items-center">
             <Avatar
               variant="square"
               src="img/logo-white.png"
               style={{ height: 38, width: 150 }}
             />
+          </div>
 
-            <div className={classes.grow} />
-            <div>
-              {["right"].map((anchor) => (
-                <React.Fragment key={anchor}>
-                  <IconButton
-                    aria-label="Menu"
-                    aria-haspopup="true"
-                    className={classes.menuIcon}
-                    onClick={toggleDrawer(anchor, true)}
-                  >
-                    <MenuIcon style={{ color: "#ffffff" }} />
-                  </IconButton>
+          <div>
+            {["right"].map((anchor) => (
+              <React.Fragment key={anchor}>
+                <IconButton
+                  aria-label="Menu"
+                  aria-haspopup="true"
+                  className={classes.menuIcon}
+                  onClick={toggleDrawer(anchor, true)}
+                >
+                  <MenuIcon style={{ color: "#ffffff" }} />
+                </IconButton>
 
-                  <SwipeableDrawer
-                    anchor={anchor}
-                    disableSwipeToOpen={false}
-                    open={state[anchor]}
-                    onClose={toggleDrawer(anchor, false)}
-                    onOpen={toggleDrawer(anchor, true)}
-                    classes={{ paper: classes.appBarBackground }}
-                  >
-                    {list(anchor)}
-                  </SwipeableDrawer>
-                </React.Fragment>
-              ))}
-            </div>
+                <SwipeableDrawer
+                  anchor={anchor}
+                  disableSwipeToOpen={false}
+                  open={state[anchor]}
+                  onClose={toggleDrawer(anchor, false)}
+                  onOpen={toggleDrawer(anchor, true)}
+                  classes={{ paper: classes.appBarBackground }}
+                >
+                  {list(anchor)}
+                </SwipeableDrawer>
+              </React.Fragment>
+            ))}
           </div>
         </Toolbar>
       </AppBar>

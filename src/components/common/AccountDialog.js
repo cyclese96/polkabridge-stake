@@ -6,7 +6,7 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 import CustomButton from "../Buttons/CustomButton";
-import { ContactMailOutlined } from "@material-ui/icons";
+import { ContactMailOutlined, FileCopy } from "@material-ui/icons";
 import VisibilityIcon from "@material-ui/icons/Visibility";
 import {
   BITE,
@@ -15,65 +15,46 @@ import {
   maticNetwork,
   PBR,
 } from "../../constants";
+import biteImg from "../../assets/bite.png";
+import corgibImg from "../../assets/corgi.png";
+import clf365Img from "../../assets/clf365.png";
+import pwarImg from "../../assets/pwar.png";
+
 import { formatCurrency, fromWei } from "../../utils/helper";
 import { connect } from "react-redux";
 import { logout } from "../../actions/accountActions";
-
-const styles = (theme) => ({
-  root: {
-    margin: 0,
-    padding: theme.spacing(2),
-  },
-  closeButton: {
-    position: "absolute",
-    right: theme.spacing(1),
-    top: theme.spacing(1),
-    color: theme.palette.grey[500],
-  },
-});
-
-const DialogTitle = withStyles(styles)((props) => {
-  const { children, classes, onClose, ...other } = props;
-  return (
-    <MuiDialogTitle disableTypography className={classes.root} {...other}>
-      <Typography variant="h6">{children}</Typography>
-      {onClose ? (
-        <IconButton
-          aria-label="close"
-          className={classes.closeButton}
-          onClick={onClose}
-        >
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </MuiDialogTitle>
-  );
-});
+import { Card } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   background: {
+    minWidth: 360,
+    width: "100%",
+    height: 350,
     backgroundColor: "#121827",
     color: "#f9f9f9",
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "space-evenly",
-    width: 320,
-    height: 350,
+    justifyContent: "space-around",
+
     [theme.breakpoints.down("sm")]: {
-      width: 290,
+      minWidth: 200,
+      width: "100%",
       height: 350,
     },
   },
   heading: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 400,
     color: "#e5e5e5",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 18,
+    },
   },
   subheading: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 400,
-    color: "#919191",
+    color: "#bdbdbd",
     [theme.breakpoints.down("sm")]: {
       fontSize: 11,
     },
@@ -114,10 +95,55 @@ const useStyles = makeStyles((theme) => ({
     display: "inline-block",
     // position: "relative",
   },
-  balanceCard: {
+  title: {
+    textAlign: "center",
+    fontSize: 22,
+  },
+  logoWrapper: {
+    height: 35,
+    width: 35,
+    backgroundColor: "#ffffff",
+    border: "1px solid #bdbdbd",
+    borderRadius: "50%",
     display: "flex",
-    flexDirection: "column",
-    // justifyContent: "space-around",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  logo: {
+    height: 20,
+    width: 20,
+  },
+  tokenTitle: {
+    fontWeight: 500,
+    padding: 0,
+    paddingLeft: 10,
+    fontSize: 16,
+    color: "#e5e5e5",
+  },
+  tokenSubtitle: {
+    fontWeight: 300,
+    padding: 0,
+    paddingLeft: 10,
+    fontSize: 10,
+    color: "#bdbdbd",
+  },
+  tokenAmount: {
+    fontWeight: 500,
+    padding: 0,
+    paddingLeft: 10,
+    fontSize: 16,
+    color: "#f9f9f9",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  copyIcon: {
+    fontSize: 18,
+    marginLeft: 10,
+    color: "#dcedc8",
+    [theme.breakpoints.down("sm")]: {
+      fontSize: 12,
+    },
   },
 }));
 
@@ -158,6 +184,22 @@ const AccountDialog = ({
       }
     }
   };
+
+  const tokenLogo = {
+    PBR: "img/symbol.png",
+    BITE: biteImg,
+    CORGIB: corgibImg,
+    PWAR: pwarImg,
+    CFL365: clf365Img,
+  };
+
+  const tokenName = {
+    PBR: "PolkaBridge",
+    BITE: "DragonBite",
+    CORGIB: "Corgi Of PolkaBridge",
+    PWAR: "PolkaWar",
+    CFL365: "CFL 365",
+  };
   return (
     <div>
       <Dialog
@@ -165,59 +207,70 @@ const AccountDialog = ({
         open={open}
         disableBackdropClick
         className={classes.dialog}
-        color="transparent"
+        color="green"
         PaperProps={{
-          style: { borderRadius: 15 },
+          style: { borderRadius: 25, backgroundColor: "#121827" },
         }}
       >
-        <div className={classes.background}>
-          <DialogTitle onClose={handleClose}>
-            <span className={classes.heading}>My Wallet</span>
-          </DialogTitle>
-          <div className={classes.balanceCard}>
-            {getCoins().map((item) => (
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  width: "70%",
-                  // marginTop: 7,
-                  marginBlockEnd: 15,
-                }}
-              >
-                <>
-                  <div style={{ display: "inline-flex" }}>
-                    <VisibilityIcon fontSize="small" className={classes.icon} />{" "}
-                    <span className={classes.icon}>{item.coin} </span>
-                  </div>
-
-                  <span className={classes.numbers}>{item.balance}</span>
-                </>
-              </div>
-            ))}
-
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "start",
-              }}
-            >
-              <ContactMailOutlined fontSize="small" className={classes.icon} />
-              <span className={classes.icon}>Address</span>
+        <Card elevation={10} className={classes.background}>
+          <div style={{ width: "100%" }}>
+            <div className="d-flex justify-content-between align-items-center">
+              <div style={{ width: 40 }}></div>
+              <div className={classes.heading}>My Wallet</div>
+              <IconButton aria-label="close" onClick={handleClose}>
+                <CloseIcon style={{ color: "#919191" }} />
+              </IconButton>
             </div>
-            <p className={classes.subheading}>{currentAccount}</p>
+            <div
+              style={{ paddingLeft: 10, paddingRight: 10, textAlign: "center" }}
+            >
+              <h6 htmlFor="username" className={classes.subheading}>
+                {[...currentAccount].splice(0, 7)} {"..."}
+                {[...currentAccount].splice([...currentAccount].length - 7, 7)}
+                <IconButton style={{ padding: 0 }}>
+                  {" "}
+                  <FileCopy
+                    className={classes.copyIcon}
+                    onClick={() =>
+                      navigator.clipboard.writeText(currentAccount)
+                    }
+                  />
+                </IconButton>
+              </h6>
+            </div>
+          </div>
+
+          <div style={{ width: "100%", paddingLeft: 20, paddingRight: 20 }}>
+            {Object.keys(balance).map(function (key, index) {
+              if (balance[key] !== null && balance[key] !== "0") {
+                return (
+                  <div className="d-flex justify-content-between mt-4">
+                    <div className="d-flex justify-content-start">
+                      <div className={classes.logoWrapper}>
+                        <img src={tokenLogo[key]} className={classes.logo} />
+                      </div>
+                      <div>
+                        <div className={classes.tokenTitle}>{key}</div>
+                        <div className={classes.tokenSubtitle}>
+                          {tokenName[key]}
+                        </div>
+                      </div>
+                    </div>
+                    <div className={classes.tokenAmount}>
+                      {formatCurrency(fromWei(balance[key]), false, 1, true)}
+                    </div>
+                  </div>
+                );
+              }
+            })}
           </div>
           <div className={classes.buttons}>
             <CustomButton variant="light" onClick={handleClose}>
               Cancel
             </CustomButton>
-            <CustomButton onClick={onSingOut}>
-              <p>Sign out</p>
-            </CustomButton>
+            <CustomButton onClick={onSingOut}>Sign out</CustomButton>
           </div>
-        </div>
+        </Card>
       </Dialog>
     </div>
   );
