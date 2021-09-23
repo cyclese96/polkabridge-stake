@@ -73,6 +73,20 @@ export const getCurrentNetworkId = async () => {
   }
 };
 
+export const formatLargeNumber = (value, precision = 2) => {
+  const _value = !value ? '0' : value;
+  const formatter = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: "USD",
+    minimumFractionDigits: precision,
+  });
+
+  const formattedValue = convertToInternationalCurrencySystem(_value, formatter);
+
+  return formattedValue;
+
+}
+
 export const formatCurrency = (
   value,
   usd = false,
@@ -105,19 +119,19 @@ function convertToInternationalCurrencySystem(labelValue, formatter) {
   // Nine Zeroes for Billions
   return Math.abs(Number(labelValue)) >= 1.0e9
     ? formatter
-        .format((Math.abs(Number(labelValue)) / 1.0e9).toFixed(2))
-        .slice(1) + "B"
+      .format((Math.abs(Number(labelValue)) / 1.0e9).toFixed(2))
+      .slice(1) + "B"
     : // Six Zeroes for Millions
     Math.abs(Number(labelValue)) >= 1.0e6
-    ? formatter
+      ? formatter
         .format((Math.abs(Number(labelValue)) / 1.0e6).toFixed(2))
         .slice(1) + "M"
-    : // Three Zeroes for Thousands
-    Math.abs(Number(labelValue)) >= 1.0e3
-    ? formatter
-        .format((Math.abs(Number(labelValue)) / 1.0e3).toFixed(2))
-        .slice(1) + "K"
-    : formatter.format(Math.abs(Number(labelValue))).slice(1);
+      : // Three Zeroes for Thousands
+      Math.abs(Number(labelValue)) >= 1.0e3
+        ? formatter
+          .format((Math.abs(Number(labelValue)) / 1.0e3).toFixed(2))
+          .slice(1) + "K"
+        : formatter.format(Math.abs(Number(labelValue))).slice(1);
 }
 
 export const resetCurrencyFormatting = (value) => {

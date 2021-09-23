@@ -12,7 +12,7 @@ import corgiImg from "../../assets/corgi.png";
 import pwarImg from "../../assets/pwar.png";
 import clf365Img from "../../assets/clf365.png";
 import CustomButton from "../Buttons/CustomButton";
-import { formatCurrency, fromWei, toWei } from "../../utils/helper";
+import { formatCurrency, formatLargeNumber, fromWei, toWei } from "../../utils/helper";
 import { connect } from "react-redux";
 import {
   confirmAllowance,
@@ -304,13 +304,14 @@ const Staking = ({
   };
 
   const getCurrencyFormatForToken = (tokenType, tokens) => {
-    if (tokenType === BITE) {
-      return formatCurrency(fromWei(tokens));
-    } else if (tokenType === CFL365) {
-      return formatCurrency(fromWei(tokens));
-    } else {
-      return formatCurrency(fromWei(tokens), false, 1, true);
-    }
+    // if (tokenType === BITE) {
+    //   return formatCurrency(fromWei(tokens));
+    // } else if (tokenType === CFL365) {
+    //   return formatCurrency(fromWei(tokens));
+    // } else {
+    //   return formatCurrency(fromWei(tokens), false, 1, true);
+    // }
+    return formatLargeNumber(fromWei(tokens))
   };
 
   return (
@@ -379,7 +380,6 @@ const Staking = ({
                     </div>
                   </div>
                   <div className={classes.tokenAmount}>
-                    {" "}
                     {getCurrencyFormatForToken(
                       tokenType,
                       pool[tokenType] ? pool[tokenType].totalTokenStaked : "0"
@@ -393,17 +393,11 @@ const Staking = ({
                     </div>
                   </div>
                   <div className={classes.tokenAmount}>
-                    {" "}
-                    {formatCurrency(
-                      fromWei(
-                        pool[tokenType]
-                          ? pool[tokenType].totalTokenClaimed
-                          : "0"
-                      ),
-                      false,
-                      1,
-                      true
-                    )}
+                    {formatLargeNumber(fromWei(
+                      pool[tokenType]
+                        ? pool[tokenType].totalTokenClaimed
+                        : "0"
+                    ))}
                   </div>
                 </div>
               </div>
@@ -420,11 +414,11 @@ const Staking = ({
                 {" "}
                 {tokenType === "PWAR"
                   ? formatCurrency(
-                      fromWei(stake[tokenType].amount),
-                      false,
-                      1,
-                      true
-                    )
+                    fromWei(stake[tokenType].amount),
+                    false,
+                    1,
+                    true
+                  )
                   : formatCurrency(fromWei(stake[tokenType].amount))}{" "}
               </div>
             </div>
@@ -434,14 +428,14 @@ const Staking = ({
                 {" "}
                 {tokenType === "PWAR"
                   ? formatCurrency(
-                      fromWei(stake[tokenType].rewardClaimed),
-                      false,
-                      1,
-                      true
-                    )
+                    fromWei(stake[tokenType].rewardClaimed),
+                    false,
+                    1,
+                    true
+                  )
                   : formatCurrency(
-                      fromWei(stake[tokenType].rewardClaimed)
-                    )}{" "}
+                    fromWei(stake[tokenType].rewardClaimed)
+                  )}{" "}
               </div>
             </div>
             <div className="text-center mt-4">
@@ -450,14 +444,14 @@ const Staking = ({
                 {" "}
                 {tokenType === "PWAR"
                   ? formatCurrency(
-                      fromWei(stake[tokenType].pendingReward),
-                      false,
-                      1,
-                      true
-                    )
+                    fromWei(stake[tokenType].pendingReward),
+                    false,
+                    1,
+                    true
+                  )
                   : formatCurrency(
-                      fromWei(stake[tokenType].pendingReward)
-                    )}{" "}
+                    fromWei(stake[tokenType].pendingReward)
+                  )}{" "}
               </div>
             </div>
           </div>

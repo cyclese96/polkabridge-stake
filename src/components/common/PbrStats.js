@@ -3,6 +3,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Avatar, Button, Card } from "@material-ui/core";
 import Loader from "./Loader";
 import corgibImg from "../../assets/corgi.png";
+import { formatLargeNumber } from "../../utils/helper";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -151,7 +152,7 @@ export default function PbrPool({
             </div>
             <div className="text-center mt-4">
               <div className={classes.tokenTitle}>Market Cap</div>
-              <div className={classes.tokenAmount}>{mCap}</div>
+              <div className={classes.tokenAmount}>{formatLargeNumber(mCap)}</div>
             </div>
             <div className="text-center mt-4">
               <div className={classes.tokenTitle}> 24Hr Change</div>

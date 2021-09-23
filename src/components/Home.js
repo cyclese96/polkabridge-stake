@@ -261,11 +261,11 @@ const Home = ({
   };
 
   const getCurrentTokenMCap = () => {
-    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
-      return formatCurrency(getCurrentPool().mCap, false, 0);
-    } else {
-      return formatCurrency(getCurrentPool().mCap, false, 0);
-    }
+    // if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
+    //   return getCurrentPool().mCap//formatCurrency(, false, 0);
+    // } else {
+    return getCurrentPool().mCap //formatCurrency(, false, 0);
+    // }
   };
 
   useEffect(async () => {
