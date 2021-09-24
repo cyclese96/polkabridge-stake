@@ -22,6 +22,7 @@ import {
 } from "../../actions/stakeActions";
 import { getAccountBalance } from "../../actions/accountActions";
 import { minimumStakingAmount } from "../../constants";
+import BigNumber from "bignumber.js";
 
 const styles = (theme) => ({
   root: {
@@ -174,7 +175,7 @@ const StakeDialog = ({
     const stakedTokens = parseFloat(fromWei(stake[tokenType].amount));
     const balanceTokens = parseFloat(fromWei(balance[tokenType]));
 
-    if (enteredTokens === "") {
+    if (enteredTokens === "" || new BigNumber(enteredTokens).eq(0)) {
       setError({
         status: true,
         message: `Please enter some ${tokenType} to ${type} !`,

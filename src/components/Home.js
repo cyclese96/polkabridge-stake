@@ -188,37 +188,44 @@ const Home = ({
       return maticNetwork;
     }
   };
-  useEffect(async () => {
-    if (typeof window.web3 !== "undefined") {
-      window.ethereum.on("accountsChanged", async (accounts) => {
-        if (accounts.length === 0) {
-          return;
+  useEffect(() => {
+    async function onNetworkChangeUpdate() {
+      if (typeof window.web3 !== "undefined") {
+        window.ethereum.on("accountsChanged", async (accounts) => {
+          if (accounts.length === 0) {
+            return;
+          }
+          console.log("updating balance", accounts[0]);
+          const _networkId = await getCurrentNetworkId();
+          const _network = getCurrentNetwork(_networkId);
+          console.log("connectWallet current network ", _network);
+          await update(_network);
+        });
+
+        window.ethereum.on("networkChanged", async (networkId) => {
+          // setCurrentNetwork(networkId)
+          const network = getCurrentNetwork(networkId);
+          // console.log("connectWallet current network ", network);
+          store.dispatch({
+            type: CHANGE_NETWORK,
+            payload: network,
+          });
+
+          await update(network);
+        });
+        async function update(network) {
+          console.log("connectWallet updating on network ", currentNetwork);
+
+          store.dispatch({
+            type: RESET_USER_STAKE,
+          });
+          await getPoolInfo(network);
+          await connectWallet(false, network);
+          // await getAccountBalance(network);
         }
-        store.dispatch({
-          type: RESET_USER_STAKE,
-        });
-        await getPoolInfo(currentNetwork);
-        await connectWallet(false, currentNetwork);
-        // await getAccountBalance(currentNetwork)
-      });
-
-      window.ethereum.on("networkChanged", async (networkId) => {
-        // setCurrentNetwork(networkId)
-        const network = getCurrentNetwork(networkId);
-        console.log("current network ", network);
-        store.dispatch({
-          type: CHANGE_NETWORK,
-          payload: network,
-        });
-
-        store.dispatch({
-          type: RESET_USER_STAKE,
-        });
-        await getPoolInfo(network);
-        await connectWallet(false, network);
-        // await getAccountBalance(network)
-      });
+      }
     }
+    onNetworkChangeUpdate();
   }, []);
 
   const getCurrentTokenType = () => {
@@ -264,7 +271,7 @@ const Home = ({
     // if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
     //   return getCurrentPool().mCap//formatCurrency(, false, 0);
     // } else {
-    return getCurrentPool().mCap //formatCurrency(, false, 0);
+    return getCurrentPool().mCap; //formatCurrency(, false, 0);
     // }
   };
 
@@ -275,7 +282,7 @@ const Home = ({
     // alert(account)
     if (isMetaMaskInstalled()) {
       const networkId = await getCurrentNetworkId();
-      console.log("network id", networkId);
+      console.log("connectWallet network id", networkId);
       if (!supportedNetworks.includes(networkId.toString())) {
         // alert('This network is not supported yet! Please switch to Ethereum or Smart Chain network')
       }

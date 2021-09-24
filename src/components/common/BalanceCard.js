@@ -10,6 +10,13 @@ import corgibImg from "../../assets/corgi.png";
 import clf365Img from "../../assets/clf365.png";
 import pwarImg from "../../assets/pwar.png";
 import Loader from "./Loader";
+import {
+  BITE,
+  CFL365,
+  etheriumNetwork,
+  maticNetwork,
+  PBR,
+} from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -68,7 +75,10 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
 }));
-function BalanceCard({ account }) {
+function BalanceCard(props) {
+  const {
+    account: { balance, currentNetwork },
+  } = props;
   const classes = useStyles();
 
   const tokenLogo = {
@@ -87,51 +97,67 @@ function BalanceCard({ account }) {
     CFL365: "CFL 365",
   };
 
+  const getCoins = () => {
+    if (currentNetwork === etheriumNetwork) {
+      return [
+        { coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
+        { coin: BITE, balance: formatCurrency(fromWei(balance[BITE])) },
+        { coin: CFL365, balance: formatCurrency(fromWei(balance[CFL365])) },
+      ];
+    } else {
+      if (currentNetwork === maticNetwork) {
+        return [{ coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) }];
+      } else {
+        return [
+          {
+            coin: "CORGIB",
+            balance: formatCurrency(fromWei(balance["CORGIB"])),
+          },
+          {
+            coin: "PWAR",
+            balance: formatCurrency(fromWei(balance["PWAR"]), false, 1, true),
+          },
+        ];
+      }
+    }
+  };
+
   return (
     <Card className={classes.card} elevation={10}>
       <h6 className={classes.title}>Your Balance</h6>
-      {!account.balance && (
+      {/* {!account.balance && (
         <div className="text-center">
           <Loader height={200} />
         </div>
-      )}
+      )} */}
 
-      {account.balance && (
-        <div className="mt-5">
-          {console.log("hello")}
-          {console.log(account.balance)}
-          {Object.keys(account.balance).map(function (key, index) {
-            if (
-              account.balance[key] !== null &&
-              account.balance[key] !== undefined
-            ) {
-              return (
-                <div className="d-flex justify-content-between mt-4">
-                  <div className="d-flex justify-content-start">
-                    <div className={classes.logoWrapper}>
-                      <img src={tokenLogo[key]} className={classes.logo} />
-                    </div>
-                    <div>
-                      <div className={classes.tokenTitle}>{key}</div>
-                      <div className={classes.tokenSubtitle}>
-                        {tokenName[key]}
-                      </div>
-                    </div>
-                  </div>
-                  <div className={classes.tokenAmount}>
-                    {formatCurrency(
-                      fromWei(account.balance[key]),
-                      false,
-                      1,
-                      true
-                    )}
+      {/* {account.balance && ( */}
+      <div className="mt-5">
+        {getCoins().map(function (coinObj, index) {
+          // if (
+          //   account.balance[key] !== null &&
+          //   account.balance[key] !== undefined
+          // ) {
+          return (
+            <div className="d-flex justify-content-between mt-4">
+              <div className="d-flex justify-content-start">
+                <div className={classes.logoWrapper}>
+                  <img src={tokenLogo[coinObj.coin]} className={classes.logo} />
+                </div>
+                <div>
+                  <div className={classes.tokenTitle}>{coinObj.coin}</div>
+                  <div className={classes.tokenSubtitle}>
+                    {tokenName[coinObj.coin]}
                   </div>
                 </div>
-              );
-            }
-          })}
-        </div>
-      )}
+              </div>
+              <div className={classes.tokenAmount}>{coinObj.balance}</div>
+            </div>
+          );
+          // }
+        })}
+      </div>
+      {/* // )} */}
     </Card>
   );
 }

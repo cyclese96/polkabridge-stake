@@ -1,13 +1,10 @@
 import React from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Dialog from "@material-ui/core/Dialog";
-import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-import Typography from "@material-ui/core/Typography";
 import CustomButton from "../Buttons/CustomButton";
-import { ContactMailOutlined, FileCopy } from "@material-ui/icons";
-import VisibilityIcon from "@material-ui/icons/Visibility";
+import { FileCopy } from "@material-ui/icons";
 import {
   BITE,
   CFL365,
@@ -241,27 +238,26 @@ const AccountDialog = ({
           </div>
 
           <div style={{ width: "100%", paddingLeft: 20, paddingRight: 20 }}>
-            {Object.keys(balance).map(function (key, index) {
-              if (balance[key] !== null && balance[key] !== "0") {
-                return (
-                  <div className="d-flex justify-content-between mt-4">
-                    <div className="d-flex justify-content-start">
-                      <div className={classes.logoWrapper}>
-                        <img src={tokenLogo[key]} className={classes.logo} />
-                      </div>
-                      <div>
-                        <div className={classes.tokenTitle}>{key}</div>
-                        <div className={classes.tokenSubtitle}>
-                          {tokenName[key]}
-                        </div>
-                      </div>
+            {getCoins().map(function (coinObj, index) {
+              return (
+                <div className="d-flex justify-content-between mt-4">
+                  <div className="d-flex justify-content-start">
+                    <div className={classes.logoWrapper}>
+                      <img
+                        src={tokenLogo[coinObj.coin]}
+                        className={classes.logo}
+                      />
                     </div>
-                    <div className={classes.tokenAmount}>
-                      {formatCurrency(fromWei(balance[key]), false, 1, true)}
+                    <div>
+                      <div className={classes.tokenTitle}>{coinObj.coin}</div>
+                      <div className={classes.tokenSubtitle}>
+                        {tokenName[coinObj.coin]}
+                      </div>
                     </div>
                   </div>
-                );
-              }
+                  <div className={classes.tokenAmount}>{coinObj.balance}</div>
+                </div>
+              );
             })}
           </div>
           <div className={classes.buttons}>

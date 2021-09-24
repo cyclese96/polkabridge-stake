@@ -125,6 +125,15 @@ export const getAccountBalance = (network) => async (dispatch) => {
         type: LOAD_BALANCE,
         payload: { pbr: pbrWei, bite: biteWei, clf365: cl365Wei },
       });
+    } else if (network === maticNetwork) {
+      console.log("getAccountBalance: fetching from", network);
+      const [pbrWei] = await Promise.all([
+        pbrContract(network).methods.balanceOf(address).call(),
+      ]);
+      dispatch({
+        type: LOAD_BALANCE,
+        payload: { pbr: pbrWei },
+      });
     } else if (network === bscNetwork) {
       // console.log('account', address)
       // console.log('network', network)

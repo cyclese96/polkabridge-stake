@@ -141,10 +141,10 @@ const getCurrentConnection = (blockChainNetwork, abi, contractAddress) => {
       return new web3.eth.Contract(abi, contractAddress);
     }
   } else if (blockChainNetwork === maticNetwork) {
-    const rpc =
-      currentConnection === "testnet"
-        ? maticConfig.network_rpc_testnet
-        : maticConfig.network_rpc_mainnet;
+    // const rpc =
+    //   currentConnection === "testnet"
+    //     ? maticConfig.network_rpc_testnet
+    //     : maticConfig.network_rpc_mainnet;
     const web3 = new Web3(window.ethereum);
 
     return new web3.eth.Contract(abi, contractAddress);
