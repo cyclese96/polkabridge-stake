@@ -63,8 +63,8 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "center",
-    width: 450,
-    height: 400,
+    width: 380,
+    minHeight: 350,
     [theme.breakpoints.down("sm")]: {
       width: 320,
       height: 350,
@@ -81,14 +81,26 @@ const useStyles = makeStyles((theme) => ({
     color: "#919191",
   },
   inputGroup: {
-    marginTop: 40,
+    display:'flex',
+    justifyContent:'space-between',
+    marginTop: 20,
+    border:'1px solid #454545',
+    borderRadius:15
   },
   input: {
-    "& label.Mui-focused": {
-      color: "#616161",
-    },
-    width: 200,
+    backgroundColor: "transparent",
+    borderRadius: 5,
     height: 50,
+    border: "none",
+    fontSize: 18,
+    width: "70%",
+    color: "white",
+    padding: 10,
+    outline: "none",
+    [theme.breakpoints.down("sm")]: {
+      height: 50,
+      fontSize: 15,
+    },
   },
   cssInputLabel: {
     color: "#616161",
@@ -110,20 +122,25 @@ const useStyles = makeStyles((theme) => ({
     color: "#f8f8f8",
   },
   maxBtn: {
-    backgroundColor: "rgba(224, 7, 125, 0.9)",
-    height: 50,
-    borderRadius: 10,
-    marginLeft: 20,
+    background: `linear-gradient(to bottom,#D9047C, #BF1088)`,
+    padding:0,
+    padding:'3px 5px 3px 5px',
+    fontSize:12,
+    borderRadius: 15,
+    marginLeft: 10,
     color: "#f9f9f9",
-    "&:hover": {
-      background: "rgba(224, 7, 125, 0.7)",
+    [theme.breakpoints.down("sm")]: {
+      height: 30,
+     marginTop:10,
+     marginRight:5
     },
+    
   },
   buttons: {
-    marginTop: 60,
-    marginBottom: 20,
+    marginTop: 30,
+    marginBottom: 10,
     [theme.breakpoints.down("sm")]: {
-      marginTop: 20,
+      marginTop: 10,
       marginBottom: 5,
     },
   },
@@ -327,7 +344,16 @@ const StakeDialog = ({
               : `Staked tokens: ${currentFormattedStakedBal()} ${tokenType}`}
           </p>
           <div className={classes.inputGroup}>
-            <TextField
+            <input  placeholder="0"
+              value={
+                inputTokens ? formatCurrency(inputTokens, false, 0, true) : ""
+              }
+              // name={[pbrTokens]}
+              onChange={handleInputChange}
+              label={`Enter ${tokenType} tokens`}
+              
+              className={classes.input}/>
+            {/* <TextField
               InputProps={{
                 classes: {
                   root: classes.cssOutlinedInput,
@@ -344,15 +370,9 @@ const StakeDialog = ({
               className={classes.input}
               id="outlined-basic"
               variant="outlined"
-              placeholder="0"
-              value={
-                inputTokens ? formatCurrency(inputTokens, false, 0, true) : ""
-              }
-              // name={[pbrTokens]}
-              onChange={handleInputChange}
-              label={`Enter ${tokenType} tokens`}
+             
               focused={true}
-            />
+            /> */}
             <Button className={classes.maxBtn} onClick={handleMax}>
               Max
             </Button>
@@ -371,7 +391,7 @@ const StakeDialog = ({
                   Cancel
                 </CustomButton>
                 <CustomButton onClick={onConfirm}>
-                  <p>Confirm</p>
+                  Confirm
                 </CustomButton>
               </>
             )}
