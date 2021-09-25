@@ -1,9 +1,6 @@
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import React, { useEffect } from "react";
-import { Avatar, CircularProgress, Divider } from "@material-ui/core";
-
 import Staking from "./Cards/Staking";
-import Balance from "./Cards/Balance";
 import StakeDialog from "./common/StakeDialog";
 import Navbar from "./common/Navbar";
 import Footer from "./common/Footer";
@@ -14,7 +11,6 @@ import { connectWallet, getAccountBalance } from "../actions/accountActions";
 import { getPoolInfo } from "../actions/stakeActions";
 import { connect } from "react-redux";
 import {
-  fromWei,
   formatCurrency,
   isMetaMaskInstalled,
   getCurrentNetworkId,
@@ -33,9 +29,7 @@ import { CHANGE_NETWORK, RESET_USER_STAKE } from "../actions/types";
 import store from "../store";
 import web3 from "../web";
 import BalanceCard from "./common/BalanceCard";
-import StakeCard from "./common/StakeCard";
 import PbrStats from "./common/PbrStats";
-import Loader from "./common/Loader";
 const useStyles = makeStyles((theme) => ({
   background: {
     paddingTop: 100,
@@ -150,7 +144,7 @@ const useStyles = makeStyles((theme) => ({
 const Home = ({
   connectWallet,
   getPoolInfo,
-  account: { currentAccount, connected, currentNetwork, error },
+  account: { currentAccount, connected, currentNetwork, error, loading },
   getAccountBalance,
   stake: { pool, poolLoading },
 }) => {
@@ -219,8 +213,10 @@ const Home = ({
           store.dispatch({
             type: RESET_USER_STAKE,
           });
-          await getPoolInfo(network);
-          await connectWallet(false, network);
+          await Promise.all[
+            connectWallet(false, network),
+            getPoolInfo(network)
+          ]
           // await getAccountBalance(network);
         }
       }
@@ -282,12 +278,12 @@ const Home = ({
     // alert(account)
     if (isMetaMaskInstalled()) {
       const networkId = await getCurrentNetworkId();
-      console.log("connectWallet network id", networkId);
+      // console.log("connectWallet network id", networkId);
       if (!supportedNetworks.includes(networkId.toString())) {
         // alert('This network is not supported yet! Please switch to Ethereum or Smart Chain network')
       }
       network = getCurrentNetwork(networkId.toString());
-      console.log("current network ", network);
+      // console.log("current network ", network);
       // alert(`current network set to  ${network}` )
       store.dispatch({
         type: CHANGE_NETWORK,
@@ -345,7 +341,7 @@ const Home = ({
             </div>
           </div>
 
-          {!connected && (
+          {!connected && !loading && (
             <div className={classes.cardsContainer2}>
               <Wallet />
               <p className={classes.subheading}>
