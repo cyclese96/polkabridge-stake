@@ -16,6 +16,8 @@ import {
   PBR,
   PWAR,
   PWAR_BLOCKS_PER_YEAR,
+  apyConstants,
+  harmonyNetwork
 } from "../constants";
 import web3 from "../web";
 
@@ -153,6 +155,13 @@ const getCalculatedApy = (
   rewardPerBlock,
   totalValueLockedUsd
 ) => {
+  console.log(
+    'getPoolInfo: ', {
+    tokenPrice,
+    blocksPerYear,
+    rewardPerBlock,
+    totalValueLockedUsd
+  })
   const apy = tokenPrice
     .times(new BigNumber(blocksPerYear))
     .times(new BigNumber(rewardPerBlock))
@@ -190,15 +199,31 @@ export const getApy = (tokenType, poolObj, network) => {
       return pwarApy;
 
     case PBR:
-      const pbrApy = getCalculatedApy(
+      if (network === maticNetwork) {
+        const _apy = getCalculatedApy(
+          tokenPrice,
+          apyConstants.polygon.PBR.NUMBER_BLOCKS_PER_YEAR,
+          apyConstants.polygon.PBR.AVG_REWARD_PER_BLOCK,
+          total_value_locked_usd
+        );
+        return _apy
+      } else if (network === harmonyNetwork) {
+        console.log('getPoolInfo:  calculating apy in ', network)
+        const _apy = getCalculatedApy(
+          tokenPrice,
+          apyConstants.harmony.PBR.NUMBER_BLOCKS_PER_YEAR,
+          apyConstants.harmony.PBR.AVG_REWARD_PER_BLOCK,
+          total_value_locked_usd
+        );
+        return _apy
+      }
+      const _apy = getCalculatedApy(
         tokenPrice,
-        network === maticNetwork
-          ? NUMBER_BLOCKS_PER_YEAR_MATIC
-          : NUMBER_BLOCKS_PER_YEAR,
-        network === maticNetwork ? AVG_PBR_PER_BLOCK_MATIC : AVG_PBR_PER_BLOCK,
+        apyConstants.ethereum.PBR.NUMBER_BLOCKS_PER_YEAR,
+        apyConstants.ethereum.PBR.AVG_REWARD_PER_BLOCK,
         total_value_locked_usd
       );
-      return pbrApy;
+      return _apy
     case BITE:
       const biteApy = getCalculatedApy(
         tokenPrice,

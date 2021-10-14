@@ -21,6 +21,8 @@ import {
   bscNetwork,
   etherConfig,
   etheriumNetwork,
+  harmonyConfig,
+  harmonyNetwork,
   maticNetwork,
   supportedNetworks,
   supportedStaking,
@@ -178,6 +180,11 @@ const Home = ({
       networkId === etherConfig.network_id.koven
     ) {
       return etheriumNetwork;
+    } else if (
+      networkId === harmonyConfig.chainId.mainnet ||
+      networkId === harmonyConfig.chainId.testnet
+    ) {
+      return harmonyNetwork;
     } else {
       return maticNetwork;
     }
@@ -225,7 +232,7 @@ const Home = ({
   }, []);
 
   const getCurrentTokenType = () => {
-    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
+    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork || currentNetwork === harmonyNetwork) {
       return "PBR";
     } else {
       return "CORGIB";
@@ -233,30 +240,30 @@ const Home = ({
   };
 
   const getCurrentPool = () => {
-    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
+    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork || currentNetwork === harmonyNetwork) {
       return pool.PBR;
     } else {
       return pool.CORGIB;
     }
   };
 
-  const getCurrentApy = () => {
-    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
-      return getCurrentPool().pbrApy;
-    } else {
-      return getCurrentPool().corgibApy;
-    }
-  };
+  // const getCurrentApy = () => {
+  //   if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
+  //     return getCurrentPool().pbrApy;
+  //   } else {
+  //     return getCurrentPool().corgibApy;
+  //   }
+  // };
 
   const getCurrentTokenPrice = () => {
-    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
+    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork || currentNetwork === harmonyNetwork) {
       return formatCurrency(getCurrentPool().tokenPrice, true, 2);
     } else {
       return formatCurrency(getCurrentPool().tokenPrice, true, 2);
     }
   };
   const getCurrentTokenChange = () => {
-    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
+    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork || currentNetwork === harmonyNetwork) {
       return formatCurrency(getCurrentPool().change, true, 2);
     } else {
       return formatCurrency(getCurrentPool().change, true, 2);

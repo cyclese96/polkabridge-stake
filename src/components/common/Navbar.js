@@ -24,9 +24,10 @@ import Wallet from "./Wallet";
 import AccountDialog from "./AccountDialog";
 import etherIcon from "../../assets/ether.png";
 import binanceIcon from "../../assets/binance.png";
+import harmonyIcon from "../../assets/one.png";
 import polygonIcon from "../../assets/polygon.png";
 import DotCircle from "./DotCircle";
-import { bscNetwork, etheriumNetwork, maticNetwork } from "../../constants";
+import { bscNetwork, etheriumNetwork, harmonyNetwork, maticNetwork } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -320,6 +321,17 @@ const Navbar = ({ currentNetwork }) => {
             alt={currentNetwork}
           />
           <span style={{ color: "white", marginLeft: 5 }}>BSC</span>
+        </div>
+      );
+    } else if (currentNetwork === harmonyNetwork) {
+      return (
+        <div className={classes.network}>
+          <img
+            className={classes.networkIcon}
+            src={harmonyIcon}
+          // alt={currentNetwork}
+          />
+          <span style={{ color: "white", marginLeft: 5 }}>Harmony</span>
         </div>
       );
     } else
