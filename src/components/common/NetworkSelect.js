@@ -22,38 +22,6 @@ const useStyles = makeStyles((theme) => ({
     root: {
         display: 'flex',
         justifyContent: 'space-around',
-        // "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-        //     borderColor: "green"
-        // },
-
-        "& .MuiOutlinedInput-input": {
-            color: "white"
-        },
-        "& .MuiInputLabel-root": {
-            color: "green"
-        },
-        // "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-        //     borderColor: "white"
-        // },
-        // "&:hover .MuiOutlinedInput-input": {
-        //     color: "red"
-        // },
-        // "&:hover .MuiInputLabel-root": {
-        //     color: "red"
-        // },
-        // "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-        //     borderColor: "red"
-        // },
-        // "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-input": {
-        //     color: "purple"
-        // },
-        "& .MuiInputLabel-root.Mui-focused": {
-            color: "white"
-        },
-        // "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-        //     borderColor: "purple"
-        // }
-
     },
     imgIcon: {
         marginLeft: 10,
@@ -75,9 +43,10 @@ const useStyles = makeStyles((theme) => ({
         border: '1px solid white',
         borderRadius: 60,
         paddingLeft: 10,
-        '&$focused $notchedOutline': {
-            borderColor: 'inherit !important'
-        }
+        height:40,
+        width:'full-width',
+        marginRight:7,
+        
     },
 }))
 export default function NetworkSelect({ selectedNetwork }) {
@@ -129,11 +98,14 @@ export default function NetworkSelect({ selectedNetwork }) {
     }
     return (
         <div>
-            <FormControl className={classes.root} variant='outlined'  >
+            <FormControl className={classes.root}  >
                 <Select
                     className={classes.main}
                     value={network}
-                    onChange={({ target: { value } }) => handleChange(value)}
+                    disableUnderline={true}
+                    notched={true}
+                    id="adornment-weight"
+                    onChange={({ target: { value } }) => handleChange(value)} 
                 >
                     <MenuItem
                         value={currentConnection === 'testnet' ? config.chainIdTestnet : config.chainId}
