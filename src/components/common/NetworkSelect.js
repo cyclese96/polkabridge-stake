@@ -58,10 +58,10 @@ export default function NetworkSelect({ selectedNetwork }) {
         console.log('selected chain id', selectedNetwork)
         if (!localStorage.getItem('currentNetwork')) {
             // setupNetwork(ethereumNetworkDetail.mainnet)
-            localStorage.currentNetwork = selectedNetwork
+            localStorage.currentNetwork = 1
         }
-        handleChange(selectedNetwork)
-    }, [selectedNetwork])
+        
+    }, [])
 
     const handleChange = (_selected) => {
         // console.log('selected network', selectedNetwork)
