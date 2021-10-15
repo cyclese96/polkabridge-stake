@@ -18,7 +18,7 @@ import TouchAppOutlined from "@material-ui/icons/TouchAppOutlined";
 import VpnLockOutlined from "@material-ui/icons/VpnLockOutlined";
 import CategoryIcon from "@material-ui/icons/Category";
 
-import CustomSnackBar from "./CustomSnackbar";
+// import CustomSnackBar from "./CustomSnackbar";
 import { EqualizerOutlined } from "@material-ui/icons";
 import Wallet from "./Wallet";
 import AccountDialog from "./AccountDialog";
@@ -28,6 +28,7 @@ import harmonyIcon from "../../assets/one.png";
 import polygonIcon from "../../assets/polygon.png";
 import DotCircle from "./DotCircle";
 import { bscNetwork, etheriumNetwork, harmonyNetwork, maticNetwork } from "../../constants";
+import NetworkSelect from "./NetworkSelect";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -423,7 +424,10 @@ const Navbar = ({ currentNetwork }) => {
           </div>
 
           <div className={classes.grow} />
-          <div style={{ paddingRight: 10 }}>{renderIcon()}</div>
+          {/* <div style={{ paddingRight: 10 }}>{renderIcon()}</div> */}
+          <div >
+            <NetworkSelect selectedNetwork={42} />
+          </div>
           <Wallet onWalletClick={() => setAccountDialog(true)} />
         </Toolbar>
 

@@ -20,6 +20,7 @@ import {
   harmonyNetwork
 } from "../constants";
 import web3 from "../web";
+import config from "./config";
 
 export const fromWei = (tokens) => {
   if (!tokens) {
@@ -296,3 +297,33 @@ export const getApy = (tokenType, poolObj, network) => {
   //   .toString();
   // return apy;
 };
+
+
+//input  { chainId, chainName, currency: {name, symbol, decimals }, rpcUrls, blockExplorer }
+export const setupNetwork = async (networkObject) => {
+  const provider = window.ethereum
+  if (provider) {
+    // const _chainId = parseInt(networkObject.chainId, 10)
+    try {
+      if (networkObject.chainId === `0x${config.chainId.toString(16)}` || networkObject.chainId === `0x${config.chainIdTestnet.toString(16)}`) {
+        await provider.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: networkObject.chainId }],
+        })
+      }
+      await provider.request({
+        method: 'wallet_addEthereumChain',
+        params: [
+          networkObject
+        ]
+      })
+      return true
+    } catch (error) {
+      console.error('Failed to setup the network in Metamask:', error)
+      return false
+    }
+  } else {
+    console.error("Can't setup the BSC network on metamask because window.ethereum is undefined")
+    return false
+  }
+}
