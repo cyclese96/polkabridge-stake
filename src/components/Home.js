@@ -1,5 +1,5 @@
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import React, { useEffect } from "react";
+import React, {useState, useEffect } from "react";
 import Staking from "./Cards/Staking";
 import StakeDialog from "./common/StakeDialog";
 import Navbar from "./common/Navbar";
@@ -156,6 +156,7 @@ const Home = ({
     type: null,
     tokenType: null,
   });
+  const [currentChainId, setCurrentChainId] = useState(null)
 
   const onStake = (tokenType) => {
     setDialog({ open: true, type: "stake", tokenType: tokenType });
@@ -189,6 +190,7 @@ const Home = ({
       return maticNetwork;
     }
   };
+
   useEffect(() => {
     async function onNetworkChangeUpdate() {
       if (typeof window.web3 !== "undefined") {
@@ -285,6 +287,7 @@ const Home = ({
     // alert(account)
     if (isMetaMaskInstalled()) {
       const networkId = await getCurrentNetworkId();
+      setCurrentChainId(networkId)
       // console.log("connectWallet network id", networkId);
       if (!supportedNetworks.includes(networkId.toString())) {
         // alert('This network is not supported yet! Please switch to Ethereum or Smart Chain network')
@@ -325,7 +328,7 @@ const Home = ({
   return (
     <div>
       <section className="appbar-section">
-        <Navbar currentNetwork={currentNetwork} />
+        <Navbar currentNetwork={currentChainId} />
       </section>
       <div className="container">
         <div className={classes.background}>

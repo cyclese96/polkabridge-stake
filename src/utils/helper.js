@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+import Web3 from 'web3';
 import {
   AVG_BITE_PER_BLOCK,
   AVG_CL365_PER_BLOCK,
@@ -64,7 +65,8 @@ export const getNetworkBalance = async (accountAddress) => {
 
 export const getCurrentNetworkId = async () => {
   if (window.ethereum) {
-    const id = await window.ethereum.networkVersion;
+    const web3 = new Web3(window.ethereum)
+    const id = await web3.eth.getChainId()
 
     if (id) {
       return id;

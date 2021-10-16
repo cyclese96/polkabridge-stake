@@ -57,14 +57,13 @@ export default function NetworkSelect({ selectedNetwork }) {
     useEffect(() => {
         console.log('selected chain id', selectedNetwork)
         if (!localStorage.getItem('currentNetwork')) {
-            // setupNetwork(ethereumNetworkDetail.mainnet)
-            localStorage.currentNetwork = 1
+          // setupNetwork(ethereumNetworkDetail.mainnet)
+          localStorage.currentNetwork = selectedNetwork
         }
-        
-    }, [])
+        handleChange(selectedNetwork)
+      }, [selectedNetwork])
 
     const handleChange = (_selected) => {
-        // console.log('selected network', selectedNetwork)
         if (network === _selected) {
             return
         }
