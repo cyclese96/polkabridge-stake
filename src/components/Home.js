@@ -1,5 +1,5 @@
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import React, {useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Staking from "./Cards/Staking";
 import StakeDialog from "./common/StakeDialog";
 import Navbar from "./common/Navbar";
@@ -156,7 +156,7 @@ const Home = ({
     type: null,
     tokenType: null,
   });
-  const [currentChainId, setCurrentChainId] = useState(null)
+  const [currentChainId, setCurrentChainId] = useState(null);
 
   const onStake = (tokenType) => {
     setDialog({ open: true, type: "stake", tokenType: tokenType });
@@ -223,9 +223,8 @@ const Home = ({
             type: RESET_USER_STAKE,
           });
           await Promise.all[
-            connectWallet(false, network),
-            getPoolInfo(network)
-          ]
+            (connectWallet(false, network), getPoolInfo(network))
+          ];
           // await getAccountBalance(network);
         }
       }
@@ -234,7 +233,11 @@ const Home = ({
   }, []);
 
   const getCurrentTokenType = () => {
-    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork || currentNetwork === harmonyNetwork) {
+    if (
+      currentNetwork === etheriumNetwork ||
+      currentNetwork === maticNetwork ||
+      currentNetwork === harmonyNetwork
+    ) {
       return "PBR";
     } else {
       return "CORGIB";
@@ -242,7 +245,11 @@ const Home = ({
   };
 
   const getCurrentPool = () => {
-    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork || currentNetwork === harmonyNetwork) {
+    if (
+      currentNetwork === etheriumNetwork ||
+      currentNetwork === maticNetwork ||
+      currentNetwork === harmonyNetwork
+    ) {
       return pool.PBR;
     } else {
       return pool.CORGIB;
@@ -258,14 +265,22 @@ const Home = ({
   // };
 
   const getCurrentTokenPrice = () => {
-    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork || currentNetwork === harmonyNetwork) {
+    if (
+      currentNetwork === etheriumNetwork ||
+      currentNetwork === maticNetwork ||
+      currentNetwork === harmonyNetwork
+    ) {
       return formatCurrency(getCurrentPool().tokenPrice, true, 2);
     } else {
       return formatCurrency(getCurrentPool().tokenPrice, true, 2);
     }
   };
   const getCurrentTokenChange = () => {
-    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork || currentNetwork === harmonyNetwork) {
+    if (
+      currentNetwork === etheriumNetwork ||
+      currentNetwork === maticNetwork ||
+      currentNetwork === harmonyNetwork
+    ) {
       return formatCurrency(getCurrentPool().change, true, 2);
     } else {
       return formatCurrency(getCurrentPool().change, true, 2);
@@ -287,7 +302,7 @@ const Home = ({
     // alert(account)
     if (isMetaMaskInstalled()) {
       const networkId = await getCurrentNetworkId();
-      setCurrentChainId(networkId)
+      setCurrentChainId(networkId);
       // console.log("connectWallet network id", networkId);
       if (!supportedNetworks.includes(networkId.toString())) {
         // alert('This network is not supported yet! Please switch to Ethereum or Smart Chain network')
@@ -361,19 +376,28 @@ const Home = ({
           )}
           {connected && (
             <div className="mt-3">
-              <div className="row">
-                {supportedStaking[currentNetwork].map((token) => (
-                  <div className="col-md-4">
-                    <div className={classes.card}>
-                      <Staking
-                        onStake={onStake}
-                        onUnstake={onUnStake}
-                        tokenType={token}
-                      />
-                    </div>
+              {supportedStaking[currentNetwork].length === 0 && (
+                <div style={{ textAlign: "center", color: "white" }}>
+                  No Staking pool available.
+                </div>
+              )}
+
+              {supportedStaking[currentNetwork].length > 0 && (
+                <div className="row">
+                    {" "}
+                    {supportedStaking[currentNetwork].map((token) => (
+                      <div className="col-md-4">
+                        <div className={classes.card}>
+                          <Staking
+                            onStake={onStake}
+                            onUnstake={onUnStake}
+                            tokenType={token}
+                          />
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                ))}
-              </div>
+              )}
             </div>
           )}
 
