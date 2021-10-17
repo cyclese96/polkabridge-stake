@@ -235,7 +235,7 @@ export const supportedStaking = {
   ethereum: ["PBR", "BITE", "CFL365"],
   bsc: ["CORGIB", "PWAR"],
   matic: ["PBR"],
-  harmony: ['PBR']
+  harmony: []
 };
 
 export const minimumStakingAmount = {
