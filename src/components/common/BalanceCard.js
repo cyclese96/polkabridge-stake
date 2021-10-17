@@ -14,6 +14,7 @@ import {
   BITE,
   CFL365,
   etheriumNetwork,
+  harmonyNetwork,
   maticNetwork,
   PBR,
 } from "../../constants";
@@ -105,7 +106,7 @@ function BalanceCard(props) {
         { coin: CFL365, balance: formatCurrency(fromWei(balance[CFL365])) },
       ];
     } else {
-      if (currentNetwork === maticNetwork) {
+      if (currentNetwork === maticNetwork || currentNetwork === harmonyNetwork) {
         return [{ coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) }];
       } else {
         return [

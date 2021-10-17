@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect} from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -18,15 +18,18 @@ import TouchAppOutlined from "@material-ui/icons/TouchAppOutlined";
 import VpnLockOutlined from "@material-ui/icons/VpnLockOutlined";
 import CategoryIcon from "@material-ui/icons/Category";
 
-import CustomSnackBar from "./CustomSnackbar";
+// import CustomSnackBar from "./CustomSnackbar";
 import { EqualizerOutlined } from "@material-ui/icons";
 import Wallet from "./Wallet";
 import AccountDialog from "./AccountDialog";
 import etherIcon from "../../assets/ether.png";
 import binanceIcon from "../../assets/binance.png";
+import harmonyIcon from "../../assets/one.png";
 import polygonIcon from "../../assets/polygon.png";
 import DotCircle from "./DotCircle";
-import { bscNetwork, etheriumNetwork, maticNetwork } from "../../constants";
+import { bscNetwork, etheriumNetwork, harmonyNetwork, maticNetwork } from "../../constants";
+import NetworkSelect from "./NetworkSelect";
+import useNetwork from "./useNetwork";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -217,6 +220,7 @@ const useStyles = makeStyles((theme) => ({
 const Navbar = ({ currentNetwork }) => {
   const classes = useStyles();
 
+
   const [state, setState] = React.useState({
     right: false,
   });
@@ -235,6 +239,22 @@ const Navbar = ({ currentNetwork }) => {
   const handleClose = () => {
     showAlert({ status: false, message: "" });
   };
+
+  const { chainId, status } = useNetwork()
+
+  // useEffect(() => {
+  //   console.log('useNetwork:  network id', chainId)
+  //   console.log('useNetwork: status', status)
+  //   if (status === 'network changing') {
+  //     var result = window.confirm('Do you want reload the page ?')
+  //     if (result) {
+  //       window.location.reload()
+  //     } else {
+  //       console.log('closed')
+  //     }
+  //   }
+  // }, [chainId])
+
   const list = (anchor) => (
     <div
       className={clsx(classes.list, {
@@ -320,6 +340,17 @@ const Navbar = ({ currentNetwork }) => {
             alt={currentNetwork}
           />
           <span style={{ color: "white", marginLeft: 5 }}>BSC</span>
+        </div>
+      );
+    } else if (currentNetwork === harmonyNetwork) {
+      return (
+        <div className={classes.network}>
+          <img
+            className={classes.networkIcon}
+            src={harmonyIcon}
+          // alt={currentNetwork}
+          />
+          <span style={{ color: "white", marginLeft: 5 }}>Harmony</span>
         </div>
       );
     } else
@@ -411,7 +442,10 @@ const Navbar = ({ currentNetwork }) => {
           </div>
 
           <div className={classes.grow} />
-          <div style={{ paddingRight: 10 }}>{renderIcon()}</div>
+          {/* <div style={{ paddingRight: 10 }}>{renderIcon()}</div> */}
+          <div >
+            <NetworkSelect selectedNetwork={chainId} />
+          </div>
           <Wallet onWalletClick={() => setAccountDialog(true)} />
         </Toolbar>
 

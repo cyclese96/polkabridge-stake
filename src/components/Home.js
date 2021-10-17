@@ -1,5 +1,5 @@
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import React, { useEffect } from "react";
+import React, {useState, useEffect } from "react";
 import Staking from "./Cards/Staking";
 import StakeDialog from "./common/StakeDialog";
 import Navbar from "./common/Navbar";
@@ -21,6 +21,8 @@ import {
   bscNetwork,
   etherConfig,
   etheriumNetwork,
+  harmonyConfig,
+  harmonyNetwork,
   maticNetwork,
   supportedNetworks,
   supportedStaking,
@@ -154,6 +156,7 @@ const Home = ({
     type: null,
     tokenType: null,
   });
+  const [currentChainId, setCurrentChainId] = useState(null)
 
   const onStake = (tokenType) => {
     setDialog({ open: true, type: "stake", tokenType: tokenType });
@@ -178,10 +181,16 @@ const Home = ({
       networkId === etherConfig.network_id.koven
     ) {
       return etheriumNetwork;
+    } else if (
+      networkId === harmonyConfig.chainId.mainnet ||
+      networkId === harmonyConfig.chainId.testnet
+    ) {
+      return harmonyNetwork;
     } else {
       return maticNetwork;
     }
   };
+
   useEffect(() => {
     async function onNetworkChangeUpdate() {
       if (typeof window.web3 !== "undefined") {
@@ -225,7 +234,7 @@ const Home = ({
   }, []);
 
   const getCurrentTokenType = () => {
-    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
+    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork || currentNetwork === harmonyNetwork) {
       return "PBR";
     } else {
       return "CORGIB";
@@ -233,30 +242,30 @@ const Home = ({
   };
 
   const getCurrentPool = () => {
-    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
+    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork || currentNetwork === harmonyNetwork) {
       return pool.PBR;
     } else {
       return pool.CORGIB;
     }
   };
 
-  const getCurrentApy = () => {
-    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
-      return getCurrentPool().pbrApy;
-    } else {
-      return getCurrentPool().corgibApy;
-    }
-  };
+  // const getCurrentApy = () => {
+  //   if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
+  //     return getCurrentPool().pbrApy;
+  //   } else {
+  //     return getCurrentPool().corgibApy;
+  //   }
+  // };
 
   const getCurrentTokenPrice = () => {
-    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
+    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork || currentNetwork === harmonyNetwork) {
       return formatCurrency(getCurrentPool().tokenPrice, true, 2);
     } else {
       return formatCurrency(getCurrentPool().tokenPrice, true, 2);
     }
   };
   const getCurrentTokenChange = () => {
-    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
+    if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork || currentNetwork === harmonyNetwork) {
       return formatCurrency(getCurrentPool().change, true, 2);
     } else {
       return formatCurrency(getCurrentPool().change, true, 2);
@@ -278,6 +287,7 @@ const Home = ({
     // alert(account)
     if (isMetaMaskInstalled()) {
       const networkId = await getCurrentNetworkId();
+      setCurrentChainId(networkId)
       // console.log("connectWallet network id", networkId);
       if (!supportedNetworks.includes(networkId.toString())) {
         // alert('This network is not supported yet! Please switch to Ethereum or Smart Chain network')
@@ -318,7 +328,7 @@ const Home = ({
   return (
     <div>
       <section className="appbar-section">
-        <Navbar currentNetwork={currentNetwork} />
+        <Navbar currentNetwork={currentChainId} />
       </section>
       <div className="container">
         <div className={classes.background}>

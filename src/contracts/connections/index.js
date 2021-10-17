@@ -8,6 +8,7 @@ import CorgibStaking from "../abi/CorgibStaking.json";
 import PolkaBridgeMemeToken from "../abi/PolkaBridgeMemeToken.json";
 import pwarCoin from "../abi/Pwar.json";
 import cl365 from "../abi/Cl365.json";
+import tokenContract from '../abi/erc20.json';
 
 import {
   biteAddressKoven,
@@ -22,6 +23,7 @@ import {
   corgibStakingTestent,
   currentConnection,
   etheriumNetwork,
+  harmonyNetwork,
   maticConfig,
   maticNetwork,
   pbrAddressKoven,
@@ -32,8 +34,10 @@ import {
   pbrStakingMaticTestnet,
   pwarAddressMainnet,
   pwarAddressTestnet,
+  stakeContractAdrresses,
   stakingAddressKoven,
   stakingAddressMainnet,
+  tokenContarctAddresses,
 } from "../../constants";
 import { isMetaMaskInstalled } from "../../utils/helper";
 
@@ -49,17 +53,20 @@ export const biteContract = (network) => {
 
 export const pbrContract = (network) => {
   let address;
-  let abi;
+  const abi = tokenContract;
   if (network === maticNetwork) {
     address =
       currentConnection === "testnet"
         ? pbrAddressMaticTestnet
         : pbrAddressMaticMainnet;
-    abi = PolkaBridgeMatic;
+  } else if (network === harmonyNetwork) {
+    address =
+      currentConnection === "testnet"
+        ? tokenContarctAddresses.PBR.harmony.testnet
+        : tokenContarctAddresses.PBR.harmony.mainnet;
   } else {
     address =
       currentConnection === "testnet" ? pbrAddressKoven : pbrAddressMainnet;
-    abi = PolkaBridge;
   }
 
   const connection = getCurrentConnection(network, abi, address);
@@ -114,6 +121,15 @@ export const stakeContract = (network) => {
     const abi = PolkaBridgeStakingMatic;
     const connection = getCurrentConnection(network, abi, address);
     return connection;
+  } else if (network === harmonyNetwork) {
+    const address =
+      currentConnection === "testnet"
+        ? stakeContractAdrresses.harmony.testnet
+        : stakeContractAdrresses.harmony.mainnet;
+
+    const abi = PolkaBridgeStaking;
+    const connection = getCurrentConnection(network, abi, address);
+    return connection;
   } else {
     const address =
       currentConnection === "testnet"
@@ -141,6 +157,14 @@ const getCurrentConnection = (blockChainNetwork, abi, contractAddress) => {
       return new web3.eth.Contract(abi, contractAddress);
     }
   } else if (blockChainNetwork === maticNetwork) {
+    // const rpc =
+    //   currentConnection === "testnet"
+    //     ? maticConfig.network_rpc_testnet
+    //     : maticConfig.network_rpc_mainnet;
+    const web3 = new Web3(window.ethereum);
+
+    return new web3.eth.Contract(abi, contractAddress);
+  } else if (blockChainNetwork === harmonyNetwork) {
     // const rpc =
     //   currentConnection === "testnet"
     //     ? maticConfig.network_rpc_testnet

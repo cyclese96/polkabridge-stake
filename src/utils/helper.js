@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+import Web3 from 'web3';
 import {
   AVG_BITE_PER_BLOCK,
   AVG_CL365_PER_BLOCK,
@@ -16,8 +17,11 @@ import {
   PBR,
   PWAR,
   PWAR_BLOCKS_PER_YEAR,
+  apyConstants,
+  harmonyNetwork
 } from "../constants";
 import web3 from "../web";
+import config from "./config";
 
 export const fromWei = (tokens) => {
   if (!tokens) {
@@ -61,7 +65,8 @@ export const getNetworkBalance = async (accountAddress) => {
 
 export const getCurrentNetworkId = async () => {
   if (window.ethereum) {
-    const id = await window.ethereum.networkVersion;
+    const web3 = new Web3(window.ethereum)
+    const id = await web3.eth.getChainId()
 
     if (id) {
       return id;
@@ -153,6 +158,13 @@ const getCalculatedApy = (
   rewardPerBlock,
   totalValueLockedUsd
 ) => {
+  console.log(
+    'getPoolInfo: ', {
+    tokenPrice,
+    blocksPerYear,
+    rewardPerBlock,
+    totalValueLockedUsd
+  })
   const apy = tokenPrice
     .times(new BigNumber(blocksPerYear))
     .times(new BigNumber(rewardPerBlock))
@@ -190,15 +202,31 @@ export const getApy = (tokenType, poolObj, network) => {
       return pwarApy;
 
     case PBR:
-      const pbrApy = getCalculatedApy(
+      if (network === maticNetwork) {
+        const _apy = getCalculatedApy(
+          tokenPrice,
+          apyConstants.polygon.PBR.NUMBER_BLOCKS_PER_YEAR,
+          apyConstants.polygon.PBR.AVG_REWARD_PER_BLOCK,
+          total_value_locked_usd
+        );
+        return _apy
+      } else if (network === harmonyNetwork) {
+        console.log('getPoolInfo:  calculating apy in ', network)
+        const _apy = getCalculatedApy(
+          tokenPrice,
+          apyConstants.harmony.PBR.NUMBER_BLOCKS_PER_YEAR,
+          apyConstants.harmony.PBR.AVG_REWARD_PER_BLOCK,
+          total_value_locked_usd
+        );
+        return _apy
+      }
+      const _apy = getCalculatedApy(
         tokenPrice,
-        network === maticNetwork
-          ? NUMBER_BLOCKS_PER_YEAR_MATIC
-          : NUMBER_BLOCKS_PER_YEAR,
-        network === maticNetwork ? AVG_PBR_PER_BLOCK_MATIC : AVG_PBR_PER_BLOCK,
+        apyConstants.ethereum.PBR.NUMBER_BLOCKS_PER_YEAR,
+        apyConstants.ethereum.PBR.AVG_REWARD_PER_BLOCK,
         total_value_locked_usd
       );
-      return pbrApy;
+      return _apy
     case BITE:
       const biteApy = getCalculatedApy(
         tokenPrice,
@@ -271,3 +299,33 @@ export const getApy = (tokenType, poolObj, network) => {
   //   .toString();
   // return apy;
 };
+
+
+//input  { chainId, chainName, currency: {name, symbol, decimals }, rpcUrls, blockExplorer }
+export const setupNetwork = async (networkObject) => {
+  const provider = window.ethereum
+  if (provider) {
+    // const _chainId = parseInt(networkObject.chainId, 10)
+    try {
+      if (networkObject.chainId === `0x${config.chainId.toString(16)}` || networkObject.chainId === `0x${config.chainIdTestnet.toString(16)}`) {
+        await provider.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: networkObject.chainId }],
+        })
+      }
+      await provider.request({
+        method: 'wallet_addEthereumChain',
+        params: [
+          networkObject
+        ]
+      })
+      return true
+    } catch (error) {
+      console.error('Failed to setup the network in Metamask:', error)
+      return false
+    }
+  } else {
+    console.error("Can't setup the BSC network on metamask because window.ethereum is undefined")
+    return false
+  }
+}
