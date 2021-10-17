@@ -1,4 +1,4 @@
-import React, { useState, useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -217,7 +217,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Navbar = ({ currentNetwork }) => {
+const Navbar = ({ currentNetwork, chainId }) => {
   const classes = useStyles();
 
 
@@ -240,7 +240,7 @@ const Navbar = ({ currentNetwork }) => {
     showAlert({ status: false, message: "" });
   };
 
-  const { chainId, status } = useNetwork()
+  // const { chainId, status } = useNetwork()
 
   // useEffect(() => {
   //   console.log('useNetwork:  network id', chainId)
@@ -309,11 +309,14 @@ const Navbar = ({ currentNetwork }) => {
           </ListItem>
         ))}
         <Divider />
-        <ListItem button style={{ marginLeft: 20 }}>
+        <ListItem button style={{ marginLeft: 10 }}>
           <Wallet onWalletClick={() => setAccountDialog(true)} />
         </ListItem>
-        <ListItem button style={{ marginTop: 10 }}>
-          {renderIcon()}
+        <ListItem button style={{ marginLeft: 10, marginTop: 10 }}>
+          {/* {renderIcon()} */}
+          {/* <div > */}
+          <NetworkSelect selectedNetwork={chainId} />
+          {/* </div> */}
         </ListItem>
       </List>
     </div>

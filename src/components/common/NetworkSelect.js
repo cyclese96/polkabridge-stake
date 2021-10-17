@@ -43,10 +43,10 @@ const useStyles = makeStyles((theme) => ({
         border: '1px solid white',
         borderRadius: 60,
         paddingLeft: 10,
-        height:40,
-        width:'full-width',
-        marginRight:7,
-        
+        height: 40,
+        width: 'full-width',
+        marginRight: 7,
+
     },
 }))
 export default function NetworkSelect({ selectedNetwork }) {
@@ -54,14 +54,19 @@ export default function NetworkSelect({ selectedNetwork }) {
     const [network, setNetwork] = React.useState(
         parseInt(localStorage.getItem('currentNetwork') || config.chainId),
     )
+
     useEffect(() => {
         console.log('selected chain id', selectedNetwork)
-        if (!localStorage.getItem('currentNetwork')) {
-          // setupNetwork(ethereumNetworkDetail.mainnet)
-          localStorage.currentNetwork = selectedNetwork
+        // if (!localStorage.getItem('currentNetwork')) {
+        //     // setupNetwork(ethereumNetworkDetail.mainnet)
+        //     localStorage.currentNetwork = selectedNetwork
+        // }
+        if (!selectedNetwork) {
+            return
         }
+
         handleChange(selectedNetwork)
-      }, [selectedNetwork])
+    }, [selectedNetwork])
 
     const handleChange = (_selected) => {
         if (network === _selected) {
@@ -100,11 +105,11 @@ export default function NetworkSelect({ selectedNetwork }) {
             <FormControl className={classes.root}  >
                 <Select
                     className={classes.main}
-                    value={network}
+                    value={selectedNetwork}
                     disableUnderline={true}
                     notched={true}
                     id="adornment-weight"
-                    onChange={({ target: { value } }) => handleChange(value)} 
+                    onChange={({ target: { value } }) => handleChange(value)}
                 >
                     <MenuItem
                         value={currentConnection === 'testnet' ? config.chainIdTestnet : config.chainId}

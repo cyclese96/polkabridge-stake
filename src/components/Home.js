@@ -208,6 +208,7 @@ const Home = ({
         window.ethereum.on("networkChanged", async (networkId) => {
           // setCurrentNetwork(networkId)
           const network = getCurrentNetwork(networkId);
+          setCurrentChainId(parseInt(networkId))
           // console.log("connectWallet current network ", network);
           store.dispatch({
             type: CHANGE_NETWORK,
@@ -343,7 +344,7 @@ const Home = ({
   return (
     <div>
       <section className="appbar-section">
-        <Navbar currentNetwork={currentChainId} />
+        <Navbar currentNetwork={currentNetwork} chainId={currentChainId} />
       </section>
       <div className="container">
         <div className={classes.background}>
@@ -384,19 +385,19 @@ const Home = ({
 
               {supportedStaking[currentNetwork].length > 0 && (
                 <div className="row">
-                    {" "}
-                    {supportedStaking[currentNetwork].map((token) => (
-                      <div className="col-md-4">
-                        <div className={classes.card}>
-                          <Staking
-                            onStake={onStake}
-                            onUnstake={onUnStake}
-                            tokenType={token}
-                          />
-                        </div>
+                  {" "}
+                  {supportedStaking[currentNetwork].map((token) => (
+                    <div className="col-md-4">
+                      <div className={classes.card}>
+                        <Staking
+                          onStake={onStake}
+                          onUnstake={onUnStake}
+                          tokenType={token}
+                        />
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
+                </div>
               )}
             </div>
           )}
