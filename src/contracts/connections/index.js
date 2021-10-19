@@ -8,7 +8,7 @@ import CorgibStaking from "../abi/CorgibStaking.json";
 import PolkaBridgeMemeToken from "../abi/PolkaBridgeMemeToken.json";
 import pwarCoin from "../abi/Pwar.json";
 import cl365 from "../abi/Cl365.json";
-import tokenContract from '../abi/erc20.json';
+import erc20TokenAbi from '../abi/erc20.json';
 
 import {
   biteAddressKoven,
@@ -53,7 +53,7 @@ export const biteContract = (network) => {
 
 export const pbrContract = (network) => {
   let address;
-  const abi = tokenContract;
+  const abi = erc20TokenAbi;
   if (network === maticNetwork) {
     address =
       currentConnection === "testnet"
@@ -101,6 +101,12 @@ export const pwarCoinContract = (network) => {
   const connection = getCurrentConnection(network, abi, address);
   return connection;
 };
+
+export const erc20TokenContract = (network, tokenAddress) => {
+  const abi = PolkaBridge
+  const connection = getCurrentConnection(network, abi, tokenAddress);
+  return connection;
+}
 
 export const stakeContract = (network) => {
   if (network === bscNetwork) {

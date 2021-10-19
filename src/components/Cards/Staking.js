@@ -11,6 +11,7 @@ import biteImg from "../../assets/bite.png";
 import corgiImg from "../../assets/corgi.png";
 import pwarImg from "../../assets/pwar.png";
 import clf365Img from "../../assets/clf365.png";
+import punImg from "../../assets/punt.jpg";
 import CustomButton from "../Buttons/CustomButton";
 import { formatCurrency, formatLargeNumber, fromWei, toWei } from "../../utils/helper";
 import { connect } from "react-redux";
@@ -27,6 +28,8 @@ import {
   CFL365,
   etheriumNetwork,
   PWAR,
+  supportedStaking,
+  PUN,
 } from "../../constants";
 import Loader from "../common/Loader";
 import DotCircle from "../common/DotCircle";
@@ -258,6 +261,7 @@ const Staking = ({
     CORGIB: corgiImg,
     PWAR: pwarImg,
     CFL365: clf365Img,
+    PUN: punImg
   };
 
   const tokenName = {
@@ -288,18 +292,24 @@ const Staking = ({
       buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xcd6adc6b8bd396e2d53ccd7d7257b4de55be4fbe",
       info: "https://www.coingecko.com/en/coins/cfl365-finance",
     },
+    PUN: {
+      buy: 'https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x31903e333809897ee57af57567f4377a1a78756c',
+      info: 'https://www.dextools.io/app/ether/pair-explorer/0xed1ba5252f94e029f41506adeaf90c459c0aca69'
+    }
   };
   const getCurrentApy = () => {
     if (tokenType === "PBR") {
-      return pool[tokenType] ? pool[tokenType].pbrApy : "-";
+      return pool[tokenType] ? formatCurrency(pool[tokenType].pbrApy, false, 1, true) + " %" : "--";
     } else if (tokenType === "CORGIB") {
-      return pool[tokenType] ? pool[tokenType].corgibApy : "-";
+      return pool[tokenType] ? formatCurrency(pool[tokenType].corgibApy, false, 1, true) + " %" : "--";
     } else if (tokenType === "BITE") {
-      return pool[tokenType] ? pool[tokenType].biteApy : "0";
+      return pool[tokenType] ? formatCurrency(pool[tokenType].biteApy, false, 1, true) + " %" : "--";
     } else if (tokenType === PWAR) {
-      return pool[tokenType] ? pool[tokenType].pwarApy : "0";
+      return pool[tokenType] ? formatCurrency(pool[tokenType].pwarApy, false, 1, true) + " %" : "--";
+    } else if (tokenType === CFL365) {
+      return pool[tokenType] ? formatCurrency(pool[tokenType].clf365Apy, false, 1, true) + " %" : "--";
     } else {
-      return pool[tokenType] ? pool[tokenType].clf365Apy : "0";
+      return "--"
     }
   };
 
@@ -313,6 +323,28 @@ const Staking = ({
     // }
     return formatLargeNumber(fromWei(tokens))
   };
+
+  const claimDisableStatus = (_tokenType) => {
+    if (_tokenType === PUN) {
+      return true;
+    }
+    return currentAmount(_tokenType) == 0
+
+  }
+
+  const stakeDisableStatus = (_tokenType) => {
+    if (_tokenType === PUN) {
+      return true
+    }
+    return false
+  }
+
+  const withdrawDisableStatus = (_tokenType) => {
+    if (_tokenType === PUN) {
+      return true
+    }
+    return false
+  }
 
   return (
     <Card elevation={10} className={classes.card}>
@@ -349,19 +381,19 @@ const Staking = ({
             <div className={classes.earn}>Earn {tokenName[tokenType]}</div>
           </div>
           <div className="d-flex justify-content-center  pt-3">
-            <a href={tokenInfo[tokenType].buy} target="_blank">
+            <a href={tokenInfo[tokenType]?.buy} target="_blank">
               <Button variant="contained" className={classes.borderButton}>
                 Buy
               </Button>
             </a>
-            <a href={tokenInfo[tokenType].info} target="_blank">
+            <a href={tokenInfo[tokenType].info}  >
               <Button variant="contained" className={classes.borderButton}>
                 Info
               </Button>
             </a>
           </div>
           <div style={{ minHeight: 120, paddingLeft: 10, paddingRight: 10 }}>
-            {["PBR", "BITE", "PWAR", "CORGIB", CFL365].includes(tokenType) ? (
+            {supportedStaking.ethereum.includes(tokenType) ? (
               <div className="mt-3">
                 <div className="d-flex justify-content-between mt-1">
                   <div className="d-flex justify-content-start">
@@ -370,7 +402,7 @@ const Staking = ({
                     </div>
                   </div>
                   <div className={classes.tokenAmount}>
-                    {formatCurrency(getCurrentApy(), false, 1, true)} %
+                    {getCurrentApy()}
                   </div>
                 </div>
                 <div className="d-flex justify-content-between mt-2">
@@ -444,13 +476,13 @@ const Staking = ({
                 {" "}
                 {tokenType === "PWAR"
                   ? formatCurrency(
-                    fromWei(stake[tokenType].pendingReward),
+                    fromWei(stake[tokenType]?.pendingReward),
                     false,
                     1,
                     true
                   )
                   : formatCurrency(
-                    fromWei(stake[tokenType].pendingReward)
+                    fromWei(stake[tokenType]?.pendingReward)
                   )}{" "}
               </div>
             </div>
@@ -472,16 +504,17 @@ const Staking = ({
             ) : (
               <div className={classes.stakeButtons}>
                 <CustomButton
-                  disabled={currentAmount(tokenType) == 0}
+                  disabled={claimDisableStatus(tokenType)}
                   onClick={() => handleClaim(tokenType)}
                 >
                   Claim
                 </CustomButton>
 
-                <CustomButton onClick={() => onStake(tokenType)}>
+                <CustomButton disabled={stakeDisableStatus(tokenType)} onClick={() => onStake(tokenType)}>
                   Stake
                 </CustomButton>
                 <CustomButton
+                  disabled={withdrawDisableStatus(tokenType)}
                   onClick={() => onUnstake(tokenType)}
                   variant="light"
                 >

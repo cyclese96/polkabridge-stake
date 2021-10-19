@@ -11,11 +11,13 @@ import {
   etheriumNetwork,
   maticNetwork,
   PBR,
+  PUN,
 } from "../../constants";
 import biteImg from "../../assets/bite.png";
 import corgibImg from "../../assets/corgi.png";
 import clf365Img from "../../assets/clf365.png";
 import pwarImg from "../../assets/pwar.png";
+import puntImg from '../../assets/punt.jpg'
 
 import { formatCurrency, fromWei } from "../../utils/helper";
 import { connect } from "react-redux";
@@ -26,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   background: {
     minWidth: 360,
     width: "100%",
-    height: 350,
+    height: 400,
     backgroundColor: "#121827",
     color: "#f9f9f9",
     display: "flex",
@@ -37,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("sm")]: {
       minWidth: 200,
       width: "100%",
-      height: 350,
+      height: 400,
     },
   },
   heading: {
@@ -161,6 +163,7 @@ const AccountDialog = ({
     if (currentNetwork === etheriumNetwork) {
       return [
         { coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
+        { coin: PUN, balance: formatCurrency(fromWei(balance[PUN])) },
         { coin: BITE, balance: formatCurrency(fromWei(balance[BITE])) },
         { coin: CFL365, balance: formatCurrency(fromWei(balance[CFL365])) },
       ];
@@ -188,6 +191,7 @@ const AccountDialog = ({
     CORGIB: corgibImg,
     PWAR: pwarImg,
     CFL365: clf365Img,
+    PUN: puntImg
   };
 
   const tokenName = {
@@ -196,6 +200,7 @@ const AccountDialog = ({
     CORGIB: "Corgi Of PolkaBridge",
     PWAR: "PolkaWar",
     CFL365: "CFL 365",
+    PUN: 'CryptoPunt'
   };
   return (
     <div>

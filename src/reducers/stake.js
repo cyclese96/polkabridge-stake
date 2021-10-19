@@ -22,6 +22,9 @@ import {
   APPROVE_CLF365_TOKENS,
   RESET_CLF365_TOKEN,
   STAKE_CLF365_TOKENS,
+  STAKE_PUN_TOKENS,
+  RESET_PUN_TOKEN,
+  APPROVE_PUN_TOKENS,
 } from "../actions/types";
 
 const initalState = {
@@ -31,6 +34,7 @@ const initalState = {
     CORGIB: false,
     PWAR: false,
     CFL365: false,
+    PUN: false
   },
   stake: {
     PBR: {},
@@ -38,6 +42,7 @@ const initalState = {
     CORGIB: {},
     PWAR: {},
     CFL365: {},
+    PUN: {}
   },
   pool: {
     PBR: {},
@@ -45,6 +50,7 @@ const initalState = {
     CORGIB: {},
     PWAR: {},
     CFL365: {},
+    PUN: {}
   },
   poolLoading: false,
 };
@@ -59,9 +65,8 @@ export default function (state = initalState, action) {
           PBR: action.payload.pbr,
           BITE: action.payload.bite,
           CFL365: action.payload.clf365,
+          PUN: action.payload.pun
         },
-        // pbrPoolData: action.payload.pbr,
-        // bitePoolData: action.payload.bite,
       };
     case LOAD_BSC_POOL:
       return {
@@ -120,6 +125,22 @@ export default function (state = initalState, action) {
           CFL365: false,
         },
       };
+    case APPROVE_PUN_TOKENS:
+      return {
+        ...state,
+        approved: {
+          ...state.approved,
+          PUN: true,
+        },
+      };
+    case RESET_PUN_TOKEN:
+      return {
+        ...state,
+        approved: {
+          ...state.approved,
+          PUN: false,
+        },
+      };
     case APPROVE_CORGIB_TOKENS:
       return {
         ...state,
@@ -155,22 +176,8 @@ export default function (state = initalState, action) {
     case RESET_USER_STAKE:
       return {
         ...state,
-        approved: {
-          ...state.approved,
-          PBR: false,
-          BITE: false,
-          CORGIB: false,
-          PWAR: false,
-          CFL365: false,
-        },
-        stake: {
-          ...state.stake,
-          PBR: {},
-          BITE: {},
-          CORGIB: {},
-          PWAR: {},
-          CFL365: {},
-        },
+        approved: initalState.approved,
+        stake: initalState.stake
       };
     case STAKE_PBR_TOKENS:
       return {
@@ -194,6 +201,14 @@ export default function (state = initalState, action) {
         stake: {
           ...state.stake,
           CFL365: action.payload,
+        },
+      };
+    case STAKE_PUN_TOKENS:
+      return {
+        ...state,
+        stake: {
+          ...state.stake,
+          PUN: action.payload,
         },
       };
     case STAKE_CORGIB_TOKENS:

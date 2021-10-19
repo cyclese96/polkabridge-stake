@@ -27,6 +27,10 @@ import {
   RESET_CLF365_TOKEN,
   STAKE_CLF365_TOKENS,
   LOAD_CLF365_BALANCE,
+  STAKE_PUN_TOKENS,
+  RESET_PUN_TOKEN,
+  APPROVE_PUN_TOKENS,
+  LOAD_PUN_BALANCE,
 } from "./types";
 
 import {
@@ -36,6 +40,7 @@ import {
   stakeContract,
   pwarCoinContract,
   clf365Contract,
+  erc20TokenContract,
 } from "../contracts/connections";
 import {
   toWei,
@@ -52,13 +57,16 @@ import {
   CFL365,
   CLF365_PRICE,
   CORGIB,
+  currentConnection,
   etheriumNetwork,
   harmonyNetwork,
   maticNetwork,
   PBR,
   poolId,
+  PUN,
   PWAR,
   PWAR_PRICE,
+  tokenContarctAddresses,
 } from "../constants";
 
 // current token contract
@@ -74,6 +82,11 @@ const getTokenContract = (network, tokenType) => {
       return pwarCoinContract(network);
     case CFL365:
       return clf365Contract(network);
+    case PUN:
+      return erc20TokenContract(network, currentConnection === 'testnet'
+        ? tokenContarctAddresses.PUN.ethereum.testnet
+        : tokenContarctAddresses.PUN.ethereum.mainnet
+      )
     default:
       return clf365Contract(network);
   }
@@ -91,6 +104,8 @@ const tokenToApprove = (tokenType) => {
       return APPROVE_PWAR_TOKENS;
     case CFL365:
       return APPROVE_CLF365_TOKENS;
+    case PUN:
+      return APPROVE_PUN_TOKENS;
     default:
       return APPROVE_CLF365_TOKENS;
   }
@@ -108,6 +123,8 @@ const tokenToReset = (tokenType) => {
       return RESET_PWAR_TOKEN;
     case CFL365:
       return RESET_CLF365_TOKEN;
+    case PUN:
+      return RESET_PUN_TOKEN;
     default:
       return RESET_CLF365_TOKEN;
   }
@@ -125,6 +142,8 @@ const tokenToStake = (tokenType) => {
       return STAKE_PWAR_TOKENS;
     case CFL365:
       return STAKE_CLF365_TOKENS;
+    case PUN:
+      return STAKE_PUN_TOKENS;
     default:
       return STAKE_CLF365_TOKENS;
   }
@@ -142,6 +161,8 @@ const tokenToLoad = (tokenType) => {
       return LOAD_PWAR_BALANCE;
     case CFL365:
       return LOAD_CLF365_BALANCE;
+    case PUN:
+      return LOAD_PUN_BALANCE;
     default:
       return LOAD_CLF365_BALANCE;
   }
@@ -157,10 +178,11 @@ export const getPoolInfo = (network) => async (dispatch) => {
     // ethereum pool calculations
     if (network === etheriumNetwork) {
       // console.log('g')
-      const [pbrPool, bitePool, clfPool] = await Promise.all([
+      const [pbrPool, bitePool, clfPool, punPool] = await Promise.all([
         currStakingContract.methods.getPoolInfo(poolId.PBR).call(),
         currStakingContract.methods.getPoolInfo(poolId.BITE).call(),
         currStakingContract.methods.getPoolInfo(poolId.CFL365).call(),
+        currStakingContract.methods.getPoolInfo(poolId.PUN).call(),
       ]);
 
       const pbrPoolObj = {
@@ -229,9 +251,28 @@ export const getPoolInfo = (network) => async (dispatch) => {
       // console.log({ clfPoolObj });
 
       clfPoolObj.clf365Apy = getApy(CFL365, clfPoolObj, network);
+
+
+      // pun pool calculations:
+      const punPoolObj = {
+        accTokenPerShare: punPool[0],
+        lastRewardBlock: punPool[1],
+        rewardPerBlock: punPool[2],
+        totalTokenStaked: punPool[3],
+        totalTokenClaimed: punPool[4],
+      };
+      // const punPriceRes = await axios.get(
+      //   config.coingecko +
+      //   "/v3/simple/price?ids=cfl365-finance&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+      // );
+      // const punPrice = punPriceRes.data;
+
+      punPoolObj.tokenPrice = 0.12;//todo: confirm and update
+      punPoolObj.punApy = getApy(PUN, punPoolObj, network);
+
       dispatch({
         type: LOAD_PPOL_INFO,
-        payload: { pbr: pbrPoolObj, bite: bitePoolObj, clf365: clfPoolObj },
+        payload: { pbr: pbrPoolObj, bite: bitePoolObj, clf365: clfPoolObj, pun: punPoolObj },
       });
     } else if (network === maticNetwork) {
       // matic pool network calculations

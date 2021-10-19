@@ -13,7 +13,7 @@ import {
   LOAD_PWAR_BALANCE,
   LOAD_CLF365_BALANCE,
 } from "../actions/types";
-import { CFL365, etheriumNetwork } from "../constants";
+import { CFL365, etheriumNetwork, PUN } from "../constants";
 
 const initalState = {
   connected: false,
@@ -24,6 +24,7 @@ const initalState = {
     CORGIB: null,
     PWAR: null,
     CFL365: null,
+    PUN: null
   },
   error: null,
   loading: {
@@ -32,6 +33,7 @@ const initalState = {
     CORGIB: false,
     PWAR: false,
     CFL365: false,
+    PUN: false
   },
   currentNetwork: etheriumNetwork,
 };
@@ -63,6 +65,7 @@ export default function (state = initalState, action) {
           PBR: action.payload.pbr,
           BITE: action.payload.bite,
           CFL365: action.payload.clf365,
+          PUN: action.payload.pun
         },
       };
     case LOAD_PBR_BALANCE:
@@ -151,6 +154,15 @@ export default function (state = initalState, action) {
           },
           error: {},
         };
+      } else if (action.payload === PUN) {
+        return {
+          ...state,
+          loading: {
+            ...state.loading,
+            PUN: true,
+          },
+          error: {},
+        };
       } else {
         return {
           ...state,
@@ -173,14 +185,7 @@ export default function (state = initalState, action) {
     case HIDE_LOADING:
       return {
         ...state,
-        loading: {
-          ...state.loading,
-          PBR: false,
-          BITE: false,
-          CORGIB: false,
-          PWAR: false,
-          CFL365: false,
-        },
+        loading: initalState.loading
       };
     case ERROR:
       return {

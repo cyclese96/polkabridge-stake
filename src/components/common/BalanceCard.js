@@ -9,6 +9,7 @@ import biteImg from "../../assets/bite.png";
 import corgibImg from "../../assets/corgi.png";
 import clf365Img from "../../assets/clf365.png";
 import pwarImg from "../../assets/pwar.png";
+import punImg from '../../assets/punt.jpg';
 import Loader from "./Loader";
 import {
   BITE,
@@ -17,6 +18,7 @@ import {
   harmonyNetwork,
   maticNetwork,
   PBR,
+  PUN,
 } from "../../constants";
 
 const useStyles = makeStyles((theme) => ({
@@ -88,6 +90,7 @@ function BalanceCard(props) {
     CORGIB: corgibImg,
     PWAR: pwarImg,
     CFL365: clf365Img,
+    PUN: punImg
   };
 
   const tokenName = {
@@ -96,12 +99,14 @@ function BalanceCard(props) {
     CORGIB: "Corgi Of PolkaBridge",
     PWAR: "PolkaWar",
     CFL365: "CFL 365",
+    PUN: "CryptoPunt"
   };
 
   const getCoins = () => {
     if (currentNetwork === etheriumNetwork) {
       return [
         { coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
+        { coin: PUN, balance: formatCurrency(fromWei(balance[PUN])) },
         { coin: BITE, balance: formatCurrency(fromWei(balance[BITE])) },
         { coin: CFL365, balance: formatCurrency(fromWei(balance[CFL365])) },
       ];
