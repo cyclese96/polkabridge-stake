@@ -196,11 +196,11 @@ export const getPoolInfo = (network) => async (dispatch) => {
     // ethereum pool calculations
     if (network === etheriumNetwork) {
       // console.log('g')
-      const [pbrPool, bitePool, clfPool, shoePool] = await Promise.all([
+      const [pbrPool, bitePool, clfPool, punPool, shoePool] = await Promise.all([
         currStakingContract.methods.getPoolInfo(poolId.PBR).call(),
         currStakingContract.methods.getPoolInfo(poolId.BITE).call(),
         currStakingContract.methods.getPoolInfo(poolId.CFL365).call(),
-        // currStakingContract.methods.getPoolInfo(poolId.PUN).call(),
+        currStakingContract.methods.getPoolInfo(poolId.PUN).call(),
         currStakingContract.methods.getPoolInfo(poolId.SHOE).call(),
       ]);
 
@@ -273,28 +273,22 @@ export const getPoolInfo = (network) => async (dispatch) => {
 
 
       // pun pool calculations:
-      // const punPoolObj = {
-      //   accTokenPerShare: punPool[0],
-      //   lastRewardBlock: punPool[1],
-      //   rewardPerBlock: punPool[2],
-      //   totalTokenStaked: punPool[3],
-      //   totalTokenClaimed: punPool[4],
-      // };
       const punPoolObj = {
-        accTokenPerShare: 0,
-        lastRewardBlock: 0,
-        rewardPerBlock: 0,
-        totalTokenStaked: 0,
-        totalTokenClaimed: 0,
+        accTokenPerShare: punPool[0],
+        lastRewardBlock: punPool[1],
+        rewardPerBlock: punPool[2],
+        totalTokenStaked: punPool[3],
+        totalTokenClaimed: punPool[4],
       };
+
       // const punPriceRes = await axios.get(
       //   config.coingecko +
       //   "/v3/simple/price?ids=cfl365-finance&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
       // );
       // const punPrice = punPriceRes.data;
 
-      punPoolObj.tokenPrice = 0.12;//todo: confirm and update
-      punPoolObj.punApy = 0//getApy(PUN, punPoolObj, network);
+      punPoolObj.tokenPrice = 0.15;//todo: confirm and update
+      punPoolObj.punApy = getApy(PUN, punPoolObj, network);
 
 
       // shoefy pool calculations:
@@ -305,13 +299,16 @@ export const getPoolInfo = (network) => async (dispatch) => {
         totalTokenStaked: shoePool[3],
         totalTokenClaimed: shoePool[4],
       };
-      // const punPriceRes = await axios.get(
-      //   config.coingecko +
-      //   "/v3/simple/price?ids=cfl365-finance&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
-      // );
-      // const punPrice = punPriceRes.data;
+      const shoefyPriceRes = await axios.get(
+        config.coingecko +
+        "/v3/simple/price?ids=shoefy&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+      );
+      const shoefyPrice = shoefyPriceRes.data;
+      shoefyPoolObj.tokenPrice = shoefyPrice["shoefy"]
+        ? shoefyPrice["shoefy"].usd
+        : "--";
 
-      shoefyPoolObj.tokenPrice = 0.5;//todo: confirm and update
+      // shoefyPoolObj.tokenPrice = 0.5;//todo: confirm and update
       shoefyPoolObj.shoeApy = getApy(SHOE, shoefyPoolObj, network);
 
       dispatch({

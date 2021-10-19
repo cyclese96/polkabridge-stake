@@ -318,6 +318,8 @@ const Staking = ({
       return pool[tokenType] ? formatCurrency(pool[tokenType].clf365Apy, false, 1, true) + " %" : "--";
     } else if (tokenType === SHOE) {
       return pool[tokenType] ? formatCurrency(pool[tokenType].shoeApy, false, 1, true) + " %" : "--";
+    } else if (tokenType === PUN) {
+      return pool[tokenType] ? formatCurrency(pool[tokenType].punApy, false, 1, true) + " %" : "--";
     } else {
       return "--"
     }
@@ -335,31 +337,31 @@ const Staking = ({
   };
 
   const claimDisableStatus = (_tokenType) => {
-    if (_tokenType === PUN) {
-      return true;
-    }
+    // if (_tokenType === PUN) {
+    //   return true;
+    // }
     return currentAmount(_tokenType) == 0
 
   }
 
   const stakeDisableStatus = (_tokenType) => {
-    if (_tokenType === PUN) {
-      return true
-    }
+    // if (_tokenType === PUN) {
+    //   return true
+    // }
     return false
   }
 
   const withdrawDisableStatus = (_tokenType) => {
-    if (_tokenType === PUN) {
-      return true
-    }
+    // if (_tokenType === PUN) {
+    //   return true
+    // }
     return false
   }
 
   const approveDisableStatus = (_tokenType) => {
-    if (_tokenType === PUN) {
-      return true
-    }
+    // if (_tokenType === PUN) {
+    //   return true
+    // }
     return false
   }
 
