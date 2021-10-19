@@ -31,6 +31,10 @@ import {
   RESET_PUN_TOKEN,
   APPROVE_PUN_TOKENS,
   LOAD_PUN_BALANCE,
+  APPROVE_SHOE_TOKENS,
+  RESET_SHOE_TOKEN,
+  STAKE_SHOE_TOKENS,
+  LOAD_SHOE_BALANCE,
 } from "./types";
 
 import {
@@ -66,6 +70,7 @@ import {
   PUN,
   PWAR,
   PWAR_PRICE,
+  SHOE,
   tokenContarctAddresses,
 } from "../constants";
 
@@ -87,6 +92,11 @@ const getTokenContract = (network, tokenType) => {
         ? tokenContarctAddresses.PUN.ethereum.testnet
         : tokenContarctAddresses.PUN.ethereum.mainnet
       )
+    case SHOE:
+      return erc20TokenContract(network, currentConnection === 'testnet'
+        ? tokenContarctAddresses.SHOE.ethereum.testnet
+        : tokenContarctAddresses.SHOE.ethereum.mainnet
+      )
     default:
       return clf365Contract(network);
   }
@@ -106,6 +116,8 @@ const tokenToApprove = (tokenType) => {
       return APPROVE_CLF365_TOKENS;
     case PUN:
       return APPROVE_PUN_TOKENS;
+    case SHOE:
+      return APPROVE_SHOE_TOKENS;
     default:
       return APPROVE_CLF365_TOKENS;
   }
@@ -125,6 +137,8 @@ const tokenToReset = (tokenType) => {
       return RESET_CLF365_TOKEN;
     case PUN:
       return RESET_PUN_TOKEN;
+    case SHOE:
+      return RESET_SHOE_TOKEN;
     default:
       return RESET_CLF365_TOKEN;
   }
@@ -144,6 +158,8 @@ const tokenToStake = (tokenType) => {
       return STAKE_CLF365_TOKENS;
     case PUN:
       return STAKE_PUN_TOKENS;
+    case SHOE:
+      return STAKE_SHOE_TOKENS;
     default:
       return STAKE_CLF365_TOKENS;
   }
@@ -163,6 +179,8 @@ const tokenToLoad = (tokenType) => {
       return LOAD_CLF365_BALANCE;
     case PUN:
       return LOAD_PUN_BALANCE;
+    case SHOE:
+      return LOAD_SHOE_BALANCE;
     default:
       return LOAD_CLF365_BALANCE;
   }
@@ -178,11 +196,12 @@ export const getPoolInfo = (network) => async (dispatch) => {
     // ethereum pool calculations
     if (network === etheriumNetwork) {
       // console.log('g')
-      const [pbrPool, bitePool, clfPool, punPool] = await Promise.all([
+      const [pbrPool, bitePool, clfPool, shoePool] = await Promise.all([
         currStakingContract.methods.getPoolInfo(poolId.PBR).call(),
         currStakingContract.methods.getPoolInfo(poolId.BITE).call(),
         currStakingContract.methods.getPoolInfo(poolId.CFL365).call(),
-        currStakingContract.methods.getPoolInfo(poolId.PUN).call(),
+        // currStakingContract.methods.getPoolInfo(poolId.PUN).call(),
+        currStakingContract.methods.getPoolInfo(poolId.SHOE).call(),
       ]);
 
       const pbrPoolObj = {
@@ -254,12 +273,19 @@ export const getPoolInfo = (network) => async (dispatch) => {
 
 
       // pun pool calculations:
+      // const punPoolObj = {
+      //   accTokenPerShare: punPool[0],
+      //   lastRewardBlock: punPool[1],
+      //   rewardPerBlock: punPool[2],
+      //   totalTokenStaked: punPool[3],
+      //   totalTokenClaimed: punPool[4],
+      // };
       const punPoolObj = {
-        accTokenPerShare: punPool[0],
-        lastRewardBlock: punPool[1],
-        rewardPerBlock: punPool[2],
-        totalTokenStaked: punPool[3],
-        totalTokenClaimed: punPool[4],
+        accTokenPerShare: 0,
+        lastRewardBlock: 0,
+        rewardPerBlock: 0,
+        totalTokenStaked: 0,
+        totalTokenClaimed: 0,
       };
       // const punPriceRes = await axios.get(
       //   config.coingecko +
@@ -268,11 +294,29 @@ export const getPoolInfo = (network) => async (dispatch) => {
       // const punPrice = punPriceRes.data;
 
       punPoolObj.tokenPrice = 0.12;//todo: confirm and update
-      punPoolObj.punApy = getApy(PUN, punPoolObj, network);
+      punPoolObj.punApy = 0//getApy(PUN, punPoolObj, network);
+
+
+      // shoefy pool calculations:
+      const shoefyPoolObj = {
+        accTokenPerShare: shoePool[0],
+        lastRewardBlock: shoePool[1],
+        rewardPerBlock: shoePool[2],
+        totalTokenStaked: shoePool[3],
+        totalTokenClaimed: shoePool[4],
+      };
+      // const punPriceRes = await axios.get(
+      //   config.coingecko +
+      //   "/v3/simple/price?ids=cfl365-finance&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+      // );
+      // const punPrice = punPriceRes.data;
+
+      shoefyPoolObj.tokenPrice = 0.5;//todo: confirm and update
+      shoefyPoolObj.punApy = 0//getApy(PUN, shoefyPoolObj, network);
 
       dispatch({
         type: LOAD_PPOL_INFO,
-        payload: { pbr: pbrPoolObj, bite: bitePoolObj, clf365: clfPoolObj, pun: punPoolObj },
+        payload: { pbr: pbrPoolObj, bite: bitePoolObj, clf365: clfPoolObj, pun: punPoolObj, shoe: shoefyPoolObj },
       });
     } else if (network === maticNetwork) {
       // matic pool network calculations
@@ -429,7 +473,7 @@ export const checkAllowance = (account, network) => async (dispatch) => {
     const currStakingContract = stakeContract(network);
 
     if (network === etheriumNetwork) {
-      const [pbrAllowance, biteAllowance, cl365Allowance] = await Promise.all([
+      const [pbrAllowance, biteAllowance, cl365Allowance, punAllowance, shoeAllowance] = await Promise.all([
         pbrContract(network)
           .methods.allowance(account, currStakingContract._address)
           .call(),
@@ -438,6 +482,20 @@ export const checkAllowance = (account, network) => async (dispatch) => {
           .call(),
         clf365Contract(network)
           .methods.allowance(account, currStakingContract._address)
+          .call(), ,
+        erc20TokenContract(
+          network,
+          currentConnection === 'testnet'
+            ? tokenContarctAddresses.PBR.ethereum.testnet
+            : tokenContarctAddresses.PUN.ethereum.mainnet
+        ).methods.allowance(account, currStakingContract._address)
+          .call(),
+        erc20TokenContract(
+          network,
+          currentConnection === 'testnet'
+            ? tokenContarctAddresses.PBR.ethereum.testnet
+            : tokenContarctAddresses.SHOE.ethereum.mainnet
+        ).methods.allowance(account, currStakingContract._address)
           .call(),
       ]);
 
@@ -454,6 +512,18 @@ export const checkAllowance = (account, network) => async (dispatch) => {
       if (new BigNumber(cl365Allowance).gt(0)) {
         dispatch({
           type: APPROVE_CLF365_TOKENS,
+        });
+      }
+
+      if (new BigNumber(punAllowance).gt(0)) {
+        dispatch({
+          type: APPROVE_PUN_TOKENS,
+        });
+      }
+
+      if (new BigNumber(shoeAllowance).gt(0)) {
+        dispatch({
+          type: APPROVE_SHOE_TOKENS,
         });
       }
 

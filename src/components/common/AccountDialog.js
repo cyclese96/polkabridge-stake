@@ -12,6 +12,7 @@ import {
   maticNetwork,
   PBR,
   PUN,
+  SHOE,
 } from "../../constants";
 import biteImg from "../../assets/bite.png";
 import corgibImg from "../../assets/corgi.png";
@@ -28,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
   background: {
     minWidth: 360,
     width: "100%",
-    height: 400,
+    height: 450,
     backgroundColor: "#121827",
     color: "#f9f9f9",
     display: "flex",
@@ -39,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     [theme.breakpoints.down("sm")]: {
       minWidth: 200,
       width: "100%",
-      height: 400,
+      height: 450,
     },
   },
   heading: {
@@ -164,6 +165,7 @@ const AccountDialog = ({
       return [
         { coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
         { coin: PUN, balance: formatCurrency(fromWei(balance[PUN])) },
+        { coin: SHOE, balance: formatCurrency(fromWei(balance[SHOE])) },
         { coin: BITE, balance: formatCurrency(fromWei(balance[BITE])) },
         { coin: CFL365, balance: formatCurrency(fromWei(balance[CFL365])) },
       ];
@@ -191,7 +193,8 @@ const AccountDialog = ({
     CORGIB: corgibImg,
     PWAR: pwarImg,
     CFL365: clf365Img,
-    PUN: puntImg
+    PUN: puntImg,
+    SHOE: "img/shoefy.png"
   };
 
   const tokenName = {
@@ -200,7 +203,8 @@ const AccountDialog = ({
     CORGIB: "Corgi Of PolkaBridge",
     PWAR: "PolkaWar",
     CFL365: "CFL 365",
-    PUN: 'CryptoPunt'
+    PUN: 'CryptoPunt',
+    SHOE: "Shoefy Private"
   };
   return (
     <div>

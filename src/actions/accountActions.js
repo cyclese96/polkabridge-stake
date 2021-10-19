@@ -60,7 +60,7 @@ export const connectWallet =
 
         if (network === etheriumNetwork) {
           console.log("connectWallet: fetching from", network);
-          const [pbrWei, biteWei, cl365Wei, punWei] = await Promise.all([
+          const [pbrWei, biteWei, cl365Wei, punWei, shoeWei] = await Promise.all([
             erc20TokenContract(
               network,
               currentConnection === 'testnet'
@@ -84,12 +84,18 @@ export const connectWallet =
               currentConnection === 'testnet'
                 ? tokenContarctAddresses.PUN.ethereum.testnet
                 : tokenContarctAddresses.PUN.ethereum.mainnet
+            ).methods.balanceOf(accountAddress).call(),
+            erc20TokenContract(
+              network,
+              currentConnection === 'testnet'
+                ? tokenContarctAddresses.SHOE.ethereum.testnet
+                : tokenContarctAddresses.SHOE.ethereum.mainnet
             ).methods.balanceOf(accountAddress).call()
 
           ]);
           dispatch({
             type: LOAD_BALANCE,
-            payload: { pbr: pbrWei, bite: biteWei, clf365: cl365Wei, pun: punWei },
+            payload: { pbr: pbrWei, bite: biteWei, clf365: cl365Wei, pun: punWei, shoe: shoeWei },
           });
         } else if (network === maticNetwork) {
           console.log("connectWallet: fetching from", network);
@@ -146,7 +152,7 @@ export const getAccountBalance = (network) => async (dispatch) => {
   try {
     const address = await getCurrentAccount();
     if (network === etheriumNetwork) {
-      const [pbrWei, biteWei, cl365Wei, punWei] = await Promise.all([
+      const [pbrWei, biteWei, cl365Wei, punWei, shoeWei] = await Promise.all([
         erc20TokenContract(
           network,
           currentConnection === 'testnet'
@@ -168,15 +174,20 @@ export const getAccountBalance = (network) => async (dispatch) => {
         erc20TokenContract(
           network,
           currentConnection === 'testnet'
-            ? tokenContarctAddresses.PUN.ethereum.testnet
+            ? tokenContarctAddresses.PBR.ethereum.testnet
             : tokenContarctAddresses.PUN.ethereum.mainnet
+        ).methods.balanceOf(account).call(),
+        erc20TokenContract(
+          network,
+          currentConnection === 'testnet'
+            ? tokenContarctAddresses.PBR.ethereum.testnet
+            : tokenContarctAddresses.SHOE.ethereum.mainnet
         ).methods.balanceOf(account).call()
-
       ]);
 
       dispatch({
         type: LOAD_BALANCE,
-        payload: { pbr: pbrWei, bite: biteWei, clf365: cl365Wei, pun: punWei },
+        payload: { pbr: pbrWei, bite: biteWei, clf365: cl365Wei, pun: punWei, shoe: shoeWei },
       });
     } else if (network === maticNetwork) {
       console.log("getAccountBalance: fetching from", network);

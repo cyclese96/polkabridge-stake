@@ -25,6 +25,9 @@ import {
   STAKE_PUN_TOKENS,
   RESET_PUN_TOKEN,
   APPROVE_PUN_TOKENS,
+  APPROVE_SHOE_TOKENS,
+  RESET_SHOE_TOKEN,
+  STAKE_SHOE_TOKENS,
 } from "../actions/types";
 
 const initalState = {
@@ -34,7 +37,8 @@ const initalState = {
     CORGIB: false,
     PWAR: false,
     CFL365: false,
-    PUN: false
+    PUN: false,
+    SHE: false
   },
   stake: {
     PBR: {},
@@ -42,7 +46,8 @@ const initalState = {
     CORGIB: {},
     PWAR: {},
     CFL365: {},
-    PUN: {}
+    PUN: {},
+    SHOE: {}
   },
   pool: {
     PBR: {},
@@ -50,7 +55,8 @@ const initalState = {
     CORGIB: {},
     PWAR: {},
     CFL365: {},
-    PUN: {}
+    PUN: {},
+    SHOE: {}
   },
   poolLoading: false,
 };
@@ -65,7 +71,8 @@ export default function (state = initalState, action) {
           PBR: action.payload.pbr,
           BITE: action.payload.bite,
           CFL365: action.payload.clf365,
-          PUN: action.payload.pun
+          PUN: action.payload.pun,
+          SHOE: action.payload.shoe
         },
       };
     case LOAD_BSC_POOL:
@@ -141,6 +148,22 @@ export default function (state = initalState, action) {
           PUN: false,
         },
       };
+    case APPROVE_SHOE_TOKENS:
+      return {
+        ...state,
+        approved: {
+          ...state.approved,
+          SHOE: true,
+        },
+      };
+    case RESET_SHOE_TOKEN:
+      return {
+        ...state,
+        approved: {
+          ...state.approved,
+          SHOE: false,
+        },
+      };
     case APPROVE_CORGIB_TOKENS:
       return {
         ...state,
@@ -209,6 +232,14 @@ export default function (state = initalState, action) {
         stake: {
           ...state.stake,
           PUN: action.payload,
+        },
+      };
+    case STAKE_SHOE_TOKENS:
+      return {
+        ...state,
+        stake: {
+          ...state.stake,
+          SHOE: action.payload,
         },
       };
     case STAKE_CORGIB_TOKENS:

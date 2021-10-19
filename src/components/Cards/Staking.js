@@ -261,7 +261,8 @@ const Staking = ({
     CORGIB: corgiImg,
     PWAR: pwarImg,
     CFL365: clf365Img,
-    PUN: punImg
+    PUN: punImg,
+    SHOE: 'img/shoefy.png'
   };
 
   const tokenName = {
@@ -270,6 +271,7 @@ const Staking = ({
     CORGIB: "Corgi Of PolkaBridge",
     PWAR: "PolkaWar",
     CFL365: "CFL 365",
+    SHOE: "Shoefy Private"
   };
   const tokenInfo = {
     PBR: {
@@ -293,6 +295,10 @@ const Staking = ({
       info: "https://www.coingecko.com/en/coins/cfl365-finance",
     },
     PUN: {
+      buy: 'https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x31903e333809897ee57af57567f4377a1a78756c',
+      info: 'https://www.dextools.io/app/ether/pair-explorer/0xed1ba5252f94e029f41506adeaf90c459c0aca69'
+    },
+    SHOE: {
       buy: 'https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x31903e333809897ee57af57567f4377a1a78756c',
       info: 'https://www.dextools.io/app/ether/pair-explorer/0xed1ba5252f94e029f41506adeaf90c459c0aca69'
     }
@@ -340,6 +346,13 @@ const Staking = ({
   }
 
   const withdrawDisableStatus = (_tokenType) => {
+    if (_tokenType === PUN) {
+      return true
+    }
+    return false
+  }
+
+  const approveDisableStatus = (_tokenType) => {
     if (_tokenType === PUN) {
       return true
     }
@@ -491,7 +504,7 @@ const Staking = ({
           <div className={classes.buttons}>
             {!approved[tokenType] ? (
               <div className="text-center">
-                <CustomButton onClick={() => handleApprove(tokenType)}>
+                <CustomButton disabled={approveDisableStatus(tokenType)} onClick={() => handleApprove(tokenType)}>
                   Approve
                 </CustomButton>
                 <p className={classes.hint}>

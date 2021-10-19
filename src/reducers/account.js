@@ -12,8 +12,10 @@ import {
   LOAD_CORGIB_BALANCE,
   LOAD_PWAR_BALANCE,
   LOAD_CLF365_BALANCE,
+  LOAD_PUN_BALANCE,
+  LOAD_SHOE_BALANCE,
 } from "../actions/types";
-import { CFL365, etheriumNetwork, PUN } from "../constants";
+import { CFL365, etheriumNetwork, PUN, SHOE } from "../constants";
 
 const initalState = {
   connected: false,
@@ -24,7 +26,8 @@ const initalState = {
     CORGIB: null,
     PWAR: null,
     CFL365: null,
-    PUN: null
+    PUN: null,
+    SHOE: null
   },
   error: null,
   loading: {
@@ -33,7 +36,8 @@ const initalState = {
     CORGIB: false,
     PWAR: false,
     CFL365: false,
-    PUN: false
+    PUN: false,
+    SHOE: false
   },
   currentNetwork: etheriumNetwork,
 };
@@ -65,7 +69,8 @@ export default function (state = initalState, action) {
           PBR: action.payload.pbr,
           BITE: action.payload.bite,
           CFL365: action.payload.clf365,
-          PUN: action.payload.pun
+          PUN: action.payload.pun,
+          SHOE: action.payload.shoe
         },
       };
     case LOAD_PBR_BALANCE:
@@ -106,6 +111,22 @@ export default function (state = initalState, action) {
         balance: {
           ...state.balance,
           CFL365: action.payload,
+        },
+      };
+    case LOAD_PUN_BALANCE:
+      return {
+        ...state,
+        balance: {
+          ...state.balance,
+          PUN: action.payload,
+        },
+      };
+    case LOAD_SHOE_BALANCE:
+      return {
+        ...state,
+        balance: {
+          ...state.balance,
+          SHOE: action.payload,
         },
       };
     case SHOW_LOADING:
@@ -163,6 +184,15 @@ export default function (state = initalState, action) {
           },
           error: {},
         };
+      } else if (action.payload === SHOE) {
+        return {
+          ...state,
+          loading: {
+            ...state.loading,
+            SHOE: true,
+          },
+          error: {},
+        };
       } else {
         return {
           ...state,
@@ -173,6 +203,8 @@ export default function (state = initalState, action) {
             CORGIB: true,
             PWAR: true,
             CFL365: true,
+            PUN: true,
+            SHOE: true
           },
           error: {},
         };
