@@ -299,8 +299,8 @@ const Staking = ({
       info: 'https://www.dextools.io/app/ether/pair-explorer/0xed1ba5252f94e029f41506adeaf90c459c0aca69'
     },
     SHOE: {
-      buy: 'https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x31903e333809897ee57af57567f4377a1a78756c',
-      info: 'https://www.dextools.io/app/ether/pair-explorer/0xed1ba5252f94e029f41506adeaf90c459c0aca69'
+      buy: 'https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x0fd67b4ceb9b607ef206904ec73459c4880132c9',
+      info: 'https://coinmarketcap.com/currencies/shoefy/ico/'
     }
   };
   const getCurrentApy = () => {
