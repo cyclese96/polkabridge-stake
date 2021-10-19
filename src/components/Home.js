@@ -223,10 +223,11 @@ const Home = ({
           store.dispatch({
             type: RESET_USER_STAKE,
           });
-          await Promise.all[
-            (connectWallet(false, network), getPoolInfo(network))
-          ];
-          // await getAccountBalance(network);
+
+          await connectWallet(false, network)
+          await getPoolInfo(network)
+
+          await getAccountBalance(network);
         }
       }
     }
