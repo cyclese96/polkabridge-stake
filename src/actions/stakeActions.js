@@ -312,7 +312,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       // const punPrice = punPriceRes.data;
 
       shoefyPoolObj.tokenPrice = 0.5;//todo: confirm and update
-      shoefyPoolObj.punApy = 0//getApy(PUN, shoefyPoolObj, network);
+      shoefyPoolObj.shoeApy = getApy(SHOE, shoefyPoolObj, network);
 
       dispatch({
         type: LOAD_PPOL_INFO,
@@ -453,7 +453,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       });
     }
   } catch (error) {
-    console.log("pool info: ", error);
+    console.log("getPoolInfo error ", error);
     dispatch({
       type: ERROR,
       payload: "Failed to load Pool data!",

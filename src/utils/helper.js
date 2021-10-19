@@ -18,7 +18,8 @@ import {
   PWAR,
   PWAR_BLOCKS_PER_YEAR,
   apyConstants,
-  harmonyNetwork
+  harmonyNetwork,
+  SHOE
 } from "../constants";
 import web3 from "../web";
 import config from "./config";
@@ -243,6 +244,14 @@ export const getApy = (tokenType, poolObj, network) => {
         total_value_locked_usd
       );
       return clfApy;
+    case SHOE:
+      const shoeApy = getCalculatedApy(
+        tokenPrice,
+        apyConstants.ethereum.SHOE.NUMBER_BLOCKS_PER_YEAR,
+        apyConstants.ethereum.SHOE.AVG_REWARD_PER_BLOCK,
+        total_value_locked_usd
+      );
+      return shoeApy;
     default:
       return 0;
   }

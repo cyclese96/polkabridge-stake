@@ -30,6 +30,7 @@ import {
   PWAR,
   supportedStaking,
   PUN,
+  SHOE,
 } from "../../constants";
 import Loader from "../common/Loader";
 import DotCircle from "../common/DotCircle";
@@ -271,6 +272,7 @@ const Staking = ({
     CORGIB: "Corgi Of PolkaBridge",
     PWAR: "PolkaWar",
     CFL365: "CFL 365",
+    PUN: "CryptoPunt",
     SHOE: "Shoefy Private"
   };
   const tokenInfo = {
@@ -314,6 +316,8 @@ const Staking = ({
       return pool[tokenType] ? formatCurrency(pool[tokenType].pwarApy, false, 1, true) + " %" : "--";
     } else if (tokenType === CFL365) {
       return pool[tokenType] ? formatCurrency(pool[tokenType].clf365Apy, false, 1, true) + " %" : "--";
+    } else if (tokenType === SHOE) {
+      return pool[tokenType] ? formatCurrency(pool[tokenType].shoeApy, false, 1, true) + " %" : "--";
     } else {
       return "--"
     }
@@ -510,7 +514,7 @@ const Staking = ({
                 <p className={classes.hint}>
                   <DotCircle />
                   <span style={{ paddingLeft: 5 }}>
-                    Approve PBR tokens to start staking
+                    Approve {tokenType} tokens to start staking
                   </span>
                 </p>
               </div>

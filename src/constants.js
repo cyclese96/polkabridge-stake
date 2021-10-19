@@ -146,6 +146,10 @@ export const apyConstants = {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
       AVG_REWARD_PER_BLOCK: 1.5
     },
+    SHOE: {
+      NUMBER_BLOCKS_PER_YEAR: 2400000,
+      AVG_REWARD_PER_BLOCK: 0.5
+    }
   },
   polygon: {
     PBR: {
