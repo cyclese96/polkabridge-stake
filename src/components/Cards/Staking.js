@@ -273,7 +273,7 @@ const Staking = ({
     PWAR: "PolkaWar",
     CFL365: "CFL 365",
     PUN: "CryptoPunt",
-    SHOE: "Shoefy Private"
+    SHOE: "Shoefy"
   };
   const tokenInfo = {
     PBR: {
