@@ -281,15 +281,18 @@ export const getPoolInfo = (network) => async (dispatch) => {
         totalTokenClaimed: punPool[4],
       };
 
-      // const punPriceRes = await axios.get(
-      //   config.coingecko +
-      //   "/v3/simple/price?ids=cfl365-finance&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
-      // );
-      // const punPrice = punPriceRes.data;
+      const punPriceRes = await axios.get(
+        config.coingecko +
+        "/v3/simple/price?ids=cryptopunt&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+      );
+      const punPrice = punPriceRes.data;
+      punPoolObj.tokenPrice = punPrice["cryptopunt"]
+        ? punPrice["cryptopunt"].usd
+        : "--";
 
-      punPoolObj.tokenPrice = 0.15;//todo: confirm and update
+      // punPoolObj.tokenPrice = 0.15;//todo: confirm and update
       punPoolObj.punApy = getApy(PUN, punPoolObj, network);
-
+      console.log('cryptopunt: ', punPoolObj)
 
       // shoefy pool calculations:
       const shoefyPoolObj = {
