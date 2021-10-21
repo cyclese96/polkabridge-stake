@@ -31,6 +31,9 @@ import {
   supportedStaking,
   PUN,
   SHOE,
+  bscNetwork,
+  harmonyNetwork,
+  maticNetwork,
 } from "../../constants";
 import Loader from "../common/Loader";
 import DotCircle from "../common/DotCircle";
@@ -365,6 +368,18 @@ const Staking = ({
     return false
   }
 
+  const currentSupportedStaking = (_network) => {
+    if (_network === etheriumNetwork) {
+      return supportedStaking.ethereum
+    } else if (_network === bscNetwork) {
+      return supportedStaking.bsc;
+    } else if (_network === harmonyNetwork) {
+      return supportedStaking.harmony;
+    } else if (_network === maticNetwork) {
+      return supportedStaking.matic
+    }
+  }
+
   return (
     <Card elevation={10} className={classes.card}>
       {loading[tokenType] && (
@@ -412,7 +427,7 @@ const Staking = ({
             </a>
           </div>
           <div style={{ minHeight: 120, paddingLeft: 10, paddingRight: 10 }}>
-            {supportedStaking.ethereum.includes(tokenType) ? (
+            {currentSupportedStaking(currentNetwork).includes(tokenType) ? (
               <div className="mt-3">
                 <div className="d-flex justify-content-between mt-1">
                   <div className="d-flex justify-content-start">
