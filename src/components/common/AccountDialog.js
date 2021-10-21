@@ -18,7 +18,7 @@ import biteImg from "../../assets/bite.png";
 import corgibImg from "../../assets/corgi.png";
 import clf365Img from "../../assets/clf365.png";
 import pwarImg from "../../assets/pwar.png";
-import puntImg from '../../assets/punt.jpg'
+import puntImg from '../../assets/punt.png'
 
 import { formatCurrency, fromWei } from "../../utils/helper";
 import { connect } from "react-redux";

@@ -11,7 +11,7 @@ import biteImg from "../../assets/bite.png";
 import corgiImg from "../../assets/corgi.png";
 import pwarImg from "../../assets/pwar.png";
 import clf365Img from "../../assets/clf365.png";
-import punImg from "../../assets/punt.jpg";
+import punImg from "../../assets/punt.png";
 import CustomButton from "../Buttons/CustomButton";
 import { formatCurrency, formatLargeNumber, fromWei, toWei } from "../../utils/helper";
 import { connect } from "react-redux";
