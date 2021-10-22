@@ -9,7 +9,7 @@ import biteImg from "../../assets/bite.png";
 import corgibImg from "../../assets/corgi.png";
 import clf365Img from "../../assets/clf365.png";
 import pwarImg from "../../assets/pwar.png";
-import punImg from '../../assets/punt.jpg';
+import punImg from '../../assets/punt.png';
 import {
   BITE,
   CFL365,
