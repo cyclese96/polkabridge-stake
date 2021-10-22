@@ -145,13 +145,14 @@ export const connectWallet =
       });
     };
 
-export const getAccountBalance = (network) => async (dispatch) => {
+export const getAccountBalance = (address, network) => async (dispatch) => {
   dispatch({
     type: SHOW_LOADING,
   });
   try {
-    const address = await getCurrentAccount();
+    // const address = await getCurrentAccount();
     if (network === etheriumNetwork) {
+      // console.log("getAccountBalance: fetching from ethereum network", network);
       const [pbrWei, biteWei, cl365Wei, punWei, shoeWei] = await Promise.all([
         erc20TokenContract(
           network,
@@ -190,7 +191,7 @@ export const getAccountBalance = (network) => async (dispatch) => {
         payload: { pbr: pbrWei, bite: biteWei, clf365: cl365Wei, pun: punWei, shoe: shoeWei },
       });
     } else if (network === maticNetwork) {
-      console.log("getAccountBalance: fetching from", network);
+      console.log("getAccountBalance: fetching from matic network", network);
       const [pbrWei] = await Promise.all([
         pbrContract(network).methods.balanceOf(address).call(),
       ]);
@@ -225,7 +226,7 @@ export const getAccountBalance = (network) => async (dispatch) => {
       });
     }
   } catch (error) {
-    console.log("getAccountBalance", error);
+    console.log("getAccountBalance", { error, address, network });
     dispatch({
       type: ERROR,
       payload: "Failed to load balance!",

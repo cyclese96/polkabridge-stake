@@ -171,19 +171,20 @@ const Home = ({
   };
 
   const getCurrentNetwork = (networkId) => {
+    const _id = networkId.toString();
     if (
-      networkId === bscConfig.network_id.mainnet ||
-      networkId === bscConfig.network_id.testnet
+      _id === bscConfig.network_id.mainnet ||
+      _id === bscConfig.network_id.testnet
     ) {
       return bscNetwork;
     } else if (
-      networkId === etherConfig.network_id.mainet ||
-      networkId === etherConfig.network_id.koven
+      _id === etherConfig.network_id.mainet ||
+      _id === etherConfig.network_id.koven
     ) {
       return etheriumNetwork;
     } else if (
-      networkId === harmonyConfig.chainId.mainnet ||
-      networkId === harmonyConfig.chainId.testnet
+      _id === harmonyConfig.chainId.mainnet ||
+      _id === harmonyConfig.chainId.testnet
     ) {
       return harmonyNetwork;
     } else {
@@ -202,7 +203,7 @@ const Home = ({
           const _networkId = await getCurrentNetworkId();
           const _network = getCurrentNetwork(_networkId);
           console.log("connectWallet current network ", _network);
-          await update(_network);
+          await update(accounts[0], _network);
         });
 
         window.ethereum.on("networkChanged", async (networkId) => {
@@ -217,17 +218,17 @@ const Home = ({
 
           await update(network);
         });
-        async function update(network) {
-          console.log("connectWallet updating on network ", currentNetwork);
+        async function update(_account, _network) {
+          console.log("connectWallet updating on network ", _network);
 
           store.dispatch({
             type: RESET_USER_STAKE,
           });
 
-          await connectWallet(false, network)
-          await getPoolInfo(network)
+          await connectWallet(false, _network)
+          await getPoolInfo(_network)
 
-          await getAccountBalance(network);
+          await getAccountBalance(_account, _network);
         }
       }
     }
@@ -328,7 +329,7 @@ const Home = ({
     }
 
     await connectWallet(false, network);
-    await getAccountBalance(network);
+    await getAccountBalance(account, network);
   }, []);
 
   useEffect(() => {

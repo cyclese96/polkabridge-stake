@@ -224,9 +224,7 @@ const Staking = ({
 
   const handleApprove = async (tokenType) => {
     const tokenWeiAmountToApprove =
-      currentNetwork === etheriumNetwork
-        ? toWei("999999999")
-        : "999999999999999999999999999999999999";
+      currentNetwork === bscNetwork ? "999999999999999999999999999999999999" : toWei("999999999");
 
     await confirmAllowance(
       tokenWeiAmountToApprove,

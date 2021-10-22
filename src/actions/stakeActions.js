@@ -581,6 +581,7 @@ export const confirmAllowance =
       const tokenContract = getTokenContract(network, tokenType);
       const stakingContract = stakeContract(network);
 
+      // console.log('allowance params:  ', { balance, tokenType, network, account })
       const res = await tokenContract.methods
         .approve(stakingContract._address, balance)
         .send({ from: account });
