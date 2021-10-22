@@ -207,16 +207,16 @@ const Home = ({
         });
 
         window.ethereum.on("networkChanged", async (networkId) => {
-          // setCurrentNetwork(networkId)
+
           const network = getCurrentNetwork(networkId);
           setCurrentChainId(parseInt(networkId))
-          // console.log("connectWallet current network ", network);
+          console.log("connectWallet current network ", network);
           store.dispatch({
             type: CHANGE_NETWORK,
             payload: network,
           });
 
-          await update(network);
+          await update(currentAccount, network);
         });
         async function update(_account, _network) {
           console.log("connectWallet updating on network ", _network);

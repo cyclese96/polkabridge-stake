@@ -26,7 +26,7 @@ export const connectWallet =
     async (dispatch) => {
       try {
         const accountAddress = await getCurrentAccount();
-        console.log("connect wallet", accountAddress);
+        // console.log("connect wallet", accountAddress);
         if (
           localStorage.getItem(`logout${accountAddress}`) == accountAddress &&
           !connect
@@ -40,7 +40,7 @@ export const connectWallet =
           connect
         ) {
           localStorage.removeItem(`logout${accountAddress}`);
-          console.log("removing logged out user");
+          // console.log("removing logged out user");
         }
 
         if (!accountAddress) {
@@ -59,7 +59,7 @@ export const connectWallet =
         });
 
         if (network === etheriumNetwork) {
-          console.log("connectWallet: fetching from", network);
+          // console.log("connectWallet: fetching from", network);
           const [pbrWei, biteWei, cl365Wei, punWei, shoeWei] = await Promise.all([
             erc20TokenContract(
               network,
@@ -98,7 +98,7 @@ export const connectWallet =
             payload: { pbr: pbrWei, bite: biteWei, clf365: cl365Wei, pun: punWei, shoe: shoeWei },
           });
         } else if (network === maticNetwork) {
-          console.log("connectWallet: fetching from", network);
+          // console.log("connectWallet: fetching from", network);
           const [pbrWei] = await Promise.all([
             pbrContract(network).methods.balanceOf(accountAddress).call(),
           ]);
@@ -107,7 +107,7 @@ export const connectWallet =
             payload: { pbr: pbrWei },
           });
         } else if (network === harmonyNetwork) {
-          console.log("connectWallet: fetching from", network);
+          // console.log("connectWallet: fetching from", network);
           const [pbrWei] = await Promise.all([
             pbrContract(network).methods.balanceOf(accountAddress).call(),
           ]);
@@ -191,7 +191,7 @@ export const getAccountBalance = (address, network) => async (dispatch) => {
         payload: { pbr: pbrWei, bite: biteWei, clf365: cl365Wei, pun: punWei, shoe: shoeWei },
       });
     } else if (network === maticNetwork) {
-      console.log("getAccountBalance: fetching from matic network", network);
+      // console.log("getAccountBalance: fetching from matic network", network);
       const [pbrWei] = await Promise.all([
         pbrContract(network).methods.balanceOf(address).call(),
       ]);
@@ -226,7 +226,7 @@ export const getAccountBalance = (address, network) => async (dispatch) => {
       });
     }
   } catch (error) {
-    console.log("getAccountBalance", { error, address, network });
+    // console.log("getAccountBalance", { error, address, network });
     dispatch({
       type: ERROR,
       payload: "Failed to load balance!",

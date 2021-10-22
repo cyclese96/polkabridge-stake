@@ -160,13 +160,13 @@ const getCalculatedApy = (
   rewardPerBlock,
   totalValueLockedUsd
 ) => {
-  console.log(
-    'getPoolInfo: ', {
-    tokenPrice,
-    blocksPerYear,
-    rewardPerBlock,
-    totalValueLockedUsd
-  })
+  // console.log(
+  //   'getPoolInfo: ', {
+  //   tokenPrice,
+  //   blocksPerYear,
+  //   rewardPerBlock,
+  //   totalValueLockedUsd
+  // })
   const apy = tokenPrice
     .times(new BigNumber(blocksPerYear))
     .times(new BigNumber(rewardPerBlock))
@@ -213,7 +213,7 @@ export const getApy = (tokenType, poolObj, network) => {
         );
         return _apy
       } else if (network === harmonyNetwork) {
-        console.log('getPoolInfo:  calculating apy in ', network)
+        // console.log('getPoolInfo:  calculating apy in ', network)
         const _apy = getCalculatedApy(
           tokenPrice,
           apyConstants.harmony.PBR.NUMBER_BLOCKS_PER_YEAR,

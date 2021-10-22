@@ -215,8 +215,8 @@ export const getPoolInfo = (network) => async (dispatch) => {
         config.coingecko +
         "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=true"
       );
-      console.log("data");
-      console.log(data);
+      // console.log("data");
+      // console.log(data);
       pbrPoolObj.tokenPrice = data.polkabridge ? data.polkabridge.usd : "---";
       pbrPoolObj.mCap = data.polkabridge
         ? data.polkabridge.usd_market_cap
@@ -292,7 +292,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
 
       // punPoolObj.tokenPrice = 0.15;//todo: confirm and update
       punPoolObj.punApy = getApy(PUN, punPoolObj, network);
-      console.log('cryptopunt: ', punPoolObj)
+      // console.log('cryptopunt: ', punPoolObj)
 
       // shoefy pool calculations:
       const shoefyPoolObj = {
@@ -347,7 +347,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       const pbrApy = getApy("PBR", pbrPoolObj, network);
       pbrPoolObj.pbrApy = pbrApy;
 
-      console.log('pool object', { network, pbrPoolObj })
+      // console.log('pool object', { network, pbrPoolObj })
       dispatch({
         type: LOAD_PPOL_INFO,
         payload: { pbr: pbrPoolObj },
@@ -381,7 +381,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
 
       const pbrApy = getApy("PBR", pbrPoolObj, network);
       // console.log('getPoolInfo:  apy', pbrApy)
-      console.log('getPoolInfo:  pirce data', pbrPoolObj)
+      // console.log('getPoolInfo:  pirce data', pbrPoolObj)
       pbrPoolObj.pbrApy = pbrApy;
 
       dispatch({
@@ -444,7 +444,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
         : "---";
       const pwarApy = getApy("PWAR", pwarPoolObj, network);
       pwarPoolObj.pwarApy = pwarApy;
-      console.log({ pwarApy });
+      // console.log({ pwarApy });
 
       // console.log({ pwarPoolObj });
       dispatch({
@@ -621,9 +621,9 @@ export const getUserStakedData = (tokenType, network) => async (dispatch) => {
       .allowance(account, currStakeContract._address)
       .call();
 
-    console.log({ tokenType, allowance });
+    // console.log({ tokenType, allowance });
     if (new BigNumber(allowance).gt(0)) {
-      console.log({ approving: tokenType });
+      // console.log({ approving: tokenType });
       dispatch({
         type: tokenToApprove(tokenType),
       });
@@ -641,7 +641,7 @@ export const getUserStakedData = (tokenType, network) => async (dispatch) => {
       currStakeContract.methods.userInfo(pool, account).call(),
       currStakeContract.methods.pendingReward(pool, account).call(),
     ]);
-    console.log({ stakedData });
+    // console.log({ stakedData });
     const stakeObj = {
       amount: stakedData.amount,
       rewardClaimed: stakedData.rewardClaimed,
