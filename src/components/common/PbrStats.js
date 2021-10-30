@@ -137,7 +137,7 @@ export default function PbrPool({
           <div className="text-center mt-4">
             <a
               target="_blank"
-              href="https://app.uniswap.org/#/swap?inputCurrency=0x298d492e8c1d909d3f63bc4a36c66c64acb3d695&outputCurrency=ETH&use=V2"
+              href="https://quickswap.exchange/#/swap?inputCurrency=0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0&outputCurrency=ETH"
             >
               <Button variant="contained" className={classes.buyNow}>
                 {" "}
@@ -152,7 +152,9 @@ export default function PbrPool({
             </div>
             <div className="text-center mt-4">
               <div className={classes.tokenTitle}>Market Cap</div>
-              <div className={classes.tokenAmount}>{formatLargeNumber(mCap)}</div>
+              <div className={classes.tokenAmount}>
+                {formatLargeNumber(mCap)}
+              </div>
             </div>
             <div className="text-center mt-4">
               <div className={classes.tokenTitle}> 24Hr Change</div>

@@ -13,7 +13,12 @@ import pwarImg from "../../assets/pwar.png";
 import clf365Img from "../../assets/clf365.png";
 import punImg from "../../assets/punt.png";
 import CustomButton from "../Buttons/CustomButton";
-import { formatCurrency, formatLargeNumber, fromWei, toWei } from "../../utils/helper";
+import {
+  formatCurrency,
+  formatLargeNumber,
+  fromWei,
+  toWei,
+} from "../../utils/helper";
 import { connect } from "react-redux";
 import {
   confirmAllowance,
@@ -224,7 +229,9 @@ const Staking = ({
 
   const handleApprove = async (tokenType) => {
     const tokenWeiAmountToApprove =
-      currentNetwork === bscNetwork ? "999999999999999999999999999999999999" : toWei("999999999");
+      currentNetwork === bscNetwork
+        ? "999999999999999999999999999999999999"
+        : toWei("999999999");
 
     await confirmAllowance(
       tokenWeiAmountToApprove,
@@ -264,7 +271,7 @@ const Staking = ({
     PWAR: pwarImg,
     CFL365: clf365Img,
     PUN: punImg,
-    SHOE: 'img/shoefy.png'
+    SHOE: "img/shoefy.png",
   };
 
   const tokenName = {
@@ -274,11 +281,11 @@ const Staking = ({
     PWAR: "PolkaWar",
     CFL365: "CFL 365",
     PUN: "CryptoPunt",
-    SHOE: "Shoefy"
+    SHOE: "Shoefy",
   };
   const tokenInfo = {
     PBR: {
-      buy: "https://app.uniswap.org/#/swap?inputCurrency=0x298d492e8c1d909d3f63bc4a36c66c64acb3d695&outputCurrency=ETH",
+      buy: "https://quickswap.exchange/#/swap?inputCurrency=0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0&outputCurrency=ETH",
       info: "https://www.coingecko.com/en/coins/polkabridge",
     },
     BITE: {
@@ -298,31 +305,45 @@ const Staking = ({
       info: "https://www.coingecko.com/en/coins/cfl365-finance",
     },
     PUN: {
-      buy: 'https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x31903e333809897ee57af57567f4377a1a78756c',
-      info: 'https://www.dextools.io/app/ether/pair-explorer/0xed1ba5252f94e029f41506adeaf90c459c0aca69'
+      buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x31903e333809897ee57af57567f4377a1a78756c",
+      info: "https://www.dextools.io/app/ether/pair-explorer/0xed1ba5252f94e029f41506adeaf90c459c0aca69",
     },
     SHOE: {
-      buy: 'https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x0fd67b4ceb9b607ef206904ec73459c4880132c9',
-      info: 'https://coinmarketcap.com/currencies/shoefy/ico/'
-    }
+      buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x0fd67b4ceb9b607ef206904ec73459c4880132c9",
+      info: "https://coinmarketcap.com/currencies/shoefy/ico/",
+    },
   };
   const getCurrentApy = () => {
     if (tokenType === "PBR") {
-      return pool[tokenType] ? formatCurrency(pool[tokenType].pbrApy, false, 1, true) + " %" : "--";
+      return pool[tokenType]
+        ? formatCurrency(pool[tokenType].pbrApy, false, 1, true) + " %"
+        : "--";
     } else if (tokenType === "CORGIB") {
-      return pool[tokenType] ? formatCurrency(pool[tokenType].corgibApy, false, 1, true) + " %" : "--";
+      return pool[tokenType]
+        ? formatCurrency(pool[tokenType].corgibApy, false, 1, true) + " %"
+        : "--";
     } else if (tokenType === "BITE") {
-      return pool[tokenType] ? formatCurrency(pool[tokenType].biteApy, false, 1, true) + " %" : "--";
+      return pool[tokenType]
+        ? formatCurrency(pool[tokenType].biteApy, false, 1, true) + " %"
+        : "--";
     } else if (tokenType === PWAR) {
-      return pool[tokenType] ? formatCurrency(pool[tokenType].pwarApy, false, 1, true) + " %" : "--";
+      return pool[tokenType]
+        ? formatCurrency(pool[tokenType].pwarApy, false, 1, true) + " %"
+        : "--";
     } else if (tokenType === CFL365) {
-      return pool[tokenType] ? formatCurrency(pool[tokenType].clf365Apy, false, 1, true) + " %" : "--";
+      return pool[tokenType]
+        ? formatCurrency(pool[tokenType].clf365Apy, false, 1, true) + " %"
+        : "--";
     } else if (tokenType === SHOE) {
-      return pool[tokenType] ? formatCurrency(pool[tokenType].shoeApy, false, 1, true) + " %" : "--";
+      return pool[tokenType]
+        ? formatCurrency(pool[tokenType].shoeApy, false, 1, true) + " %"
+        : "--";
     } else if (tokenType === PUN) {
-      return pool[tokenType] ? formatCurrency(pool[tokenType].punApy, false, 1, true) + " %" : "--";
+      return pool[tokenType]
+        ? formatCurrency(pool[tokenType].punApy, false, 1, true) + " %"
+        : "--";
     } else {
-      return "--"
+      return "--";
     }
   };
 
@@ -334,49 +355,48 @@ const Staking = ({
     // } else {
     //   return formatCurrency(fromWei(tokens), false, 1, true);
     // }
-    return formatLargeNumber(fromWei(tokens))
+    return formatLargeNumber(fromWei(tokens));
   };
 
   const claimDisableStatus = (_tokenType) => {
     // if (_tokenType === PUN) {
     //   return true;
     // }
-    return currentAmount(_tokenType) == 0
-
-  }
+    return currentAmount(_tokenType) == 0;
+  };
 
   const stakeDisableStatus = (_tokenType) => {
     // if (_tokenType === PUN) {
     //   return true
     // }
-    return false
-  }
+    return false;
+  };
 
   const withdrawDisableStatus = (_tokenType) => {
     // if (_tokenType === PUN) {
     //   return true
     // }
-    return false
-  }
+    return false;
+  };
 
   const approveDisableStatus = (_tokenType) => {
     // if (_tokenType === PUN) {
     //   return true
     // }
-    return false
-  }
+    return false;
+  };
 
   const currentSupportedStaking = (_network) => {
     if (_network === etheriumNetwork) {
-      return supportedStaking.ethereum
+      return supportedStaking.ethereum;
     } else if (_network === bscNetwork) {
       return supportedStaking.bsc;
     } else if (_network === harmonyNetwork) {
       return supportedStaking.harmony;
     } else if (_network === maticNetwork) {
-      return supportedStaking.matic
+      return supportedStaking.matic;
     }
-  }
+  };
 
   return (
     <Card elevation={10} className={classes.card}>
@@ -418,7 +438,7 @@ const Staking = ({
                 Buy
               </Button>
             </a>
-            <a href={tokenInfo[tokenType].info}  >
+            <a href={tokenInfo[tokenType].info}>
               <Button variant="contained" className={classes.borderButton}>
                 Info
               </Button>
@@ -433,9 +453,7 @@ const Staking = ({
                       <div className={classes.tokenTitle}>APY</div>
                     </div>
                   </div>
-                  <div className={classes.tokenAmount}>
-                    {getCurrentApy()}
-                  </div>
+                  <div className={classes.tokenAmount}>{getCurrentApy()}</div>
                 </div>
                 <div className="d-flex justify-content-between mt-2">
                   <div className="d-flex justify-content-start">
@@ -457,11 +475,13 @@ const Staking = ({
                     </div>
                   </div>
                   <div className={classes.tokenAmount}>
-                    {formatLargeNumber(fromWei(
-                      pool[tokenType]
-                        ? pool[tokenType].totalTokenClaimed
-                        : "0"
-                    ))}
+                    {formatLargeNumber(
+                      fromWei(
+                        pool[tokenType]
+                          ? pool[tokenType].totalTokenClaimed
+                          : "0"
+                      )
+                    )}
                   </div>
                 </div>
               </div>
@@ -478,11 +498,11 @@ const Staking = ({
                 {" "}
                 {tokenType === "PWAR"
                   ? formatCurrency(
-                    fromWei(stake[tokenType].amount),
-                    false,
-                    1,
-                    true
-                  )
+                      fromWei(stake[tokenType].amount),
+                      false,
+                      1,
+                      true
+                    )
                   : formatCurrency(fromWei(stake[tokenType].amount))}{" "}
               </div>
             </div>
@@ -492,14 +512,14 @@ const Staking = ({
                 {" "}
                 {tokenType === "PWAR"
                   ? formatCurrency(
-                    fromWei(stake[tokenType].rewardClaimed),
-                    false,
-                    1,
-                    true
-                  )
+                      fromWei(stake[tokenType].rewardClaimed),
+                      false,
+                      1,
+                      true
+                    )
                   : formatCurrency(
-                    fromWei(stake[tokenType].rewardClaimed)
-                  )}{" "}
+                      fromWei(stake[tokenType].rewardClaimed)
+                    )}{" "}
               </div>
             </div>
             <div className="text-center mt-4">
@@ -508,14 +528,14 @@ const Staking = ({
                 {" "}
                 {tokenType === "PWAR"
                   ? formatCurrency(
-                    fromWei(stake[tokenType]?.pendingReward),
-                    false,
-                    1,
-                    true
-                  )
+                      fromWei(stake[tokenType]?.pendingReward),
+                      false,
+                      1,
+                      true
+                    )
                   : formatCurrency(
-                    fromWei(stake[tokenType]?.pendingReward)
-                  )}{" "}
+                      fromWei(stake[tokenType]?.pendingReward)
+                    )}{" "}
               </div>
             </div>
           </div>
@@ -523,7 +543,10 @@ const Staking = ({
           <div className={classes.buttons}>
             {!approved[tokenType] ? (
               <div className="text-center">
-                <CustomButton disabled={approveDisableStatus(tokenType)} onClick={() => handleApprove(tokenType)}>
+                <CustomButton
+                  disabled={approveDisableStatus(tokenType)}
+                  onClick={() => handleApprove(tokenType)}
+                >
                   Approve
                 </CustomButton>
                 <p className={classes.hint}>
@@ -542,7 +565,10 @@ const Staking = ({
                   Claim
                 </CustomButton>
 
-                <CustomButton disabled={stakeDisableStatus(tokenType)} onClick={() => onStake(tokenType)}>
+                <CustomButton
+                  disabled={stakeDisableStatus(tokenType)}
+                  onClick={() => onStake(tokenType)}
+                >
                   Stake
                 </CustomButton>
                 <CustomButton
