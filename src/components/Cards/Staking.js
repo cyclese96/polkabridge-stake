@@ -142,6 +142,14 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: 3,
     color: "#e5e5e5",
   },
+  tokenTitleTvl: {
+    fontWeight: 500,
+    padding: 0,
+    paddingLeft: 10,
+    fontSize: 20,
+    paddingBottom: 3,
+    color: "#1597BB",
+  },
   tokenSubtitle: {
     fontWeight: 300,
     padding: 0,
@@ -155,6 +163,16 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: 10,
     fontSize: 18,
     color: "#C80C81",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  tokenAmountTvl: {
+    fontWeight: 700,
+    padding: 0,
+    paddingLeft: 10,
+    fontSize: 18,
+    color: "#1597BB",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -488,16 +506,16 @@ const Staking = ({
                 <div className="d-flex justify-content-between mt-2">
                   <div className="d-flex justify-content-start">
                     <div>
-                      <div className={classes.tokenTitle}>TVL</div>
+                      <div className={classes.tokenTitleTvl}>TVL</div>
                     </div>
                   </div>
-                  <div className={classes.tokenAmount}>
+                  <div className={classes.tokenAmountTvl}>
                     {pool[tokenType]
                       ? formatLargeNumber(
                           fromWei(pool[tokenType].totalTokenStaked) *
                             parseFloat(pool[tokenType].tokenPrice)
                         )
-                      : "0"}
+                      : "0"} $
                   </div>
                 </div>
               </div>
