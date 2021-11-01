@@ -220,6 +220,7 @@ const Staking = ({
   unstakeTokens,
   onStake,
   onUnstake,
+  price,
 }) => {
   const classes = useStyles();
 
@@ -482,6 +483,21 @@ const Staking = ({
                           : "0"
                       )
                     )}
+                  </div>
+                </div>
+                <div className="d-flex justify-content-between mt-2">
+                  <div className="d-flex justify-content-start">
+                    <div>
+                      <div className={classes.tokenTitle}>TVL</div>
+                    </div>
+                  </div>
+                  <div className={classes.tokenAmount}>
+                    {pool[tokenType]
+                      ? formatLargeNumber(
+                          fromWei(pool[tokenType].totalTokenStaked) *
+                            parseFloat(pool[tokenType].tokenPrice)
+                        )
+                      : "0"}
                   </div>
                 </div>
               </div>

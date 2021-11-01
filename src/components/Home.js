@@ -207,9 +207,8 @@ const Home = ({
         });
 
         window.ethereum.on("networkChanged", async (networkId) => {
-
           const network = getCurrentNetwork(networkId);
-          setCurrentChainId(parseInt(networkId))
+          setCurrentChainId(parseInt(networkId));
           console.log("connectWallet current network ", network);
           store.dispatch({
             type: CHANGE_NETWORK,
@@ -225,8 +224,8 @@ const Home = ({
             type: RESET_USER_STAKE,
           });
 
-          await connectWallet(false, _network)
-          await getPoolInfo(_network)
+          await connectWallet(false, _network);
+          await getPoolInfo(_network);
 
           await getAccountBalance(_account, _network);
         }
@@ -396,6 +395,7 @@ const Home = ({
                           onStake={onStake}
                           onUnstake={onUnStake}
                           tokenType={token}
+                          price={getCurrentTokenPrice()}
                         />
                       </div>
                     </div>
