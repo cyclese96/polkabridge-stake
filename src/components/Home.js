@@ -360,6 +360,7 @@ const Home = ({
                 price={getCurrentTokenPrice()}
                 mCap={getCurrentTokenMCap()}
                 change={getCurrentTokenChange()}
+                network={currentNetwork}
               />
             </div>
             <div className="col-md-4">
