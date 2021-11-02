@@ -300,11 +300,14 @@ const Staking = ({
   };
   const tokenInfo = {
     PBR: {
-      buy:
-        currentNetwork === maticNetwork
-          ? "https://quickswap.exchange/#/swap?inputCurrency=0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0&outputCurrency=ETH"
-          : "https://app.uniswap.org/#/swap?inputCurrency=0x298d492e8c1d909d3f63bc4a36c66c64acb3d695&outputCurrency=ETH",
-      info: "https://www.coingecko.com/en/coins/polkabridge",
+      ethereum: {
+        buy: "https://app.uniswap.org/#/swap?inputCurrency=0x298d492e8c1d909d3f63bc4a36c66c64acb3d695&outputCurrency=ETH",
+        info: "https://www.coingecko.com/en/coins/polkabridge",
+      },
+      matic: {
+        buy: "https://quickswap.exchange/#/swap?inputCurrency=0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0&outputCurrency=ETH",
+        info: "https://www.coingecko.com/en/coins/polkabridge",
+      },
     },
     BITE: {
       ethereum: {
