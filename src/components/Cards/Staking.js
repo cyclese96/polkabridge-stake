@@ -148,7 +148,7 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: 10,
     fontSize: 20,
     paddingBottom: 3,
-    color: "#1597BB",
+    color: "#C80C81",
   },
   tokenSubtitle: {
     fontWeight: 300,
@@ -172,7 +172,7 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
     paddingLeft: 10,
     fontSize: 18,
-    color: "#1597BB",
+    color: "#C80C81",
     display: "flex",
     justifyContent: "center",
     alignItems: "center",
@@ -304,32 +304,50 @@ const Staking = ({
   };
   const tokenInfo = {
     PBR: {
-      buy: "https://quickswap.exchange/#/swap?inputCurrency=0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0&outputCurrency=ETH",
-      info: "https://www.coingecko.com/en/coins/polkabridge",
+      ethereum: {
+        buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x298d492e8c1d909D3F63Bc4A36C66c64ACB3d695",
+        info: "https://www.coingecko.com/en/coins/polkabridge",
+      },
+      matic: {
+        buy: "https://quickswap.exchange/#/swap?inputCurrency=ETH&outputCurrency=0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
+        info: "https://www.coingecko.com/en/coins/polkabridge",
+      }
     },
     BITE: {
-      buy: "https://app.uniswap.org/#/swap?inputCurrency=0x4eed0fa8de12d5a86517f214c2f11586ba2ed88d&outputCurrency=ETH",
-      info: "https://www.coingecko.com/en/coins/dragonbite",
+      ethereum: {
+        buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x4eed0fa8de12d5a86517f214c2f11586ba2ed88d",
+        info: "https://www.coingecko.com/en/coins/dragonbite",
+      }
     },
     CORGIB: {
-      buy: "https://pancakeswap.finance/swap#/swap?outputCurrency=0x1cfd6813a59d7b90c41dd5990ed99c3bf2eb8f55",
-      info: "https://www.coingecko.com/en/coins/the-corgi-of-polkabridge",
+      bsc: {
+        buy: "https://pancakeswap.finance/swap#/swap?outputCurrency=0x1cfd6813a59d7b90c41dd5990ed99c3bf2eb8f55&inputCurrency=BNB",
+        info: "https://www.coingecko.com/en/coins/the-corgi-of-polkabridge",
+      }
     },
     PWAR: {
-      buy: "https://pancakeswap.finance/swap#/swap?outputCurrency=0x16153214e683018d5aa318864c8e692b66e16778",
-      info: "https://www.coingecko.com/en/coins/polkawar",
+      bsc: {
+        buy: "https://pancakeswap.finance/swap#/swap?outputCurrency=0x16153214e683018d5aa318864c8e692b66e16778&inputCurrency=BNB",
+        info: "https://www.coingecko.com/en/coins/polkawar",
+      }
     },
     CFL365: {
-      buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xcd6adc6b8bd396e2d53ccd7d7257b4de55be4fbe",
-      info: "https://www.coingecko.com/en/coins/cfl365-finance",
+      ethereum: {
+        buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xcd6adc6b8bd396e2d53ccd7d7257b4de55be4fbe",
+        info: "https://www.coingecko.com/en/coins/cfl365-finance",
+      }
     },
     PUN: {
-      buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x31903e333809897ee57af57567f4377a1a78756c",
-      info: "https://www.dextools.io/app/ether/pair-explorer/0xed1ba5252f94e029f41506adeaf90c459c0aca69",
+      ethereum: {
+        buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x31903e333809897ee57af57567f4377a1a78756c",
+        info: "https://www.dextools.io/app/ether/pair-explorer/0xed1ba5252f94e029f41506adeaf90c459c0aca69",
+      }
     },
     SHOE: {
-      buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x0fd67b4ceb9b607ef206904ec73459c4880132c9",
-      info: "https://coinmarketcap.com/currencies/shoefy/ico/",
+      ethereum: {
+        buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x0fd67b4ceb9b607ef206904ec73459c4880132c9",
+        info: "https://coinmarketcap.com/currencies/shoefy/ico/",
+      }
     },
   };
   const getCurrentApy = () => {
@@ -452,12 +470,12 @@ const Staking = ({
             <div className={classes.earn}>Earn {tokenName[tokenType]}</div>
           </div>
           <div className="d-flex justify-content-center  pt-3">
-            <a href={tokenInfo[tokenType]?.buy} target="_blank">
+            <a href={tokenInfo[tokenType][currentNetwork]?.buy} target="_blank">
               <Button variant="contained" className={classes.borderButton}>
                 Buy
               </Button>
             </a>
-            <a href={tokenInfo[tokenType].info}>
+            <a href={tokenInfo[tokenType][currentNetwork]?.info} target="_blank">
               <Button variant="contained" className={classes.borderButton}>
                 Info
               </Button>
@@ -512,9 +530,9 @@ const Staking = ({
                   <div className={classes.tokenAmountTvl}>
                     {pool[tokenType]
                       ? formatLargeNumber(
-                          fromWei(pool[tokenType].totalTokenStaked) *
-                            parseFloat(pool[tokenType].tokenPrice)
-                        )
+                        fromWei(pool[tokenType].totalTokenStaked) *
+                        parseFloat(pool[tokenType].tokenPrice)
+                      )
                       : "0"} $
                   </div>
                 </div>
@@ -532,11 +550,11 @@ const Staking = ({
                 {" "}
                 {tokenType === "PWAR"
                   ? formatCurrency(
-                      fromWei(stake[tokenType].amount),
-                      false,
-                      1,
-                      true
-                    )
+                    fromWei(stake[tokenType].amount),
+                    false,
+                    1,
+                    true
+                  )
                   : formatCurrency(fromWei(stake[tokenType].amount))}{" "}
               </div>
             </div>
@@ -546,14 +564,14 @@ const Staking = ({
                 {" "}
                 {tokenType === "PWAR"
                   ? formatCurrency(
-                      fromWei(stake[tokenType].rewardClaimed),
-                      false,
-                      1,
-                      true
-                    )
+                    fromWei(stake[tokenType].rewardClaimed),
+                    false,
+                    1,
+                    true
+                  )
                   : formatCurrency(
-                      fromWei(stake[tokenType].rewardClaimed)
-                    )}{" "}
+                    fromWei(stake[tokenType].rewardClaimed)
+                  )}{" "}
               </div>
             </div>
             <div className="text-center mt-4">
@@ -562,14 +580,14 @@ const Staking = ({
                 {" "}
                 {tokenType === "PWAR"
                   ? formatCurrency(
-                      fromWei(stake[tokenType]?.pendingReward),
-                      false,
-                      1,
-                      true
-                    )
+                    fromWei(stake[tokenType]?.pendingReward),
+                    false,
+                    1,
+                    true
+                  )
                   : formatCurrency(
-                      fromWei(stake[tokenType]?.pendingReward)
-                    )}{" "}
+                    fromWei(stake[tokenType]?.pendingReward)
+                  )}{" "}
               </div>
             </div>
           </div>
