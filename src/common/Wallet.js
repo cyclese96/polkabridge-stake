@@ -1,12 +1,12 @@
 import { Button, makeStyles } from "@material-ui/core";
 import { AccountBalanceWallet } from "@material-ui/icons";
-import etherIcon from "../../assets/ether.png";
-import binanceIcon from "../../assets/binance.png";
-import polygonIcon from "../../assets/polygon.png";
+import etherIcon from "../assets/ether.png";
+import binanceIcon from "../assets/binance.png";
+import polygonIcon from "../assets/polygon.png";
 import { connect } from "react-redux";
-import { isMetaMaskInstalled } from "../../utils/helper";
-import { bscNetwork, etheriumNetwork, maticNetwork } from "../../constants";
-import { connectWallet } from "../../actions/accountActions";
+import { isMetaMaskInstalled } from "../utils/helper";
+import { bscNetwork, etheriumNetwork, maticNetwork } from "../constants";
+import { connectWallet } from "../actions/accountActions";
 
 const useStyles = makeStyles((theme) => ({
   root: {

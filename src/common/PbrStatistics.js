@@ -2,12 +2,12 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Avatar, Button, Card } from "@material-ui/core";
 import Loader from "./Loader";
-import corgibImg from "../../assets/corgi.png";
-import { formatLargeNumber } from "../../utils/helper";
+import { formatLargeNumber } from "../utils/helper";
+import { maticNetwork } from "../constants";
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    minHeight: 300,
+    height: 340,
     width: "100%",
     padding: 20,
     borderRadius: 30,
@@ -102,13 +102,12 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-export default function PbrPool({
-  tokenType,
+export default function PbrStatistics({
   price,
   mCap,
   change,
   poolLoading,
-  network
+  network,
 }) {
   const classes = useStyles();
 
@@ -138,7 +137,11 @@ export default function PbrPool({
           <div className="text-center mt-4">
             <a
               target="_blank"
-              href={network==="ethereum" ? "https://app.uniswap.org/#/swap?inputCurrency=0x298d492e8c1d909d3f63bc4a36c66c64acb3d695&outputCurrency=ETH" : "https://quickswap.exchange/#/swap?inputCurrency=0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0&outputCurrency=ETH"}
+              href={
+                network === maticNetwork
+                  ? "https://quickswap.exchange/#/swap?inputCurrency=0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0&outputCurrency=ETH"
+                  : "https://app.uniswap.org/#/swap?inputCurrency=0x298d492e8c1d909d3f63bc4a36c66c64acb3d695&outputCurrency=ETH"
+              }
             >
               <Button variant="contained" className={classes.buyNow}>
                 {" "}

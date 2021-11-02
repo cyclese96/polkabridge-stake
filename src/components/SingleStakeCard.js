@@ -1,34 +1,27 @@
-import {
-  Button,
-  Card,
-  CircularProgress,
-  Divider,
-  makeStyles,
-} from "@material-ui/core";
-import { useEffect, useState } from "react";
+import { Button, Card, Divider, makeStyles } from "@material-ui/core";
+import { useEffect } from "react";
 
-import biteImg from "../../assets/bite.png";
-import corgiImg from "../../assets/corgi.png";
-import pwarImg from "../../assets/pwar.png";
-import clf365Img from "../../assets/clf365.png";
-import punImg from "../../assets/punt.png";
-import CustomButton from "../Buttons/CustomButton";
+import biteImg from "../assets/bite.png";
+import corgiImg from "../assets/corgi.png";
+import pwarImg from "../assets/pwar.png";
+import clf365Img from "../assets/clf365.png";
+import punImg from "../assets/punt.png";
+import CustomButton from "./CustomButton";
 import {
   formatCurrency,
   formatLargeNumber,
   fromWei,
   toWei,
-} from "../../utils/helper";
+} from "../utils/helper";
 import { connect } from "react-redux";
 import {
   confirmAllowance,
   getUserStakedData,
   getPoolInfo,
   unstakeTokens,
-} from "../../actions/stakeActions";
-import { getAccountBalance } from "../../actions/accountActions";
+} from "../actions/stakeActions";
+import { getAccountBalance } from "../actions/accountActions";
 import {
-  BITE,
   claimTokens,
   CFL365,
   etheriumNetwork,
@@ -39,9 +32,9 @@ import {
   bscNetwork,
   harmonyNetwork,
   maticNetwork,
-} from "../../constants";
-import Loader from "../common/Loader";
-import DotCircle from "../common/DotCircle";
+} from "../constants";
+import Loader from "./../common/Loader";
+import DotCircle from "./../common/DotCircle";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -143,12 +136,18 @@ const useStyles = makeStyles((theme) => ({
     color: "#e5e5e5",
   },
   tokenTitleTvl: {
-    fontWeight: 500,
-    padding: 0,
     paddingLeft: 10,
-    fontSize: 20,
-    paddingBottom: 3,
-    color: "#1597BB",
+    paddingRight: 10,
+    paddingTop: 5,
+    paddingBottom: 5,
+    marginLeft: 10,
+    fontSize: 14,
+    fontWeight: 600,
+    color: "#e5e5e5",
+    // backgroundColor: "#C80C81",
+    border: "1px solid rgba(224, 7, 125, 0.6)",
+
+    borderRadius: 14,
   },
   tokenSubtitle: {
     fontWeight: 300,
@@ -172,10 +171,7 @@ const useStyles = makeStyles((theme) => ({
     padding: 0,
     paddingLeft: 10,
     fontSize: 18,
-    color: "#1597BB",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
+    color: "#e5e5e5",
   },
   logo: {
     width: 80,
@@ -304,7 +300,10 @@ const Staking = ({
   };
   const tokenInfo = {
     PBR: {
-      buy: "https://quickswap.exchange/#/swap?inputCurrency=0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0&outputCurrency=ETH",
+      buy:
+        currentNetwork === maticNetwork
+          ? "https://quickswap.exchange/#/swap?inputCurrency=0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0&outputCurrency=ETH"
+          : "https://app.uniswap.org/#/swap?inputCurrency=0x298d492e8c1d909d3f63bc4a36c66c64acb3d695&outputCurrency=ETH",
       info: "https://www.coingecko.com/en/coins/polkabridge",
     },
     BITE: {
@@ -503,19 +502,20 @@ const Staking = ({
                     )}
                   </div>
                 </div>
-                <div className="d-flex justify-content-between mt-2">
-                  <div className="d-flex justify-content-start">
-                    <div>
-                      <div className={classes.tokenTitleTvl}>TVL</div>
+                <div className="d-flex justify-content-center my-4">
+                  <div>
+                    <div className={classes.tokenTitleTvl}>
+                      Total Value Locked:{" "}
+                      <span className={classes.tokenAmountTvl}>
+                        $
+                        {pool[tokenType]
+                          ? formatLargeNumber(
+                              fromWei(pool[tokenType].totalTokenStaked) *
+                                parseFloat(pool[tokenType].tokenPrice)
+                            )
+                          : "0"}
+                      </span>
                     </div>
-                  </div>
-                  <div className={classes.tokenAmountTvl}>
-                    {pool[tokenType]
-                      ? formatLargeNumber(
-                          fromWei(pool[tokenType].totalTokenStaked) *
-                            parseFloat(pool[tokenType].tokenPrice)
-                        )
-                      : "0"} $
                   </div>
                 </div>
               </div>

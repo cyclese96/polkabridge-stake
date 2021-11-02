@@ -7,21 +7,21 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
 import { CircularProgress, TextField } from "@material-ui/core";
-import CustomButton from "../Buttons/CustomButton";
+import CustomButton from "./../components/CustomButton";
 import {
   formatCurrency,
   fromWei,
   isNumber,
   resetCurrencyFormatting,
-} from "../../utils/helper";
+} from "../utils/helper";
 import { connect } from "react-redux";
 import {
   getPoolInfo,
   stakeTokens,
   unstakeTokens,
-} from "../../actions/stakeActions";
-import { getAccountBalance } from "../../actions/accountActions";
-import { minimumStakingAmount } from "../../constants";
+} from "../actions/stakeActions";
+import { getAccountBalance } from "../actions/accountActions";
+import { minimumStakingAmount } from "../constants";
 import BigNumber from "bignumber.js";
 
 const styles = (theme) => ({
@@ -81,11 +81,11 @@ const useStyles = makeStyles((theme) => ({
     color: "#919191",
   },
   inputGroup: {
-    display:'flex',
-    justifyContent:'space-between',
+    display: "flex",
+    justifyContent: "space-between",
     marginTop: 20,
-    border:'1px solid #454545',
-    borderRadius:15
+    border: "1px solid #454545",
+    borderRadius: 15,
   },
   input: {
     backgroundColor: "transparent",
@@ -123,18 +123,17 @@ const useStyles = makeStyles((theme) => ({
   },
   maxBtn: {
     background: `linear-gradient(to bottom,#D9047C, #BF1088)`,
-    padding:0,
-    padding:'3px 5px 3px 5px',
-    fontSize:12,
+    padding: 0,
+    padding: "3px 5px 3px 5px",
+    fontSize: 12,
     borderRadius: 15,
     marginLeft: 10,
     color: "#f9f9f9",
     [theme.breakpoints.down("sm")]: {
       height: 30,
-     marginTop:10,
-     marginRight:5
+      marginTop: 10,
+      marginRight: 5,
     },
-    
   },
   buttons: {
     marginTop: 30,
@@ -344,15 +343,16 @@ const StakeDialog = ({
               : `Staked tokens: ${currentFormattedStakedBal()} ${tokenType}`}
           </p>
           <div className={classes.inputGroup}>
-            <input  placeholder="0"
+            <input
+              placeholder="0"
               value={
                 inputTokens ? formatCurrency(inputTokens, false, 0, true) : ""
               }
               // name={[pbrTokens]}
               onChange={handleInputChange}
               label={`Enter ${tokenType} tokens`}
-              
-              className={classes.input}/>
+              className={classes.input}
+            />
             {/* <TextField
               InputProps={{
                 classes: {
@@ -390,9 +390,7 @@ const StakeDialog = ({
                 <CustomButton variant="light" onClick={onClose}>
                   Cancel
                 </CustomButton>
-                <CustomButton onClick={onConfirm}>
-                  Confirm
-                </CustomButton>
+                <CustomButton onClick={onConfirm}>Confirm</CustomButton>
               </>
             )}
           </div>

@@ -22,12 +22,17 @@ import CategoryIcon from "@material-ui/icons/Category";
 import { EqualizerOutlined } from "@material-ui/icons";
 import Wallet from "./Wallet";
 import AccountDialog from "./AccountDialog";
-import etherIcon from "../../assets/ether.png";
-import binanceIcon from "../../assets/binance.png";
-import harmonyIcon from "../../assets/one.png";
-import polygonIcon from "../../assets/polygon.png";
+import etherIcon from "../assets/ether.png";
+import binanceIcon from "../assets/binance.png";
+import harmonyIcon from "../assets/one.png";
+import polygonIcon from "../assets/polygon.png";
 import DotCircle from "./DotCircle";
-import { bscNetwork, etheriumNetwork, harmonyNetwork, maticNetwork } from "../../constants";
+import {
+  bscNetwork,
+  etheriumNetwork,
+  harmonyNetwork,
+  maticNetwork,
+} from "../constants";
 import NetworkSelect from "./NetworkSelect";
 import useNetwork from "./useNetwork";
 
@@ -220,7 +225,6 @@ const useStyles = makeStyles((theme) => ({
 const Navbar = ({ currentNetwork, chainId }) => {
   const classes = useStyles();
 
-
   const [state, setState] = React.useState({
     right: false,
   });
@@ -351,7 +355,7 @@ const Navbar = ({ currentNetwork, chainId }) => {
           <img
             className={classes.networkIcon}
             src={harmonyIcon}
-          // alt={currentNetwork}
+            // alt={currentNetwork}
           />
           <span style={{ color: "white", marginLeft: 5 }}>Harmony</span>
         </div>
@@ -446,7 +450,7 @@ const Navbar = ({ currentNetwork, chainId }) => {
 
           <div className={classes.grow} />
           {/* <div style={{ paddingRight: 10 }}>{renderIcon()}</div> */}
-          <div >
+          <div>
             <NetworkSelect selectedNetwork={chainId} />
           </div>
           <Wallet onWalletClick={() => setAccountDialog(true)} />

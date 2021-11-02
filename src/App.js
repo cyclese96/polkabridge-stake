@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { ThemeProvider } from "@material-ui/core/styles";
 import theme from "./theme";
 import { Fragment } from "react";
-import Home from "./components/Home";
+import Home from "./pages/Home";
 import { Provider } from "react-redux";
 import store from "./store";
 import "./web";

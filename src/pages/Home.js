@@ -1,11 +1,11 @@
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import React, { useState, useEffect } from "react";
-import Staking from "./Cards/Staking";
-import StakeDialog from "./common/StakeDialog";
-import Navbar from "./common/Navbar";
-import Footer from "./common/Footer";
+import SingleStakeCard from "../components/SingleStakeCard";
+import StakeDialog from "../common/StakeDialog";
+import Navbar from "../common/Navbar";
+import Footer from "../common/Footer";
 
-import Wallet from "./common/Wallet";
+import Wallet from "../common/Wallet";
 import PropTypes from "prop-types";
 import { connectWallet, getAccountBalance } from "../actions/accountActions";
 import { getPoolInfo } from "../actions/stakeActions";
@@ -29,9 +29,9 @@ import {
 } from "../constants";
 import { CHANGE_NETWORK, RESET_USER_STAKE } from "../actions/types";
 import store from "../store";
-import web3 from "../web";
-import BalanceCard from "./common/BalanceCard";
-import PbrStats from "./common/PbrStats";
+import BalanceCard from "../common/BalanceCard";
+import PbrStatistics from "../common/PbrStatistics";
+
 const useStyles = makeStyles((theme) => ({
   background: {
     paddingTop: 100,
@@ -258,14 +258,6 @@ const Home = ({
     }
   };
 
-  // const getCurrentApy = () => {
-  //   if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
-  //     return getCurrentPool().pbrApy;
-  //   } else {
-  //     return getCurrentPool().corgibApy;
-  //   }
-  // };
-
   const getCurrentTokenPrice = () => {
     if (
       currentNetwork === etheriumNetwork ||
@@ -353,7 +345,7 @@ const Home = ({
           <div className={classes.divider} />
           <div className="row mt-5">
             <div className="col-md-8 mb-3">
-              <PbrStats
+              <PbrStatistics
                 poolLoading={poolLoading}
                 tokenType={getCurrentTokenType()}
                 price={getCurrentTokenPrice()}
@@ -391,7 +383,7 @@ const Home = ({
                   {supportedStaking[currentNetwork].map((token) => (
                     <div className="col-md-4">
                       <div className={classes.card}>
-                        <Staking
+                        <SingleStakeCard
                           onStake={onStake}
                           onUnstake={onUnStake}
                           tokenType={token}

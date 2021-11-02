@@ -3,13 +3,12 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Card } from "@material-ui/core";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
-import { formatCurrency, fromWei } from "../../utils/helper";
-
-import biteImg from "../../assets/bite.png";
-import corgibImg from "../../assets/corgi.png";
-import clf365Img from "../../assets/clf365.png";
-import pwarImg from "../../assets/pwar.png";
-import punImg from '../../assets/punt.png';
+import { formatCurrency, fromWei } from "../utils/helper";
+import biteImg from "../assets/bite.png";
+import corgibImg from "../assets/corgi.png";
+import clf365Img from "../assets/clf365.png";
+import pwarImg from "../assets/pwar.png";
+import punImg from "../assets/punt.png";
 import {
   BITE,
   CFL365,
@@ -19,14 +18,15 @@ import {
   PBR,
   PUN,
   SHOE,
-} from "../../constants";
+} from "../constants";
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    minHeight: 320,
+    height: 340,
     width: "100%",
     padding: 20,
     borderRadius: 30,
+    overflowY: "scroll",
     backgroundColor: "rgba(41, 42, 66, 0.3)",
     border: "1px solid #212121",
     filter: "drop-shadow(0 0 0.5rem #212121)",
@@ -91,7 +91,7 @@ function BalanceCard(props) {
     PWAR: pwarImg,
     CFL365: clf365Img,
     PUN: punImg,
-    SHOE: 'img/shoefy.png'
+    SHOE: "img/shoefy.png",
   };
 
   const tokenName = {
@@ -101,7 +101,7 @@ function BalanceCard(props) {
     PWAR: "PolkaWar",
     CFL365: "CFL 365",
     PUN: "CryptoPunt",
-    SHOE: "Shoefy Private"
+    SHOE: "Shoefy Private",
   };
 
   const getCoins = () => {
@@ -114,7 +114,10 @@ function BalanceCard(props) {
         { coin: CFL365, balance: formatCurrency(fromWei(balance[CFL365])) },
       ];
     } else {
-      if (currentNetwork === maticNetwork || currentNetwork === harmonyNetwork) {
+      if (
+        currentNetwork === maticNetwork ||
+        currentNetwork === harmonyNetwork
+      ) {
         return [{ coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) }];
       } else {
         return [
@@ -141,7 +144,7 @@ function BalanceCard(props) {
       )} */}
 
       {/* {account.balance && ( */}
-      <div className="mt-5">
+      <div className="mt-4">
         {getCoins().map(function (coinObj, index) {
           // if (
           //   account.balance[key] !== null &&

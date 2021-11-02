@@ -3,7 +3,7 @@ import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Dialog from "@material-ui/core/Dialog";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
-import CustomButton from "../Buttons/CustomButton";
+import CustomButton from "../components/CustomButton";
 import { FileCopy } from "@material-ui/icons";
 import {
   BITE,
@@ -13,16 +13,16 @@ import {
   PBR,
   PUN,
   SHOE,
-} from "../../constants";
-import biteImg from "../../assets/bite.png";
-import corgibImg from "../../assets/corgi.png";
-import clf365Img from "../../assets/clf365.png";
-import pwarImg from "../../assets/pwar.png";
-import puntImg from '../../assets/punt.png'
+} from "../constants";
+import biteImg from "../assets/bite.png";
+import corgibImg from "../assets/corgi.png";
+import clf365Img from "../assets/clf365.png";
+import pwarImg from "../assets/pwar.png";
+import puntImg from "../assets/punt.png";
 
-import { formatCurrency, fromWei } from "../../utils/helper";
+import { formatCurrency, fromWei } from "../utils/helper";
 import { connect } from "react-redux";
-import { logout } from "../../actions/accountActions";
+import { logout } from "../actions/accountActions";
 import { Card } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
@@ -194,7 +194,7 @@ const AccountDialog = ({
     PWAR: pwarImg,
     CFL365: clf365Img,
     PUN: puntImg,
-    SHOE: "img/shoefy.png"
+    SHOE: "img/shoefy.png",
   };
 
   const tokenName = {
@@ -203,8 +203,8 @@ const AccountDialog = ({
     CORGIB: "Corgi Of PolkaBridge",
     PWAR: "PolkaWar",
     CFL365: "CFL 365",
-    PUN: 'CryptoPunt',
-    SHOE: "Shoefy Private"
+    PUN: "CryptoPunt",
+    SHOE: "Shoefy Private",
   };
   return (
     <div>
