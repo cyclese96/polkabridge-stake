@@ -13,8 +13,10 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     justifyContent: "space-around",
     background: "transparent",
-    border: "0.5px solid purple",
+
     color: "white",
+    border: "1px solid rgba(224, 7, 125, 0.7)",
+
     padding: 7,
     paddingLeft: 10,
     paddingRight: 15,

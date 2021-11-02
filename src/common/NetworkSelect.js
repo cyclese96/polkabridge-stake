@@ -40,9 +40,9 @@ const useStyles = makeStyles((theme) => ({
   main: {
     color: "white",
     backgroundColor: "#100525",
-    border: "1px solid white",
+    border: "1px solid rgba(224, 7, 125, 0.7)",
     borderRadius: 60,
-    paddingLeft: 10,
+    paddingLeft: 15,
     height: 40,
     width: "full-width",
     marginRight: 7,
