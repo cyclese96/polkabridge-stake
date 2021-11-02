@@ -139,8 +139,8 @@ export default function PbrStatistics({
               target="_blank"
               href={
                 network === maticNetwork
-                  ? "https://quickswap.exchange/#/swap?inputCurrency=0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0&outputCurrency=ETH"
-                  : "https://app.uniswap.org/#/swap?inputCurrency=0x298d492e8c1d909d3f63bc4a36c66c64acb3d695&outputCurrency=ETH"
+                  ? "https://quickswap.exchange/#/swap?inputCurrency=MATIC&outputCurrency=0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0"
+                  : "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x298d492e8c1d909d3f63bc4a36c66c64acb3d695"
               }
             >
               <Button variant="contained" className={classes.buyNow}>
