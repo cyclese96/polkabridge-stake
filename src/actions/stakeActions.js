@@ -404,6 +404,19 @@ export const getPoolInfo = (network) => async (dispatch) => {
         totalTokenStaked: corgibPoolData[3],
         totalTokenClaimed: corgibPoolData[4],
       };
+
+      // using corgib token price in tokenPriceCorgin key:
+      const dataCorgib = await axios.get(
+        config.coingecko +
+        "/v3/simple/price?ids=the-corgi-of-polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
+      );
+
+      poolObj.tokenPriceCorgib = dataCorgib.data['the-corgi-of-polkabridge']
+        ? parseFloat(dataCorgib.data['the-corgi-of-polkabridge'].usd)
+        : "---";
+
+
+      //Note: using polkabridge pool information in corgibPool Object:
       const { data } = await axios.get(
         config.coingecko +
         "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
