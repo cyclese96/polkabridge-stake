@@ -201,8 +201,8 @@ export const AVG_PWAR_PER_BLOCK = 0.35;
 export const CL6365_BLOCKS_PER_YEAR = 2400000;
 export const AVG_CL365_PER_BLOCK = 1.5;
 
-export const infuraKovenApi = `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`;
-export const infuraMainnetApi = `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`;
+export const infuraKovenApi = `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_KEY.split('').reverse().join('')}`;
+export const infuraMainnetApi = `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY.split('').reverse().join('')}`;
 
 /**
  *
@@ -238,7 +238,7 @@ export const maticConfig = {
     mainnet: "137",
     testnet: "80001",
   },
-  network_rpc_mainnet: `https://polygon-mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY}`,
+  network_rpc_mainnet: `https://polygon-mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY.split('').reverse().join('')}`,
   network_rpc_testnet: "https://mumbai-explorer.matic.today",
 };
 
