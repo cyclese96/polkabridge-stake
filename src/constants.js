@@ -136,7 +136,7 @@ export const apyConstants = {
   ethereum: {
     PBR: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
-      AVG_REWARD_PER_BLOCK: 1.5
+      AVG_REWARD_PER_BLOCK: 0.2
     },
     BITE: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
@@ -158,7 +158,7 @@ export const apyConstants = {
   polygon: {
     PBR: {
       NUMBER_BLOCKS_PER_YEAR: 43200 * 365,
-      AVG_REWARD_PER_BLOCK: 0.15
+      AVG_REWARD_PER_BLOCK: 0.04
     },
   },
   harmony: {
