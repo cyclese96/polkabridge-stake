@@ -155,22 +155,20 @@ export const isMetaMaskInstalled = () => {
 
 //apy calculation
 const getCalculatedApy = (
-  tokenPrice,
   blocksPerYear,
   rewardPerBlock,
-  totalValueLockedUsd
+  totalTokenLocked
 ) => {
   // console.log(
   //   'getPoolInfo: ', {
   //   tokenPrice,
   //   blocksPerYear,
   //   rewardPerBlock,
-  //   totalValueLockedUsd
+  //   totalTokenLocked
   // })
-  const apy = tokenPrice
-    .times(new BigNumber(blocksPerYear))
+  const apy = new BigNumber(blocksPerYear)
     .times(new BigNumber(rewardPerBlock))
-    .div(totalValueLockedUsd)
+    .div(totalTokenLocked)
     .times(100)
     .toFixed(1)
     .toString();
@@ -180,85 +178,76 @@ const getCalculatedApy = (
 export const getApy = (tokenType, poolObj, network) => {
   // const NUMBER_BLOCKS_PER_YEAR = 2400000;
 
-  let tokenPrice = new BigNumber(poolObj.tokenPrice);
-  const total_value_locked_usd = tokenPrice.times(
-    new BigNumber(fromWei(poolObj.totalTokenStaked))
-  );
+  // let tokenPrice = new BigNumber(poolObj.tokenPrice);
+  const total_token_locked = new BigNumber(fromWei(poolObj.totalTokenStaked));
 
   switch (tokenType) {
     case CORGIB:
       const corgibApy = getCalculatedApy(
-        tokenPrice,
         CORGIB_BLOCKS_PER_YEAR,
         AVG_CORGIB_PER_BLOCK,
-        total_value_locked_usd
+        total_token_locked
       );
       return corgibApy;
     case PWAR:
       const pwarApy = getCalculatedApy(
-        tokenPrice,
         PWAR_BLOCKS_PER_YEAR,
         AVG_PWAR_PER_BLOCK,
-        total_value_locked_usd
+        total_token_locked
       );
       return pwarApy;
 
     case PBR:
       if (network === maticNetwork) {
         const _apy = getCalculatedApy(
-          tokenPrice,
+
           apyConstants.polygon.PBR.NUMBER_BLOCKS_PER_YEAR,
           apyConstants.polygon.PBR.AVG_REWARD_PER_BLOCK,
-          total_value_locked_usd
+          total_token_locked
         );
         return _apy
       } else if (network === harmonyNetwork) {
         // console.log('getPoolInfo:  calculating apy in ', network)
         const _apy = getCalculatedApy(
-          tokenPrice,
+
           apyConstants.harmony.PBR.NUMBER_BLOCKS_PER_YEAR,
           apyConstants.harmony.PBR.AVG_REWARD_PER_BLOCK,
-          total_value_locked_usd
+          total_token_locked
         );
         return _apy
       }
       const _apy = getCalculatedApy(
-        tokenPrice,
         apyConstants.ethereum.PBR.NUMBER_BLOCKS_PER_YEAR,
         apyConstants.ethereum.PBR.AVG_REWARD_PER_BLOCK,
-        total_value_locked_usd
+        total_token_locked
       );
       return _apy
     case BITE:
       const biteApy = getCalculatedApy(
-        tokenPrice,
         NUMBER_BLOCKS_PER_YEAR,
         AVG_BITE_PER_BLOCK,
-        total_value_locked_usd
+        total_token_locked
       );
       return biteApy;
     case CFL365:
       const clfApy = getCalculatedApy(
-        tokenPrice,
         NUMBER_BLOCKS_PER_YEAR,
         AVG_CL365_PER_BLOCK,
-        total_value_locked_usd
+        total_token_locked
       );
       return clfApy;
     case SHOE:
       const shoeApy = getCalculatedApy(
-        tokenPrice,
         apyConstants.ethereum.SHOE.NUMBER_BLOCKS_PER_YEAR,
         apyConstants.ethereum.SHOE.AVG_REWARD_PER_BLOCK,
-        total_value_locked_usd
+        total_token_locked
       );
       return shoeApy;
     case PUN:
       const punApy = getCalculatedApy(
-        tokenPrice,
         apyConstants.ethereum.PUN.NUMBER_BLOCKS_PER_YEAR,
         apyConstants.ethereum.PUN.AVG_REWARD_PER_BLOCK,
-        total_value_locked_usd
+        total_token_locked
       );
       return punApy;
     default:
