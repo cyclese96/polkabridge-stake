@@ -178,10 +178,10 @@ export const apyConstants = {
 };
 
 export const NUMBER_BLOCKS_PER_YEAR = 2400000;
-export const AVG_PBR_PER_BLOCK = 1.5;
+export const AVG_PBR_PER_BLOCK = 0.2;
 
 export const NUMBER_BLOCKS_PER_YEAR_MATIC = 43200 * 365;
-export const AVG_PBR_PER_BLOCK_MATIC = 0.15;
+export const AVG_PBR_PER_BLOCK_MATIC = 0.04;
 
 export const AVG_BITE_PER_BLOCK = 2;
 
