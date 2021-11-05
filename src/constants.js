@@ -2,76 +2,75 @@
 
 export const stakeContractAdrresses = {
   ethereum: {
-    testnet: '0x7678f0AF7304e01554E2D49D96E55C8de4975c66',
-    mainnet: '0x1b46b72c5280f30Fbe8A958B4f3c348FD0fD2E55'
+    testnet: "0x7678f0AF7304e01554E2D49D96E55C8de4975c66",
+    mainnet: "0x1b46b72c5280f30Fbe8A958B4f3c348FD0fD2E55",
   },
   polygon: {
-    testnet: '0x55950cF279Ba5b43263f4Df54833b85F684B333F',
-    mainnet: '0x6335aF028e77B574423733443678aD4cb9e15B3D'
+    testnet: "0x55950cF279Ba5b43263f4Df54833b85F684B333F",
+    mainnet: "0x6335aF028e77B574423733443678aD4cb9e15B3D",
   },
   harmony: {
-    testnet: '0x7a1238cba81de51158c150ffb48a2dba14b987bd',
-    mainnet: '0x7a1238cba81de51158c150ffb48a2dba14b987bd'
+    testnet: "0x7a1238cba81de51158c150ffb48a2dba14b987bd",
+    mainnet: "0x7a1238cba81de51158c150ffb48a2dba14b987bd",
   },
   bsc: {
-    testnet: '0xA5c2186CFb734828EE89a4087FD571F12Af1E895',
-    mainnet: '0x064dE1e65df3F40Afd7fb9E8A1Af61bD4545f4a1'
-  }
-}
-
+    testnet: "0xA5c2186CFb734828EE89a4087FD571F12Af1E895",
+    mainnet: "0x064dE1e65df3F40Afd7fb9E8A1Af61bD4545f4a1",
+  },
+};
 
 export const tokenContarctAddresses = {
   PBR: {
     ethereum: {
-      testnet: '0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0',
-      mainnet: '0x298d492e8c1d909D3F63Bc4A36C66c64ACB3d695'
+      testnet: "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
+      mainnet: "0x298d492e8c1d909D3F63Bc4A36C66c64ACB3d695",
     },
     polygon: {
-      testnet: '0x6024ca0b7c12846a396a5d860ff885233ef16dd0',
-      mainnet: '0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0'
+      testnet: "0x6024ca0b7c12846a396a5d860ff885233ef16dd0",
+      mainnet: "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
     },
     harmony: {
-      testnet: '0xfc649ce83d2b25086bf645ca88a9621b5e8a36fa',
-      mainnet: '0xfc649ce83d2b25086bf645ca88a9621b5e8a36fa'
-    }
+      testnet: "0xfc649ce83d2b25086bf645ca88a9621b5e8a36fa",
+      mainnet: "0xfc649ce83d2b25086bf645ca88a9621b5e8a36fa",
+    },
   },
   BITE: {
     ethereum: {
-      testnet: '0xA9Bf3904f7216B4cA2BA862Ac27b9469c030C0eA',
-      mainnet: '0x4eed0fa8de12d5a86517f214c2f11586ba2ed88d'
-    }
+      testnet: "0xA9Bf3904f7216B4cA2BA862Ac27b9469c030C0eA",
+      mainnet: "0x4eed0fa8de12d5a86517f214c2f11586ba2ed88d",
+    },
   },
   CFL365: {
     ethereum: {
-      testnet: '0x1F6fE20C82950F5139e8b31D5C32A73EE992e9E1',
-      mainnet: '0xcd6adc6b8bd396e2d53ccd7d7257b4de55be4fbe'
-    }
+      testnet: "0x1F6fE20C82950F5139e8b31D5C32A73EE992e9E1",
+      mainnet: "0xcd6adc6b8bd396e2d53ccd7d7257b4de55be4fbe",
+    },
   },
   PWAR: {
     bsc: {
-      testnet: '0x16153214E683018D5aA318864c8e692b66E16778',
-      mainnet: '0x16153214E683018D5aA318864c8e692b66E16778'
-    }
+      testnet: "0x16153214E683018D5aA318864c8e692b66E16778",
+      mainnet: "0x16153214E683018D5aA318864c8e692b66E16778",
+    },
   },
   CORGIB: {
     bsc: {
-      testnet: '0xE428Cc8A06Cdba0ad5074180f8E80ec6D4083b24',
-      mainnet: '0x1cfd6813a59d7b90c41dd5990ed99c3bf2eb8f55'
-    }
+      testnet: "0xE428Cc8A06Cdba0ad5074180f8E80ec6D4083b24",
+      mainnet: "0x1cfd6813a59d7b90c41dd5990ed99c3bf2eb8f55",
+    },
   },
   PUN: {
     ethereum: {
-      testnet: '0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0',
-      mainnet: '0x31903e333809897ee57af57567f4377a1a78756c'
-    }
+      testnet: "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
+      mainnet: "0x31903e333809897ee57af57567f4377a1a78756c",
+    },
   },
   SHOE: {
     ethereum: {
-      testnet: '0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0',
-      mainnet: '0x0fd67b4ceb9b607ef206904ec73459c4880132c9'
-    }
-  }
-}
+      testnet: "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
+      mainnet: "0x0fd67b4ceb9b607ef206904ec73459c4880132c9",
+    },
+  },
+};
 
 //mainnet contracts
 export const pbrAddressMainnet = "0x298d492e8c1d909D3F63Bc4A36C66c64ACB3d695";
@@ -128,57 +127,55 @@ export const poolId = {
   PWAR: 1,
   CFL365: 2,
   PUN: 4,
-  SHOE: 3
+  SHOE: 3,
 };
 
 export const apyConstants = {
-
   ethereum: {
     PBR: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
-      AVG_REWARD_PER_BLOCK: 1.5
+      AVG_REWARD_PER_BLOCK: 0.3,
     },
     BITE: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
-      AVG_REWARD_PER_BLOCK: 2
+      AVG_REWARD_PER_BLOCK: 2,
     },
     CFL365: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
-      AVG_REWARD_PER_BLOCK: 1.5
+      AVG_REWARD_PER_BLOCK: 1.5,
     },
     SHOE: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
-      AVG_REWARD_PER_BLOCK: 0.5
+      AVG_REWARD_PER_BLOCK: 0.5,
     },
     PUN: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
-      AVG_REWARD_PER_BLOCK: 1.5
-    }
+      AVG_REWARD_PER_BLOCK: 1.5,
+    },
   },
   polygon: {
     PBR: {
       NUMBER_BLOCKS_PER_YEAR: 43200 * 365,
-      AVG_REWARD_PER_BLOCK: 0.15
+      AVG_REWARD_PER_BLOCK: 0.04,
     },
   },
   harmony: {
     PBR: {
       NUMBER_BLOCKS_PER_YEAR: 43200 * 365,
-      AVG_REWARD_PER_BLOCK: 0.25
+      AVG_REWARD_PER_BLOCK: 0.25,
     },
   },
   bsc: {
     PWAR: {
       NUMBER_BLOCKS_PER_YEAR: 10000000,
-      AVG_REWARD_PER_BLOCK: 0.35
+      AVG_REWARD_PER_BLOCK: 0.35,
     },
     CORGIB: {
       NUMBER_BLOCKS_PER_YEAR: 10000000,
-      AVG_REWARD_PER_BLOCK: 285000
+      AVG_REWARD_PER_BLOCK: 285000,
     },
   },
-}
-
+};
 
 export const NUMBER_BLOCKS_PER_YEAR = 2400000;
 export const AVG_PBR_PER_BLOCK = 1.5;
@@ -218,7 +215,7 @@ export const currentConnection = "mainnet";
 export const etheriumNetwork = "ethereum";
 export const bscNetwork = "bsc";
 export const maticNetwork = "matic";
-export const harmonyNetwork = 'harmony';
+export const harmonyNetwork = "harmony";
 
 export const etherConfig = {
   network_id: {
@@ -247,10 +244,10 @@ export const maticConfig = {
 
 export const harmonyConfig = {
   chainId: {
-    mainnet: '1666600000',
-    testnet: '1666700000'
-  }
-}
+    mainnet: "1666600000",
+    testnet: "1666700000",
+  },
+};
 export const claimTokens = "1";
 
 export const supportedNetworks = ["1", "56", "137"];
@@ -259,7 +256,7 @@ export const supportedStaking = {
   ethereum: ["PBR", "PUN", "SHOE", "BITE", "CFL365"],
   bsc: ["CORGIB", "PWAR"],
   matic: ["PBR"],
-  harmony: []
+  harmony: [],
 };
 
 export const minimumStakingAmount = {
@@ -269,5 +266,5 @@ export const minimumStakingAmount = {
   PWAR: 1,
   CFL365: 1,
   PUN: 1,
-  SHOE: 1
+  SHOE: 1,
 };
