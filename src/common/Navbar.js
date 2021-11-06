@@ -288,7 +288,12 @@ const Navbar = ({ currentNetwork, chainId }) => {
             id: "characters",
             icon: <PeopleAltOutlined />,
           },
-          { name: "Swap", link: "https://swap.polkabridge.org", id: "items", icon: <VpnLockOutlined /> },
+          {
+            name: "Swap",
+            link: "https://swap.polkabridge.org",
+            id: "items",
+            icon: <VpnLockOutlined />,
+          },
           {
             name: "Lending",
             link: "#",
@@ -355,7 +360,7 @@ const Navbar = ({ currentNetwork, chainId }) => {
           <img
             className={classes.networkIcon}
             src={harmonyIcon}
-          // alt={currentNetwork}
+            // alt={currentNetwork}
           />
           <span style={{ color: "white", marginLeft: 5 }}>Harmony</span>
         </div>
@@ -422,7 +427,10 @@ const Navbar = ({ currentNetwork, chainId }) => {
             </a>
           </div>
           <div>
-            <a href="https://swap.polkabridge.org" className={classes.navbarItemsDesktop}>
+            <a
+              href="https://swap.polkabridge.org"
+              className={classes.navbarItemsDesktop}
+            >
               Swap <DotCircle />
             </a>
           </div>
