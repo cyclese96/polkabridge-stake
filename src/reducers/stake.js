@@ -72,7 +72,8 @@ export default function (state = initalState, action) {
           BITE: action.payload.bite,
           CFL365: action.payload.clf365,
           PUN: action.payload.pun,
-          SHOE: action.payload.shoe
+          SHOE: action.payload.shoe,
+          WELT: action.payload.welt
         },
       };
     case LOAD_BSC_POOL:

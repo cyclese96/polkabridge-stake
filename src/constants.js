@@ -72,8 +72,8 @@ export const tokenContarctAddresses = {
   },
   WELT: {
     polygon: {
-      testnet: "0x23e8b6a3f6891254988b84da3738d2bfe5e703b9",
-      mainnet: "0x23e8b6a3f6891254988b84da3738d2bfe5e703b9",
+      testnet: "0x6024ca0b7c12846a396a5d860ff885233ef16dd0",
+      mainnet: "0x23E8B6A3f6891254988B84Da3738D2bfe5E703b9",
     },
   },
 };

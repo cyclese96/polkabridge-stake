@@ -32,6 +32,8 @@ import {
   bscNetwork,
   harmonyNetwork,
   maticNetwork,
+  tokenContarctAddresses,
+  WELT,
 } from "../constants";
 import Loader from "./../common/Loader";
 import DotCircle from "./../common/DotCircle";
@@ -348,9 +350,9 @@ const Staking = ({
       },
     },
     WELT: {
-      polygon: {
-        buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x0fd67b4ceb9b607ef206904ec73459c4880132c9",
-        info: "https://coinmarketcap.com/currencies/shoefy/ico/",
+      matic: {
+        buy: `https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=${tokenContarctAddresses.WELT.polygon.mainnet}`,
+        info: "https://www.coingecko.com/en/coins/polkabridge",
       },
     },
   };
@@ -382,6 +384,10 @@ const Staking = ({
     } else if (tokenType === PUN) {
       return pool[tokenType]
         ? formatCurrency(pool[tokenType].punApy, false, 1, true) + " %"
+        : "--";
+    } else if (tokenType === WELT) {
+      return pool[tokenType]
+        ? formatCurrency(pool[tokenType].weltApy, false, 1, true) + " %"
         : "--";
     } else {
       return "--";
@@ -536,11 +542,11 @@ const Staking = ({
                         $
                         {pool[tokenType]
                           ? formatLargeNumber(
-                              fromWei(pool[tokenType].totalTokenStaked) *
-                                (tokenType === "CORGIB"
-                                  ? parseFloat(pool[tokenType].tokenPriceCorgib)
-                                  : parseFloat(pool[tokenType].tokenPrice))
-                            )
+                            fromWei(pool[tokenType].totalTokenStaked) *
+                            (tokenType === "CORGIB"
+                              ? parseFloat(pool[tokenType].tokenPriceCorgib)
+                              : parseFloat(pool[tokenType].tokenPrice))
+                          )
                           : "0"}
                       </span>
                     </div>
@@ -560,11 +566,11 @@ const Staking = ({
                 {" "}
                 {tokenType === "PWAR"
                   ? formatCurrency(
-                      fromWei(stake[tokenType]?.amount),
-                      false,
-                      1,
-                      true
-                    )
+                    fromWei(stake[tokenType]?.amount),
+                    false,
+                    1,
+                    true
+                  )
                   : formatCurrency(fromWei(stake[tokenType]?.amount))}{" "}
               </div>
             </div>
@@ -574,14 +580,14 @@ const Staking = ({
                 {" "}
                 {tokenType === "PWAR"
                   ? formatCurrency(
-                      fromWei(stake[tokenType]?.rewardClaimed),
-                      false,
-                      1,
-                      true
-                    )
+                    fromWei(stake[tokenType]?.rewardClaimed),
+                    false,
+                    1,
+                    true
+                  )
                   : formatCurrency(
-                      fromWei(stake[tokenType]?.rewardClaimed)
-                    )}{" "}
+                    fromWei(stake[tokenType]?.rewardClaimed)
+                  )}{" "}
               </div>
             </div>
             <div className="text-center mt-4">
@@ -590,14 +596,14 @@ const Staking = ({
                 {" "}
                 {tokenType === "PWAR"
                   ? formatCurrency(
-                      fromWei(stake[tokenType]?.pendingReward),
-                      false,
-                      1,
-                      true
-                    )
+                    fromWei(stake[tokenType]?.pendingReward),
+                    false,
+                    1,
+                    true
+                  )
                   : formatCurrency(
-                      fromWei(stake[tokenType]?.pendingReward)
-                    )}{" "}
+                    fromWei(stake[tokenType]?.pendingReward)
+                  )}{" "}
               </div>
             </div>
           </div>

@@ -1,14 +1,14 @@
 import Web3 from "web3";
-import Bite from "../abi/Bite.json";
+// import Bite from "../abi/Bite.json";
 import PolkaBridge from "../abi/PolkaBridge.json";
-import PolkaBridgeMatic from "../abi/pbrMatic.json";
+// import PolkaBridgeMatic from "../abi/pbrMatic.json";
 import PolkaBridgeStaking from "../abi/PolkaBridgeStaking.json";
 import PolkaBridgeStakingMatic from "../abi/polkabridgeStakingMatic.json";
 import CorgibStaking from "../abi/CorgibStaking.json";
-import PolkaBridgeMemeToken from "../abi/PolkaBridgeMemeToken.json";
-import pwarCoin from "../abi/Pwar.json";
-import cl365 from "../abi/Cl365.json";
-import erc20TokenAbi from '../abi/erc20.json';
+// import PolkaBridgeMemeToken from "../abi/PolkaBridgeMemeToken.json";
+// import pwarCoin from "../abi/Pwar.json";
+// import cl365 from "../abi/Cl365.json";
+// import erc20TokenAbi from '../abi/erc20.json';
 
 import {
   // biteAddressKoven,

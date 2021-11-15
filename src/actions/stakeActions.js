@@ -35,6 +35,10 @@ import {
   RESET_SHOE_TOKEN,
   STAKE_SHOE_TOKENS,
   LOAD_SHOE_BALANCE,
+  APPROVE_WELT_TOKENS,
+  RESET_WELT_TOKEN,
+  STAKE_WELT_TOKENS,
+  LOAD_BALANCE,
 } from "./types";
 
 import {
@@ -177,6 +181,8 @@ const tokenToApprove = (tokenType) => {
       return APPROVE_PUN_TOKENS;
     case SHOE:
       return APPROVE_SHOE_TOKENS;
+    case WELT:
+      return APPROVE_WELT_TOKENS;
     default:
       return APPROVE_CLF365_TOKENS;
   }
@@ -198,6 +204,8 @@ const tokenToReset = (tokenType) => {
       return RESET_PUN_TOKEN;
     case SHOE:
       return RESET_SHOE_TOKEN;
+    case WELT:
+      return RESET_WELT_TOKEN;
     default:
       return RESET_CLF365_TOKEN;
   }
@@ -219,6 +227,8 @@ const tokenToStake = (tokenType) => {
       return STAKE_PUN_TOKENS;
     case SHOE:
       return STAKE_SHOE_TOKENS;
+    case WELT:
+      return STAKE_WELT_TOKENS;
     default:
       return STAKE_CLF365_TOKENS;
   }
@@ -274,7 +284,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       };
       const { data } = await axios.get(
         config.coingecko +
-          "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=true"
+        "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=true"
       );
       // console.log("data");
       // console.log(data);
@@ -300,7 +310,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
 
       const bitePriceRes = await axios.get(
         config.coingecko +
-          "/v3/simple/price?ids=dragonbite&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+        "/v3/simple/price?ids=dragonbite&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
       );
       const bitePrice = bitePriceRes.data;
       // console.log("bite price", bitePrice);
@@ -321,7 +331,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       // clfPoolObj.tokenPrice = CLF365_PRICE;
       const cflPriceRes = await axios.get(
         config.coingecko +
-          "/v3/simple/price?ids=cfl365-finance&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+        "/v3/simple/price?ids=cfl365-finance&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
       );
       const cflPrice = cflPriceRes.data;
       // console.log("bite price", cfl);
@@ -343,7 +353,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
 
       const punPriceRes = await axios.get(
         config.coingecko +
-          "/v3/simple/price?ids=cryptopunt&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+        "/v3/simple/price?ids=cryptopunt&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
       );
       const punPrice = punPriceRes.data;
       punPoolObj.tokenPrice = punPrice["cryptopunt"]
@@ -364,7 +374,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       };
       const shoefyPriceRes = await axios.get(
         config.coingecko +
-          "/v3/simple/price?ids=shoefy&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+        "/v3/simple/price?ids=shoefy&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
       );
       const shoefyPrice = shoefyPriceRes.data;
       shoefyPoolObj.tokenPrice = shoefyPrice["shoefy"]
@@ -386,8 +396,9 @@ export const getPoolInfo = (network) => async (dispatch) => {
       });
     } else if (network === maticNetwork) {
       // matic pool network calculations
-      const [pbrPool] = await Promise.all([
+      const [pbrPool, weltPool] = await Promise.all([
         currStakingContract.methods.getPoolInfo(poolId.PBR).call(),
+        currStakingContract.methods.getPoolInfo(poolId.WELT).call(),
       ]);
 
       const pbrPoolObj = {
@@ -399,7 +410,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       };
       const { data } = await axios.get(
         config.coingecko +
-          "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
+        "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
       );
 
       pbrPoolObj.tokenPrice = data.polkabridge ? data.polkabridge.usd : "---";
@@ -413,10 +424,36 @@ export const getPoolInfo = (network) => async (dispatch) => {
       const pbrApy = getApy("PBR", pbrPoolObj, network);
       pbrPoolObj.pbrApy = pbrApy;
 
+      //welt pool prepration
+      const weltPoolObj = {
+        accTokenPerShare: weltPool[0],
+        lastRewardBlock: weltPool[1],
+        rewardPerBlock: weltPool[2],
+        totalTokenStaked: weltPool[3],
+        totalTokenClaimed: weltPool[4],
+      };
+      // const { data } = await axios.get(
+      //   config.coingecko +
+      //     "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
+      // );
+
+      // weltPoolObj.tokenPrice = data.polkabridge ? data.polkabridge.usd : "---";
+      // weltPoolObj.mCap = data.polkabridge
+      //   ? data.polkabridge.usd_market_cap
+      //   : "---";
+      // weltPoolObj.change = data.polkabridge
+      //   ? data.polkabridge.usd_24h_change
+      //   : "---";
+      weltPoolObj.tokenPrice = 0.1;
+
+      const weltApy = getApy(WELT, weltPoolObj, network);
+      weltPoolObj.weltApy = weltApy;
+
+
       // console.log('pool object', { network, pbrPoolObj })
       dispatch({
         type: LOAD_PPOL_INFO,
-        payload: { pbr: pbrPoolObj },
+        payload: { pbr: pbrPoolObj, welt: weltPoolObj },
       });
     } else if (network === harmonyNetwork) {
       console.log("getPoolInfo:  fetching pool info ", network);
@@ -434,7 +471,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       };
       const { data } = await axios.get(
         config.coingecko +
-          "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
+        "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
       );
 
       pbrPoolObj.tokenPrice = data.polkabridge ? data.polkabridge.usd : "---";
@@ -474,7 +511,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       // using corgib token price in tokenPriceCorgin key:
       const dataCorgib = await axios.get(
         config.coingecko +
-          "/v3/simple/price?ids=the-corgi-of-polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
+        "/v3/simple/price?ids=the-corgi-of-polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
       );
 
       poolObj.tokenPriceCorgib = dataCorgib.data["the-corgi-of-polkabridge"]
@@ -484,7 +521,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       //Note: using polkabridge pool information in corgibPool Object:
       const { data } = await axios.get(
         config.coingecko +
-          "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
+        "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
       );
 
       poolObj.tokenPrice = data.polkabridge
@@ -513,7 +550,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       // pwarPoolObj.tokenPrice = PWAR_PRICE;
       const pwarPriceRes = await axios.get(
         config.coingecko +
-          "/v3/simple/price?ids=polkawar&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+        "/v3/simple/price?ids=polkawar&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
       );
       const pwarPrice = pwarPriceRes.data;
       // console.log("polkawar price", pwarData);
@@ -614,27 +651,48 @@ export const checkAllowance = (account, network) => async (dispatch) => {
         });
       }
 
-      //matic network
-      if (network === maticNetwork || network === harmonyNetwork) {
-        const [pbrAllowance] = await Promise.all([
-          getTokenContract(network,PBR)
-            .methods.allowance(account, currStakingContract._address)
-            .call(),
-        ]);
 
-        if (new BigNumber(pbrAllowance).gt(0)) {
-          dispatch({
-            type: APPROVE_PBR_TOKENS,
-          });
-        }
+    } else if (network === maticNetwork) {
+      const [pbrAllowance, weltAllowance] = await Promise.all([
+        getTokenContract(network, PBR)
+          .methods.allowance(account, currStakingContract._address)
+          .call(),
+        getTokenContract(network, WELT)
+          .methods.allowance(account, currStakingContract._address)
+          .call(),
+      ]);
+
+      if (new BigNumber(pbrAllowance).gt(0)) {
+        dispatch({
+          type: APPROVE_PBR_TOKENS,
+        });
+      }
+
+      if (new BigNumber(weltAllowance).gt(0)) {
+        dispatch({
+          type: APPROVE_WELT_TOKENS,
+        });
+      }
+
+    } else if (network === harmonyNetwork) {
+      const [pbrAllowance] = await Promise.all([
+        getTokenContract(network, PBR)
+          .methods.allowance(account, currStakingContract._address)
+          .call(),
+      ]);
+
+      if (new BigNumber(pbrAllowance).gt(0)) {
+        dispatch({
+          type: APPROVE_PBR_TOKENS,
+        });
       }
     } else {
       // bsc network
       const [corgibAllowance, pwarAllowance] = await Promise.all([
-        getTokenContract(network,CORGIB)
+        getTokenContract(network, CORGIB)
           .methods.allowance(account, currStakingContract._address)
           .call(),
-        getTokenContract(network,PWAR)
+        getTokenContract(network, PWAR)
           .methods.allowance(account, currStakingContract._address)
           .call(),
       ]);
@@ -660,9 +718,11 @@ export const checkAllowance = (account, network) => async (dispatch) => {
 export const confirmAllowance =
   (balance, tokenType, network, account) => async (dispatch) => {
     try {
+      const loadingObj = {};
+      loadingObj[`${tokenType}`] = true;
       dispatch({
         type: SHOW_LOADING,
-        payload: tokenType,
+        payload: loadingObj,
       });
       // const account = await getCurrentAccount();
       const tokenContract = getTokenContract(network, tokenType);
@@ -692,9 +752,11 @@ export const confirmAllowance =
   };
 
 export const getUserStakedData = (tokenType, network) => async (dispatch) => {
+  const loadingObj = {};
+  loadingObj[`${tokenType}`] = true;
   dispatch({
     type: SHOW_LOADING,
-    payload: tokenType,
+    payload: loadingObj,
   });
 
   try {
@@ -752,9 +814,11 @@ export const getUserStakedData = (tokenType, network) => async (dispatch) => {
 
 export const stakeTokens =
   (tokens, account, tokenType, network) => async (dispatch) => {
+    const loadingObj = {};
+    loadingObj[`${tokenType}`] = true;
     dispatch({
       type: SHOW_LOADING,
-      payload: tokenType,
+      payload: loadingObj,
     });
     const depositTokens = toWei(tokens, "ether");
 
@@ -780,9 +844,11 @@ export const stakeTokens =
         currStakeContract.methods.pendingReward(pool, account).call(),
       ]);
 
+      const balanceObj = {};
+      balanceObj[`${tokenType}`] = balanceWei
       dispatch({
-        type: tokenToLoad(tokenType),
-        payload: balanceWei,
+        type: LOAD_BALANCE,
+        payload: balanceObj,
       });
 
       const stakeObj = {
@@ -808,9 +874,11 @@ export const stakeTokens =
 
 export const unstakeTokens =
   (tokens, account, tokenType, network) => async (dispatch) => {
+    const loadingObj = {};
+    loadingObj[`${tokenType}`] = true;
     dispatch({
       type: SHOW_LOADING,
-      payload: tokenType,
+      payload: loadingObj,
     });
 
     const depositTokens = toWei(tokens, "ether");
@@ -835,9 +903,12 @@ export const unstakeTokens =
         currStakeContract.methods.pendingReward(pool, account).call(),
       ]);
 
+      const balanceObj = {};
+      balanceObj[`${tokenType}`] = balanceWei;
+
       dispatch({
-        type: tokenToLoad(tokenType),
-        payload: balanceWei,
+        type: LOAD_BALANCE,
+        payload: balanceObj,
       });
 
       const stakeObj = {
