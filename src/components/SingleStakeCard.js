@@ -287,6 +287,7 @@ const Staking = ({
     CFL365: clf365Img,
     PUN: punImg,
     SHOE: "img/shoefy.png",
+    WELT: "img/welt.png",
   };
 
   const tokenName = {
@@ -297,6 +298,7 @@ const Staking = ({
     CFL365: "CFL 365",
     PUN: "CryptoPunt",
     SHOE: "Shoefy",
+    WELT: "FabWelt",
   };
   const tokenInfo = {
     PBR: {
@@ -341,6 +343,12 @@ const Staking = ({
     },
     SHOE: {
       ethereum: {
+        buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x0fd67b4ceb9b607ef206904ec73459c4880132c9",
+        info: "https://coinmarketcap.com/currencies/shoefy/ico/",
+      },
+    },
+    WELT: {
+      polygon: {
         buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x0fd67b4ceb9b607ef206904ec73459c4880132c9",
         info: "https://coinmarketcap.com/currencies/shoefy/ico/",
       },
@@ -528,10 +536,11 @@ const Staking = ({
                         $
                         {pool[tokenType]
                           ? formatLargeNumber(
-                            fromWei(pool[tokenType].totalTokenStaked) *
-                            (tokenType === 'CORGIB' ? parseFloat(pool[tokenType].tokenPriceCorgib)
-                              : parseFloat(pool[tokenType].tokenPrice))
-                          )
+                              fromWei(pool[tokenType].totalTokenStaked) *
+                                (tokenType === "CORGIB"
+                                  ? parseFloat(pool[tokenType].tokenPriceCorgib)
+                                  : parseFloat(pool[tokenType].tokenPrice))
+                            )
                           : "0"}
                       </span>
                     </div>
@@ -551,12 +560,12 @@ const Staking = ({
                 {" "}
                 {tokenType === "PWAR"
                   ? formatCurrency(
-                    fromWei(stake[tokenType].amount),
-                    false,
-                    1,
-                    true
-                  )
-                  : formatCurrency(fromWei(stake[tokenType].amount))}{" "}
+                      fromWei(stake[tokenType]?.amount),
+                      false,
+                      1,
+                      true
+                    )
+                  : formatCurrency(fromWei(stake[tokenType]?.amount))}{" "}
               </div>
             </div>
             <div className="text-center mt-4">
@@ -565,14 +574,14 @@ const Staking = ({
                 {" "}
                 {tokenType === "PWAR"
                   ? formatCurrency(
-                    fromWei(stake[tokenType].rewardClaimed),
-                    false,
-                    1,
-                    true
-                  )
+                      fromWei(stake[tokenType]?.rewardClaimed),
+                      false,
+                      1,
+                      true
+                    )
                   : formatCurrency(
-                    fromWei(stake[tokenType].rewardClaimed)
-                  )}{" "}
+                      fromWei(stake[tokenType]?.rewardClaimed)
+                    )}{" "}
               </div>
             </div>
             <div className="text-center mt-4">
@@ -581,14 +590,14 @@ const Staking = ({
                 {" "}
                 {tokenType === "PWAR"
                   ? formatCurrency(
-                    fromWei(stake[tokenType]?.pendingReward),
-                    false,
-                    1,
-                    true
-                  )
+                      fromWei(stake[tokenType]?.pendingReward),
+                      false,
+                      1,
+                      true
+                    )
                   : formatCurrency(
-                    fromWei(stake[tokenType]?.pendingReward)
-                  )}{" "}
+                      fromWei(stake[tokenType]?.pendingReward)
+                    )}{" "}
               </div>
             </div>
           </div>

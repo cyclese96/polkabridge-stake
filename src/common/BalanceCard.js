@@ -18,6 +18,7 @@ import {
   PBR,
   PUN,
   SHOE,
+  WELT,
 } from "../constants";
 
 const useStyles = makeStyles((theme) => ({
@@ -92,6 +93,7 @@ function BalanceCard(props) {
     CFL365: clf365Img,
     PUN: punImg,
     SHOE: "img/shoefy.png",
+    WELT: "img/welt.png",
   };
 
   const tokenName = {
@@ -102,6 +104,7 @@ function BalanceCard(props) {
     CFL365: "CFL 365",
     PUN: "CryptoPunt",
     SHOE: "Shoefy Private",
+    WELT: "FabWelt",
   };
 
   const getCoins = () => {
@@ -118,7 +121,10 @@ function BalanceCard(props) {
         currentNetwork === maticNetwork ||
         currentNetwork === harmonyNetwork
       ) {
-        return [{ coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) }];
+        return [
+          { coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
+          { coin: WELT, balance: formatCurrency(fromWei(balance[WELT])) },
+        ];
       } else {
         return [
           {

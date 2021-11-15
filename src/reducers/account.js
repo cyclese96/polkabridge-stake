@@ -66,11 +66,7 @@ export default function (state = initalState, action) {
         ...state,
         balance: {
           ...state.balance,
-          PBR: action.payload.pbr,
-          BITE: action.payload.bite,
-          CFL365: action.payload.clf365,
-          PUN: action.payload.pun,
-          SHOE: action.payload.shoe
+          ...action.payload
         },
       };
     case LOAD_PBR_BALANCE:
