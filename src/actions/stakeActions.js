@@ -441,7 +441,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       // weltPoolObj.change = data.polkabridge
       //   ? data.polkabridge.usd_24h_change
       //   : "---";
-      weltPoolObj.tokenPrice = 0.1;
+      weltPoolObj.tokenPrice = 0.025;
 
       const weltApy = getApy(WELT, weltPoolObj, network);
       weltPoolObj.weltApy = weltApy;
