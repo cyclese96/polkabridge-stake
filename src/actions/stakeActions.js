@@ -726,9 +726,20 @@ export const confirmAllowance =
       const stakingContract = stakeContract(network);
 
       // console.log('allowance params:  ', { balance, tokenType, network, account })
-      const res = await tokenContract.methods
-        .approve(stakingContract._address, balance)
-        .send({ from: account });
+      if (network === maticNetwork) {
+
+        await tokenContract.methods
+          .approve(stakingContract._address, balance)
+          .send({ from: account, gasPrice: 100000000000 });
+
+      } else {
+
+        await tokenContract.methods
+          .approve(stakingContract._address, balance)
+          .send({ from: account });
+
+      }
+
 
       dispatch({
         type: tokenToApprove(tokenType),
