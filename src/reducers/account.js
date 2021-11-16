@@ -66,11 +66,7 @@ export default function (state = initalState, action) {
         ...state,
         balance: {
           ...state.balance,
-          PBR: action.payload.pbr,
-          BITE: action.payload.bite,
-          CFL365: action.payload.clf365,
-          PUN: action.payload.pun,
-          SHOE: action.payload.shoe
+          ...action.payload
         },
       };
     case LOAD_PBR_BALANCE:
@@ -130,85 +126,14 @@ export default function (state = initalState, action) {
         },
       };
     case SHOW_LOADING:
-      if (action.payload === "BITE") {
-        return {
-          ...state,
-          loading: {
-            ...state.loading,
-            BITE: true,
-          },
-          error: {},
-        };
-      } else if (action.payload === "PBR") {
-        return {
-          ...state,
-          loading: {
-            ...state.loading,
-            PBR: true,
-          },
-          error: {},
-        };
-      } else if (action.payload === "CORGIB") {
-        return {
-          ...state,
-          loading: {
-            ...state.loading,
-            CORGIB: true,
-          },
-          error: {},
-        };
-      } else if (action.payload === "PWAR") {
-        return {
-          ...state,
-          loading: {
-            ...state.loading,
-            PWAR: true,
-          },
-          error: {},
-        };
-      } else if (action.payload === CFL365) {
-        return {
-          ...state,
-          loading: {
-            ...state.loading,
-            CFL365: true,
-          },
-          error: {},
-        };
-      } else if (action.payload === PUN) {
-        return {
-          ...state,
-          loading: {
-            ...state.loading,
-            PUN: true,
-          },
-          error: {},
-        };
-      } else if (action.payload === SHOE) {
-        return {
-          ...state,
-          loading: {
-            ...state.loading,
-            SHOE: true,
-          },
-          error: {},
-        };
-      } else {
-        return {
-          ...state,
-          loading: {
-            ...state.loading,
-            PBR: true,
-            BITE: true,
-            CORGIB: true,
-            PWAR: true,
-            CFL365: true,
-            PUN: true,
-            SHOE: true
-          },
-          error: {},
-        };
+      return {
+        ...state,
+        loading: {
+          ...state.loading,
+          ...action.payload
+        }
       }
+
     case CHANGE_NETWORK:
       return {
         ...state,

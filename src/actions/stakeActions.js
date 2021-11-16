@@ -35,15 +35,14 @@ import {
   RESET_SHOE_TOKEN,
   STAKE_SHOE_TOKENS,
   LOAD_SHOE_BALANCE,
+  APPROVE_WELT_TOKENS,
+  RESET_WELT_TOKEN,
+  STAKE_WELT_TOKENS,
+  LOAD_BALANCE,
 } from "./types";
 
 import {
-  biteContract,
-  corgibCoinContract,
-  pbrContract,
   stakeContract,
-  pwarCoinContract,
-  clf365Contract,
   erc20TokenContract,
 } from "../contracts/connections";
 import {
@@ -72,33 +71,92 @@ import {
   PWAR_PRICE,
   SHOE,
   tokenContarctAddresses,
+  WELT,
 } from "../constants";
 
 // current token contract
 const getTokenContract = (network, tokenType) => {
   switch (tokenType) {
     case PBR:
-      return pbrContract(network);
+      if (network === etheriumNetwork) {
+        return erc20TokenContract(
+          network,
+          currentConnection === "testnet"
+            ? tokenContarctAddresses.PBR.ethereum.testnet
+            : tokenContarctAddresses.PBR.ethereum.mainnet
+        );
+      } else {
+        return erc20TokenContract(
+          network,
+          currentConnection === "testnet"
+            ? tokenContarctAddresses.PBR.polygon.testnet
+            : tokenContarctAddresses.PBR.polygon.mainnet
+        );
+      }
+
     case BITE:
-      return biteContract(network);
+      return erc20TokenContract(
+        network,
+        currentConnection === "testnet"
+          ? tokenContarctAddresses.BITE.ethereum.testnet
+          : tokenContarctAddresses.BITE.ethereum.mainnet
+      );
     case CORGIB:
-      return corgibCoinContract(network);
+      return erc20TokenContract(
+        network,
+        currentConnection === "testnet"
+          ? tokenContarctAddresses.CORGIB.bsc.testnet
+          : tokenContarctAddresses.CORGIB.bsc.mainnet
+      );
     case PWAR:
-      return pwarCoinContract(network);
+      return erc20TokenContract(
+        network,
+        currentConnection === "testnet"
+          ? tokenContarctAddresses.PWAR.bsc.testnet
+          : tokenContarctAddresses.PWAR.bsc.mainnet
+      );
     case CFL365:
-      return clf365Contract(network);
+      return erc20TokenContract(
+        network,
+        currentConnection === "testnet"
+          ? tokenContarctAddresses.CFL365.ethereum.testnet
+          : tokenContarctAddresses.CFL365.ethereum.mainnet
+      );
     case PUN:
-      return erc20TokenContract(network, currentConnection === 'testnet'
-        ? tokenContarctAddresses.PUN.ethereum.testnet
-        : tokenContarctAddresses.PUN.ethereum.mainnet
-      )
+      return erc20TokenContract(
+        network,
+        currentConnection === "testnet"
+          ? tokenContarctAddresses.PUN.ethereum.testnet
+          : tokenContarctAddresses.PUN.ethereum.mainnet
+      );
     case SHOE:
-      return erc20TokenContract(network, currentConnection === 'testnet'
-        ? tokenContarctAddresses.SHOE.ethereum.testnet
-        : tokenContarctAddresses.SHOE.ethereum.mainnet
-      )
+      return erc20TokenContract(
+        network,
+        currentConnection === "testnet"
+          ? tokenContarctAddresses.SHOE.ethereum.testnet
+          : tokenContarctAddresses.SHOE.ethereum.mainnet
+      );
+    case SHOE:
+      return erc20TokenContract(
+        network,
+        currentConnection === "testnet"
+          ? tokenContarctAddresses.SHOE.ethereum.testnet
+          : tokenContarctAddresses.SHOE.ethereum.mainnet
+      );
+    case WELT:
+      return erc20TokenContract(
+        network,
+        currentConnection === "testnet"
+          ? tokenContarctAddresses.WELT.polygon.testnet
+          : tokenContarctAddresses.WELT.polygon.mainnet
+      );
     default:
-      return clf365Contract(network);
+      return erc20TokenContract(
+        network,
+        currentConnection === "testnet"
+          ? tokenContarctAddresses.PBR.ethereum.testnet
+          : tokenContarctAddresses.PBR.ethereum.mainnet
+      );
   }
 };
 
@@ -118,6 +176,8 @@ const tokenToApprove = (tokenType) => {
       return APPROVE_PUN_TOKENS;
     case SHOE:
       return APPROVE_SHOE_TOKENS;
+    case WELT:
+      return APPROVE_WELT_TOKENS;
     default:
       return APPROVE_CLF365_TOKENS;
   }
@@ -139,6 +199,8 @@ const tokenToReset = (tokenType) => {
       return RESET_PUN_TOKEN;
     case SHOE:
       return RESET_SHOE_TOKEN;
+    case WELT:
+      return RESET_WELT_TOKEN;
     default:
       return RESET_CLF365_TOKEN;
   }
@@ -160,6 +222,8 @@ const tokenToStake = (tokenType) => {
       return STAKE_PUN_TOKENS;
     case SHOE:
       return STAKE_SHOE_TOKENS;
+    case WELT:
+      return STAKE_WELT_TOKENS;
     default:
       return STAKE_CLF365_TOKENS;
   }
@@ -196,13 +260,15 @@ export const getPoolInfo = (network) => async (dispatch) => {
     // ethereum pool calculations
     if (network === etheriumNetwork) {
       // console.log('g')
-      const [pbrPool, bitePool, clfPool, punPool, shoePool] = await Promise.all([
-        currStakingContract.methods.getPoolInfo(poolId.PBR).call(),
-        currStakingContract.methods.getPoolInfo(poolId.BITE).call(),
-        currStakingContract.methods.getPoolInfo(poolId.CFL365).call(),
-        currStakingContract.methods.getPoolInfo(poolId.PUN).call(),
-        currStakingContract.methods.getPoolInfo(poolId.SHOE).call(),
-      ]);
+      const [pbrPool, bitePool, clfPool, punPool, shoePool] = await Promise.all(
+        [
+          currStakingContract.methods.getPoolInfo(poolId.PBR).call(),
+          currStakingContract.methods.getPoolInfo(poolId.BITE).call(),
+          currStakingContract.methods.getPoolInfo(poolId.CFL365).call(),
+          currStakingContract.methods.getPoolInfo(poolId.PUN).call(),
+          currStakingContract.methods.getPoolInfo(poolId.SHOE).call(),
+        ]
+      );
 
       const pbrPoolObj = {
         accTokenPerShare: pbrPool[0],
@@ -271,7 +337,6 @@ export const getPoolInfo = (network) => async (dispatch) => {
 
       clfPoolObj.clf365Apy = getApy(CFL365, clfPoolObj, network);
 
-
       // pun pool calculations:
       const punPoolObj = {
         accTokenPerShare: punPool[0],
@@ -316,12 +381,21 @@ export const getPoolInfo = (network) => async (dispatch) => {
 
       dispatch({
         type: LOAD_PPOL_INFO,
-        payload: { pbr: pbrPoolObj, bite: bitePoolObj, clf365: clfPoolObj, pun: punPoolObj, shoe: shoefyPoolObj },
+        payload: {
+          pbr: pbrPoolObj,
+          bite: bitePoolObj,
+          clf365: clfPoolObj,
+          pun: punPoolObj,
+          shoe: shoefyPoolObj,
+        },
       });
     } else if (network === maticNetwork) {
       // matic pool network calculations
-      const [pbrPool] = await Promise.all([
+      // const weltPool = {}
+      console.log('fetching from matic')
+      const [pbrPool, weltPool] = await Promise.all([
         currStakingContract.methods.getPoolInfo(poolId.PBR).call(),
+        currStakingContract.methods.getPoolInfo(poolId.WELT).call(),
       ]);
 
       const pbrPoolObj = {
@@ -347,13 +421,39 @@ export const getPoolInfo = (network) => async (dispatch) => {
       const pbrApy = getApy("PBR", pbrPoolObj, network);
       pbrPoolObj.pbrApy = pbrApy;
 
+      //welt pool prepration
+      const weltPoolObj = {
+        accTokenPerShare: weltPool[0],
+        lastRewardBlock: weltPool[1],
+        rewardPerBlock: weltPool[2],
+        totalTokenStaked: weltPool[3],
+        totalTokenClaimed: weltPool[4],
+      };
+      // const { data } = await axios.get(
+      //   config.coingecko +
+      //     "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
+      // );
+
+      // weltPoolObj.tokenPrice = data.polkabridge ? data.polkabridge.usd : "---";
+      // weltPoolObj.mCap = data.polkabridge
+      //   ? data.polkabridge.usd_market_cap
+      //   : "---";
+      // weltPoolObj.change = data.polkabridge
+      //   ? data.polkabridge.usd_24h_change
+      //   : "---";
+      weltPoolObj.tokenPrice = 0.1;
+
+      const weltApy = getApy(WELT, weltPoolObj, network);
+      weltPoolObj.weltApy = weltApy;
+
+
       // console.log('pool object', { network, pbrPoolObj })
       dispatch({
         type: LOAD_PPOL_INFO,
-        payload: { pbr: pbrPoolObj },
+        payload: { pbr: pbrPoolObj, welt: weltPoolObj },
       });
     } else if (network === harmonyNetwork) {
-      console.log('getPoolInfo:  fetching pool info ', network)
+      console.log("getPoolInfo:  fetching pool info ", network);
       // matic pool network calculations
       const [pbrPool] = await Promise.all([
         currStakingContract.methods.getPoolInfo(poolId.PBR).call(),
@@ -411,10 +511,9 @@ export const getPoolInfo = (network) => async (dispatch) => {
         "/v3/simple/price?ids=the-corgi-of-polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
       );
 
-      poolObj.tokenPriceCorgib = dataCorgib.data['the-corgi-of-polkabridge']
-        ? parseFloat(dataCorgib.data['the-corgi-of-polkabridge'].usd)
+      poolObj.tokenPriceCorgib = dataCorgib.data["the-corgi-of-polkabridge"]
+        ? parseFloat(dataCorgib.data["the-corgi-of-polkabridge"].usd)
         : "---";
-
 
       //Note: using polkabridge pool information in corgibPool Object:
       const { data } = await axios.get(
@@ -466,7 +565,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       });
     }
   } catch (error) {
-    console.log("getPoolInfo error ", error);
+    console.log("getPoolInfo error ", { error, network, poolId: poolId.WELT });
     dispatch({
       type: ERROR,
       payload: "Failed to load Pool data!",
@@ -486,29 +585,38 @@ export const checkAllowance = (account, network) => async (dispatch) => {
     const currStakingContract = stakeContract(network);
 
     if (network === etheriumNetwork) {
-      const [pbrAllowance, biteAllowance, cl365Allowance, punAllowance, shoeAllowance] = await Promise.all([
-        pbrContract(network)
+      const [
+        pbrAllowance,
+        biteAllowance,
+        cl365Allowance,
+        punAllowance,
+        shoeAllowance,
+      ] = await Promise.all([
+        getTokenContract(network, PBR)
           .methods.allowance(account, currStakingContract._address)
           .call(),
-        biteContract(network)
+        getTokenContract(network, BITE)
           .methods.allowance(account, currStakingContract._address)
           .call(),
-        clf365Contract(network)
+        getTokenContract(network, CFL365)
           .methods.allowance(account, currStakingContract._address)
-          .call(), ,
+          .call(),
+        ,
         erc20TokenContract(
           network,
-          currentConnection === 'testnet'
+          currentConnection === "testnet"
             ? tokenContarctAddresses.PBR.ethereum.testnet
             : tokenContarctAddresses.PUN.ethereum.mainnet
-        ).methods.allowance(account, currStakingContract._address)
+        )
+          .methods.allowance(account, currStakingContract._address)
           .call(),
         erc20TokenContract(
           network,
-          currentConnection === 'testnet'
+          currentConnection === "testnet"
             ? tokenContarctAddresses.PBR.ethereum.testnet
             : tokenContarctAddresses.SHOE.ethereum.mainnet
-        ).methods.allowance(account, currStakingContract._address)
+        )
+          .methods.allowance(account, currStakingContract._address)
           .call(),
       ]);
 
@@ -540,27 +648,48 @@ export const checkAllowance = (account, network) => async (dispatch) => {
         });
       }
 
-      //matic network
-      if (network === maticNetwork || network === harmonyNetwork) {
-        const [pbrAllowance] = await Promise.all([
-          pbrContract(network)
-            .methods.allowance(account, currStakingContract._address)
-            .call(),
-        ]);
 
-        if (new BigNumber(pbrAllowance).gt(0)) {
-          dispatch({
-            type: APPROVE_PBR_TOKENS,
-          });
-        }
+    } else if (network === maticNetwork) {
+      const [pbrAllowance, weltAllowance] = await Promise.all([
+        getTokenContract(network, PBR)
+          .methods.allowance(account, currStakingContract._address)
+          .call(),
+        getTokenContract(network, WELT)
+          .methods.allowance(account, currStakingContract._address)
+          .call(),
+      ]);
+
+      if (new BigNumber(pbrAllowance).gt(0)) {
+        dispatch({
+          type: APPROVE_PBR_TOKENS,
+        });
+      }
+
+      if (new BigNumber(weltAllowance).gt(0)) {
+        dispatch({
+          type: APPROVE_WELT_TOKENS,
+        });
+      }
+
+    } else if (network === harmonyNetwork) {
+      const [pbrAllowance] = await Promise.all([
+        getTokenContract(network, PBR)
+          .methods.allowance(account, currStakingContract._address)
+          .call(),
+      ]);
+
+      if (new BigNumber(pbrAllowance).gt(0)) {
+        dispatch({
+          type: APPROVE_PBR_TOKENS,
+        });
       }
     } else {
       // bsc network
       const [corgibAllowance, pwarAllowance] = await Promise.all([
-        corgibCoinContract(network)
+        getTokenContract(network, CORGIB)
           .methods.allowance(account, currStakingContract._address)
           .call(),
-        pwarCoinContract(network)
+        getTokenContract(network, PWAR)
           .methods.allowance(account, currStakingContract._address)
           .call(),
       ]);
@@ -586,9 +715,11 @@ export const checkAllowance = (account, network) => async (dispatch) => {
 export const confirmAllowance =
   (balance, tokenType, network, account) => async (dispatch) => {
     try {
+      const loadingObj = {};
+      loadingObj[`${tokenType}`] = true;
       dispatch({
         type: SHOW_LOADING,
-        payload: tokenType,
+        payload: loadingObj,
       });
       // const account = await getCurrentAccount();
       const tokenContract = getTokenContract(network, tokenType);
@@ -618,9 +749,11 @@ export const confirmAllowance =
   };
 
 export const getUserStakedData = (tokenType, network) => async (dispatch) => {
+  const loadingObj = {};
+  loadingObj[`${tokenType}`] = true;
   dispatch({
     type: SHOW_LOADING,
-    payload: tokenType,
+    payload: loadingObj,
   });
 
   try {
@@ -678,9 +811,11 @@ export const getUserStakedData = (tokenType, network) => async (dispatch) => {
 
 export const stakeTokens =
   (tokens, account, tokenType, network) => async (dispatch) => {
+    const loadingObj = {};
+    loadingObj[`${tokenType}`] = true;
     dispatch({
       type: SHOW_LOADING,
-      payload: tokenType,
+      payload: loadingObj,
     });
     const depositTokens = toWei(tokens, "ether");
 
@@ -706,9 +841,11 @@ export const stakeTokens =
         currStakeContract.methods.pendingReward(pool, account).call(),
       ]);
 
+      const balanceObj = {};
+      balanceObj[`${tokenType}`] = balanceWei
       dispatch({
-        type: tokenToLoad(tokenType),
-        payload: balanceWei,
+        type: LOAD_BALANCE,
+        payload: balanceObj,
       });
 
       const stakeObj = {
@@ -734,9 +871,11 @@ export const stakeTokens =
 
 export const unstakeTokens =
   (tokens, account, tokenType, network) => async (dispatch) => {
+    const loadingObj = {};
+    loadingObj[`${tokenType}`] = true;
     dispatch({
       type: SHOW_LOADING,
-      payload: tokenType,
+      payload: loadingObj,
     });
 
     const depositTokens = toWei(tokens, "ether");
@@ -761,9 +900,12 @@ export const unstakeTokens =
         currStakeContract.methods.pendingReward(pool, account).call(),
       ]);
 
+      const balanceObj = {};
+      balanceObj[`${tokenType}`] = balanceWei;
+
       dispatch({
-        type: tokenToLoad(tokenType),
-        payload: balanceWei,
+        type: LOAD_BALANCE,
+        payload: balanceObj,
       });
 
       const stakeObj = {

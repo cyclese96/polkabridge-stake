@@ -20,7 +20,8 @@ import {
   apyConstants,
   harmonyNetwork,
   SHOE,
-  PUN
+  PUN,
+  WELT
 } from "../constants";
 import web3 from "../web";
 import config from "./config";
@@ -250,6 +251,13 @@ export const getApy = (tokenType, poolObj, network) => {
         total_token_locked
       );
       return punApy;
+    case WELT:
+      const weltApy = getCalculatedApy(
+        apyConstants.polygon.WELT.NUMBER_BLOCKS_PER_YEAR,
+        apyConstants.polygon.WELT.AVG_REWARD_PER_BLOCK,
+        total_token_locked
+      );
+      return weltApy;
     default:
       return 0;
   }

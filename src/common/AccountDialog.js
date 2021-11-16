@@ -13,6 +13,7 @@ import {
   PBR,
   PUN,
   SHOE,
+  WELT,
 } from "../constants";
 import biteImg from "../assets/bite.png";
 import corgibImg from "../assets/corgi.png";
@@ -171,7 +172,8 @@ const AccountDialog = ({
       ];
     } else {
       if (currentNetwork === maticNetwork) {
-        return [{ coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) }];
+        return [{ coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
+        { coin: WELT, balance: formatCurrency(fromWei(balance[WELT])) }];
       } else {
         return [
           {
@@ -195,6 +197,7 @@ const AccountDialog = ({
     CFL365: clf365Img,
     PUN: puntImg,
     SHOE: "img/shoefy.png",
+    WELT: "img/welt.png",
   };
 
   const tokenName = {
@@ -205,6 +208,7 @@ const AccountDialog = ({
     CFL365: "CFL 365",
     PUN: "CryptoPunt",
     SHOE: "Shoefy Private",
+    WELT: "FabWelt",
   };
   return (
     <div>

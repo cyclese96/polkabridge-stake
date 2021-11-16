@@ -32,6 +32,8 @@ import {
   bscNetwork,
   harmonyNetwork,
   maticNetwork,
+  tokenContarctAddresses,
+  WELT,
 } from "../constants";
 import Loader from "./../common/Loader";
 import DotCircle from "./../common/DotCircle";
@@ -287,6 +289,7 @@ const Staking = ({
     CFL365: clf365Img,
     PUN: punImg,
     SHOE: "img/shoefy.png",
+    WELT: "img/welt.png",
   };
 
   const tokenName = {
@@ -297,6 +300,7 @@ const Staking = ({
     CFL365: "CFL 365",
     PUN: "CryptoPunt",
     SHOE: "Shoefy",
+    WELT: "FabWelt",
   };
   const tokenInfo = {
     PBR: {
@@ -345,6 +349,12 @@ const Staking = ({
         info: "https://coinmarketcap.com/currencies/shoefy/ico/",
       },
     },
+    WELT: {
+      matic: {
+        buy: `https://quickswap.exchange/#/swap?inputCurrency=MATIC&outputCurrency=${tokenContarctAddresses.WELT.polygon.mainnet}`,
+        info: "https://polygonscan.com/address/0x23e8b6a3f6891254988b84da3738d2bfe5e703b9",
+      },
+    },
   };
   const getCurrentApy = () => {
     if (tokenType === "PBR") {
@@ -374,6 +384,10 @@ const Staking = ({
     } else if (tokenType === PUN) {
       return pool[tokenType]
         ? formatCurrency(pool[tokenType].punApy, false, 1, true) + " %"
+        : "--";
+    } else if (tokenType === WELT) {
+      return pool[tokenType]
+        ? formatCurrency(pool[tokenType].weltApy, false, 1, true) + " %"
         : "--";
     } else {
       return "--";
@@ -529,7 +543,8 @@ const Staking = ({
                         {pool[tokenType]
                           ? formatLargeNumber(
                             fromWei(pool[tokenType].totalTokenStaked) *
-                            (tokenType === 'CORGIB' ? parseFloat(pool[tokenType].tokenPriceCorgib)
+                            (tokenType === "CORGIB"
+                              ? parseFloat(pool[tokenType].tokenPriceCorgib)
                               : parseFloat(pool[tokenType].tokenPrice))
                           )
                           : "0"}
@@ -551,12 +566,12 @@ const Staking = ({
                 {" "}
                 {tokenType === "PWAR"
                   ? formatCurrency(
-                    fromWei(stake[tokenType].amount),
+                    fromWei(stake[tokenType]?.amount),
                     false,
                     1,
                     true
                   )
-                  : formatCurrency(fromWei(stake[tokenType].amount))}{" "}
+                  : formatCurrency(fromWei(stake[tokenType]?.amount))}{" "}
               </div>
             </div>
             <div className="text-center mt-4">
@@ -565,13 +580,13 @@ const Staking = ({
                 {" "}
                 {tokenType === "PWAR"
                   ? formatCurrency(
-                    fromWei(stake[tokenType].rewardClaimed),
+                    fromWei(stake[tokenType]?.rewardClaimed),
                     false,
                     1,
                     true
                   )
                   : formatCurrency(
-                    fromWei(stake[tokenType].rewardClaimed)
+                    fromWei(stake[tokenType]?.rewardClaimed)
                   )}{" "}
               </div>
             </div>
