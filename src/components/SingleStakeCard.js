@@ -351,8 +351,8 @@ const Staking = ({
     },
     WELT: {
       matic: {
-        buy: `https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=${tokenContarctAddresses.WELT.polygon.mainnet}`,
-        info: "https://www.coingecko.com/en/coins/polkabridge",
+        buy: `https://quickswap.exchange/#/swap?inputCurrency=MATIC&outputCurrency=${tokenContarctAddresses.WELT.polygon.mainnet}`,
+        info: "https://polygonscan.com/address/0x23e8b6a3f6891254988b84da3738d2bfe5e703b9",
       },
     },
   };

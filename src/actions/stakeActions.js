@@ -42,12 +42,7 @@ import {
 } from "./types";
 
 import {
-  // biteContract,
-  // corgibCoinContract,
-  // pbrContract,
   stakeContract,
-  // pwarCoinContract,
-  // clf365Contract,
   erc20TokenContract,
 } from "../contracts/connections";
 import {
@@ -396,6 +391,8 @@ export const getPoolInfo = (network) => async (dispatch) => {
       });
     } else if (network === maticNetwork) {
       // matic pool network calculations
+      // const weltPool = {}
+      console.log('fetching from matic')
       const [pbrPool, weltPool] = await Promise.all([
         currStakingContract.methods.getPoolInfo(poolId.PBR).call(),
         currStakingContract.methods.getPoolInfo(poolId.WELT).call(),
@@ -568,7 +565,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       });
     }
   } catch (error) {
-    console.log("getPoolInfo error ", error);
+    console.log("getPoolInfo error ", { error, network, poolId: poolId.WELT });
     dispatch({
       type: ERROR,
       payload: "Failed to load Pool data!",
