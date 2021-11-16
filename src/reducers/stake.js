@@ -16,9 +16,6 @@ import {
   STAKE_PWAR_TOKENS,
   LOAD_BSC_POOL,
   RESET_PWAR_TOKEN,
-  APPROVE_CL365_TOKENS,
-  RESET_CL365_TOKEN,
-  STAKE_CL365_TOKENS,
   APPROVE_CLF365_TOKENS,
   RESET_CLF365_TOKEN,
   STAKE_CLF365_TOKENS,
@@ -28,6 +25,9 @@ import {
   APPROVE_SHOE_TOKENS,
   RESET_SHOE_TOKEN,
   STAKE_SHOE_TOKENS,
+  APPROVE_WELT_TOKENS,
+  RESET_WELT_TOKEN,
+  STAKE_WELT_TOKENS,
 } from "../actions/types";
 
 const initalState = {
@@ -165,6 +165,22 @@ export default function (state = initalState, action) {
           SHOE: false,
         },
       };
+    case APPROVE_WELT_TOKENS:
+      return {
+        ...state,
+        approved: {
+          ...state.approved,
+          WELT: true,
+        },
+      };
+    case RESET_WELT_TOKEN:
+      return {
+        ...state,
+        approved: {
+          ...state.approved,
+          WELT: false,
+        },
+      };
     case APPROVE_CORGIB_TOKENS:
       return {
         ...state,
@@ -243,6 +259,14 @@ export default function (state = initalState, action) {
           SHOE: action.payload,
         },
       };
+    case STAKE_WELT_TOKENS:
+      return {
+        ...state,
+        stake: {
+          ...state.stake,
+          WELT: action.payload,
+        },
+      }
     case STAKE_CORGIB_TOKENS:
       return {
         ...state,
