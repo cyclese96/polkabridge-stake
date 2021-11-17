@@ -253,5 +253,5 @@ export const minimumStakingAmount = {
   CFL365: 1,
   PUN: 1,
   SHOE: 1,
-  FABWELT: 1,
+  WELT: 1,
 };

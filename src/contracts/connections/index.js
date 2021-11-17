@@ -26,6 +26,7 @@ export const erc20TokenContract = (network, tokenAddress) => {
 };
 
 export const stakeContract = (network) => {
+  console.log('initializing web3 connection on ', network)
   if (network === bscNetwork) {
     const address =
       currentConnection === "testnet"
@@ -41,6 +42,7 @@ export const stakeContract = (network) => {
         ? stakeContractAdrresses.polygon.testnet
         : stakeContractAdrresses.polygon.mainnet;
 
+    console.log('initializing making connection ', { address })
     const abi = PolkaBridgeStakingMatic;
     const connection = getCurrentConnection(network, abi, address);
     return connection;
@@ -53,7 +55,7 @@ export const stakeContract = (network) => {
     const abi = PolkaBridgeStaking;
     const connection = getCurrentConnection(network, abi, address);
     return connection;
-  } else {
+  } else if (network === etheriumNetwork) {
     const address =
       currentConnection === "testnet"
         ? stakeContractAdrresses.ethereum.testnet
@@ -62,10 +64,13 @@ export const stakeContract = (network) => {
     const abi = PolkaBridgeStaking;
     const connection = getCurrentConnection(network, abi, address);
     return connection;
+  } else {
+    return null
   }
 };
 
 const getCurrentConnection = (blockChainNetwork, abi, contractAddress) => {
+  console.log('initializing   matic instance', blockChainNetwork)
   if (blockChainNetwork === etheriumNetwork) {
     if (isMetaMaskInstalled()) {
       const web3 = new Web3(window.ethereum);
@@ -84,7 +89,7 @@ const getCurrentConnection = (blockChainNetwork, abi, contractAddress) => {
     //   currentConnection === "testnet"
     //     ? maticConfig.network_rpc_testnet
     //     : maticConfig.network_rpc_mainnet;
-    console.log('matic instance')
+    // console.log('initializing   matic instance')
     const web3 = new Web3(window.ethereum);
 
     return new web3.eth.Contract(abi, contractAddress);

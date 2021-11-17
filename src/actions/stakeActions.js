@@ -392,11 +392,14 @@ export const getPoolInfo = (network) => async (dispatch) => {
     } else if (network === maticNetwork) {
       // matic pool network calculations
       // const weltPool = {}
-      console.log('fetching from matic')
-      const [pbrPool, weltPool] = await Promise.all([
+      const [pbrPool] = await Promise.all([
         currStakingContract.methods.getPoolInfo(poolId.PBR).call(),
-        currStakingContract.methods.getPoolInfo(poolId.WELT).call(),
       ]);
+      let weltPool = {};
+      try {
+        weltPool = await currStakingContract.methods.getPoolInfo(poolId.WELT).call()
+      } catch (error) {
+      }
 
       const pbrPoolObj = {
         accTokenPerShare: pbrPool[0],
