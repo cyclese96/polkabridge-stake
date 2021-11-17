@@ -27,184 +27,191 @@ import account from "../reducers/account";
 //GET user authenticated
 export const connectWallet =
   (connect = false, network) =>
-  async (dispatch) => {
-    try {
-      const accountAddress = await getCurrentAccount();
-      // console.log("connect wallet", accountAddress);
-      if (
-        localStorage.getItem(`logout${accountAddress}`) == accountAddress &&
-        !connect
-      ) {
+    async (dispatch) => {
+      try {
+        const accountAddress = await getCurrentAccount();
+        // console.log("connect wallet", accountAddress);
+        if (
+          localStorage.getItem(`logout${accountAddress}`) == accountAddress &&
+          !connect
+        ) {
+          dispatch({
+            type: DISCONNECT_WALLET,
+          });
+          return;
+        } else if (
+          localStorage.getItem(`logout${accountAddress}`) == accountAddress &&
+          connect
+        ) {
+          localStorage.removeItem(`logout${accountAddress}`);
+          // console.log("removing logged out user");
+        }
+
+        if (!accountAddress) {
+          dispatch({
+            type: DISCONNECT_WALLET,
+          });
+          return;
+        }
         dispatch({
-          type: DISCONNECT_WALLET,
+          type: CONNECT_WALLET,
+          payload: accountAddress,
         });
-        return;
-      } else if (
-        localStorage.getItem(`logout${accountAddress}`) == accountAddress &&
-        connect
-      ) {
-        localStorage.removeItem(`logout${accountAddress}`);
-        // console.log("removing logged out user");
+        dispatch({
+          type: SHOW_LOADING,
+          payload: "BITE",
+        });
+
+        if (network === etheriumNetwork) {
+          // console.log("connectWallet: fetching from", network);
+          const [pbrWei, biteWei, cl365Wei, punWei, shoeWei] = await Promise.all([
+            erc20TokenContract(
+              network,
+              currentConnection === "testnet"
+                ? tokenContarctAddresses.PBR.ethereum.testnet
+                : tokenContarctAddresses.PBR.ethereum.mainnet
+            )
+              .methods.balanceOf(accountAddress)
+              .call(),
+            erc20TokenContract(
+              network,
+              currentConnection === "testnet"
+                ? tokenContarctAddresses.BITE.ethereum.testnet
+                : tokenContarctAddresses.BITE.ethereum.mainnet
+            )
+              .methods.balanceOf(accountAddress)
+              .call(),
+            erc20TokenContract(
+              network,
+              currentConnection === "testnet"
+                ? tokenContarctAddresses.CFL365.ethereum.testnet
+                : tokenContarctAddresses.CFL365.ethereum.mainnet
+            )
+              .methods.balanceOf(accountAddress)
+              .call(),
+            erc20TokenContract(
+              network,
+              currentConnection === "testnet"
+                ? tokenContarctAddresses.PUN.ethereum.testnet
+                : tokenContarctAddresses.PUN.ethereum.mainnet
+            )
+              .methods.balanceOf(accountAddress)
+              .call(),
+            erc20TokenContract(
+              network,
+              currentConnection === "testnet"
+                ? tokenContarctAddresses.SHOE.ethereum.testnet
+                : tokenContarctAddresses.SHOE.ethereum.mainnet
+            )
+              .methods.balanceOf(accountAddress)
+              .call(),
+          ]);
+          const balanceObject = {};
+          balanceObject.PBR = pbrWei;
+          balanceObject.BITE = biteWei;
+          balanceObject.CFL365 = cl365Wei;
+          balanceObject.PUN = punWei;
+          balanceObject.SHOE = shoeWei;
+
+          dispatch({
+            type: LOAD_BALANCE,
+            payload: balanceObject,
+          });
+        } else if (network === maticNetwork) {
+          // console.log("connectWallet: fetching from", network);
+          const [pbrWei, weltWei] = await Promise.all([
+            erc20TokenContract(
+              network,
+              currentConnection === "testnet"
+                ? tokenContarctAddresses.PBR.polygon.testnet
+                : tokenContarctAddresses.PBR.polygon.mainnet
+            )
+              .methods.balanceOf(accountAddress)
+              .call(),
+            erc20TokenContract(
+              network,
+              currentConnection === "testnet"
+                ? tokenContarctAddresses.WELT.polygon.testnet
+                : tokenContarctAddresses.WELT.polygon.mainnet
+            )
+              .methods.balanceOf(accountAddress)
+              .call(),
+          ]);
+          const balanceObj = {};
+          balanceObj.PBR = pbrWei;
+          balanceObj.WELT = weltWei;
+          dispatch({
+            type: LOAD_BALANCE,
+            payload: balanceObj,
+          });
+        } else if (network === harmonyNetwork) {
+          // console.log("connectWallet: fetching from", network);
+          const [pbrWei] = await Promise.all([
+            erc20TokenContract(
+              network,
+              currentConnection === "testnet"
+                ? tokenContarctAddresses.PBR.harmony.testnet
+                : tokenContarctAddresses.PBR.harmony.mainnet
+            )
+              .methods.balanceOf(accountAddress)
+              .call(),
+          ]);
+          const balObj = {};
+          balObj.PBR = pbrWei;
+          dispatch({
+            type: LOAD_BALANCE,
+            payload: balObj,
+          });
+        } else {
+          const [corgibWei, pwarWei] = await Promise.all([
+            erc20TokenContract(
+              network,
+              currentConnection === "testnet"
+                ? tokenContarctAddresses.CORGIB.bsc.testnet
+                : tokenContarctAddresses.CORGIB.bsc.mainnet
+            )
+              .methods.balanceOf(accountAddress)
+              .call(),
+            erc20TokenContract(
+              network,
+              currentConnection === "testnet"
+                ? tokenContarctAddresses.PWAR.bsc.testnet
+                : tokenContarctAddresses.PWAR.bsc.mainnet
+            )
+              .methods.balanceOf(accountAddress)
+              .call(),
+          ]);
+
+          const balObj = {};
+          balObj.PWAR = pwarWei;
+          balObj.CORGIB = corgibWei;
+          dispatch({
+            type: LOAD_BALANCE,
+            payload: balObj,
+          });
+          // dispatch({
+          //   type: LOAD_CORGIB_BALANCE,
+          //   payload: corgibWei,
+          // });
+          // dispatch({
+          //   type: LOAD_PWAR_BALANCE,
+          //   payload: pwarWei,
+          // });
+        }
+
+        // await updateAcountData();
+      } catch (error) {
+        console.log("connectWallet ", error);
+        dispatch({
+          type: ERROR,
+          payload: "Failed to connect Meta Mask!",
+        });
       }
 
-      if (!accountAddress) {
-        dispatch({
-          type: DISCONNECT_WALLET,
-        });
-        return;
-      }
       dispatch({
-        type: CONNECT_WALLET,
-        payload: accountAddress,
+        type: HIDE_LOADING,
       });
-      dispatch({
-        type: SHOW_LOADING,
-        payload: "BITE",
-      });
-
-      if (network === etheriumNetwork) {
-        // console.log("connectWallet: fetching from", network);
-        const [pbrWei, biteWei, cl365Wei, punWei, shoeWei] = await Promise.all([
-          erc20TokenContract(
-            network,
-            currentConnection === "testnet"
-              ? tokenContarctAddresses.PBR.ethereum.testnet
-              : tokenContarctAddresses.PBR.ethereum.mainnet
-          )
-            .methods.balanceOf(accountAddress)
-            .call(),
-          erc20TokenContract(
-            network,
-            currentConnection === "testnet"
-              ? tokenContarctAddresses.BITE.ethereum.testnet
-              : tokenContarctAddresses.BITE.ethereum.mainnet
-          )
-            .methods.balanceOf(accountAddress)
-            .call(),
-          erc20TokenContract(
-            network,
-            currentConnection === "testnet"
-              ? tokenContarctAddresses.CFL365.ethereum.testnet
-              : tokenContarctAddresses.CFL365.ethereum.mainnet
-          )
-            .methods.balanceOf(accountAddress)
-            .call(),
-          erc20TokenContract(
-            network,
-            currentConnection === "testnet"
-              ? tokenContarctAddresses.PUN.ethereum.testnet
-              : tokenContarctAddresses.PUN.ethereum.mainnet
-          )
-            .methods.balanceOf(accountAddress)
-            .call(),
-          erc20TokenContract(
-            network,
-            currentConnection === "testnet"
-              ? tokenContarctAddresses.SHOE.ethereum.testnet
-              : tokenContarctAddresses.SHOE.ethereum.mainnet
-          )
-            .methods.balanceOf(accountAddress)
-            .call(),
-        ]);
-        const balanceObject = {};
-        balanceObject.PBR = pbrWei;
-        balanceObject.BITE = biteWei;
-        balanceObject.CFL365 = cl365Wei;
-        balanceObject.PUN = punWei;
-        balanceObject.SHOE = shoeWei;
-
-        dispatch({
-          type: LOAD_BALANCE,
-          payload: balanceObject,
-        });
-      } else if (network === maticNetwork) {
-        // console.log("connectWallet: fetching from", network);
-        const [pbrWei, weltWei] = await Promise.all([
-          erc20TokenContract(
-            network,
-            currentConnection === "testnet"
-              ? tokenContarctAddresses.PBR.polygon.testnet
-              : tokenContarctAddresses.PBR.polygon.mainnet
-          )
-            .methods.balanceOf(accountAddress)
-            .call(),
-          erc20TokenContract(
-            network,
-            currentConnection === "testnet"
-              ? tokenContarctAddresses.WELT.polygon.testnet
-              : tokenContarctAddresses.WELT.polygon.mainnet
-          )
-            .methods.balanceOf(accountAddress)
-            .call(),
-        ]);
-        const balanceObj = {};
-        balanceObj.PBR = pbrWei;
-        balanceObj.WELT = weltWei;
-        dispatch({
-          type: LOAD_BALANCE,
-          payload: balanceObj,
-        });
-      } else if (network === harmonyNetwork) {
-        // console.log("connectWallet: fetching from", network);
-        const [pbrWei] = await Promise.all([
-          erc20TokenContract(
-            network,
-            currentConnection === "testnet"
-              ? tokenContarctAddresses.PBR.harmony.testnet
-              : tokenContarctAddresses.PBR.harmony.mainnet
-          )
-            .methods.balanceOf(accountAddress)
-            .call(),
-        ]);
-        const balObj = {};
-        balObj.PBR = pbrWei;
-        dispatch({
-          type: LOAD_BALANCE,
-          payload: balObj,
-        });
-      } else {
-        const [corgibWei, pwarWei] = await Promise.all([
-          erc20TokenContract(
-            network,
-            currentConnection === "testnet"
-              ? tokenContarctAddresses.CORGIB.ethereum.testnet
-              : tokenContarctAddresses.CORGIB.ethereum.mainnet
-          )
-            .methods.balanceOf(accountAddress)
-            .call(),
-          erc20TokenContract(
-            network,
-            currentConnection === "testnet"
-              ? tokenContarctAddresses.PWAR.ethereum.testnet
-              : tokenContarctAddresses.PWAR.ethereum.mainnet
-          )
-            .methods.balanceOf(accountAddress)
-            .call(),
-        ]);
-
-        dispatch({
-          type: LOAD_CORGIB_BALANCE,
-          payload: corgibWei,
-        });
-        dispatch({
-          type: LOAD_PWAR_BALANCE,
-          payload: pwarWei,
-        });
-      }
-
-      // await updateAcountData();
-    } catch (error) {
-      console.log("connectWallet ", error);
-      dispatch({
-        type: ERROR,
-        payload: "Failed to connect Meta Mask!",
-      });
-    }
-
-    dispatch({
-      type: HIDE_LOADING,
-    });
-  };
+    };
 
 export const getAccountBalance = (address, network) => async (dispatch) => {
   dispatch({
@@ -306,16 +313,25 @@ export const getAccountBalance = (address, network) => async (dispatch) => {
         )
           .methods.balanceOf(address)
           .call(),
+
+        erc20TokenContract(
+          network,
+          currentConnection === "testnet"
+            ? tokenContarctAddresses.PWAR.bsc.testnet
+            : tokenContarctAddresses.PWAR.bsc.mainnet
+        )
+          .methods.balanceOf(address)
+          .call(),
       ]);
 
+      const balObj = {};
+      balObj.PWAR = pwarWei;
+      balObj.CORGIB = corgibWei;
       dispatch({
-        type: LOAD_CORGIB_BALANCE,
-        payload: corgibWei,
+        type: LOAD_BALANCE,
+        payload: balObj,
       });
-      dispatch({
-        type: LOAD_PWAR_BALANCE,
-        payload: pwarWei,
-      });
+
     } else {
       // fetch only pbr balance on polygon and ethereum network
       const [pbrWei] = await Promise.all([
