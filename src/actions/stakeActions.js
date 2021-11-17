@@ -432,19 +432,21 @@ export const getPoolInfo = (network) => async (dispatch) => {
         totalTokenStaked: weltPool[3],
         totalTokenClaimed: weltPool[4],
       };
-      // const { data } = await axios.get(
-      //   config.coingecko +
-      //     "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
-      // );
 
-      // weltPoolObj.tokenPrice = data.polkabridge ? data.polkabridge.usd : "---";
+
+      const weltPriceObj = await axios.get(
+        config.coingecko +
+        "/v3/simple/price?ids=fabwelt&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
+      );
+
+      weltPoolObj.tokenPrice = weltPriceObj.data.fabwelt ? weltPriceObj.data?.fabwelt?.usd : "---";
       // weltPoolObj.mCap = data.polkabridge
       //   ? data.polkabridge.usd_market_cap
       //   : "---";
       // weltPoolObj.change = data.polkabridge
       //   ? data.polkabridge.usd_24h_change
       //   : "---";
-      weltPoolObj.tokenPrice = 0.025;
+
 
       const weltApy = getApy(WELT, weltPoolObj, network);
       weltPoolObj.weltApy = weltApy;
