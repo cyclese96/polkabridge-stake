@@ -19,6 +19,7 @@ import {
   PUN,
   SHOE,
   WELT,
+  WELT_USDC,
 } from "../constants";
 
 const useStyles = makeStyles((theme) => ({
@@ -93,7 +94,8 @@ function BalanceCard(props) {
     CFL365: clf365Img,
     PUN: punImg,
     SHOE: "img/shoefy.png",
-    WELT: "img/welt.png",
+    WELT: "img/weltUsdc.png",
+    WELT_USDC: "img/welt.png",
   };
 
   const tokenName = {
@@ -105,6 +107,7 @@ function BalanceCard(props) {
     PUN: "CryptoPunt",
     SHOE: "Shoefy Private",
     WELT: "FabWelt",
+    WELT_USDC: "Welt USDC",
   };
 
   const getCoins = () => {
@@ -124,6 +127,10 @@ function BalanceCard(props) {
         return [
           { coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
           { coin: WELT, balance: formatCurrency(fromWei(balance[WELT])) },
+          {
+            coin: WELT_USDC,
+            balance: formatCurrency(fromWei(balance[WELT_USDC])),
+          },
         ];
       } else {
         return [
@@ -143,19 +150,8 @@ function BalanceCard(props) {
   return (
     <Card className={classes.card} elevation={10}>
       <h6 className={classes.title}>Your Balance</h6>
-      {/* {!account.balance && (
-        <div className="text-center">
-          <Loader height={200} />
-        </div>
-      )} */}
-
-      {/* {account.balance && ( */}
       <div className="mt-4">
         {getCoins().map(function (coinObj, index) {
-          // if (
-          //   account.balance[key] !== null &&
-          //   account.balance[key] !== undefined
-          // ) {
           return (
             <div className="d-flex justify-content-between mt-4">
               <div className="d-flex justify-content-start">

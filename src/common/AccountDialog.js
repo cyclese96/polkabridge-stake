@@ -14,6 +14,7 @@ import {
   PUN,
   SHOE,
   WELT,
+  WELT_USDC,
 } from "../constants";
 import biteImg from "../assets/bite.png";
 import corgibImg from "../assets/corgi.png";
@@ -172,8 +173,14 @@ const AccountDialog = ({
       ];
     } else {
       if (currentNetwork === maticNetwork) {
-        return [{ coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
-        { coin: WELT, balance: formatCurrency(fromWei(balance[WELT])) }];
+        return [
+          { coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
+          { coin: WELT, balance: formatCurrency(fromWei(balance[WELT])) },
+          {
+            coin: WELT_USDC,
+            balance: formatCurrency(fromWei(balance[WELT_USDC])),
+          },
+        ];
       } else {
         return [
           {
@@ -198,6 +205,7 @@ const AccountDialog = ({
     PUN: puntImg,
     SHOE: "img/shoefy.png",
     WELT: "img/welt.png",
+    WELT_USDC: "img/welt.png",
   };
 
   const tokenName = {
@@ -209,6 +217,7 @@ const AccountDialog = ({
     PUN: "CryptoPunt",
     SHOE: "Shoefy Private",
     WELT: "FabWelt",
+    WELT_USDC: "Welt-Usdc",
   };
   return (
     <div>

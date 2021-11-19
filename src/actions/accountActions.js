@@ -119,7 +119,11 @@ export const connectWallet =
         });
       } else if (network === maticNetwork) {
         // console.log("connectWallet: fetching from", network);
+<<<<<<< Updated upstream
         const [pbrWei, weltWei] = await Promise.all([
+=======
+        const [pbrWei, weltWei, welt_usdcWei] = await Promise.all([
+>>>>>>> Stashed changes
           erc20TokenContract(
             network,
             currentConnection === "testnet"
@@ -136,10 +140,26 @@ export const connectWallet =
           )
             .methods.balanceOf(accountAddress)
             .call(),
+<<<<<<< Updated upstream
+=======
+          erc20TokenContract(
+            network,
+            currentConnection === "testnet"
+              ? tokenContarctAddresses.WELT_USDC.polygon.testnet
+              : tokenContarctAddresses.WELT._USDC_polygon.mainnet
+          )
+            .methods.balanceOf(accountAddress)
+            .call(),
+>>>>>>> Stashed changes
         ]);
         const balanceObj = {};
         balanceObj.PBR = pbrWei;
         balanceObj.WELT = weltWei;
+<<<<<<< Updated upstream
+=======
+        balanceObj.WELT_USDC = welt_usdcWei;
+        // balanceObj.WELT_USDC = welt_usdcWei;
+>>>>>>> Stashed changes
         dispatch({
           type: LOAD_BALANCE,
           payload: balanceObj,
@@ -167,21 +187,32 @@ export const connectWallet =
           erc20TokenContract(
             network,
             currentConnection === "testnet"
+<<<<<<< Updated upstream
               ? tokenContarctAddresses.CORGIB.ethereum.testnet
               : tokenContarctAddresses.CORGIB.ethereum.mainnet
+=======
+              ? tokenContarctAddresses.CORGIB.bsc.testnet
+              : tokenContarctAddresses.CORGIB.bsc.mainnet
+>>>>>>> Stashed changes
           )
             .methods.balanceOf(accountAddress)
             .call(),
           erc20TokenContract(
             network,
             currentConnection === "testnet"
+<<<<<<< Updated upstream
               ? tokenContarctAddresses.PWAR.ethereum.testnet
               : tokenContarctAddresses.PWAR.ethereum.mainnet
+=======
+              ? tokenContarctAddresses.PWAR.bsc.testnet
+              : tokenContarctAddresses.PWAR.bsc.mainnet
+>>>>>>> Stashed changes
           )
             .methods.balanceOf(accountAddress)
             .call(),
         ]);
 
+<<<<<<< Updated upstream
         dispatch({
           type: LOAD_CORGIB_BALANCE,
           payload: corgibWei,
@@ -189,7 +220,23 @@ export const connectWallet =
         dispatch({
           type: LOAD_PWAR_BALANCE,
           payload: pwarWei,
+=======
+        const balObj = {};
+        balObj.PWAR = pwarWei;
+        balObj.CORGIB = corgibWei;
+        dispatch({
+          type: LOAD_BALANCE,
+          payload: balObj,
+>>>>>>> Stashed changes
         });
+        // dispatch({
+        //   type: LOAD_CORGIB_BALANCE,
+        //   payload: corgibWei,
+        // });
+        // dispatch({
+        //   type: LOAD_PWAR_BALANCE,
+        //   payload: pwarWei,
+        // });
       }
 
       // await updateAcountData();
@@ -269,7 +316,7 @@ export const getAccountBalance = (address, network) => async (dispatch) => {
         payload: balanceObject,
       });
     } else if (network === maticNetwork) {
-      const [pbrWei, weltWei] = await Promise.all([
+      const [pbrWei, weltWei, welt_usdcWei] = await Promise.all([
         erc20TokenContract(
           network,
           currentConnection === "testnet"
@@ -290,6 +337,7 @@ export const getAccountBalance = (address, network) => async (dispatch) => {
       const balanceObj = {};
       balanceObj.PBR = pbrWei;
       balanceObj.WELT = weltWei;
+      balanceObj.WELT = welt_usdcWei;
       dispatch({
         type: LOAD_BALANCE,
         payload: balanceObj,

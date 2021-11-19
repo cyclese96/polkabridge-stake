@@ -21,7 +21,8 @@ import {
   harmonyNetwork,
   SHOE,
   PUN,
-  WELT
+  WELT,
+  WELT_USDC,
 } from "../constants";
 import web3 from "../web";
 import config from "./config";
@@ -68,8 +69,8 @@ export const getNetworkBalance = async (accountAddress) => {
 
 export const getCurrentNetworkId = async () => {
   if (window.ethereum) {
-    const web3 = new Web3(window.ethereum)
-    const id = await web3.eth.getChainId()
+    const web3 = new Web3(window.ethereum);
+    const id = await web3.eth.getChainId();
 
     if (id) {
       return id;
@@ -82,18 +83,20 @@ export const getCurrentNetworkId = async () => {
 };
 
 export const formatLargeNumber = (value, precision = 2) => {
-  const _value = !value ? '0' : value;
+  const _value = !value ? "0" : value;
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: precision,
   });
 
-  const formattedValue = convertToInternationalCurrencySystem(_value, formatter);
+  const formattedValue = convertToInternationalCurrencySystem(
+    _value,
+    formatter
+  );
 
   return formattedValue;
-
-}
+};
 
 export const formatCurrency = (
   value,
@@ -127,19 +130,19 @@ function convertToInternationalCurrencySystem(labelValue, formatter) {
   // Nine Zeroes for Billions
   return Math.abs(Number(labelValue)) >= 1.0e9
     ? formatter
-      .format((Math.abs(Number(labelValue)) / 1.0e9).toFixed(2))
-      .slice(1) + "B"
+        .format((Math.abs(Number(labelValue)) / 1.0e9).toFixed(2))
+        .slice(1) + "B"
     : // Six Zeroes for Millions
     Math.abs(Number(labelValue)) >= 1.0e6
-      ? formatter
+    ? formatter
         .format((Math.abs(Number(labelValue)) / 1.0e6).toFixed(2))
         .slice(1) + "M"
-      : // Three Zeroes for Thousands
-      Math.abs(Number(labelValue)) >= 1.0e3
-        ? formatter
-          .format((Math.abs(Number(labelValue)) / 1.0e3).toFixed(2))
-          .slice(1) + "K"
-        : formatter.format(Math.abs(Number(labelValue))).slice(1);
+    : // Three Zeroes for Thousands
+    Math.abs(Number(labelValue)) >= 1.0e3
+    ? formatter
+        .format((Math.abs(Number(labelValue)) / 1.0e3).toFixed(2))
+        .slice(1) + "K"
+    : formatter.format(Math.abs(Number(labelValue))).slice(1);
 }
 
 export const resetCurrencyFormatting = (value) => {
@@ -155,6 +158,7 @@ export const isMetaMaskInstalled = () => {
 };
 
 //apy calculation
+<<<<<<< Updated upstream
 const getCalculatedApy = (
   blocksPerYear,
   rewardPerBlock,
@@ -167,6 +171,9 @@ const getCalculatedApy = (
   //   rewardPerBlock,
   //   totalTokenLocked
   // })
+=======
+const getCalculatedApy = (blocksPerYear, rewardPerBlock, totalTokenStaked) => {
+>>>>>>> Stashed changes
   const apy = new BigNumber(blocksPerYear)
     .times(new BigNumber(rewardPerBlock))
     .div(totalTokenLocked)
@@ -201,28 +208,26 @@ export const getApy = (tokenType, poolObj, network) => {
     case PBR:
       if (network === maticNetwork) {
         const _apy = getCalculatedApy(
-
           apyConstants.polygon.PBR.NUMBER_BLOCKS_PER_YEAR,
           apyConstants.polygon.PBR.AVG_REWARD_PER_BLOCK,
           total_token_locked
         );
-        return _apy
+        return _apy;
       } else if (network === harmonyNetwork) {
         // console.log('getPoolInfo:  calculating apy in ', network)
         const _apy = getCalculatedApy(
-
           apyConstants.harmony.PBR.NUMBER_BLOCKS_PER_YEAR,
           apyConstants.harmony.PBR.AVG_REWARD_PER_BLOCK,
           total_token_locked
         );
-        return _apy
+        return _apy;
       }
       const _apy = getCalculatedApy(
         apyConstants.ethereum.PBR.NUMBER_BLOCKS_PER_YEAR,
         apyConstants.ethereum.PBR.AVG_REWARD_PER_BLOCK,
         total_token_locked
       );
-      return _apy
+      return _apy;
     case BITE:
       const biteApy = getCalculatedApy(
         NUMBER_BLOCKS_PER_YEAR,
@@ -258,6 +263,13 @@ export const getApy = (tokenType, poolObj, network) => {
         total_token_locked
       );
       return weltApy;
+    case WELT_USDC:
+      const weltUsdcApy = getCalculatedApy(
+        apyConstants.polygon.WELT_USDC.NUMBER_BLOCKS_PER_YEAR,
+        apyConstants.polygon.WELT_USDC.AVG_REWARD_PER_BLOCK,
+        total_token_locked
+      );
+      return weltUsdcApy;
     default:
       return 0;
   }

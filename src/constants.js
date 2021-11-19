@@ -76,6 +76,12 @@ export const tokenContarctAddresses = {
       mainnet: "0x23E8B6A3f6891254988B84Da3738D2bfe5E703b9",
     },
   },
+  WELT_USDC: {
+    polygon: {
+      testnet: "0x6024ca0b7c12846a396a5d860ff885233ef16dd0",
+      mainnet: "0x55E49F32fbBa12AA360EeC55200DAFd1AC47AaED",
+    },
+  },
 };
 
 export const PBR = "PBR";
@@ -86,6 +92,7 @@ export const CFL365 = "CFL365";
 export const PUN = "PUN";
 export const SHOE = "SHOE";
 export const WELT = "WELT";
+export const WELT_USDC = "WELT-USDC";
 
 //given token name and network, --> poolId
 export const poolId = {
@@ -97,6 +104,7 @@ export const poolId = {
   PUN: 4,
   SHOE: 3,
   WELT: 1,
+  WELT_USDC: 2,
 };
 
 export const apyConstants = {
@@ -129,7 +137,11 @@ export const apyConstants = {
     },
     WELT: {
       NUMBER_BLOCKS_PER_YEAR: 43200 * 365,
-      AVG_REWARD_PER_BLOCK: 0.23,
+      AVG_REWARD_PER_BLOCK: 0.46,
+    },
+    WELT_USDC: {
+      NUMBER_BLOCKS_PER_YEAR: 43200 * 365,
+      AVG_REWARD_PER_BLOCK: 0.46,
     },
   },
   harmony: {
@@ -191,8 +203,8 @@ export const infuraMainnetApi = `https://mainnet.infura.io/v3/${process.env.REAC
  *    'testnet'  BSC testnet testing
  *    'mainnet'  BSC/ETH mainent deployment
  */
-// export const currentConnection = "testnet";
-export const currentConnection = "mainnet";
+export const currentConnection = "testnet";
+// export const currentConnection = "mainnet";
 
 export const etheriumNetwork = "ethereum";
 export const bscNetwork = "bsc";
@@ -241,7 +253,7 @@ export const supportedNetworks = ["1", "56", "137"];
 export const supportedStaking = {
   ethereum: ["PBR", "PUN", "SHOE", "BITE", "CFL365"],
   bsc: ["CORGIB", "PWAR"],
-  matic: ["PBR", "WELT"],
+  matic: ["PBR", "WELT", "WELT_USDC"],
   harmony: [],
 };
 
@@ -253,5 +265,10 @@ export const minimumStakingAmount = {
   CFL365: 1,
   PUN: 1,
   SHOE: 1,
+<<<<<<< Updated upstream
   FABWELT: 1,
+=======
+  WELT: 1,
+  WELT_USDC: 1,
+>>>>>>> Stashed changes
 };

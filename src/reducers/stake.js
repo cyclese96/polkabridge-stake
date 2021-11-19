@@ -28,6 +28,9 @@ import {
   APPROVE_WELT_TOKENS,
   RESET_WELT_TOKEN,
   STAKE_WELT_TOKENS,
+  APPROVE_WELT_USDC_TOKENS,
+  RESET_WELT_USDC_TOKEN,
+  STAKE_WELT_USDC_TOKENS,
 } from "../actions/types";
 
 const initalState = {
@@ -38,7 +41,7 @@ const initalState = {
     PWAR: false,
     CFL365: false,
     PUN: false,
-    SHE: false
+    SHE: false,
   },
   stake: {
     PBR: {},
@@ -47,7 +50,7 @@ const initalState = {
     PWAR: {},
     CFL365: {},
     PUN: {},
-    SHOE: {}
+    SHOE: {},
   },
   pool: {
     PBR: {},
@@ -56,7 +59,7 @@ const initalState = {
     PWAR: {},
     CFL365: {},
     PUN: {},
-    SHOE: {}
+    SHOE: {},
   },
   poolLoading: false,
 };
@@ -73,7 +76,7 @@ export default function (state = initalState, action) {
           CFL365: action.payload.clf365,
           PUN: action.payload.pun,
           SHOE: action.payload.shoe,
-          WELT: action.payload.welt
+          WELT: action.payload.welt,
         },
       };
     case LOAD_BSC_POOL:
@@ -181,6 +184,22 @@ export default function (state = initalState, action) {
           WELT: false,
         },
       };
+    case APPROVE_WELT_USDC_TOKENS:
+      return {
+        ...state,
+        approved: {
+          ...state.approved,
+          WELT: true,
+        },
+      };
+    case RESET_WELT_USDC_TOKEN:
+      return {
+        ...state,
+        approved: {
+          ...state.approved,
+          WELT: false,
+        },
+      };
     case APPROVE_CORGIB_TOKENS:
       return {
         ...state,
@@ -217,7 +236,7 @@ export default function (state = initalState, action) {
       return {
         ...state,
         approved: initalState.approved,
-        stake: initalState.stake
+        stake: initalState.stake,
       };
     case STAKE_PBR_TOKENS:
       return {
@@ -266,7 +285,15 @@ export default function (state = initalState, action) {
           ...state.stake,
           WELT: action.payload,
         },
-      }
+      };
+    case STAKE_WELT_USDC_TOKENS:
+      return {
+        ...state,
+        stake: {
+          ...state.stake,
+          WELT: action.payload,
+        },
+      };
     case STAKE_CORGIB_TOKENS:
       return {
         ...state,
