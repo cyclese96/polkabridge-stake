@@ -413,9 +413,9 @@ const Staking = ({
   };
 
   const stakeDisableStatus = (_tokenType) => {
-    // if (_tokenType === PUN) {
-    //   return true
-    // }
+    if (_tokenType === PUN) {
+      return true
+    }
     return false;
   };
 
