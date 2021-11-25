@@ -141,7 +141,7 @@ export const apyConstants = {
   bsc: {
     PWAR: {
       NUMBER_BLOCKS_PER_YEAR: 10000000,
-      AVG_REWARD_PER_BLOCK: 0.35,
+      AVG_REWARD_PER_BLOCK: 0.07,
     },
     CORGIB: {
       NUMBER_BLOCKS_PER_YEAR: 10000000,
@@ -169,7 +169,7 @@ export const AVG_CORGIB_PER_BLOCK = 285000;
 
 //pwar
 export const PWAR_BLOCKS_PER_YEAR = 10000000;
-export const AVG_PWAR_PER_BLOCK = 0.35;
+export const AVG_PWAR_PER_BLOCK = 0.07;
 
 //CFL365
 export const CL6365_BLOCKS_PER_YEAR = 2400000;
