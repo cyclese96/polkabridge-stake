@@ -94,8 +94,7 @@ function BalanceCard(props) {
     CFL365: clf365Img,
     PUN: punImg,
     SHOE: "img/shoefy.png",
-    WELT: "img/weltUsdc.png",
-    WELT_USDC: "img/welt.png",
+    WELT: "img/welt.png",
   };
 
   const tokenName = {
@@ -107,7 +106,6 @@ function BalanceCard(props) {
     PUN: "CryptoPunt",
     SHOE: "Shoefy Private",
     WELT: "FabWelt",
-    WELT_USDC: "Welt USDC",
   };
 
   const getCoins = () => {
@@ -127,10 +125,6 @@ function BalanceCard(props) {
         return [
           { coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
           { coin: WELT, balance: formatCurrency(fromWei(balance[WELT])) },
-          {
-            coin: WELT_USDC,
-            balance: formatCurrency(fromWei(balance[WELT_USDC])),
-          },
         ];
       } else {
         return [

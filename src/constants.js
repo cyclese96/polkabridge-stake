@@ -76,12 +76,6 @@ export const tokenContarctAddresses = {
       mainnet: "0x23E8B6A3f6891254988B84Da3738D2bfe5E703b9",
     },
   },
-  WELT_USDC: {
-    polygon: {
-      testnet: "0x6024ca0b7c12846a396a5d860ff885233ef16dd0",
-      mainnet: "0x55E49F32fbBa12AA360EeC55200DAFd1AC47AaED",
-    },
-  },
 };
 
 export const PBR = "PBR";
@@ -92,7 +86,6 @@ export const CFL365 = "CFL365";
 export const PUN = "PUN";
 export const SHOE = "SHOE";
 export const WELT = "WELT";
-export const WELT_USDC = "WELT-USDC";
 
 //given token name and network, --> poolId
 export const poolId = {
@@ -127,7 +120,7 @@ export const apyConstants = {
     },
     PUN: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
-      AVG_REWARD_PER_BLOCK: 1.5,
+      AVG_REWARD_PER_BLOCK: 0,
     },
   },
   polygon: {
@@ -136,10 +129,6 @@ export const apyConstants = {
       AVG_REWARD_PER_BLOCK: 0.04,
     },
     WELT: {
-      NUMBER_BLOCKS_PER_YEAR: 43200 * 365,
-      AVG_REWARD_PER_BLOCK: 0.46,
-    },
-    WELT_USDC: {
       NUMBER_BLOCKS_PER_YEAR: 43200 * 365,
       AVG_REWARD_PER_BLOCK: 0.46,
     },
@@ -253,7 +242,7 @@ export const supportedNetworks = ["1", "56", "137"];
 export const supportedStaking = {
   ethereum: ["PBR", "SHOE", "BITE", "CFL365"],
   bsc: ["CORGIB", "PWAR"],
-  matic: ["PBR", "WELT", "WELT_USDC"],
+  matic: ["PBR", "WELT"],
   harmony: [],
 };
 export const unsuppotedStaking = {

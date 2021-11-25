@@ -411,7 +411,7 @@ const Home = ({
             <div className="mt-3">
               {supportedStaking[currentNetwork].length === 0 && (
                 <div style={{ textAlign: "center", color: "white" }}>
-                  No Staking pool available.
+                  No Ended pool available.
                 </div>
               )}
 

@@ -72,7 +72,6 @@ import {
   SHOE,
   tokenContarctAddresses,
   WELT,
-  WELT_USDC,
 } from "../constants";
 
 // current token contract
@@ -151,13 +150,7 @@ const getTokenContract = (network, tokenType) => {
           ? tokenContarctAddresses.WELT.polygon.testnet
           : tokenContarctAddresses.WELT.polygon.mainnet
       );
-    case WELT_USDC:
-      return erc20TokenContract(
-        network,
-        currentConnection === "testnet"
-          ? tokenContarctAddresses.WELT_USDC.polygon.testnet
-          : tokenContarctAddresses.WELT_USDC.polygon.mainnet
-      );
+
     default:
       return erc20TokenContract(
         network,
@@ -186,8 +179,7 @@ const tokenToApprove = (tokenType) => {
       return APPROVE_SHOE_TOKENS;
     case WELT:
       return APPROVE_WELT_TOKENS;
-    case WELT_USDC:
-      return APPROVE_WELT_USDC_TOKENS;
+
     default:
       return APPROVE_CLF365_TOKENS;
   }
@@ -211,8 +203,7 @@ const tokenToReset = (tokenType) => {
       return RESET_SHOE_TOKEN;
     case WELT:
       return RESET_WELT_TOKEN;
-    case WELT_USDC:
-      return RESET_WELT_USDC_TOKEN;
+
     default:
       return RESET_CLF365_TOKEN;
   }
@@ -236,8 +227,7 @@ const tokenToStake = (tokenType) => {
       return STAKE_SHOE_TOKENS;
     case WELT:
       return STAKE_WELT_TOKENS;
-    case WELT_USDC:
-      return STAKE_WELT_USDC_TOKENS;
+
     default:
       return STAKE_CLF365_TOKENS;
   }
@@ -406,17 +396,10 @@ export const getPoolInfo = (network) => async (dispatch) => {
     } else if (network === maticNetwork) {
       // matic pool network calculations
       // const weltPool = {}
-<<<<<<< Updated upstream
-      console.log('fetching from matic')
+      console.log("fetching from matic");
       const [pbrPool, weltPool] = await Promise.all([
         currStakingContract.methods.getPoolInfo(poolId.PBR).call(),
         currStakingContract.methods.getPoolInfo(poolId.WELT).call(),
-=======
-      const [pbrPool, weltPool, weltUsdcPool] = await Promise.all([
-        currStakingContract.methods.getPoolInfo(poolId.PBR).call(),
-        currStakingContract.methods.getPoolInfo(poolId.WELT).call(),
-        currStakingContract.methods.getPoolInfo(poolId.WELT_USDC).call(),
->>>>>>> Stashed changes
       ]);
 
       const pbrPoolObj = {
@@ -455,7 +438,6 @@ export const getPoolInfo = (network) => async (dispatch) => {
       //     "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
       // );
 
-<<<<<<< Updated upstream
       // weltPoolObj.tokenPrice = data.polkabridge ? data.polkabridge.usd : "---";
       // weltPoolObj.mCap = data.polkabridge
       //   ? data.polkabridge.usd_market_cap
@@ -463,39 +445,13 @@ export const getPoolInfo = (network) => async (dispatch) => {
       // weltPoolObj.change = data.polkabridge
       //   ? data.polkabridge.usd_24h_change
       //   : "---";
-      weltPoolObj.tokenPrice = 0.1;
-=======
-      const weltUsdcPoolObj = {
-        accTokenPerShare: weltUsdcPool[0],
-        lastRewardBlock: weltUsdcPool[1],
-        rewardPerBlock: weltUsdcPool[2],
-        totalTokenStaked: weltUsdcPool[3],
-        totalTokenClaimed: weltUsdcPool[4],
-      };
+      // weltPoolObj.tokenPrice = 0.1;
 
-      const weltPriceObj = await axios.get(
-        config.coingecko +
-          "/v3/simple/price?ids=fabwelt&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
-      );
-      const weltUsdcPriceObj = await axios.get(
-        config.coingecko +
-          "/v3/simple/price?ids=fabwelt&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
-      );
+      // const weltApy = getApy(WELT, weltPoolObj, network);
+      // weltPoolObj.weltApy = weltApy;
 
-      weltPoolObj.tokenPrice = weltPriceObj.data.fabwelt
-        ? weltPriceObj.data?.fabwelt?.usd
-        : "---";
-
-      weltUsdcPoolObj.tokenPrice = weltUsdcPriceObj.data.weltUsdc
-        ? weltUsdcPriceObj.data?.weltUsdc?.usd
-        : "---";
->>>>>>> Stashed changes
-
-      const weltApy = getApy(WELT, weltPoolObj, network);
-      weltPoolObj.weltApy = weltApy;
-
-      const weltUsdcApy = getApy(WELT_USDC, weltUsdcPoolObj, network);
-      weltUsdcPoolObj.weltUsdcApy = weltUsdcApy;
+      // const weltUsdcApy = getApy(WELT_USDC, weltUsdcPoolObj, network);
+      // weltUsdcPoolObj.weltUsdcApy = weltUsdcApy;
 
       // console.log('pool object', { network, pbrPoolObj })
       dispatch({
@@ -503,7 +459,6 @@ export const getPoolInfo = (network) => async (dispatch) => {
         payload: {
           pbr: pbrPoolObj,
           welt: weltPoolObj,
-          weltUsdc: weltUsdcPoolObj,
         },
       });
     } else if (network === harmonyNetwork) {
@@ -708,9 +663,6 @@ export const checkAllowance = (account, network) => async (dispatch) => {
             .methods.allowance(account, currStakingContract._address)
             .call(),
           getTokenContract(network, WELT)
-            .methods.allowance(account, currStakingContract._address)
-            .call(),
-          getTokenContract(network, WELT_USDC)
             .methods.allowance(account, currStakingContract._address)
             .call(),
         ]);

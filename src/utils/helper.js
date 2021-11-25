@@ -22,7 +22,6 @@ import {
   SHOE,
   PUN,
   WELT,
-  WELT_USDC,
 } from "../constants";
 import web3 from "../web";
 import config from "./config";
@@ -158,12 +157,7 @@ export const isMetaMaskInstalled = () => {
 };
 
 //apy calculation
-<<<<<<< Updated upstream
-const getCalculatedApy = (
-  blocksPerYear,
-  rewardPerBlock,
-  totalTokenLocked
-) => {
+const getCalculatedApy = (blocksPerYear, rewardPerBlock, totalTokenLocked) => {
   // console.log(
   //   'getPoolInfo: ', {
   //   tokenPrice,
@@ -171,9 +165,6 @@ const getCalculatedApy = (
   //   rewardPerBlock,
   //   totalTokenLocked
   // })
-=======
-const getCalculatedApy = (blocksPerYear, rewardPerBlock, totalTokenStaked) => {
->>>>>>> Stashed changes
   const apy = new BigNumber(blocksPerYear)
     .times(new BigNumber(rewardPerBlock))
     .div(totalTokenLocked)
@@ -263,13 +254,6 @@ export const getApy = (tokenType, poolObj, network) => {
         total_token_locked
       );
       return weltApy;
-    case WELT_USDC:
-      const weltUsdcApy = getCalculatedApy(
-        apyConstants.polygon.WELT_USDC.NUMBER_BLOCKS_PER_YEAR,
-        apyConstants.polygon.WELT_USDC.AVG_REWARD_PER_BLOCK,
-        total_token_locked
-      );
-      return weltUsdcApy;
     default:
       return 0;
   }

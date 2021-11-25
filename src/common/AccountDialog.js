@@ -14,7 +14,6 @@ import {
   PUN,
   SHOE,
   WELT,
-  WELT_USDC,
 } from "../constants";
 import biteImg from "../assets/bite.png";
 import corgibImg from "../assets/corgi.png";
@@ -176,10 +175,6 @@ const AccountDialog = ({
         return [
           { coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
           { coin: WELT, balance: formatCurrency(fromWei(balance[WELT])) },
-          {
-            coin: WELT_USDC,
-            balance: formatCurrency(fromWei(balance[WELT_USDC])),
-          },
         ];
       } else {
         return [
