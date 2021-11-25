@@ -239,9 +239,15 @@ export const claimTokens = "1";
 export const supportedNetworks = ["1", "56", "137"];
 
 export const supportedStaking = {
-  ethereum: ["PBR", "PUN", "SHOE", "BITE", "CFL365"],
+  ethereum: ["PBR", "SHOE", "BITE", "CFL365"],
   bsc: ["CORGIB", "PWAR"],
   matic: ["PBR", "WELT"],
+  harmony: [],
+};
+export const unsupportedStaking = {
+  ethereum: ["PUN"],
+  bsc: [],
+  matic: [],
   harmony: [],
 };
 
