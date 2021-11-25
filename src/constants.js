@@ -119,7 +119,7 @@ export const apyConstants = {
     },
     PUN: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
-      AVG_REWARD_PER_BLOCK: 1.5,
+      AVG_REWARD_PER_BLOCK: 0,
     },
   },
   polygon: {
