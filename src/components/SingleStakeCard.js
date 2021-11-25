@@ -34,7 +34,7 @@ import {
   maticNetwork,
   tokenContarctAddresses,
   WELT,
-  WELT_USDC,
+
 } from "../constants";
 import Loader from "./../common/Loader";
 import DotCircle from "./../common/DotCircle";

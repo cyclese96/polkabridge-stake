@@ -19,7 +19,6 @@ import {
   PUN,
   SHOE,
   WELT,
-  WELT_USDC,
 } from "../constants";
 
 const useStyles = makeStyles((theme) => ({

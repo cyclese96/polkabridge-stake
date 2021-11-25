@@ -277,7 +277,7 @@ export const getAccountBalance = (address, network) => async (dispatch) => {
         payload: balanceObject,
       });
     } else if (network === maticNetwork) {
-      const [pbrWei, weltWei, welt_usdcWei] = await Promise.all([
+      const [pbrWei, weltWei] = await Promise.all([
         erc20TokenContract(
           network,
           currentConnection === "testnet"
@@ -298,7 +298,7 @@ export const getAccountBalance = (address, network) => async (dispatch) => {
       const balanceObj = {};
       balanceObj.PBR = pbrWei;
       balanceObj.WELT = weltWei;
-      balanceObj.WELT = welt_usdcWei;
+      
       dispatch({
         type: LOAD_BALANCE,
         payload: balanceObj,

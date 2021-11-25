@@ -38,9 +38,6 @@ import {
   APPROVE_WELT_TOKENS,
   RESET_WELT_TOKEN,
   STAKE_WELT_TOKENS,
-  APPROVE_WELT_USDC_TOKENS,
-  RESET_WELT_USDC_TOKEN,
-  STAKE_WELT_USDC_TOKENS,
   LOAD_BALANCE,
 } from "./types";
 
@@ -433,27 +430,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
         totalTokenStaked: weltPool[3],
         totalTokenClaimed: weltPool[4],
       };
-      // const { data } = await axios.get(
-      //   config.coingecko +
-      //     "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
-      // );
 
-      // weltPoolObj.tokenPrice = data.polkabridge ? data.polkabridge.usd : "---";
-      // weltPoolObj.mCap = data.polkabridge
-      //   ? data.polkabridge.usd_market_cap
-      //   : "---";
-      // weltPoolObj.change = data.polkabridge
-      //   ? data.polkabridge.usd_24h_change
-      //   : "---";
-      // weltPoolObj.tokenPrice = 0.1;
-
-      // const weltApy = getApy(WELT, weltPoolObj, network);
-      // weltPoolObj.weltApy = weltApy;
-
-      // const weltUsdcApy = getApy(WELT_USDC, weltUsdcPoolObj, network);
-      // weltUsdcPoolObj.weltUsdcApy = weltUsdcApy;
-
-      // console.log('pool object', { network, pbrPoolObj })
       dispatch({
         type: LOAD_PPOL_INFO,
         payload: {
@@ -657,15 +634,14 @@ export const checkAllowance = (account, network) => async (dispatch) => {
         });
       }
     } else if (network === maticNetwork) {
-      const [pbrAllowance, weltAllowance, weltUsdcAllowance] =
-        await Promise.all([
-          getTokenContract(network, PBR)
-            .methods.allowance(account, currStakingContract._address)
-            .call(),
-          getTokenContract(network, WELT)
-            .methods.allowance(account, currStakingContract._address)
-            .call(),
-        ]);
+      const [pbrAllowance, weltAllowance] = await Promise.all([
+        getTokenContract(network, PBR)
+          .methods.allowance(account, currStakingContract._address)
+          .call(),
+        getTokenContract(network, WELT)
+          .methods.allowance(account, currStakingContract._address)
+          .call(),
+      ]);
 
       if (new BigNumber(pbrAllowance).gt(0)) {
         dispatch({
@@ -677,13 +653,6 @@ export const checkAllowance = (account, network) => async (dispatch) => {
         dispatch({
           type: APPROVE_WELT_TOKENS,
         });
-      }
-
-      if (new BigNumber(weltUsdcAllowance).gt(0)) {
-        dispatch({
-          type: APPROVE_WELT_USDC_TOKENS,
-        });
-        console.log("approve welt ", APPROVE_WELT_USDC_TOKENS);
       }
     } else if (network === harmonyNetwork) {
       const [pbrAllowance] = await Promise.all([

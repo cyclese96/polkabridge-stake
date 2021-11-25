@@ -200,7 +200,6 @@ const AccountDialog = ({
     PUN: puntImg,
     SHOE: "img/shoefy.png",
     WELT: "img/welt.png",
-    WELT_USDC: "img/welt.png",
   };
 
   const tokenName = {
@@ -212,7 +211,6 @@ const AccountDialog = ({
     PUN: "CryptoPunt",
     SHOE: "Shoefy Private",
     WELT: "FabWelt",
-    WELT_USDC: "Welt-Usdc",
   };
   return (
     <div>

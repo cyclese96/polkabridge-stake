@@ -97,7 +97,6 @@ export const poolId = {
   PUN: 4,
   SHOE: 3,
   WELT: 1,
-  WELT_USDC: 2,
 };
 
 export const apyConstants = {
