@@ -350,7 +350,7 @@ const Staking = ({
     WELT: {
       matic: {
         buy: `https://quickswap.exchange/#/swap?inputCurrency=MATIC&outputCurrency=${tokenContarctAddresses.WELT.polygon.mainnet}`,
-        info: "https://polygonscan.com/address/0x23e8b6a3f6891254988b84da3738d2bfe5e703b9",
+        info: "https://www.dextools.io/app/polygon/pair-explorer/0x55e49f32fbba12aa360eec55200dafd1ac47aaed",
       },
     },
   };
@@ -404,9 +404,9 @@ const Staking = ({
   };
 
   const stakeDisableStatus = (_tokenType) => {
-    // if (_tokenType === PUN) {
-    //   return true
-    // }
+    if (_tokenType === PUN) {
+      return true
+    }
     return false;
   };
 
