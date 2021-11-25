@@ -129,7 +129,7 @@ export const apyConstants = {
     },
     WELT: {
       NUMBER_BLOCKS_PER_YEAR: 43200 * 365,
-      AVG_REWARD_PER_BLOCK: 0.23,
+      AVG_REWARD_PER_BLOCK: 0.46,
     },
   },
   harmony: {
