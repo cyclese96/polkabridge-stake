@@ -251,9 +251,15 @@ export const claimTokens = "1";
 export const supportedNetworks = ["1", "56", "137"];
 
 export const supportedStaking = {
-  ethereum: ["PBR", "PUN", "SHOE", "BITE", "CFL365"],
+  ethereum: ["PBR", "SHOE", "BITE", "CFL365"],
   bsc: ["CORGIB", "PWAR"],
   matic: ["PBR", "WELT", "WELT_USDC"],
+  harmony: [],
+};
+export const unsuppotedStaking = {
+  ethereum: ["PUN"],
+  bsc: [],
+  matic: [],
   harmony: [],
 };
 
@@ -265,10 +271,5 @@ export const minimumStakingAmount = {
   CFL365: 1,
   PUN: 1,
   SHOE: 1,
-<<<<<<< Updated upstream
   FABWELT: 1,
-=======
-  WELT: 1,
-  WELT_USDC: 1,
->>>>>>> Stashed changes
 };

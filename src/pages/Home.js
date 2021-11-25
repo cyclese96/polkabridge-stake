@@ -26,11 +26,13 @@ import {
   maticNetwork,
   supportedNetworks,
   supportedStaking,
+  unsuppotedStaking,
 } from "../constants";
 import { CHANGE_NETWORK, RESET_USER_STAKE } from "../actions/types";
 import store from "../store";
 import BalanceCard from "../common/BalanceCard";
 import PbrStatistics from "../common/PbrStatistics";
+import EndedPools from "../components/EndedPools";
 
 const useStyles = makeStyles((theme) => ({
   background: {
@@ -140,6 +142,12 @@ const useStyles = makeStyles((theme) => ({
     width: 90,
     height: 3,
     background: "linear-gradient(to right, #e0077d, rgba(0, 0, 0, 0.4))",
+  },
+  dividerPool: {
+    width: 90,
+    height: 3,
+    background: "linear-gradient(to right, #e0077d, rgba(0, 0, 0, 0.4))",
+    marginLeft: 5,
   },
 }));
 
@@ -379,11 +387,44 @@ const Home = ({
 
               {supportedStaking[currentNetwork].length > 0 && (
                 <div className="row">
-                  {" "}
+                  <div>
+                    <h1 className={classes.title}>Active Pools</h1>
+                    <div className={classes.dividerPool} />
+                  </div>
                   {supportedStaking[currentNetwork].map((token) => (
-                    <div className="col-md-4">
+                    <div className="col-md-4 mt-3">
                       <div className={classes.card}>
                         <SingleStakeCard
+                          onStake={onStake}
+                          onUnstake={onUnStake}
+                          tokenType={token}
+                          price={getCurrentTokenPrice()}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+          {connected && (
+            <div className="mt-3">
+              {supportedStaking[currentNetwork].length === 0 && (
+                <div style={{ textAlign: "center", color: "white" }}>
+                  No Staking pool available.
+                </div>
+              )}
+
+              {unsuppotedStaking[currentNetwork].length > 0 && (
+                <div className="row mt-5">
+                  <div>
+                    <h1 className={classes.title}>Ended Pool</h1>
+                    <div className={classes.dividerPool} />
+                  </div>
+                  {unsuppotedStaking[currentNetwork].map((token) => (
+                    <div className="col-md-4 mt-3">
+                      <div className={classes.card}>
+                        <EndedPools
                           onStake={onStake}
                           onUnstake={onUnStake}
                           tokenType={token}
