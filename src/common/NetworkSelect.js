@@ -46,6 +46,7 @@ const useStyles = makeStyles((theme) => ({
     height: 40,
     width: "full-width",
     marginRight: 7,
+    paddingTop: 3,
   },
 }));
 export default function NetworkSelect({ selectedNetwork }) {

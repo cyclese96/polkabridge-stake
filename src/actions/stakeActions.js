@@ -393,11 +393,17 @@ export const getPoolInfo = (network) => async (dispatch) => {
     } else if (network === maticNetwork) {
       // matic pool network calculations
       // const weltPool = {}
+
       console.log("fetching from matic");
       const [pbrPool, weltPool] = await Promise.all([
+
         currStakingContract.methods.getPoolInfo(poolId.PBR).call(),
-        currStakingContract.methods.getPoolInfo(poolId.WELT).call(),
       ]);
+      let weltPool = {};
+      try {
+        weltPool = await currStakingContract.methods.getPoolInfo(poolId.WELT).call()
+      } catch (error) {
+      }
 
       const pbrPoolObj = {
         accTokenPerShare: pbrPool[0],
@@ -430,6 +436,23 @@ export const getPoolInfo = (network) => async (dispatch) => {
         totalTokenStaked: weltPool[3],
         totalTokenClaimed: weltPool[4],
       };
+      const weltPriceObj = await axios.get(
+        config.coingecko +
+        "/v3/simple/price?ids=fabwelt&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
+      );
+
+      weltPoolObj.tokenPrice = weltPriceObj.data.fabwelt ? weltPriceObj.data?.fabwelt?.usd : "---";
+      // weltPoolObj.mCap = data.polkabridge
+      //   ? data.polkabridge.usd_market_cap
+      //   : "---";
+      // weltPoolObj.change = data.polkabridge
+      //   ? data.polkabridge.usd_24h_change
+      //   : "---";
+
+
+      const weltApy = getApy(WELT, weltPoolObj, network);
+      weltPoolObj.weltApy = weltApy;
+
 
       dispatch({
         type: LOAD_PPOL_INFO,
@@ -709,9 +732,20 @@ export const confirmAllowance =
       const stakingContract = stakeContract(network);
 
       // console.log('allowance params:  ', { balance, tokenType, network, account })
-      const res = await tokenContract.methods
-        .approve(stakingContract._address, balance)
-        .send({ from: account });
+      if (network === maticNetwork) {
+
+        await tokenContract.methods
+          .approve(stakingContract._address, balance)
+          .send({ from: account, gasPrice: 100000000000 });
+
+      } else {
+
+        await tokenContract.methods
+          .approve(stakingContract._address, balance)
+          .send({ from: account });
+
+      }
+
 
       dispatch({
         type: tokenToApprove(tokenType),

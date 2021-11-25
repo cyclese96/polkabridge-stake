@@ -157,17 +157,15 @@ export const isMetaMaskInstalled = () => {
 };
 
 //apy calculation
-const getCalculatedApy = (blocksPerYear, rewardPerBlock, totalTokenLocked) => {
-  // console.log(
-  //   'getPoolInfo: ', {
-  //   tokenPrice,
-  //   blocksPerYear,
-  //   rewardPerBlock,
-  //   totalTokenLocked
-  // })
+
+const getCalculatedApy = (
+  blocksPerYear,
+  rewardPerBlock,
+  totalTokenStaked
+) => {
   const apy = new BigNumber(blocksPerYear)
     .times(new BigNumber(rewardPerBlock))
-    .div(totalTokenLocked)
+    .div(totalTokenStaked)
     .times(100)
     .toFixed(1)
     .toString();
