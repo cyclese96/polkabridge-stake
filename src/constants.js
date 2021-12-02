@@ -111,7 +111,7 @@ export const apyConstants = {
     },
     CFL365: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
-      AVG_REWARD_PER_BLOCK: 1.5,
+      AVG_REWARD_PER_BLOCK: 0,
     },
     SHOE: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
@@ -173,7 +173,7 @@ export const AVG_PWAR_PER_BLOCK = 0.07;
 
 //CFL365
 export const CL6365_BLOCKS_PER_YEAR = 2400000;
-export const AVG_CL365_PER_BLOCK = 1.5;
+export const AVG_CL365_PER_BLOCK = 0;
 
 export const infuraKovenApi = `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_KEY.split(
   ""
@@ -191,8 +191,8 @@ export const infuraMainnetApi = `https://mainnet.infura.io/v3/${process.env.REAC
  *    'testnet'  BSC testnet testing
  *    'mainnet'  BSC/ETH mainent deployment
  */
-// export const currentConnection = "testnet";
-export const currentConnection = "mainnet";
+export const currentConnection = "testnet";
+// export const currentConnection = "mainnet";
 
 export const etheriumNetwork = "ethereum";
 export const bscNetwork = "bsc";
