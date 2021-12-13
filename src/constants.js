@@ -103,7 +103,7 @@ export const apyConstants = {
   ethereum: {
     PBR: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
-      AVG_REWARD_PER_BLOCK: 0.65,
+      AVG_REWARD_PER_BLOCK: 0.7,
     },
     BITE: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
@@ -125,7 +125,7 @@ export const apyConstants = {
   polygon: {
     PBR: {
       NUMBER_BLOCKS_PER_YEAR: 43200 * 365,
-      AVG_REWARD_PER_BLOCK: 0.04,
+      AVG_REWARD_PER_BLOCK: 0.07,
     },
     WELT: {
       NUMBER_BLOCKS_PER_YEAR: 43200 * 365,
@@ -141,7 +141,7 @@ export const apyConstants = {
   bsc: {
     PWAR: {
       NUMBER_BLOCKS_PER_YEAR: 10000000,
-      AVG_REWARD_PER_BLOCK: 0.07,
+      AVG_REWARD_PER_BLOCK: 0.15,
     },
     CORGIB: {
       NUMBER_BLOCKS_PER_YEAR: 10000000,
@@ -150,30 +150,30 @@ export const apyConstants = {
   },
 };
 
-export const NUMBER_BLOCKS_PER_YEAR = 2400000;
-export const AVG_PBR_PER_BLOCK = 0.65;
+// export const NUMBER_BLOCKS_PER_YEAR = 2400000;
+// export const AVG_PBR_PER_BLOCK = 0.65;
 
-export const NUMBER_BLOCKS_PER_YEAR_MATIC = 43200 * 365;
-export const AVG_PBR_PER_BLOCK_MATIC = 0.04;
+// export const NUMBER_BLOCKS_PER_YEAR_MATIC = 43200 * 365;
+// export const AVG_PBR_PER_BLOCK_MATIC = 0.04;
 
-export const AVG_BITE_PER_BLOCK = 2;
+// export const AVG_BITE_PER_BLOCK = 2;
 
 export const BITE_PRICE = 0.1;
 export const PWAR_PRICE = 0.1;
 export const CLF365_PRICE = 0.1;
 export const FABWELT_PRICE = 0.028;
 
-//corgib
-export const CORGIB_BLOCKS_PER_YEAR = 10000000;
-export const AVG_CORGIB_PER_BLOCK = 285000;
+// //corgib
+// export const CORGIB_BLOCKS_PER_YEAR = 10000000;
+// export const AVG_CORGIB_PER_BLOCK = 285000;
 
-//pwar
-export const PWAR_BLOCKS_PER_YEAR = 10000000;
-export const AVG_PWAR_PER_BLOCK = 0.07;
+// //pwar
+// export const PWAR_BLOCKS_PER_YEAR = 10000000;
+// export const AVG_PWAR_PER_BLOCK = 0.07;
 
-//CFL365
-export const CL6365_BLOCKS_PER_YEAR = 2400000;
-export const AVG_CL365_PER_BLOCK = 0;
+// //CFL365
+// export const CL6365_BLOCKS_PER_YEAR = 2400000;
+// export const AVG_CL365_PER_BLOCK = 0;
 
 export const infuraKovenApi = `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_KEY.split(
   ""

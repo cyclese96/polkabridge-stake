@@ -410,9 +410,7 @@ const Home = ({
           {connected && (
             <div className="mt-3">
               {supportedStaking[currentNetwork].length === 0 && (
-                <div style={{ textAlign: "center", color: "white" }}>
-                  No Staking pool available.
-                </div>
+                <div style={{ textAlign: "center", color: "white" }}></div>
               )}
 
               {unsupportedStaking[currentNetwork].length > 0 && (

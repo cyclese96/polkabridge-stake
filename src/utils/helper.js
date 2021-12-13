@@ -1,27 +1,17 @@
 import BigNumber from "bignumber.js";
-import Web3 from 'web3';
+import Web3 from "web3";
 import {
-  AVG_BITE_PER_BLOCK,
-  AVG_CL365_PER_BLOCK,
-  AVG_CORGIB_PER_BLOCK,
-  AVG_PBR_PER_BLOCK,
-  AVG_PBR_PER_BLOCK_MATIC,
-  AVG_PWAR_PER_BLOCK,
   BITE,
   CFL365,
   CORGIB,
-  CORGIB_BLOCKS_PER_YEAR,
   maticNetwork,
-  NUMBER_BLOCKS_PER_YEAR,
-  NUMBER_BLOCKS_PER_YEAR_MATIC,
   PBR,
   PWAR,
-  PWAR_BLOCKS_PER_YEAR,
   apyConstants,
   harmonyNetwork,
   SHOE,
   PUN,
-  WELT
+  WELT,
 } from "../constants";
 import web3 from "../web";
 import config from "./config";
@@ -68,8 +58,8 @@ export const getNetworkBalance = async (accountAddress) => {
 
 export const getCurrentNetworkId = async () => {
   if (window.ethereum) {
-    const web3 = new Web3(window.ethereum)
-    const id = await web3.eth.getChainId()
+    const web3 = new Web3(window.ethereum);
+    const id = await web3.eth.getChainId();
 
     if (id) {
       return id;
@@ -82,18 +72,20 @@ export const getCurrentNetworkId = async () => {
 };
 
 export const formatLargeNumber = (value, precision = 2) => {
-  const _value = !value ? '0' : value;
+  const _value = !value ? "0" : value;
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: "USD",
     minimumFractionDigits: precision,
   });
 
-  const formattedValue = convertToInternationalCurrencySystem(_value, formatter);
+  const formattedValue = convertToInternationalCurrencySystem(
+    _value,
+    formatter
+  );
 
   return formattedValue;
-
-}
+};
 
 export const formatCurrency = (
   value,
@@ -127,19 +119,19 @@ function convertToInternationalCurrencySystem(labelValue, formatter) {
   // Nine Zeroes for Billions
   return Math.abs(Number(labelValue)) >= 1.0e9
     ? formatter
-      .format((Math.abs(Number(labelValue)) / 1.0e9).toFixed(2))
-      .slice(1) + "B"
+        .format((Math.abs(Number(labelValue)) / 1.0e9).toFixed(2))
+        .slice(1) + "B"
     : // Six Zeroes for Millions
     Math.abs(Number(labelValue)) >= 1.0e6
-      ? formatter
+    ? formatter
         .format((Math.abs(Number(labelValue)) / 1.0e6).toFixed(2))
         .slice(1) + "M"
-      : // Three Zeroes for Thousands
-      Math.abs(Number(labelValue)) >= 1.0e3
-        ? formatter
-          .format((Math.abs(Number(labelValue)) / 1.0e3).toFixed(2))
-          .slice(1) + "K"
-        : formatter.format(Math.abs(Number(labelValue))).slice(1);
+    : // Three Zeroes for Thousands
+    Math.abs(Number(labelValue)) >= 1.0e3
+    ? formatter
+        .format((Math.abs(Number(labelValue)) / 1.0e3).toFixed(2))
+        .slice(1) + "K"
+    : formatter.format(Math.abs(Number(labelValue))).slice(1);
 }
 
 export const resetCurrencyFormatting = (value) => {
@@ -155,12 +147,7 @@ export const isMetaMaskInstalled = () => {
 };
 
 //apy calculation
-const getCalculatedApy = (
-  blocksPerYear,
-  rewardPerBlock,
-  totalTokenStaked
-) => {
-
+const getCalculatedApy = (blocksPerYear, rewardPerBlock, totalTokenStaked) => {
   const apy = new BigNumber(blocksPerYear)
     .times(new BigNumber(rewardPerBlock))
     .div(totalTokenStaked)
@@ -171,23 +158,21 @@ const getCalculatedApy = (
 };
 
 export const getApy = (tokenType, poolObj, network) => {
-  // const NUMBER_BLOCKS_PER_YEAR = 2400000;
-
   // let tokenPrice = new BigNumber(poolObj.tokenPrice);
   const total_token_locked = new BigNumber(fromWei(poolObj.totalTokenStaked));
 
   switch (tokenType) {
     case CORGIB:
       const corgibApy = getCalculatedApy(
-        CORGIB_BLOCKS_PER_YEAR,
-        AVG_CORGIB_PER_BLOCK,
+        apyConstants.bsc.CORGIB.NUMBER_BLOCKS_PER_YEAR,
+        apyConstants.bsc.CORGIB.AVG_REWARD_PER_BLOCK,
         total_token_locked
       );
       return corgibApy;
     case PWAR:
       const pwarApy = getCalculatedApy(
-        PWAR_BLOCKS_PER_YEAR,
-        AVG_PWAR_PER_BLOCK,
+        apyConstants.bsc.PWAR.NUMBER_BLOCKS_PER_YEAR,
+        apyConstants.bsc.PWAR.AVG_REWARD_PER_BLOCK,
         total_token_locked
       );
       return pwarApy;
@@ -195,39 +180,37 @@ export const getApy = (tokenType, poolObj, network) => {
     case PBR:
       if (network === maticNetwork) {
         const _apy = getCalculatedApy(
-
           apyConstants.polygon.PBR.NUMBER_BLOCKS_PER_YEAR,
           apyConstants.polygon.PBR.AVG_REWARD_PER_BLOCK,
           total_token_locked
         );
-        return _apy
+        return _apy;
       } else if (network === harmonyNetwork) {
         // console.log('getPoolInfo:  calculating apy in ', network)
         const _apy = getCalculatedApy(
-
           apyConstants.harmony.PBR.NUMBER_BLOCKS_PER_YEAR,
           apyConstants.harmony.PBR.AVG_REWARD_PER_BLOCK,
           total_token_locked
         );
-        return _apy
+        return _apy;
       }
       const _apy = getCalculatedApy(
         apyConstants.ethereum.PBR.NUMBER_BLOCKS_PER_YEAR,
         apyConstants.ethereum.PBR.AVG_REWARD_PER_BLOCK,
         total_token_locked
       );
-      return _apy
+      return _apy;
     case BITE:
       const biteApy = getCalculatedApy(
-        NUMBER_BLOCKS_PER_YEAR,
-        AVG_BITE_PER_BLOCK,
+        apyConstants.ethereum.BITE.NUMBER_BLOCKS_PER_YEAR,
+        apyConstants.ethereum.BITE.AVG_REWARD_PER_BLOCK,
         total_token_locked
       );
       return biteApy;
     case CFL365:
       const clfApy = getCalculatedApy(
-        NUMBER_BLOCKS_PER_YEAR,
-        AVG_CL365_PER_BLOCK,
+        apyConstants.ethereum.CFL365.NUMBER_BLOCKS_PER_YEAR,
+        apyConstants.ethereum.CFL365.AVG_REWARD_PER_BLOCK,
         total_token_locked
       );
       return clfApy;
@@ -255,86 +238,36 @@ export const getApy = (tokenType, poolObj, network) => {
     default:
       return 0;
   }
-
-  // if (tokenType === "CORGIB") {
-  //   const total_value_locked_usd = tokenPrice.times(
-  //     new BigNumber(fromWei(poolObj.totalTokenStaked))
-  //   );
-  //   // const apy = tokenPrice
-  //   //   .times(new BigNumber(CORGIB_BLOCKS_PER_YEAR))
-  //   //   .times(new BigNumber(AVG_CORGIB_PER_BLOCK))
-  //   //   .div(total_value_locked_usd)
-  //   //   .times(100)
-  //   //   .toFixed(1)
-  //   //   .toString();
-  //   const apy = getCalculatedApy(
-  //     tokenPrice,
-  //     CORGIB_BLOCKS_PER_YEAR,
-  //     AVG_CORGIB_PER_BLOCK,
-  //     total_value_locked_usd
-  //   );
-  //   return apy;
-  // } else if (tokenType === "PWAR") {
-  //   const total_value_locked_usd = tokenPrice.times(
-  //     new BigNumber(fromWei(poolObj.totalTokenStaked))
-  //   );
-  //   // const apy = tokenPrice
-  //   //   .times(new BigNumber(PWAR_BLOCKS_PER_YEAR))
-  //   //   .times(new BigNumber(AVG_PWAR_PER_BLOCK))
-  //   //   .div(total_value_locked_usd)
-  //   //   .times(100)
-  //   //   .toFixed(1)
-  //   //   .toString();
-  //   const apy = getCalculatedApy(
-  //     tokenPrice,
-  //     PWAR_BLOCKS_PER_YEAR,
-  //     AVG_PWAR_PER_BLOCK,
-  //     total_value_locked_usd
-  //   );
-  //   return apy;
-  // }
-
-  // const avg_tokens_perblock =
-  //   tokenType === "PBR" ? AVG_PBR_PER_BLOCK : AVG_BITE_PER_BLOCK;
-  // const total_value_locked_usd = tokenPrice.times(
-  //   new BigNumber(fromWei(poolObj.totalTokenStaked))
-  // );
-  // const apy = tokenPrice
-  //   .times(new BigNumber(NUMBER_BLOCKS_PER_YEAR))
-  //   .times(new BigNumber(avg_tokens_perblock))
-  //   .div(total_value_locked_usd)
-  //   .times(100)
-  //   .toFixed(1)
-  //   .toString();
-  // return apy;
 };
-
 
 //input  { chainId, chainName, currency: {name, symbol, decimals }, rpcUrls, blockExplorer }
 export const setupNetwork = async (networkObject) => {
-  const provider = window.ethereum
+  const provider = window.ethereum;
   if (provider) {
     // const _chainId = parseInt(networkObject.chainId, 10)
     try {
-      if (networkObject.chainId === `0x${config.chainId.toString(16)}` || networkObject.chainId === `0x${config.chainIdTestnet.toString(16)}`) {
+      if (
+        networkObject.chainId === `0x${config.chainId.toString(16)}` ||
+        networkObject.chainId === `0x${config.chainIdTestnet.toString(16)}`
+      ) {
         await provider.request({
-          method: 'wallet_switchEthereumChain',
+          method: "wallet_switchEthereumChain",
           params: [{ chainId: networkObject.chainId }],
-        })
+        });
       }
       await provider.request({
-        method: 'wallet_addEthereumChain',
-        params: [
-          networkObject
-        ]
-      })
-      return true
+        method: "wallet_addEthereumChain",
+        params: [networkObject],
+      });
+      return true;
     } catch (error) {
-      console.error('Failed to setup the network in Metamask:', error)
-      return false
+      console.error("Failed to setup the network in Metamask:", error);
+      return false;
     }
   } else {
-    console.error("Can't setup the BSC network on metamask because window.ethereum is undefined")
-    return false
+    console.error(
+      "Can't setup the BSC network on metamask because window.ethereum is undefined"
+    );
+    return false;
   }
-}
+};
