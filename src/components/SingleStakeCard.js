@@ -34,6 +34,7 @@ import {
   maticNetwork,
   tokenContarctAddresses,
   WELT,
+  GRAV,
 } from "../constants";
 import Loader from "./../common/Loader";
 import DotCircle from "./../common/DotCircle";
@@ -290,6 +291,7 @@ const Staking = ({
     PUN: punImg,
     SHOE: "img/shoefy.png",
     WELT: "img/welt.png",
+    GRAV: "img/grv.png"
   };
 
   const tokenName = {
@@ -301,7 +303,9 @@ const Staking = ({
     PUN: "CryptoPunt",
     SHOE: "Shoefy",
     WELT: "FabWelt",
+    GRAV: "Graviton Zero"
   };
+
   const tokenInfo = {
     PBR: {
       ethereum: {
@@ -329,6 +333,12 @@ const Staking = ({
       bsc: {
         buy: "https://pancakeswap.finance/swap#/swap?outputCurrency=0x16153214e683018d5aa318864c8e692b66e16778&inputCurrency=BNB",
         info: "https://www.coingecko.com/en/coins/polkawar",
+      },
+    },
+    GRAV: {
+      bsc: {
+        buy: `https://pancakeswap.finance/swap#/swap?outputCurrency=${tokenContarctAddresses.GRAV.bsc.mainnet}&inputCurrency=BNB`,
+        info: "https://www.coingecko.com/en/coins/grav",
       },
     },
     CFL365: {
@@ -388,6 +398,10 @@ const Staking = ({
     } else if (tokenType === WELT) {
       return pool[tokenType]
         ? formatCurrency(pool[tokenType].weltApy, false, 1, true) + " %"
+        : "--";
+    } else if (tokenType === GRAV) {
+      return pool?.[tokenType]
+        ? formatCurrency(pool[tokenType].gravApy, false, 1, true) + " %"
         : "--";
     } else {
       return "--";
@@ -480,13 +494,13 @@ const Staking = ({
             <div className={classes.earn}>Earn {tokenName[tokenType]}</div>
           </div>
           <div className="d-flex justify-content-center  pt-3">
-            <a href={tokenInfo[tokenType][currentNetwork]?.buy} target="_blank">
+            <a href={tokenInfo?.[tokenType]?.[currentNetwork]?.buy} target="_blank">
               <Button variant="contained" className={classes.borderButton}>
                 Buy
               </Button>
             </a>
             <a
-              href={tokenInfo[tokenType][currentNetwork]?.info}
+              href={tokenInfo?.[tokenType]?.[currentNetwork]?.info}
               target="_blank"
             >
               <Button variant="contained" className={classes.borderButton}>

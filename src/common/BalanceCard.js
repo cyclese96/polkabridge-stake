@@ -13,6 +13,7 @@ import {
   BITE,
   CFL365,
   etheriumNetwork,
+  GRAV,
   harmonyNetwork,
   maticNetwork,
   PBR,
@@ -94,6 +95,7 @@ function BalanceCard(props) {
     PUN: punImg,
     SHOE: "img/shoefy.png",
     WELT: "img/welt.png",
+    GRAV: "img/grv.png",
   };
 
   const tokenName = {
@@ -105,6 +107,7 @@ function BalanceCard(props) {
     PUN: "CryptoPunt",
     SHOE: "Shoefy Private",
     WELT: "FabWelt",
+    GRAV: "Graviton Zero"
   };
 
   const getCoins = () => {
@@ -134,6 +137,10 @@ function BalanceCard(props) {
           {
             coin: "PWAR",
             balance: formatCurrency(fromWei(balance["PWAR"]), false, 1, true),
+          },
+          {
+            coin: GRAV,
+            balance: formatCurrency(fromWei(balance?.GRAV), false, 1, true),
           },
         ];
       }

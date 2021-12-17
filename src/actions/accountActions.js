@@ -163,7 +163,7 @@ export const connectWallet =
             payload: balObj,
           });
         } else {
-          const [corgibWei, pwarWei] = await Promise.all([
+          const [corgibWei, pwarWei, gravWei] = await Promise.all([
             erc20TokenContract(
               network,
               currentConnection === "testnet"
@@ -180,23 +180,25 @@ export const connectWallet =
             )
               .methods.balanceOf(accountAddress)
               .call(),
+            erc20TokenContract(
+              network,
+              currentConnection === "testnet"
+                ? tokenContarctAddresses.GRAV.bsc.testnet
+                : tokenContarctAddresses.GRAV.bsc.mainnet
+            )
+              .methods.balanceOf(accountAddress)
+              .call(),
           ]);
 
           const balObj = {};
           balObj.PWAR = pwarWei;
           balObj.CORGIB = corgibWei;
+          balObj.GRAV = gravWei;
           dispatch({
             type: LOAD_BALANCE,
             payload: balObj,
           });
-          // dispatch({
-          //   type: LOAD_CORGIB_BALANCE,
-          //   payload: corgibWei,
-          // });
-          // dispatch({
-          //   type: LOAD_PWAR_BALANCE,
-          //   payload: pwarWei,
-          // });
+
         }
 
         // await updateAcountData();
@@ -304,7 +306,8 @@ export const getAccountBalance = (address, network) => async (dispatch) => {
     } else if (network === bscNetwork) {
       // console.log('account', address)
       // console.log('network', network)
-      const [corgibWei, pwarWei] = await Promise.all([
+      const [corgibWei, pwarWei, gravWei] = await Promise.all([
+
         erc20TokenContract(
           network,
           currentConnection === "testnet"
@@ -322,11 +325,21 @@ export const getAccountBalance = (address, network) => async (dispatch) => {
         )
           .methods.balanceOf(address)
           .call(),
+
+        erc20TokenContract(
+          network,
+          currentConnection === "testnet"
+            ? tokenContarctAddresses.GRAV.bsc.testnet
+            : tokenContarctAddresses.GRAV.bsc.mainnet
+        )
+          .methods.balanceOf(address)
+          .call(),
       ]);
 
       const balObj = {};
       balObj.PWAR = pwarWei;
       balObj.CORGIB = corgibWei;
+      balObj.GRAV = gravWei;
       dispatch({
         type: LOAD_BALANCE,
         payload: balObj,

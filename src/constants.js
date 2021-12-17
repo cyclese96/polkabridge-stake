@@ -52,6 +52,12 @@ export const tokenContarctAddresses = {
       mainnet: "0x16153214E683018D5aA318864c8e692b66E16778",
     },
   },
+  GRAV: {
+    bsc: {
+      testnet: "0x16153214E683018D5aA318864c8e692b66E16778",
+      mainnet: "0x16153214E683018D5aA318864c8e692b66E16778",
+    },
+  },
   CORGIB: {
     bsc: {
       testnet: "0xE428Cc8A06Cdba0ad5074180f8E80ec6D4083b24",
@@ -86,6 +92,7 @@ export const CFL365 = "CFL365";
 export const PUN = "PUN";
 export const SHOE = "SHOE";
 export const WELT = "WELT";
+export const GRAV = "GRAV";
 
 //given token name and network, --> poolId
 export const poolId = {
@@ -97,6 +104,7 @@ export const poolId = {
   PUN: 4,
   SHOE: 3,
   WELT: 1,
+  GRAV: 1
 };
 
 export const apyConstants = {
@@ -142,6 +150,10 @@ export const apyConstants = {
     PWAR: {
       NUMBER_BLOCKS_PER_YEAR: 10000000,
       AVG_REWARD_PER_BLOCK: 0.15,
+    },
+    GRAV: {
+      NUMBER_BLOCKS_PER_YEAR: 10000000,
+      AVG_REWARD_PER_BLOCK: 0.19,
     },
     CORGIB: {
       NUMBER_BLOCKS_PER_YEAR: 10000000,
@@ -191,8 +203,8 @@ export const infuraMainnetApi = `https://mainnet.infura.io/v3/${process.env.REAC
  *    'testnet'  BSC testnet testing
  *    'mainnet'  BSC/ETH mainent deployment
  */
-// export const currentConnection = "testnet";
-export const currentConnection = "mainnet";
+const testing = true;
+export const currentConnection = testing ? "testnet" : "mainnet";
 
 export const etheriumNetwork = "ethereum";
 export const bscNetwork = "bsc";
@@ -240,10 +252,11 @@ export const supportedNetworks = ["1", "56", "137"];
 
 export const supportedStaking = {
   ethereum: ["PBR", "SHOE", "BITE"],
-  bsc: ["CORGIB", "PWAR"],
+  bsc: ["CORGIB", "PWAR", "GRAV"],
   matic: ["PBR", "WELT"],
   harmony: [],
 };
+
 export const unsupportedStaking = {
   ethereum: ["PUN", "CFL365"],
   bsc: [],
@@ -260,4 +273,5 @@ export const minimumStakingAmount = {
   PUN: 1,
   SHOE: 1,
   WELT: 1,
+  GRAV: 1,
 };
