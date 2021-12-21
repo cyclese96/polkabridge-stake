@@ -35,6 +35,7 @@ import {
   tokenContarctAddresses,
   WELT,
   GRAV,
+  DEFLY,
 } from "../constants";
 import Loader from "./../common/Loader";
 import DotCircle from "./../common/DotCircle";
@@ -291,7 +292,8 @@ const Staking = ({
     PUN: punImg,
     SHOE: "img/shoefy.png",
     WELT: "img/welt.png",
-    GRAV: "img/grv.png"
+    GRAV: "img/grv.png",
+    DEFLY: "img/defly.png",
   };
 
   const tokenName = {
@@ -303,7 +305,8 @@ const Staking = ({
     PUN: "CryptoPunt",
     SHOE: "Shoefy",
     WELT: "FabWelt",
-    GRAV: "Graviton Zero"
+    GRAV: "Graviton Zero",
+    DEFLY: "DeflyBall",
   };
 
   const tokenInfo = {
@@ -339,6 +342,12 @@ const Staking = ({
       bsc: {
         buy: `https://pancakeswap.finance/swap#/swap?outputCurrency=${tokenContarctAddresses.GRAV.bsc.mainnet}&inputCurrency=BNB`,
         info: "https://www.coingecko.com/en/coins/grav",
+      },
+    },
+    DEFLY: {
+      bsc: {
+        buy: `https://pancakeswap.finance/swap#/swap?outputCurrency=${tokenContarctAddresses.DEFLY.bsc.mainnet}&inputCurrency=BNB`,
+        info: "https://www.coingecko.com/en/coins/defly",
       },
     },
     CFL365: {
@@ -402,6 +411,11 @@ const Staking = ({
     } else if (tokenType === GRAV) {
       return pool?.[tokenType]
         ? formatCurrency(pool[tokenType].gravApy, false, 1, true) + " %"
+        : "--";
+    }
+    else if (tokenType === DEFLY) {
+      return pool?.[tokenType]
+        ? formatCurrency(pool[tokenType].deflyApy, false, 1, true) + " %"
         : "--";
     } else {
       return "--";

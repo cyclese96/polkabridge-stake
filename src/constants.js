@@ -55,7 +55,13 @@ export const tokenContarctAddresses = {
   GRAV: {
     bsc: {
       testnet: "0x16153214E683018D5aA318864c8e692b66E16778",
-      mainnet: "0x16153214E683018D5aA318864c8e692b66E16778",
+      mainnet: "0xa6168c7e5eb7c5c379f3a1d7cf1073e09b2f031e",
+    },
+  },
+  DEFLY: {
+    bsc: {
+      testnet: "0x16153214e683018d5aa318864c8e692b66e16778",
+      mainnet: "0x0fe6a599c280853621a11c12e1a68e6949cbd08a",
     },
   },
   CORGIB: {
@@ -93,6 +99,7 @@ export const PUN = "PUN";
 export const SHOE = "SHOE";
 export const WELT = "WELT";
 export const GRAV = "GRAV";
+export const DEFLY = "DEFLY";
 
 //given token name and network, --> poolId
 export const poolId = {
@@ -104,7 +111,8 @@ export const poolId = {
   PUN: 4,
   SHOE: 3,
   WELT: 1,
-  GRAV: 1
+  GRAV: 1,
+  DEFLY: 1,
 };
 
 export const apyConstants = {
@@ -154,6 +162,10 @@ export const apyConstants = {
     GRAV: {
       NUMBER_BLOCKS_PER_YEAR: 10000000,
       AVG_REWARD_PER_BLOCK: 0.19,
+    },
+    DEFLY: {
+      NUMBER_BLOCKS_PER_YEAR: 10000000,
+      AVG_REWARD_PER_BLOCK: 0.59,
     },
     CORGIB: {
       NUMBER_BLOCKS_PER_YEAR: 10000000,
@@ -252,7 +264,7 @@ export const supportedNetworks = ["1", "56", "137"];
 
 export const supportedStaking = {
   ethereum: ["PBR", "SHOE", "BITE"],
-  bsc: ["CORGIB", "PWAR", "GRAV"],
+  bsc: ["CORGIB", "PWAR", "GRAV", "DEFLY"],
   matic: ["PBR", "WELT"],
   harmony: [],
 };
@@ -274,4 +286,5 @@ export const minimumStakingAmount = {
   SHOE: 1,
   WELT: 1,
   GRAV: 1,
+  DEFLY: 1,
 };

@@ -163,7 +163,7 @@ export const connectWallet =
             payload: balObj,
           });
         } else {
-          const [corgibWei, pwarWei, gravWei] = await Promise.all([
+          const [corgibWei, pwarWei, gravWei, deflyWei] = await Promise.all([
             erc20TokenContract(
               network,
               currentConnection === "testnet"
@@ -188,12 +188,21 @@ export const connectWallet =
             )
               .methods.balanceOf(accountAddress)
               .call(),
+            erc20TokenContract(
+              network,
+              currentConnection === "testnet"
+                ? tokenContarctAddresses.DEFLY.bsc.testnet
+                : tokenContarctAddresses.DEFLY.bsc.mainnet
+            )
+              .methods.balanceOf(accountAddress)
+              .call(),
           ]);
 
           const balObj = {};
           balObj.PWAR = pwarWei;
           balObj.CORGIB = corgibWei;
           balObj.GRAV = gravWei;
+          balObj.DEFLY = deflyWei;
           dispatch({
             type: LOAD_BALANCE,
             payload: balObj,
@@ -306,7 +315,7 @@ export const getAccountBalance = (address, network) => async (dispatch) => {
     } else if (network === bscNetwork) {
       // console.log('account', address)
       // console.log('network', network)
-      const [corgibWei, pwarWei, gravWei] = await Promise.all([
+      const [corgibWei, pwarWei, gravWei, deflyWei] = await Promise.all([
 
         erc20TokenContract(
           network,
@@ -334,12 +343,22 @@ export const getAccountBalance = (address, network) => async (dispatch) => {
         )
           .methods.balanceOf(address)
           .call(),
+
+        erc20TokenContract(
+          network,
+          currentConnection === "testnet"
+            ? tokenContarctAddresses.DEFLY.bsc.testnet
+            : tokenContarctAddresses.DEFLY.bsc.mainnet
+        )
+          .methods.balanceOf(address)
+          .call(),
       ]);
 
       const balObj = {};
       balObj.PWAR = pwarWei;
       balObj.CORGIB = corgibWei;
       balObj.GRAV = gravWei;
+      balObj.DEFLY = deflyWei;
       dispatch({
         type: LOAD_BALANCE,
         payload: balObj,

@@ -10,6 +10,7 @@ import {
   CFL365,
   etheriumNetwork,
   GRAV,
+  DEFLY,
   maticNetwork,
   PBR,
   PUN,
@@ -189,6 +190,10 @@ const AccountDialog = ({
             coin: GRAV,
             balance: formatCurrency(fromWei(balance?.GRAV), false, 1, true),
           },
+          {
+            coin: DEFLY,
+            balance: formatCurrency(fromWei(balance?.DEFLY), false, 1, true),
+          },
         ];
       }
     }
@@ -204,6 +209,7 @@ const AccountDialog = ({
     SHOE: "img/shoefy.png",
     WELT: "img/welt.png",
     GRAV: "img/grv.png",
+    DEFLY: "img/defly.png",
   };
 
   const tokenName = {
@@ -215,7 +221,8 @@ const AccountDialog = ({
     PUN: "CryptoPunt",
     SHOE: "Shoefy Private",
     WELT: "FabWelt",
-    GRAV: "Graviton Zero"
+    GRAV: "Graviton Zero",
+    DEFLY: "DeflyBall",
   };
   return (
     <div>

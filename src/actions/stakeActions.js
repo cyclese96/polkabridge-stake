@@ -42,6 +42,9 @@ import {
   APPROVE_GRAV_TOKENS,
   RESET_GRAV_TOKEN,
   STAKE_GRAV_TOKENS,
+  APPROVE_DEFLY_TOKENS,
+  RESET_DEFLY_TOKEN,
+  STAKE_DEFLY_TOKENS,
 } from "./types";
 
 import {
@@ -64,6 +67,7 @@ import {
   currentConnection,
   etheriumNetwork,
   GRAV,
+  DEFLY,
   harmonyNetwork,
   maticNetwork,
   PBR,
@@ -123,6 +127,13 @@ const getTokenContract = (network, tokenType) => {
           ? tokenContarctAddresses.GRAV.bsc.testnet
           : tokenContarctAddresses.GRAV.bsc.mainnet
       );
+    case DEFLY:
+      return erc20TokenContract(
+        network,
+        currentConnection === "testnet"
+          ? tokenContarctAddresses.DEFLY.bsc.testnet
+          : tokenContarctAddresses.DEFLY.bsc.mainnet
+      );
     case CFL365:
       return erc20TokenContract(
         network,
@@ -180,6 +191,8 @@ const tokenToApprove = (tokenType) => {
       return APPROVE_PWAR_TOKENS;
     case GRAV:
       return APPROVE_GRAV_TOKENS;
+    case DEFLY:
+      return APPROVE_DEFLY_TOKENS;
     case CFL365:
       return APPROVE_CLF365_TOKENS;
     case PUN:
@@ -205,6 +218,8 @@ const tokenToReset = (tokenType) => {
       return RESET_PWAR_TOKEN;
     case GRAV:
       return RESET_GRAV_TOKEN;
+    case DEFLY:
+      return RESET_DEFLY_TOKEN;
     case CFL365:
       return RESET_CLF365_TOKEN;
     case PUN:
@@ -230,6 +245,8 @@ const tokenToStake = (tokenType) => {
       return STAKE_PWAR_TOKENS;
     case GRAV:
       return STAKE_GRAV_TOKENS;
+    case DEFLY:
+      return STAKE_DEFLY_TOKENS;
     case CFL365:
       return STAKE_CLF365_TOKENS;
     case PUN:
@@ -509,7 +526,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       });
     } else {
       // fetch pool for corgib on bsc
-      const [corgibPoolData, pwarPoolData, gravPoolData] = await Promise.all([
+      const [corgibPoolData, pwarPoolData, gravPoolData, deflyPoolData] = await Promise.all([
         currStakingContract.methods.getPoolInfo(poolId.CORGIB).call(),
         currStakingContract.methods.getPoolInfo(poolId.PWAR).call(),
         currStakingContract.methods.getPoolInfo(poolId.GRAV).call(),
@@ -597,6 +614,24 @@ export const getPoolInfo = (network) => async (dispatch) => {
       dispatch({
         type: LOAD_BSC_POOL,
         payload: { corgib: poolObj, pwar: pwarPoolObj, grav: gravPoolObj },
+      });
+
+
+      //prepare defly Pool
+      const deflyPoolObj = {
+        accTokenPerShare: deflyPoolData[0],
+        lastRewardBlock: deflyPoolData[1],
+        rewardPerBlock: deflyPoolData[2],
+        totalTokenStaked: deflyPoolData[3],
+        totalTokenClaimed: deflyPoolData[4],
+      };
+      deflyPoolObj.tokenPrice = 0.02;
+      const deflyApy = getApy(DEFLY, deflyPoolObj, network);
+      deflyPoolObj.deflyApy = deflyApy;
+
+      dispatch({
+        type: LOAD_BSC_POOL,
+        payload: { corgib: poolObj, pwar: pwarPoolObj, defly: deflyPoolObj },
       });
     }
   } catch (error) {
@@ -720,7 +755,7 @@ export const checkAllowance = (account, network) => async (dispatch) => {
       }
     } else {
       // bsc network
-      const [corgibAllowance, pwarAllowance, gravAllowance] = await Promise.all([
+      const [corgibAllowance, pwarAllowance, gravAllowance, deflyAllowance] = await Promise.all([
         getTokenContract(network, CORGIB)
           .methods.allowance(account, currStakingContract._address)
           .call(),
@@ -728,6 +763,9 @@ export const checkAllowance = (account, network) => async (dispatch) => {
           .methods.allowance(account, currStakingContract._address)
           .call(),
         getTokenContract(network, GRAV)
+          .methods.allowance(account, currStakingContract._address)
+          .call(),
+        getTokenContract(network, DEFLY)
           .methods.allowance(account, currStakingContract._address)
           .call(),
       ]);
@@ -743,6 +781,11 @@ export const checkAllowance = (account, network) => async (dispatch) => {
       } else if (new BigNumber(gravAllowance).gt(0)) {
         dispatch({
           type: APPROVE_GRAV_TOKENS,
+        });
+      }
+      else if (new BigNumber(deflyAllowance).gt(0)) {
+        dispatch({
+          type: APPROVE_DEFLY_TOKENS,
         });
       }
     }
