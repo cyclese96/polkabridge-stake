@@ -530,6 +530,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
         currStakingContract.methods.getPoolInfo(poolId.CORGIB).call(),
         currStakingContract.methods.getPoolInfo(poolId.PWAR).call(),
         currStakingContract.methods.getPoolInfo(poolId.GRAV).call(),
+        currStakingContract.methods.getPoolInfo(poolId.DEFLY).call(),
       ]);
 
       // console.log('pool data', corgibPool)
@@ -607,15 +608,9 @@ export const getPoolInfo = (network) => async (dispatch) => {
       // gravPoolObj.tokenPrice = pwarPrice["polkawar"]
       //   ? pwarPrice["polkawar"].usd
       //   : "---";
-      gravPoolObj.tokenPrice = 0.02;
+      gravPoolObj.tokenPrice = 0.2;
       const gravApy = getApy(GRAV, gravPoolObj, network);
       gravPoolObj.gravApy = gravApy;
-
-      dispatch({
-        type: LOAD_BSC_POOL,
-        payload: { corgib: poolObj, pwar: pwarPoolObj, grav: gravPoolObj },
-      });
-
 
       //prepare defly Pool
       const deflyPoolObj = {
@@ -625,14 +620,16 @@ export const getPoolInfo = (network) => async (dispatch) => {
         totalTokenStaked: deflyPoolData[3],
         totalTokenClaimed: deflyPoolData[4],
       };
-      deflyPoolObj.tokenPrice = 0.02;
+      deflyPoolObj.tokenPrice = 0.06;
       const deflyApy = getApy(DEFLY, deflyPoolObj, network);
       deflyPoolObj.deflyApy = deflyApy;
 
+
       dispatch({
         type: LOAD_BSC_POOL,
-        payload: { corgib: poolObj, pwar: pwarPoolObj, defly: deflyPoolObj },
+        payload: { corgib: poolObj, pwar: pwarPoolObj, grav: gravPoolObj, defly: deflyPoolObj },
       });
+
     }
   } catch (error) {
     console.log("getPoolInfo error ", { error, network, poolId: poolId.WELT });

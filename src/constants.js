@@ -111,8 +111,8 @@ export const poolId = {
   PUN: 4,
   SHOE: 3,
   WELT: 1,
-  GRAV: 1,
-  DEFLY: 1,
+  GRAV: 2,
+  DEFLY: 3,
 };
 
 export const apyConstants = {
@@ -215,7 +215,7 @@ export const infuraMainnetApi = `https://mainnet.infura.io/v3/${process.env.REAC
  *    'testnet'  BSC testnet testing
  *    'mainnet'  BSC/ETH mainent deployment
  */
-const testing = true;
+const testing = false;
 export const currentConnection = testing ? "testnet" : "mainnet";
 
 export const etheriumNetwork = "ethereum";

@@ -90,7 +90,7 @@ export default function (state = initalState, action) {
           CORGIB: action.payload.corgib,
           PWAR: action.payload.pwar,
           GRAV: action.payload.grav,
-          DEFLY: action.payload.grav
+          DEFLY: action.payload.defly
         },
       };
     case APPROVE_PBR_TOKENS:
