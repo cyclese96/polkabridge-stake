@@ -123,7 +123,7 @@ export const apyConstants = {
     },
     BITE: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
-      AVG_REWARD_PER_BLOCK: 2,
+      AVG_REWARD_PER_BLOCK: 0,
     },
     CFL365: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
@@ -131,7 +131,7 @@ export const apyConstants = {
     },
     SHOE: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
-      AVG_REWARD_PER_BLOCK: 0.5,
+      AVG_REWARD_PER_BLOCK: 0,
     },
     PUN: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
