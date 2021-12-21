@@ -39,6 +39,12 @@ import {
   RESET_WELT_TOKEN,
   STAKE_WELT_TOKENS,
   LOAD_BALANCE,
+  APPROVE_GRAV_TOKENS,
+  RESET_GRAV_TOKEN,
+  STAKE_GRAV_TOKENS,
+  APPROVE_DEFLY_TOKENS,
+  RESET_DEFLY_TOKEN,
+  STAKE_DEFLY_TOKENS,
 } from "./types";
 
 import {
@@ -55,20 +61,19 @@ import BigNumber from "bignumber.js";
 import config from "../config";
 import {
   BITE,
-  BITE_PRICE,
   bscNetwork,
   CFL365,
-  CLF365_PRICE,
   CORGIB,
   currentConnection,
   etheriumNetwork,
+  GRAV,
+  DEFLY,
   harmonyNetwork,
   maticNetwork,
   PBR,
   poolId,
   PUN,
   PWAR,
-  PWAR_PRICE,
   SHOE,
   tokenContarctAddresses,
   WELT,
@@ -114,6 +119,20 @@ const getTokenContract = (network, tokenType) => {
         currentConnection === "testnet"
           ? tokenContarctAddresses.PWAR.bsc.testnet
           : tokenContarctAddresses.PWAR.bsc.mainnet
+      );
+    case GRAV:
+      return erc20TokenContract(
+        network,
+        currentConnection === "testnet"
+          ? tokenContarctAddresses.GRAV.bsc.testnet
+          : tokenContarctAddresses.GRAV.bsc.mainnet
+      );
+    case DEFLY:
+      return erc20TokenContract(
+        network,
+        currentConnection === "testnet"
+          ? tokenContarctAddresses.DEFLY.bsc.testnet
+          : tokenContarctAddresses.DEFLY.bsc.mainnet
       );
     case CFL365:
       return erc20TokenContract(
@@ -170,6 +189,10 @@ const tokenToApprove = (tokenType) => {
       return APPROVE_CORGIB_TOKENS;
     case PWAR:
       return APPROVE_PWAR_TOKENS;
+    case GRAV:
+      return APPROVE_GRAV_TOKENS;
+    case DEFLY:
+      return APPROVE_DEFLY_TOKENS;
     case CFL365:
       return APPROVE_CLF365_TOKENS;
     case PUN:
@@ -193,6 +216,10 @@ const tokenToReset = (tokenType) => {
       return RESET_CORGIB_TOKEN;
     case PWAR:
       return RESET_PWAR_TOKEN;
+    case GRAV:
+      return RESET_GRAV_TOKEN;
+    case DEFLY:
+      return RESET_DEFLY_TOKEN;
     case CFL365:
       return RESET_CLF365_TOKEN;
     case PUN:
@@ -216,6 +243,10 @@ const tokenToStake = (tokenType) => {
       return STAKE_CORGIB_TOKENS;
     case PWAR:
       return STAKE_PWAR_TOKENS;
+    case GRAV:
+      return STAKE_GRAV_TOKENS;
+    case DEFLY:
+      return STAKE_DEFLY_TOKENS;
     case CFL365:
       return STAKE_CLF365_TOKENS;
     case PUN:
@@ -229,26 +260,26 @@ const tokenToStake = (tokenType) => {
   }
 };
 
-const tokenToLoad = (tokenType) => {
-  switch (tokenType) {
-    case PBR:
-      return LOAD_PBR_BALANCE;
-    case BITE:
-      return LOAD_BITE_BALANCE;
-    case CORGIB:
-      return LOAD_CORGIB_BALANCE;
-    case PWAR:
-      return LOAD_PWAR_BALANCE;
-    case CFL365:
-      return LOAD_CLF365_BALANCE;
-    case PUN:
-      return LOAD_PUN_BALANCE;
-    case SHOE:
-      return LOAD_SHOE_BALANCE;
-    default:
-      return LOAD_CLF365_BALANCE;
-  }
-};
+// const tokenToLoad = (tokenType) => {
+//   switch (tokenType) {
+//     case PBR:
+//       return LOAD_PBR_BALANCE;
+//     case BITE:
+//       return LOAD_BITE_BALANCE;
+//     case CORGIB:
+//       return LOAD_CORGIB_BALANCE;
+//     case PWAR:
+//       return LOAD_PWAR_BALANCE;
+//     case CFL365:
+//       return LOAD_CLF365_BALANCE;
+//     case PUN:
+//       return LOAD_PUN_BALANCE;
+//     case SHOE:
+//       return LOAD_SHOE_BALANCE;
+//     default:
+//       return LOAD_CLF365_BALANCE;
+//   }
+// };
 
 //GET all characters
 export const getPoolInfo = (network) => async (dispatch) => {
@@ -495,9 +526,11 @@ export const getPoolInfo = (network) => async (dispatch) => {
       });
     } else {
       // fetch pool for corgib on bsc
-      const [corgibPoolData, pwarPoolData] = await Promise.all([
+      const [corgibPoolData, pwarPoolData, gravPoolData, deflyPoolData] = await Promise.all([
         currStakingContract.methods.getPoolInfo(poolId.CORGIB).call(),
         currStakingContract.methods.getPoolInfo(poolId.PWAR).call(),
+        currStakingContract.methods.getPoolInfo(poolId.GRAV).call(),
+        currStakingContract.methods.getPoolInfo(poolId.DEFLY).call(),
       ]);
 
       // console.log('pool data', corgibPool)
@@ -548,26 +581,55 @@ export const getPoolInfo = (network) => async (dispatch) => {
         totalTokenStaked: pwarPoolData[3],
         totalTokenClaimed: pwarPoolData[4],
       };
-
-      // pwarPoolObj.tokenPrice = PWAR_PRICE;
       const pwarPriceRes = await axios.get(
         config.coingecko +
         "/v3/simple/price?ids=polkawar&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
       );
       const pwarPrice = pwarPriceRes.data;
-      // console.log("polkawar price", pwarData);
       pwarPoolObj.tokenPrice = pwarPrice["polkawar"]
         ? pwarPrice["polkawar"].usd
         : "---";
       const pwarApy = getApy("PWAR", pwarPoolObj, network);
       pwarPoolObj.pwarApy = pwarApy;
-      // console.log({ pwarApy });
 
-      // console.log({ pwarPoolObj });
+      //prepare grav Pool
+      const gravPoolObj = {
+        accTokenPerShare: gravPoolData[0],
+        lastRewardBlock: gravPoolData[1],
+        rewardPerBlock: gravPoolData[2],
+        totalTokenStaked: gravPoolData[3],
+        totalTokenClaimed: gravPoolData[4],
+      };
+      // const pwarPriceRes = await axios.get(
+      //   config.coingecko +
+      //   "/v3/simple/price?ids=polkawar&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+      // );
+      // const pwarPrice = pwarPriceRes.data;
+      // gravPoolObj.tokenPrice = pwarPrice["polkawar"]
+      //   ? pwarPrice["polkawar"].usd
+      //   : "---";
+      gravPoolObj.tokenPrice = 0.2;
+      const gravApy = getApy(GRAV, gravPoolObj, network);
+      gravPoolObj.gravApy = gravApy;
+
+      //prepare defly Pool
+      const deflyPoolObj = {
+        accTokenPerShare: deflyPoolData[0],
+        lastRewardBlock: deflyPoolData[1],
+        rewardPerBlock: deflyPoolData[2],
+        totalTokenStaked: deflyPoolData[3],
+        totalTokenClaimed: deflyPoolData[4],
+      };
+      deflyPoolObj.tokenPrice = 0.06;
+      const deflyApy = getApy(DEFLY, deflyPoolObj, network);
+      deflyPoolObj.deflyApy = deflyApy;
+
+
       dispatch({
         type: LOAD_BSC_POOL,
-        payload: { corgib: poolObj, pwar: pwarPoolObj },
+        payload: { corgib: poolObj, pwar: pwarPoolObj, grav: gravPoolObj, defly: deflyPoolObj },
       });
+
     }
   } catch (error) {
     console.log("getPoolInfo error ", { error, network, poolId: poolId.WELT });
@@ -690,11 +752,17 @@ export const checkAllowance = (account, network) => async (dispatch) => {
       }
     } else {
       // bsc network
-      const [corgibAllowance, pwarAllowance] = await Promise.all([
+      const [corgibAllowance, pwarAllowance, gravAllowance, deflyAllowance] = await Promise.all([
         getTokenContract(network, CORGIB)
           .methods.allowance(account, currStakingContract._address)
           .call(),
         getTokenContract(network, PWAR)
+          .methods.allowance(account, currStakingContract._address)
+          .call(),
+        getTokenContract(network, GRAV)
+          .methods.allowance(account, currStakingContract._address)
+          .call(),
+        getTokenContract(network, DEFLY)
           .methods.allowance(account, currStakingContract._address)
           .call(),
       ]);
@@ -706,6 +774,15 @@ export const checkAllowance = (account, network) => async (dispatch) => {
       } else if (new BigNumber(pwarAllowance).gt(0)) {
         dispatch({
           type: APPROVE_CORGIB_TOKENS,
+        });
+      } else if (new BigNumber(gravAllowance).gt(0)) {
+        dispatch({
+          type: APPROVE_GRAV_TOKENS,
+        });
+      }
+      else if (new BigNumber(deflyAllowance).gt(0)) {
+        dispatch({
+          type: APPROVE_DEFLY_TOKENS,
         });
       }
     }

@@ -9,6 +9,8 @@ import {
   BITE,
   CFL365,
   etheriumNetwork,
+  GRAV,
+  DEFLY,
   maticNetwork,
   PBR,
   PUN,
@@ -184,6 +186,14 @@ const AccountDialog = ({
             coin: "PWAR",
             balance: formatCurrency(fromWei(balance["PWAR"]), false, 1, true),
           },
+          {
+            coin: GRAV,
+            balance: formatCurrency(fromWei(balance?.GRAV), false, 1, true),
+          },
+          {
+            coin: DEFLY,
+            balance: formatCurrency(fromWei(balance?.DEFLY), false, 1, true),
+          },
         ];
       }
     }
@@ -198,6 +208,8 @@ const AccountDialog = ({
     PUN: puntImg,
     SHOE: "img/shoefy.png",
     WELT: "img/welt.png",
+    GRAV: "img/grv.png",
+    DEFLY: "img/defly.png",
   };
 
   const tokenName = {
@@ -209,6 +221,8 @@ const AccountDialog = ({
     PUN: "CryptoPunt",
     SHOE: "Shoefy Private",
     WELT: "FabWelt",
+    GRAV: "Graviton Zero",
+    DEFLY: "DeflyBall",
   };
   return (
     <div>

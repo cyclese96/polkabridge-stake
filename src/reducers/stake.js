@@ -28,6 +28,12 @@ import {
   APPROVE_WELT_TOKENS,
   RESET_WELT_TOKEN,
   STAKE_WELT_TOKENS,
+  APPROVE_GRAV_TOKENS,
+  RESET_GRAV_TOKEN,
+  STAKE_GRAV_TOKENS,
+  APPROVE_DEFLY_TOKENS,
+  RESET_DEFLY_TOKEN,
+  STAKE_DEFLY_TOKENS,
 } from "../actions/types";
 
 const initalState = {
@@ -83,6 +89,8 @@ export default function (state = initalState, action) {
           ...state.pool,
           CORGIB: action.payload.corgib,
           PWAR: action.payload.pwar,
+          GRAV: action.payload.grav,
+          DEFLY: action.payload.defly
         },
       };
     case APPROVE_PBR_TOKENS:
@@ -213,6 +221,38 @@ export default function (state = initalState, action) {
           PWAR: false,
         },
       };
+    case APPROVE_GRAV_TOKENS:
+      return {
+        ...state,
+        approved: {
+          ...state.approved,
+          GRAV: true,
+        },
+      };
+    case RESET_GRAV_TOKEN:
+      return {
+        ...state,
+        approved: {
+          ...state.approved,
+          GRAV: false,
+        },
+      };
+    case APPROVE_DEFLY_TOKENS:
+      return {
+        ...state,
+        approved: {
+          ...state.approved,
+          DEFLY: true,
+        },
+      };
+    case RESET_DEFLY_TOKEN:
+      return {
+        ...state,
+        approved: {
+          ...state.approved,
+          DEFLY: false,
+        },
+      };
     case RESET_USER_STAKE:
       return {
         ...state,
@@ -281,6 +321,22 @@ export default function (state = initalState, action) {
         stake: {
           ...state.stake,
           PWAR: action.payload,
+        },
+      };
+    case STAKE_GRAV_TOKENS:
+      return {
+        ...state,
+        stake: {
+          ...state.stake,
+          GRAV: action.payload,
+        },
+      };
+    case STAKE_DEFLY_TOKENS:
+      return {
+        ...state,
+        stake: {
+          ...state.stake,
+          DEFLY: action.payload,
         },
       };
     case SHOW_POOL_LOADING:
