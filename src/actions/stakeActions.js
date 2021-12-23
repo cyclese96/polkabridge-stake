@@ -600,17 +600,17 @@ export const getPoolInfo = (network) => async (dispatch) => {
         totalTokenStaked: gravPoolData[3],
         totalTokenClaimed: gravPoolData[4],
       };
-      // const pwarPriceRes = await axios.get(
-      //   config.coingecko +
-      //   "/v3/simple/price?ids=polkawar&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
-      // );
-      // const pwarPrice = pwarPriceRes.data;
-      // gravPoolObj.tokenPrice = pwarPrice["polkawar"]
-      //   ? pwarPrice["polkawar"].usd
-      //   : "---";
-      gravPoolObj.tokenPrice = 0.2;
-      const gravApy = getApy(GRAV, gravPoolObj, network);
+      const gravPriceRes = await axios.get(
+        config.coingecko +
+        "/v3/simple/price?ids=graviton-zero&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+      );
+      const gravPrice = gravPriceRes.data;
+      gravPoolObj.tokenPrice = gravPrice["graviton-zero"]
+        ? gravPrice["graviton-zero"].usd
+        : "---";
+      const gravApy = getApy("GRAV", gravPoolObj, network);
       gravPoolObj.gravApy = gravApy;
+      console.log("amir-----", gravPrice)
 
       //prepare defly Pool
       const deflyPoolObj = {
