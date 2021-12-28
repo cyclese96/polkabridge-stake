@@ -341,7 +341,7 @@ const Staking = ({
     GRAV: {
       bsc: {
         buy: `https://pancakeswap.finance/swap#/swap?outputCurrency=${tokenContarctAddresses.GRAV.bsc.mainnet}&inputCurrency=BNB`,
-        info: "https://coinmarketcap.com/currencies/graviton-zero/",
+        info: "https://www.coingecko.com/en/coins/graviton-zero",
       },
     },
     DEFLY: {
@@ -409,7 +409,7 @@ const Staking = ({
         ? formatCurrency(pool[tokenType].weltApy, false, 1, true) + " %"
         : "--";
     } else if (tokenType === GRAV) {
-      return pool?.[tokenType]
+      return pool[tokenType]
         ? formatCurrency(pool[tokenType].gravApy, false, 1, true) + " %"
         : "--";
     }
