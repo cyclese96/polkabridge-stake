@@ -341,13 +341,13 @@ const Staking = ({
     GRAV: {
       bsc: {
         buy: `https://pancakeswap.finance/swap#/swap?outputCurrency=${tokenContarctAddresses.GRAV.bsc.mainnet}&inputCurrency=BNB`,
-        info: "https://www.coingecko.com/en/coins/grav",
+        info: "https://coinmarketcap.com/currencies/graviton-zero/",
       },
     },
     DEFLY: {
       bsc: {
         buy: `https://pancakeswap.finance/swap#/swap?outputCurrency=${tokenContarctAddresses.DEFLY.bsc.mainnet}&inputCurrency=BNB`,
-        info: "https://www.coingecko.com/en/coins/defly",
+        info: "https://coinmarketcap.com/currencies/deflyball/",
       },
     },
     CFL365: {
