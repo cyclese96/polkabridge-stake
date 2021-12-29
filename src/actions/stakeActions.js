@@ -1029,9 +1029,17 @@ export const unstakeTokens =
           .withdraw(pool, depositTokens)
           .send({ from: account, gasPrice: 100000000000 });
       } else {
-        await currStakeContract.methods
-          .withdraw(pool, depositTokens)
-          .send({ from: account });
+
+        if (tokenType === AOG) {
+          await currStakeContract.methods
+            .emergencyWithdraw(pool)
+            .send({ from: account });
+        } else {
+
+          await currStakeContract.methods
+            .withdraw(pool, depositTokens)
+            .send({ from: account });
+        }
       }
 
       const [balanceWei, stakedData, pendingReward] = await Promise.all([
