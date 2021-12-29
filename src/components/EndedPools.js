@@ -34,6 +34,7 @@ import {
   maticNetwork,
   tokenContarctAddresses,
   WELT,
+  AOG,
   unsupportedStaking,
 } from "../constants";
 import Loader from "./../common/Loader";
@@ -296,6 +297,7 @@ const EndedPools = ({
     PUN: punImg,
     SHOE: "img/shoefy.png",
     WELT: "img/welt.png",
+    AOG: "img/aog.png",
   };
 
   const tokenName = {
@@ -307,6 +309,7 @@ const EndedPools = ({
     PUN: "CryptoPunt",
     SHOE: "Shoefy",
     WELT: "FabWelt",
+    AOG: "Age of Gods",
   };
   const tokenInfo = {
     PBR: {
@@ -361,6 +364,12 @@ const EndedPools = ({
         info: "https://www.dextools.io/app/polygon/pair-explorer/0x55e49f32fbba12aa360eec55200dafd1ac47aaed",
       },
     },
+    AOG: {
+      bsc: {
+        buy: `https://pancakeswap.finance/swap#/swap?outputCurrency=${tokenContarctAddresses.AOG.bsc.mainnet}&inputCurrency=BNB`,
+        info: "https://coinmarketcap.com/currencies/age-of-gods/",
+      },
+    },
   };
   const getCurrentApy = () => {
     if (tokenType === "PBR") {
@@ -394,6 +403,10 @@ const EndedPools = ({
     } else if (tokenType === WELT) {
       return pool[tokenType]
         ? formatCurrency(pool[tokenType].weltApy, false, 1, true) + " %"
+        : "--";
+    } else if (tokenType === AOG) {
+      return pool[tokenType]
+        ? formatCurrency(pool[tokenType].aogApy, false, 1, true) + " %"
         : "--";
     } else {
       return "--";
