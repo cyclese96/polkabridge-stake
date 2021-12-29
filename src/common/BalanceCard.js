@@ -21,6 +21,7 @@ import {
   PUN,
   SHOE,
   WELT,
+  AOG,
 } from "../constants";
 
 const useStyles = makeStyles((theme) => ({
@@ -98,6 +99,7 @@ function BalanceCard(props) {
     WELT: "img/welt.png",
     GRAV: "img/grv.png",
     DEFLY: "img/defly.png",
+    AOG: "img/aog.png",
   };
 
   const tokenName = {
@@ -111,6 +113,7 @@ function BalanceCard(props) {
     WELT: "FabWelt",
     GRAV: "Graviton Zero",
     DEFLY: "DeflyBall",
+    AOG: "Age of Gods",
   };
 
   const getCoins = () => {
@@ -148,6 +151,10 @@ function BalanceCard(props) {
           {
             coin: DEFLY,
             balance: formatCurrency(fromWei(balance?.DEFLY), false, 1, true),
+          },
+          {
+            coin: AOG,
+            balance: formatCurrency(fromWei(balance?.AOG), false, 1, true),
           },
         ];
       }

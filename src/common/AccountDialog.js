@@ -16,6 +16,7 @@ import {
   PUN,
   SHOE,
   WELT,
+  AOG,
 } from "../constants";
 import biteImg from "../assets/bite.png";
 import corgibImg from "../assets/corgi.png";
@@ -174,8 +175,10 @@ const AccountDialog = ({
       ];
     } else {
       if (currentNetwork === maticNetwork) {
-        return [{ coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
-        { coin: WELT, balance: formatCurrency(fromWei(balance[WELT])) }];
+        return [
+          { coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
+          { coin: WELT, balance: formatCurrency(fromWei(balance[WELT])) },
+        ];
       } else {
         return [
           {
@@ -194,6 +197,10 @@ const AccountDialog = ({
             coin: DEFLY,
             balance: formatCurrency(fromWei(balance?.DEFLY), false, 1, true),
           },
+          {
+            coin: AOG,
+            balance: formatCurrency(fromWei(balance?.AOG), false, 1, true),
+          },
         ];
       }
     }
@@ -210,6 +217,7 @@ const AccountDialog = ({
     WELT: "img/welt.png",
     GRAV: "img/grv.png",
     DEFLY: "img/defly.png",
+    AOG: "img/aog.png",
   };
 
   const tokenName = {
@@ -223,6 +231,7 @@ const AccountDialog = ({
     WELT: "FabWelt",
     GRAV: "Graviton Zero",
     DEFLY: "DeflyBall",
+    AOG: "Age of Gods",
   };
   return (
     <div>

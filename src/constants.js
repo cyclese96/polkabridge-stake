@@ -64,6 +64,12 @@ export const tokenContarctAddresses = {
       mainnet: "0x0fe6a599c280853621a11c12e1a68e6949cbd08a",
     },
   },
+  AOG: {
+    bsc: {
+      testnet: "0x16153214e683018d5aa318864c8e692b66e16778",
+      mainnet: "0x40c8225329bd3e28a043b029e0d07a5344d2c27c",
+    },
+  },
   CORGIB: {
     bsc: {
       testnet: "0xE428Cc8A06Cdba0ad5074180f8E80ec6D4083b24",
@@ -100,6 +106,7 @@ export const SHOE = "SHOE";
 export const WELT = "WELT";
 export const GRAV = "GRAV";
 export const DEFLY = "DEFLY";
+export const AOG = "AOG";
 
 //given token name and network, --> poolId
 export const poolId = {
@@ -113,13 +120,14 @@ export const poolId = {
   WELT: 1,
   GRAV: 2,
   DEFLY: 3,
+  AOG: 3,
 };
 
 export const apyConstants = {
   ethereum: {
     PBR: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
-      AVG_REWARD_PER_BLOCK: 1,//0.7
+      AVG_REWARD_PER_BLOCK: 1, //0.7
     },
     BITE: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
@@ -166,6 +174,10 @@ export const apyConstants = {
     DEFLY: {
       NUMBER_BLOCKS_PER_YEAR: 10000000,
       AVG_REWARD_PER_BLOCK: 0.59,
+    },
+    AOG: {
+      NUMBER_BLOCKS_PER_YEAR: 10000000,
+      AVG_REWARD_PER_BLOCK: 0.23,
     },
     CORGIB: {
       NUMBER_BLOCKS_PER_YEAR: 10000000,
@@ -264,7 +276,7 @@ export const supportedNetworks = ["1", "56", "137"];
 
 export const supportedStaking = {
   ethereum: ["PBR"],
-  bsc: ["CORGIB", "PWAR", "GRAV", "DEFLY"],
+  bsc: ["CORGIB", "PWAR", "GRAV", "DEFLY", "AOG"],
   matic: ["PBR", "WELT"],
   harmony: [],
 };
@@ -287,4 +299,5 @@ export const minimumStakingAmount = {
   WELT: 1,
   GRAV: 1,
   DEFLY: 1,
+  AOG: 1,
 };

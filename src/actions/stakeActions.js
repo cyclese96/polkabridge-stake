@@ -45,12 +45,12 @@ import {
   APPROVE_DEFLY_TOKENS,
   RESET_DEFLY_TOKEN,
   STAKE_DEFLY_TOKENS,
+  APPROVE_AOG_TOKENS,
+  RESET_AOG_TOKEN,
+  STAKE_AOG_TOKENS,
 } from "./types";
 
-import {
-  stakeContract,
-  erc20TokenContract,
-} from "../contracts/connections";
+import { stakeContract, erc20TokenContract } from "../contracts/connections";
 import {
   toWei,
   getCurrentAccount,
@@ -68,6 +68,7 @@ import {
   etheriumNetwork,
   GRAV,
   DEFLY,
+  AOG,
   harmonyNetwork,
   maticNetwork,
   PBR,
@@ -134,6 +135,13 @@ const getTokenContract = (network, tokenType) => {
           ? tokenContarctAddresses.DEFLY.bsc.testnet
           : tokenContarctAddresses.DEFLY.bsc.mainnet
       );
+    case AOG:
+      return erc20TokenContract(
+        network,
+        currentConnection === "testnet"
+          ? tokenContarctAddresses.AOG.bsc.testnet
+          : tokenContarctAddresses.AOG.bsc.mainnet
+      );
     case CFL365:
       return erc20TokenContract(
         network,
@@ -193,6 +201,8 @@ const tokenToApprove = (tokenType) => {
       return APPROVE_GRAV_TOKENS;
     case DEFLY:
       return APPROVE_DEFLY_TOKENS;
+    case AOG:
+      return APPROVE_AOG_TOKENS;
     case CFL365:
       return APPROVE_CLF365_TOKENS;
     case PUN:
@@ -220,6 +230,8 @@ const tokenToReset = (tokenType) => {
       return RESET_GRAV_TOKEN;
     case DEFLY:
       return RESET_DEFLY_TOKEN;
+    case AOG:
+      return RESET_AOG_TOKEN;
     case CFL365:
       return RESET_CLF365_TOKEN;
     case PUN:
@@ -247,6 +259,8 @@ const tokenToStake = (tokenType) => {
       return STAKE_GRAV_TOKENS;
     case DEFLY:
       return STAKE_DEFLY_TOKENS;
+    case AOG:
+      return STAKE_AOG_TOKENS;
     case CFL365:
       return STAKE_CLF365_TOKENS;
     case PUN:
@@ -310,7 +324,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       };
       const { data } = await axios.get(
         config.coingecko +
-        "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=true"
+          "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=true"
       );
       // console.log("data");
       // console.log(data);
@@ -336,7 +350,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
 
       const bitePriceRes = await axios.get(
         config.coingecko +
-        "/v3/simple/price?ids=dragonbite&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+          "/v3/simple/price?ids=dragonbite&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
       );
       const bitePrice = bitePriceRes.data;
       // console.log("bite price", bitePrice);
@@ -357,7 +371,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       // clfPoolObj.tokenPrice = CLF365_PRICE;
       const cflPriceRes = await axios.get(
         config.coingecko +
-        "/v3/simple/price?ids=cfl365-finance&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+          "/v3/simple/price?ids=cfl365-finance&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
       );
       const cflPrice = cflPriceRes.data;
       // console.log("bite price", cfl);
@@ -379,7 +393,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
 
       const punPriceRes = await axios.get(
         config.coingecko +
-        "/v3/simple/price?ids=cryptopunt&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+          "/v3/simple/price?ids=cryptopunt&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
       );
       const punPrice = punPriceRes.data;
       punPoolObj.tokenPrice = punPrice["cryptopunt"]
@@ -400,7 +414,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       };
       const shoefyPriceRes = await axios.get(
         config.coingecko +
-        "/v3/simple/price?ids=shoefy&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+          "/v3/simple/price?ids=shoefy&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
       );
       const shoefyPrice = shoefyPriceRes.data;
       shoefyPoolObj.tokenPrice = shoefyPrice["shoefy"]
@@ -428,9 +442,10 @@ export const getPoolInfo = (network) => async (dispatch) => {
       ]);
       let weltPool = {};
       try {
-        weltPool = await currStakingContract.methods.getPoolInfo(poolId.WELT).call()
-      } catch (error) {
-      }
+        weltPool = await currStakingContract.methods
+          .getPoolInfo(poolId.WELT)
+          .call();
+      } catch (error) {}
 
       const pbrPoolObj = {
         accTokenPerShare: pbrPool[0],
@@ -441,7 +456,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       };
       const { data } = await axios.get(
         config.coingecko +
-        "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
+          "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
       );
 
       pbrPoolObj.tokenPrice = data.polkabridge ? data.polkabridge.usd : "---";
@@ -464,13 +479,14 @@ export const getPoolInfo = (network) => async (dispatch) => {
         totalTokenClaimed: weltPool[4],
       };
 
-
       const weltPriceObj = await axios.get(
         config.coingecko +
-        "/v3/simple/price?ids=fabwelt&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
+          "/v3/simple/price?ids=fabwelt&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
       );
 
-      weltPoolObj.tokenPrice = weltPriceObj.data.fabwelt ? weltPriceObj.data?.fabwelt?.usd : "---";
+      weltPoolObj.tokenPrice = weltPriceObj.data.fabwelt
+        ? weltPriceObj.data?.fabwelt?.usd
+        : "---";
       // weltPoolObj.mCap = data.polkabridge
       //   ? data.polkabridge.usd_market_cap
       //   : "---";
@@ -478,10 +494,8 @@ export const getPoolInfo = (network) => async (dispatch) => {
       //   ? data.polkabridge.usd_24h_change
       //   : "---";
 
-
       const weltApy = getApy(WELT, weltPoolObj, network);
       weltPoolObj.weltApy = weltApy;
-
 
       // console.log('pool object', { network, pbrPoolObj })
       dispatch({
@@ -504,7 +518,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       };
       const { data } = await axios.get(
         config.coingecko +
-        "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
+          "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
       );
 
       pbrPoolObj.tokenPrice = data.polkabridge ? data.polkabridge.usd : "---";
@@ -526,11 +540,18 @@ export const getPoolInfo = (network) => async (dispatch) => {
       });
     } else {
       // fetch pool for corgib on bsc
-      const [corgibPoolData, pwarPoolData, gravPoolData, deflyPoolData] = await Promise.all([
+      const [
+        corgibPoolData,
+        pwarPoolData,
+        gravPoolData,
+        deflyPoolData,
+        aogPoolData,
+      ] = await Promise.all([
         currStakingContract.methods.getPoolInfo(poolId.CORGIB).call(),
         currStakingContract.methods.getPoolInfo(poolId.PWAR).call(),
         currStakingContract.methods.getPoolInfo(poolId.GRAV).call(),
         currStakingContract.methods.getPoolInfo(poolId.DEFLY).call(),
+        currStakingContract.methods.getPoolInfo(poolId.AOG).call(),
       ]);
 
       // console.log('pool data', corgibPool)
@@ -546,7 +567,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       // using corgib token price in tokenPriceCorgin key:
       const dataCorgib = await axios.get(
         config.coingecko +
-        "/v3/simple/price?ids=the-corgi-of-polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
+          "/v3/simple/price?ids=the-corgi-of-polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
       );
 
       poolObj.tokenPriceCorgib = dataCorgib.data["the-corgi-of-polkabridge"]
@@ -556,7 +577,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       //Note: using polkabridge pool information in corgibPool Object:
       const { data } = await axios.get(
         config.coingecko +
-        "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
+          "/v3/simple/price?ids=polkabridge&vs_currencies=usd&include_market_cap=true&include_24hr_vol=false&include_24hr_change=true&include_last_updated_at=false"
       );
 
       poolObj.tokenPrice = data.polkabridge
@@ -583,7 +604,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       };
       const pwarPriceRes = await axios.get(
         config.coingecko +
-        "/v3/simple/price?ids=polkawar&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+          "/v3/simple/price?ids=polkawar&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
       );
       const pwarPrice = pwarPriceRes.data;
       pwarPoolObj.tokenPrice = pwarPrice["polkawar"]
@@ -602,7 +623,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
       };
       const gravPriceRes = await axios.get(
         config.coingecko +
-        "/v3/simple/price?ids=graviton-zero&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
+          "/v3/simple/price?ids=graviton-zero&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false"
       );
       const gravPrice = gravPriceRes.data;
       gravPoolObj.tokenPrice = gravPrice["graviton-zero"]
@@ -610,7 +631,7 @@ export const getPoolInfo = (network) => async (dispatch) => {
         : "---";
       const gravApy = getApy("GRAV", gravPoolObj, network);
       gravPoolObj.gravApy = gravApy;
-      console.log("amir-----", gravPrice)
+      console.log("amir-----", gravPrice);
 
       //prepare defly Pool
       const deflyPoolObj = {
@@ -624,12 +645,28 @@ export const getPoolInfo = (network) => async (dispatch) => {
       const deflyApy = getApy(DEFLY, deflyPoolObj, network);
       deflyPoolObj.deflyApy = deflyApy;
 
+      //prepare aog Pool
+      const aogPoolObj = {
+        accTokenPerShare: aogPoolData[0],
+        lastRewardBlock: aogPoolData[1],
+        rewardPerBlock: aogPoolData[2],
+        totalTokenStaked: aogPoolData[3],
+        totalTokenClaimed: aogPoolData[4],
+      };
+      aogPoolObj.tokenPrice = 0.3;
+      const aogApy = getApy(AOG, aogPoolObj, network);
+      aogPoolObj.aogApy = aogApy;
 
       dispatch({
         type: LOAD_BSC_POOL,
-        payload: { corgib: poolObj, pwar: pwarPoolObj, grav: gravPoolObj, defly: deflyPoolObj },
+        payload: {
+          corgib: poolObj,
+          pwar: pwarPoolObj,
+          grav: gravPoolObj,
+          defly: deflyPoolObj,
+          aog: aogPoolObj,
+        },
       });
-
     }
   } catch (error) {
     console.log("getPoolInfo error ", { error, network, poolId: poolId.WELT });
@@ -714,8 +751,6 @@ export const checkAllowance = (account, network) => async (dispatch) => {
           type: APPROVE_SHOE_TOKENS,
         });
       }
-
-
     } else if (network === maticNetwork) {
       const [pbrAllowance, weltAllowance] = await Promise.all([
         getTokenContract(network, PBR)
@@ -737,7 +772,6 @@ export const checkAllowance = (account, network) => async (dispatch) => {
           type: APPROVE_WELT_TOKENS,
         });
       }
-
     } else if (network === harmonyNetwork) {
       const [pbrAllowance] = await Promise.all([
         getTokenContract(network, PBR)
@@ -752,7 +786,13 @@ export const checkAllowance = (account, network) => async (dispatch) => {
       }
     } else {
       // bsc network
-      const [corgibAllowance, pwarAllowance, gravAllowance, deflyAllowance] = await Promise.all([
+      const [
+        corgibAllowance,
+        pwarAllowance,
+        gravAllowance,
+        deflyAllowance,
+        aogAllowance,
+      ] = await Promise.all([
         getTokenContract(network, CORGIB)
           .methods.allowance(account, currStakingContract._address)
           .call(),
@@ -763,6 +803,9 @@ export const checkAllowance = (account, network) => async (dispatch) => {
           .methods.allowance(account, currStakingContract._address)
           .call(),
         getTokenContract(network, DEFLY)
+          .methods.allowance(account, currStakingContract._address)
+          .call(),
+        getTokenContract(network, AOG)
           .methods.allowance(account, currStakingContract._address)
           .call(),
       ]);
@@ -779,10 +822,13 @@ export const checkAllowance = (account, network) => async (dispatch) => {
         dispatch({
           type: APPROVE_GRAV_TOKENS,
         });
-      }
-      else if (new BigNumber(deflyAllowance).gt(0)) {
+      } else if (new BigNumber(deflyAllowance).gt(0)) {
         dispatch({
           type: APPROVE_DEFLY_TOKENS,
+        });
+      } else if (new BigNumber(aogAllowance).gt(0)) {
+        dispatch({
+          type: APPROVE_AOG_TOKENS,
         });
       }
     }

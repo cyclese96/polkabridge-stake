@@ -14,6 +14,7 @@ import {
   WELT,
   GRAV,
   DEFLY,
+  AOG,
 } from "../constants";
 import web3 from "../web";
 import config from "./config";
@@ -121,19 +122,19 @@ function convertToInternationalCurrencySystem(labelValue, formatter) {
   // Nine Zeroes for Billions
   return Math.abs(Number(labelValue)) >= 1.0e9
     ? formatter
-      .format((Math.abs(Number(labelValue)) / 1.0e9).toFixed(2))
-      .slice(1) + "B"
+        .format((Math.abs(Number(labelValue)) / 1.0e9).toFixed(2))
+        .slice(1) + "B"
     : // Six Zeroes for Millions
     Math.abs(Number(labelValue)) >= 1.0e6
-      ? formatter
+    ? formatter
         .format((Math.abs(Number(labelValue)) / 1.0e6).toFixed(2))
         .slice(1) + "M"
-      : // Three Zeroes for Thousands
-      Math.abs(Number(labelValue)) >= 1.0e3
-        ? formatter
-          .format((Math.abs(Number(labelValue)) / 1.0e3).toFixed(2))
-          .slice(1) + "K"
-        : formatter.format(Math.abs(Number(labelValue))).slice(1);
+    : // Three Zeroes for Thousands
+    Math.abs(Number(labelValue)) >= 1.0e3
+    ? formatter
+        .format((Math.abs(Number(labelValue)) / 1.0e3).toFixed(2))
+        .slice(1) + "K"
+    : formatter.format(Math.abs(Number(labelValue))).slice(1);
 }
 
 export const resetCurrencyFormatting = (value) => {
@@ -192,7 +193,14 @@ export const getApy = (tokenType, poolObj, network) => {
         apyConstants.bsc.DEFLY.AVG_REWARD_PER_BLOCK,
         total_token_locked
       );
-      return deflyApy;
+      return aogApy;
+    case AOG:
+      const aogApy = getCalculatedApy(
+        apyConstants.bsc.AOG.NUMBER_BLOCKS_PER_YEAR,
+        apyConstants.bsc.AOG.AVG_REWARD_PER_BLOCK,
+        total_token_locked
+      );
+      return aogApy;
 
     case PBR:
       if (network === maticNetwork) {

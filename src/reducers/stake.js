@@ -34,6 +34,9 @@ import {
   APPROVE_DEFLY_TOKENS,
   RESET_DEFLY_TOKEN,
   STAKE_DEFLY_TOKENS,
+  APPROVE_AOG_TOKENS,
+  RESET_AOG_TOKEN,
+  STAKE_AOG_TOKENS,
 } from "../actions/types";
 
 const initalState = {
@@ -44,7 +47,7 @@ const initalState = {
     PWAR: false,
     CFL365: false,
     PUN: false,
-    SHE: false
+    SHE: false,
   },
   stake: {
     PBR: {},
@@ -53,7 +56,7 @@ const initalState = {
     PWAR: {},
     CFL365: {},
     PUN: {},
-    SHOE: {}
+    SHOE: {},
   },
   pool: {
     PBR: {},
@@ -62,7 +65,7 @@ const initalState = {
     PWAR: {},
     CFL365: {},
     PUN: {},
-    SHOE: {}
+    SHOE: {},
   },
   poolLoading: false,
 };
@@ -79,7 +82,7 @@ export default function (state = initalState, action) {
           CFL365: action.payload.clf365,
           PUN: action.payload.pun,
           SHOE: action.payload.shoe,
-          WELT: action.payload.welt
+          WELT: action.payload.welt,
         },
       };
     case LOAD_BSC_POOL:
@@ -90,7 +93,8 @@ export default function (state = initalState, action) {
           CORGIB: action.payload.corgib,
           PWAR: action.payload.pwar,
           GRAV: action.payload.grav,
-          DEFLY: action.payload.defly
+          DEFLY: action.payload.defly,
+          AOG: action.payload.aog,
         },
       };
     case APPROVE_PBR_TOKENS:
@@ -253,11 +257,27 @@ export default function (state = initalState, action) {
           DEFLY: false,
         },
       };
+    case APPROVE_AOG_TOKENS:
+      return {
+        ...state,
+        approved: {
+          ...state.approved,
+          AOG: true,
+        },
+      };
+    case RESET_AOG_TOKEN:
+      return {
+        ...state,
+        approved: {
+          ...state.approved,
+          AOG: false,
+        },
+      };
     case RESET_USER_STAKE:
       return {
         ...state,
         approved: initalState.approved,
-        stake: initalState.stake
+        stake: initalState.stake,
       };
     case STAKE_PBR_TOKENS:
       return {
@@ -306,7 +326,7 @@ export default function (state = initalState, action) {
           ...state.stake,
           WELT: action.payload,
         },
-      }
+      };
     case STAKE_CORGIB_TOKENS:
       return {
         ...state,
@@ -337,6 +357,14 @@ export default function (state = initalState, action) {
         stake: {
           ...state.stake,
           DEFLY: action.payload,
+        },
+      };
+    case STAKE_AOG_TOKENS:
+      return {
+        ...state,
+        stake: {
+          ...state.stake,
+          AOG: action.payload,
         },
       };
     case SHOW_POOL_LOADING:
