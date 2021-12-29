@@ -125,6 +125,10 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
     fontSize: "1.2vw",
     color: "#e5e5e5",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingBottom: 7,
   },
   navbarItemsDesktopActive: {
     paddingRight: 10,
@@ -137,6 +141,10 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
     fontSize: "1.2vw",
     color: "#e0077d",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    paddingBottom: 7,
   },
   navbarButton: {
     backgroundColor: "#f9f9f9",
