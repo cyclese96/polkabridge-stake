@@ -1,14 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Card } from "@material-ui/core";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { formatCurrency, fromWei } from "../utils/helper";
-import biteImg from "../assets/bite.png";
-import corgibImg from "../assets/corgi.png";
-import clf365Img from "../assets/clf365.png";
-import pwarImg from "../assets/pwar.png";
-import punImg from "../assets/punt.png";
 import {
   BITE,
   CFL365,
@@ -22,6 +17,8 @@ import {
   SHOE,
   WELT,
   AOG,
+  tokenLogo,
+  tokenName,
 } from "../constants";
 
 const useStyles = makeStyles((theme) => ({
@@ -88,33 +85,7 @@ function BalanceCard(props) {
   } = props;
   const classes = useStyles();
 
-  const tokenLogo = {
-    PBR: "img/symbol.png",
-    BITE: biteImg,
-    CORGIB: corgibImg,
-    PWAR: pwarImg,
-    CFL365: clf365Img,
-    PUN: punImg,
-    SHOE: "img/shoefy.png",
-    WELT: "img/welt.png",
-    GRAV: "img/grv.png",
-    DEFLY: "img/defly.png",
-    AOG: "img/aog.png",
-  };
 
-  const tokenName = {
-    PBR: "PolkaBridge",
-    BITE: "DragonBite",
-    CORGIB: "Corgi Of PolkaBridge",
-    PWAR: "PolkaWar",
-    CFL365: "CFL 365",
-    PUN: "CryptoPunt",
-    SHOE: "Shoefy Private",
-    WELT: "FabWelt",
-    GRAV: "Graviton Zero",
-    DEFLY: "DeflyBall",
-    AOG: "Age of Gods",
-  };
 
   const getCoins = () => {
     if (currentNetwork === etheriumNetwork) {
@@ -126,10 +97,7 @@ function BalanceCard(props) {
         { coin: CFL365, balance: formatCurrency(fromWei(balance[CFL365])) },
       ];
     } else {
-      if (
-        currentNetwork === maticNetwork ||
-        currentNetwork === harmonyNetwork
-      ) {
+      if (currentNetwork === maticNetwork) {
         return [
           { coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
           { coin: WELT, balance: formatCurrency(fromWei(balance[WELT])) },
@@ -161,18 +129,16 @@ function BalanceCard(props) {
     }
   };
 
+  const balances = useMemo(() => Object.keys(balance).map(_token => {
+    return { coin: _token, balance: formatCurrency(fromWei(balance?.[_token])) }
+  }), [currentNetwork, balance])
+
   return (
     <Card className={classes.card} elevation={10}>
       <h6 className={classes.title}>Your Balance</h6>
-      {/* {!account.balance && (
-        <div className="text-center">
-          <Loader height={200} />
-        </div>
-      )} */}
 
-      {/* {account.balance && ( */}
       <div className="mt-4">
-        {getCoins().map(function (coinObj, index) {
+        {getCoins()?.map(function (coinObj, index) {
           // if (
           //   account.balance[key] !== null &&
           //   account.balance[key] !== undefined
@@ -181,12 +147,12 @@ function BalanceCard(props) {
             <div className="d-flex justify-content-between mt-4">
               <div className="d-flex justify-content-start">
                 <div className={classes.logoWrapper}>
-                  <img src={tokenLogo[coinObj.coin]} className={classes.logo} />
+                  <img src={tokenLogo?.[coinObj.coin]} className={classes.logo} />
                 </div>
                 <div>
                   <div className={classes.tokenTitle}>{coinObj.coin}</div>
                   <div className={classes.tokenSubtitle}>
-                    {tokenName[coinObj.coin]}
+                    {tokenName?.[coinObj.coin]}
                   </div>
                 </div>
               </div>

@@ -1,99 +1,39 @@
-// stake contract addresses
 
+const testing = false;
+export const currentConnection = testing ? "testnet" : "mainnet";
+
+// stake contract addresses
 export const stakeContractAdrresses = {
-  ethereum: {
-    testnet: "0x7678f0AF7304e01554E2D49D96E55C8de4975c66",
-    mainnet: "0x1b46b72c5280f30Fbe8A958B4f3c348FD0fD2E55",
-  },
-  polygon: {
-    testnet: "0x55950cF279Ba5b43263f4Df54833b85F684B333F",
-    mainnet: "0x6335aF028e77B574423733443678aD4cb9e15B3D",
-  },
-  harmony: {
-    testnet: "0x7a1238cba81de51158c150ffb48a2dba14b987bd",
-    mainnet: "0x7a1238cba81de51158c150ffb48a2dba14b987bd",
-  },
-  bsc: {
-    testnet: "0xA5c2186CFb734828EE89a4087FD571F12Af1E895",
-    mainnet: "0x064dE1e65df3F40Afd7fb9E8A1Af61bD4545f4a1",
-  },
+  ethereum: currentConnection === 'mainnet' ? "0x1b46b72c5280f30Fbe8A958B4f3c348FD0fD2E55" : "0x7678f0AF7304e01554E2D49D96E55C8de4975c66",
+  matic: currentConnection === "mainnet" ? "0x6335aF028e77B574423733443678aD4cb9e15B3D" : "0x55950cF279Ba5b43263f4Df54833b85F684B333F",
+  harmony: currentConnection === "mainnet" ? "0x7a1238cba81de51158c150ffb48a2dba14b987bd" : "0x7a1238cba81de51158c150ffb48a2dba14b987bd",
+  bsc: currentConnection === "mainnet" ? "0x064dE1e65df3F40Afd7fb9E8A1Af61bD4545f4a1" : "0xA5c2186CFb734828EE89a4087FD571F12Af1E895",
 };
 
 export const tokenContarctAddresses = {
-  PBR: {
-    ethereum: {
-      testnet: "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
-      mainnet: "0x298d492e8c1d909D3F63Bc4A36C66c64ACB3d695",
-    },
-    polygon: {
-      testnet: "0x6024ca0b7c12846a396a5d860ff885233ef16dd0",
-      mainnet: "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
-    },
-    harmony: {
-      testnet: "0xfc649ce83d2b25086bf645ca88a9621b5e8a36fa",
-      mainnet: "0xfc649ce83d2b25086bf645ca88a9621b5e8a36fa",
-    },
+
+  ethereum: {
+    PBR: currentConnection === 'mainnet' ? "0x298d492e8c1d909D3F63Bc4A36C66c64ACB3d695" : "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
+    BITE: currentConnection === 'mainnet' ? "0x4eed0fa8de12d5a86517f214c2f11586ba2ed88d" : "0xA9Bf3904f7216B4cA2BA862Ac27b9469c030C0eA",
+    CFL365: currentConnection === 'mainnet' ? "0xcd6adc6b8bd396e2d53ccd7d7257b4de55be4fbe" : "0x1F6fE20C82950F5139e8b31D5C32A73EE992e9E1",
+    PUN: currentConnection === 'mainnet' ? "0x31903e333809897ee57af57567f4377a1a78756c" : "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
+    SHOE: currentConnection === 'mainnet' ? "0x0fd67b4ceb9b607ef206904ec73459c4880132c9" : "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
   },
-  BITE: {
-    ethereum: {
-      testnet: "0xA9Bf3904f7216B4cA2BA862Ac27b9469c030C0eA",
-      mainnet: "0x4eed0fa8de12d5a86517f214c2f11586ba2ed88d",
-    },
+  matic: {
+    PBR: currentConnection === 'mainnet' ? "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0" : "0x6024ca0b7c12846a396a5d860ff885233ef16dd0",
+    WELT: currentConnection === 'mainnet' ? "0x23E8B6A3f6891254988B84Da3738D2bfe5E703b9" : "0x6024ca0b7c12846a396a5d860ff885233ef16dd0",
   },
-  CFL365: {
-    ethereum: {
-      testnet: "0x1F6fE20C82950F5139e8b31D5C32A73EE992e9E1",
-      mainnet: "0xcd6adc6b8bd396e2d53ccd7d7257b4de55be4fbe",
-    },
+  harmony: {
+    PBR: currentConnection === 'mainnet' ? "0xfc649ce83d2b25086bf645ca88a9621b5e8a36fa" : "0xfc649ce83d2b25086bf645ca88a9621b5e8a36fa",
   },
-  PWAR: {
-    bsc: {
-      testnet: "0x16153214E683018D5aA318864c8e692b66E16778",
-      mainnet: "0x16153214E683018D5aA318864c8e692b66E16778",
-    },
-  },
-  GRAV: {
-    bsc: {
-      testnet: "0x16153214E683018D5aA318864c8e692b66E16778",
-      mainnet: "0xa6168c7e5eb7c5c379f3a1d7cf1073e09b2f031e",
-    },
-  },
-  DEFLY: {
-    bsc: {
-      testnet: "0x16153214e683018d5aa318864c8e692b66e16778",
-      mainnet: "0x0fe6a599c280853621a11c12e1a68e6949cbd08a",
-    },
-  },
-  AOG: {
-    bsc: {
-      testnet: "0x16153214e683018d5aa318864c8e692b66e16778",
-      mainnet: "0x40c8225329bd3e28a043b029e0d07a5344d2c27c",
-    },
-  },
-  CORGIB: {
-    bsc: {
-      testnet: "0xE428Cc8A06Cdba0ad5074180f8E80ec6D4083b24",
-      mainnet: "0x1cfd6813a59d7b90c41dd5990ed99c3bf2eb8f55",
-    },
-  },
-  PUN: {
-    ethereum: {
-      testnet: "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
-      mainnet: "0x31903e333809897ee57af57567f4377a1a78756c",
-    },
-  },
-  SHOE: {
-    ethereum: {
-      testnet: "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
-      mainnet: "0x0fd67b4ceb9b607ef206904ec73459c4880132c9",
-    },
-  },
-  WELT: {
-    polygon: {
-      testnet: "0x6024ca0b7c12846a396a5d860ff885233ef16dd0",
-      mainnet: "0x23E8B6A3f6891254988B84Da3738D2bfe5E703b9",
-    },
-  },
+  bsc: {
+    PWAR: currentConnection === 'mainnet' ? "0x16153214E683018D5aA318864c8e692b66E16778" : "0x16153214E683018D5aA318864c8e692b66E16778",
+    CORGIB: currentConnection === 'mainnet' ? "0x1cfd6813a59d7b90c41dd5990ed99c3bf2eb8f55" : "0xE428Cc8A06Cdba0ad5074180f8E80ec6D4083b24",
+    GRAV: currentConnection === 'mainnet' ? "0xa6168c7e5eb7c5c379f3a1d7cf1073e09b2f031e" : "0x16153214E683018D5aA318864c8e692b66E16778",
+    DEFLY: currentConnection === 'mainnet' ? "0x0fe6a599c280853621a11c12e1a68e6949cbd08a" : "0x16153214E683018D5aA318864c8e692b66E16778",
+    AOG: currentConnection === 'mainnet' ? "0x40c8225329bd3e28a043b029e0d07a5344d2c27c" : "0x16153214E683018D5aA318864c8e692b66E16778",
+  }
+
 };
 
 export const PBR = "PBR";
@@ -107,6 +47,107 @@ export const WELT = "WELT";
 export const GRAV = "GRAV";
 export const DEFLY = "DEFLY";
 export const AOG = "AOG";
+
+export const tokenLogo = {
+  PBR: "img/symbol.png",
+  BITE: "img/bite.png",
+  CORGIB: "img/corgi.png",
+  PWAR: "img/pwar.png",
+  CFL365: "img/clf365.png",
+  PUN: "img/punt.png",
+  SHOE: "img/shoefy.png",
+  WELT: "img/welt.png",
+  GRAV: "img/grv.png",
+  DEFLY: "img/defly.png",
+  AOG: "img/aog.png",
+};
+
+export const tokenName = {
+  PBR: "PolkaBridge",
+  BITE: "DragonBite",
+  CORGIB: "Corgi Of PolkaBridge",
+  PWAR: "PolkaWar",
+  CFL365: "CFL 365",
+  PUN: "CryptoPunt",
+  SHOE: "Shoefy",
+  WELT: "FabWelt",
+  GRAV: "Graviton Zero",
+  DEFLY: "DeflyBall",
+  AOG: "Age of Gods",
+};
+
+export const tokenInfo = {
+  PBR: {
+    ethereum: {
+      buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x298d492e8c1d909d3f63bc4a36c66c64acb3d695",
+      info: "https://www.coingecko.com/en/coins/polkabridge",
+    },
+    matic: {
+      buy: "https://quickswap.exchange/#/swap?inputCurrency=MATIC&outputCurrency=0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
+      info: "https://www.coingecko.com/en/coins/polkabridge",
+    },
+  },
+  BITE: {
+    ethereum: {
+      buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x4eed0fa8de12d5a86517f214c2f11586ba2ed88d",
+      info: "https://www.coingecko.com/en/coins/dragonbite",
+    },
+  },
+  CORGIB: {
+    bsc: {
+      buy: "https://pancakeswap.finance/swap#/swap?outputCurrency=0x1cfd6813a59d7b90c41dd5990ed99c3bf2eb8f55&inputCurrency=BNB",
+      info: "https://www.coingecko.com/en/coins/the-corgi-of-polkabridge",
+    },
+  },
+  PWAR: {
+    bsc: {
+      buy: "https://pancakeswap.finance/swap#/swap?outputCurrency=0x16153214e683018d5aa318864c8e692b66e16778&inputCurrency=BNB",
+      info: "https://www.coingecko.com/en/coins/polkawar",
+    },
+  },
+  GRAV: {
+    bsc: {
+      buy: `https://pancakeswap.finance/swap#/swap?outputCurrency=${tokenContarctAddresses.bsc.GRAV}&inputCurrency=BNB`,
+      info: "https://www.coingecko.com/en/coins/graviton-zero",
+    },
+  },
+  DEFLY: {
+    bsc: {
+      buy: `https://pancakeswap.finance/swap#/swap?outputCurrency=${tokenContarctAddresses.bsc.DEFLY}&inputCurrency=BNB`,
+      info: "https://coinmarketcap.com/currencies/deflyball/",
+    },
+  },
+  AOG: {
+    bsc: {
+      buy: `https://pancakeswap.finance/swap#/swap?outputCurrency=${tokenContarctAddresses.bsc.AOG}&inputCurrency=BNB`,
+      info: "https://coinmarketcap.com/currencies/age-of-gods/",
+    },
+  },
+  CFL365: {
+    ethereum: {
+      buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xcd6adc6b8bd396e2d53ccd7d7257b4de55be4fbe",
+      info: "https://www.coingecko.com/en/coins/cfl365-finance",
+    },
+  },
+  PUN: {
+    ethereum: {
+      buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x31903e333809897ee57af57567f4377a1a78756c",
+      info: "https://www.dextools.io/app/ether/pair-explorer/0xed1ba5252f94e029f41506adeaf90c459c0aca69",
+    },
+  },
+  SHOE: {
+    ethereum: {
+      buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x0fd67b4ceb9b607ef206904ec73459c4880132c9",
+      info: "https://coinmarketcap.com/currencies/shoefy/ico/",
+    },
+  },
+  WELT: {
+    matic: {
+      buy: `https://quickswap.exchange/#/swap?inputCurrency=MATIC&outputCurrency=${tokenContarctAddresses.matic.WELT}`,
+      info: "https://www.dextools.io/app/polygon/pair-explorer/0x55e49f32fbba12aa360eec55200dafd1ac47aaed",
+    },
+  },
+};
 
 //given token name and network, --> poolId
 export const poolId = {
@@ -146,7 +187,7 @@ export const apyConstants = {
       AVG_REWARD_PER_BLOCK: 0,
     },
   },
-  polygon: {
+  matic: {
     PBR: {
       NUMBER_BLOCKS_PER_YEAR: 43200 * 365,
       AVG_REWARD_PER_BLOCK: 0.07,
@@ -186,49 +227,34 @@ export const apyConstants = {
   },
 };
 
-// export const NUMBER_BLOCKS_PER_YEAR = 2400000;
-// export const AVG_PBR_PER_BLOCK = 0.65;
+export const tokenPriceConstants = {
+  DEFLY: 0.06,
+  AOG: 0.3
+}
 
-// export const NUMBER_BLOCKS_PER_YEAR_MATIC = 43200 * 365;
-// export const AVG_PBR_PER_BLOCK_MATIC = 0.04;
+export const coingeckoTokenId = {
+  PBR: "polkabridge",
+  BITE: "dragonbite",
+  CFL365: "cfl365-finance",
+  PUN: "cryptopunt",
+  SHOE: "shoefy",
+  WELT: "fabwelt",
+  CORGIB: "the-corgi-of-polkabridge",
+  PWAR: "polkawar",
+  GRAV: "graviton-zero",
+}
 
-// export const AVG_BITE_PER_BLOCK = 2;
-
-export const BITE_PRICE = 0.1;
-export const PWAR_PRICE = 0.1;
-export const CLF365_PRICE = 0.1;
-export const FABWELT_PRICE = 0.028;
-
-// //corgib
-// export const CORGIB_BLOCKS_PER_YEAR = 10000000;
-// export const AVG_CORGIB_PER_BLOCK = 285000;
-
-// //pwar
-// export const PWAR_BLOCKS_PER_YEAR = 10000000;
-// export const AVG_PWAR_PER_BLOCK = 0.07;
-
-// //CFL365
-// export const CL6365_BLOCKS_PER_YEAR = 2400000;
-// export const AVG_CL365_PER_BLOCK = 0;
-
-export const infuraKovenApi = `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_KEY.split(
-  ""
-)
-  .reverse()
-  .join("")}`;
-export const infuraMainnetApi = `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY.split(
+export const infuraKovenApi = `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_KEY && process.env.REACT_APP_INFURA_KEY.split(
   ""
 )
   .reverse()
   .join("")}`;
 
-/**
- *
- *    'testnet'  BSC testnet testing
- *    'mainnet'  BSC/ETH mainent deployment
- */
-const testing = false;
-export const currentConnection = testing ? "testnet" : "mainnet";
+export const infuraMainnetApi = `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY && process.env.REACT_APP_INFURA_KEY.split(
+  ""
+)
+  .reverse()
+  .join("")}`;
 
 export const etheriumNetwork = "ethereum";
 export const bscNetwork = "bsc";

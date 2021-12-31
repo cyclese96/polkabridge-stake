@@ -4,15 +4,11 @@ import PolkaBridge from "../abi/PolkaBridge.json";
 import PolkaBridgeStaking from "../abi/PolkaBridgeStaking.json";
 import PolkaBridgeStakingMatic from "../abi/polkabridgeStakingMatic.json";
 import CorgibStaking from "../abi/CorgibStaking.json";
-
-
 import {
-  bscConfig,
   bscNetwork,
   currentConnection,
   etheriumNetwork,
   harmonyNetwork,
-  maticConfig,
   maticNetwork,
   stakeContractAdrresses,
 } from "../../constants";
@@ -28,39 +24,29 @@ export const erc20TokenContract = (network, tokenAddress) => {
 export const stakeContract = (network) => {
   // console.log('initializing web3 connection on ', network)
   if (network === bscNetwork) {
-    const address =
-      currentConnection === "testnet"
-        ? stakeContractAdrresses.bsc.testnet
-        : stakeContractAdrresses.bsc.mainnet;
+
+    const address = stakeContractAdrresses?.[network];
 
     const abi = CorgibStaking;
     const connection = getCurrentConnection(network, abi, address);
     return connection;
   } else if (network === maticNetwork) {
-    const address =
-      currentConnection === "testnet"
-        ? stakeContractAdrresses.polygon.testnet
-        : stakeContractAdrresses.polygon.mainnet;
 
-    console.log('initializing making connection ', { address })
+    const address = stakeContractAdrresses?.[network];
     const abi = PolkaBridgeStakingMatic;
     const connection = getCurrentConnection(network, abi, address);
     return connection;
   } else if (network === harmonyNetwork) {
-    const address =
-      currentConnection === "testnet"
-        ? stakeContractAdrresses.harmony.testnet
-        : stakeContractAdrresses.harmony.mainnet;
+
+
+    const address = stakeContractAdrresses?.[network];
 
     const abi = PolkaBridgeStaking;
     const connection = getCurrentConnection(network, abi, address);
     return connection;
   } else if (network === etheriumNetwork) {
-    const address =
-      currentConnection === "testnet"
-        ? stakeContractAdrresses.ethereum.testnet
-        : stakeContractAdrresses.ethereum.mainnet;
 
+    const address = stakeContractAdrresses?.[network];
     const abi = PolkaBridgeStaking;
     const connection = getCurrentConnection(network, abi, address);
     return connection;
