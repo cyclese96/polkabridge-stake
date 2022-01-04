@@ -17,6 +17,7 @@ import etherIcon from "../assets/ether.png";
 import binanceIcon from "../assets/binance.png";
 import harmonyIcon from "../assets/one.png";
 import polygonIcon from "../assets/polygon.png";
+import { useWeb3React } from "@web3-react/core";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -55,33 +56,31 @@ export default function NetworkSelect({ selectedNetwork }) {
     parseInt(localStorage.getItem("currentNetwork") || config.chainId)
   );
 
+  const { chainId } = useWeb3React();
+
   useEffect(() => {
-    console.log("selected chain id", selectedNetwork);
-    // if (!localStorage.getItem('currentNetwork')) {
-    //     // setupNetwork(ethereumNetworkDetail.mainnet)
-    //     localStorage.currentNetwork = selectedNetwork
-    // }
-    if (!selectedNetwork) {
+    if (!chainId) {
       return;
     }
 
-    handleChange(selectedNetwork);
-  }, [selectedNetwork]);
+    // handleChange(chainId);
+    setNetwork(chainId)
+  }, [chainId]);
 
   const handleChange = (_selected) => {
     if (network === _selected) {
       return;
     }
     localStorage.setItem("currentNetwork", _selected);
-    setNetwork(_selected);
-    if ([config.bscChain, config.bscChainTestent].includes(_selected)) {
+    // setNetwork(_selected);
+    if ([56, 97].includes(_selected)) {
       setupNetwork(
         currentConnection === "mainnet"
           ? bscNetworkDetail.mainnet
           : bscNetworkDetail.testnet
       );
     } else if (
-      [config.polygon_chain_mainnet, config.polygon_chain_testnet].includes(
+      [137, 80001].includes(
         _selected
       )
     ) {
@@ -91,7 +90,7 @@ export default function NetworkSelect({ selectedNetwork }) {
           : polygonNetworkDetail.testnet
       );
     } else if (
-      [config.hmyChainMainnet, config.hmyChainTestnet].includes(_selected)
+      [1666600000, 1666700000].includes(_selected)
     ) {
       setupNetwork(
         currentConnection === "mainnet"
@@ -111,7 +110,7 @@ export default function NetworkSelect({ selectedNetwork }) {
       <FormControl className={classes.root}>
         <Select
           className={classes.main}
-          value={selectedNetwork}
+          value={network}
           disableUnderline={true}
           notched={true}
           id="adornment-weight"
@@ -120,8 +119,8 @@ export default function NetworkSelect({ selectedNetwork }) {
           <MenuItem
             value={
               currentConnection === "testnet"
-                ? config.chainIdTestnet
-                : config.chainId
+                ? 42
+                : 1
             }
             className={classes.buttonDrop}
           >
@@ -131,19 +130,19 @@ export default function NetworkSelect({ selectedNetwork }) {
           <MenuItem
             value={
               currentConnection === "testnet"
-                ? config.bscChainTestent
-                : config.bscChain
+                ? 97
+                : 56
             }
             className={classes.buttonDrop}
           >
-            <span>Binance Smart Chain</span>
+            <span>BSC</span>
             <img className={classes.imgIcon} src={binanceIcon} />
           </MenuItem>
           <MenuItem
             value={
               currentConnection === "testnet"
-                ? config.polygon_chain_testnet
-                : config.polygon_chain_mainnet
+                ? 80001
+                : 137
             }
             className={classes.buttonDrop}
           >
@@ -153,8 +152,8 @@ export default function NetworkSelect({ selectedNetwork }) {
           <MenuItem
             value={
               currentConnection === "testnet"
-                ? config.hmyChainTestnet
-                : config.hmyChainMainnet
+                ? 1666700000
+                : 1666600000
             }
             className={classes.buttonDrop}
           >

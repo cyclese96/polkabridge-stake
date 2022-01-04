@@ -1,12 +1,9 @@
 import { Button, makeStyles } from "@material-ui/core";
 import { AccountBalanceWallet } from "@material-ui/icons";
-import etherIcon from "../assets/ether.png";
-import binanceIcon from "../assets/binance.png";
-import polygonIcon from "../assets/polygon.png";
+import { useWeb3React } from "@web3-react/core";
 import { connect } from "react-redux";
-import { isMetaMaskInstalled } from "../utils/helper";
-import { bscNetwork, etheriumNetwork, maticNetwork } from "../constants";
 import { connectWallet } from "../actions/accountActions";
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -69,50 +66,17 @@ const useStyles = makeStyles((theme) => ({
 const Wallet = ({
   connectWallet,
   onWalletClick,
-  account: { connected, currentNetwork, currentAccount },
 }) => {
+
+  const { active, account, activate } = useWeb3React();
+
   const classes = useStyles();
-
-  const handleConnectWallet = async () => {
-    if (!isMetaMaskInstalled()) {
-      alert("Please install Meta Mask to connect");
-      return;
-    }
-    await connectWallet(true, currentNetwork);
-  };
-
-  const iconAddress = () => {
-    if (currentNetwork === etheriumNetwork) {
-      return (
-        <img
-          className={classes.networkIcon}
-          src={etherIcon}
-          alt={currentNetwork}
-        />
-      );
-    } else if (currentNetwork === bscNetwork) {
-      return (
-        <img
-          className={classes.networkIcon}
-          src={binanceIcon}
-          alt={currentNetwork}
-        />
-      );
-    } else
-      return (
-        <img
-          className={classes.networkIcon}
-          src={polygonIcon}
-          alt={currentNetwork}
-        />
-      );
-  };
 
   return (
     <div>
-      {!connected ? (
+      {!active ? (
         <Button
-          onClick={handleConnectWallet}
+          onClick={onWalletClick}
           className={classes.navbarButton}
           variant="contained"
         >
@@ -125,11 +89,11 @@ const Wallet = ({
             fontSize="medium"
           />
           <strong className={classes.numbers}>
-            {currentAccount ? <span></span> : "..."}
-            {[...currentAccount.toString()].splice(0, 3)}
+            {account ? <span></span> : "..."}
+            {[...account?.toString()]?.splice(0, 3)}
             {"..."}
-            {[...currentAccount.toString()].splice(
-              [...currentAccount.toString()].length - 4,
+            {[...account?.toString()]?.splice(
+              [...account?.toString()]?.length - 4,
               4
             )}
           </strong>

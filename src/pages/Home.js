@@ -9,11 +9,11 @@ import Wallet from "../common/Wallet";
 import PropTypes from "prop-types";
 import { connectWallet, getAccountBalance } from "../actions/accountActions";
 import { connect } from "react-redux";
-import {
-  isMetaMaskInstalled,
-  getCurrentNetworkId,
-  getCurrentAccount,
-} from "../utils/helper";
+// import {
+//   isMetaMaskInstalled,
+//   getCurrentNetworkId,
+//   getCurrentAccount,
+// } from "../utils/helper";
 
 import {
   bscConfig,
@@ -26,10 +26,11 @@ import {
   supportedStaking,
   unsupportedStaking,
 } from "../constants";
-import { CHANGE_NETWORK, RESET_USER_STAKE } from "../actions/types";
+import { CHANGE_NETWORK, CONNECT_WALLET, RESET_USER_STAKE } from "../actions/types";
 import store from "../store";
 import BalanceCard from "../common/BalanceCard";
 import PbrStatistics from "../common/PbrStatistics";
+import { useWeb3React } from '@web3-react/core'
 
 const useStyles = makeStyles((theme) => ({
   background: {
@@ -161,6 +162,8 @@ const Home = ({
   });
   const [currentChainId, setCurrentChainId] = useState(null);
 
+  const { active, account, activate, deactivate, chainId, library } = useWeb3React();
+
   const onStake = (tokenType) => {
     setDialog({ open: true, type: "stake", tokenType: tokenType });
   };
@@ -173,7 +176,7 @@ const Home = ({
     setDialog({ open: false, type: null });
   };
 
-  const getCurrentNetwork = (networkId) => {
+  const getCurrentNetworkName = (networkId) => {
     const _id = networkId.toString();
     if (
       _id === bscConfig.network_id.mainnet ||
@@ -196,70 +199,79 @@ const Home = ({
   };
 
   useEffect(() => {
+
+    if (!chainId || !active) {
+      return
+    }
+
+    const _network = getCurrentNetworkName(chainId);
+
+    store.dispatch({
+      type: CONNECT_WALLET,
+      payload: account
+    })
+    store.dispatch({
+      type: CHANGE_NETWORK,
+      payload: _network,
+    });
+
+    getAccountBalance(account, _network)
+
+  }, [chainId, active, account])
+
+  useEffect(() => {
     async function onNetworkChangeUpdate() {
       if (typeof window.web3 !== "undefined") {
         window.ethereum.on("accountsChanged", async (accounts) => {
           if (accounts.length === 0) {
+            localStorage.connected = "none";
             return;
           }
-          console.log("updating balance", accounts[0]);
-          const _networkId = await getCurrentNetworkId();
-          const _network = getCurrentNetwork(_networkId);
-          console.log("connectWallet current network ", _network);
-          await update(accounts[0], _network);
+
         });
 
-        window.ethereum.on("networkChanged", async (networkId) => {
-          const network = getCurrentNetwork(networkId);
-          setCurrentChainId(parseInt(networkId));
-          console.log("connectWallet current network ", network);
-          store.dispatch({
-            type: CHANGE_NETWORK,
-            payload: network,
-          });
+        window.ethereum.on("disconnect", (error) => {
+          console.log('disconnected ', error)
+          localStorage.connected = "none";
 
-          await update(currentAccount, network);
         });
-        async function update(_account, _network) {
-          console.log("connectWallet updating on network ", _network);
 
-          store.dispatch({
-            type: RESET_USER_STAKE,
-          });
-
-          await connectWallet(false, _network);
-
-          await getAccountBalance(_account, _network);
-        }
       }
     }
     onNetworkChangeUpdate();
   }, []);
 
-  useEffect(async () => {
-    let network = "";
-    const account = await getCurrentAccount();
+  // useEffect(async () => {
+  //   let network = "";
+  //   const account = await getCurrentAccount();
 
-    // alert(account)
-    if (isMetaMaskInstalled()) {
-      const networkId = await getCurrentNetworkId();
-      setCurrentChainId(networkId);
+  //   // alert(account)
+  //   if (isMetaMaskInstalled()) {
+  //     const networkId = await getCurrentNetworkId();
+  //     setCurrentChainId(networkId);
 
-      network = getCurrentNetwork(networkId.toString());
-      store.dispatch({
-        type: CHANGE_NETWORK,
-        payload: network,
-      });
-    } else {
-      network = etheriumNetwork;
-    }
+  //     network = getCurrentNetwork(networkId.toString());
+  //     store.dispatch({
+  //       type: CHANGE_NETWORK,
+  //       payload: network,
+  //     });
+  //   } else {
+  //     network = etheriumNetwork;
+  //   }
 
-    if (!isMetaMaskInstalled()) {
-      return;
-    }
+  //   if (!isMetaMaskInstalled()) {
+  //     return;
+  //   }
 
-    await connectWallet(false, network);
-  }, []);
+  //   await connectWallet(false, network);
+  // }, []);
+
+
+  // useEffect(() => {
+
+  //   console.log('checking connection ', { account, active, chainId, library })
+  //   activate(connectors.injected)
+  // }, [account, active])
 
   useEffect(() => {
     if (JSON.stringify(error).includes("-32000")) {
@@ -299,7 +311,7 @@ const Home = ({
               </p>
             </div>
           )}
-          {connected && (
+          {(
             <div className="mt-3">
               {supportedStaking[currentNetwork].length === 0 && (
                 <div style={{ textAlign: "center", color: "white" }}>

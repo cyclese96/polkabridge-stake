@@ -1,5 +1,5 @@
 
-const testing = false;
+const testing = true;
 export const currentConnection = testing ? "testnet" : "mainnet";
 
 // stake contract addresses
@@ -267,6 +267,18 @@ export const etherConfig = {
     koven: "42",
   },
 };
+
+export const supportedChainIds = [
+  1,
+  42,
+  56,
+  97,
+  137,
+  80001,
+  1666600000,//harmony mainnet
+  1666700000,// harmony testnet
+
+]
 
 export const bscConfig = {
   network_id: {
