@@ -27,6 +27,9 @@ import {
 } from "../constants";
 import Loader from "./../common/Loader";
 import DotCircle from "./../common/DotCircle";
+import { useWeb3React } from "@web3-react/core";
+import { RESET_USER_STAKE } from "../actions/types";
+import store from "../store";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -229,12 +232,13 @@ const Staking = ({
 }) => {
 
   const classes = useStyles();
+  const { active } = useWeb3React();
 
   useEffect(async () => {
 
-    if (!currentNetwork || !currentAccount) {
-      return
-    }
+    // if (!currentNetwork || !currentAccount) {
+    //   return
+    // }
 
     const pid = poolId?.[tokenType];
     await Promise.all([
@@ -243,6 +247,14 @@ const Staking = ({
     ]);
 
   }, [currentAccount, currentNetwork]);
+
+  useEffect(() => {
+    if (!active) {
+      store.dispatch({
+        type: RESET_USER_STAKE
+      })
+    }
+  }, [active])
 
   const handleApprove = async (tokenType) => {
 
@@ -435,57 +447,66 @@ const Staking = ({
           </div>
 
           <Divider style={{ backgroundColor: "#616161", height: 1 }} />
-          <div className={classes.desktop}>
-            <div className="text-center mt-4">
-              <div className={classes.tokenTitle}>Staked</div>
-              <div className={classes.tokenAmount}>
-                {" "}
-                {tokenType === "PWAR"
-                  ? formatCurrency(
-                    fromWei(stake?.[tokenType]?.amount),
-                    false,
-                    1,
-                    true
-                  )
-                  : formatCurrency(fromWei(stake?.[tokenType]?.amount))}{" "}
+
+          {active && (
+            <div className={classes.desktop}>
+              <div className="text-center mt-4">
+                <div className={classes.tokenTitle}>Staked</div>
+                <div className={classes.tokenAmount}>
+                  {" "}
+                  {tokenType === "PWAR"
+                    ? formatCurrency(
+                      fromWei(stake?.[tokenType]?.amount),
+                      false,
+                      1,
+                      true
+                    )
+                    : formatCurrency(fromWei(stake?.[tokenType]?.amount))}{" "}
+                </div>
+              </div>
+              <div className="text-center mt-4">
+                <div className={classes.tokenTitle}>Claimed</div>
+                <div className={classes.tokenAmount}>
+                  {" "}
+                  {tokenType === "PWAR"
+                    ? formatCurrency(
+                      fromWei(stake?.[tokenType]?.rewardClaimed),
+                      false,
+                      1,
+                      true
+                    )
+                    : formatCurrency(
+                      fromWei(stake?.[tokenType]?.rewardClaimed)
+                    )}{" "}
+                </div>
+              </div>
+              <div className="text-center mt-4">
+                <div className={classes.tokenTitle}>Pending</div>
+                <div className={classes.tokenAmount}>
+                  {" "}
+                  {tokenType === "PWAR"
+                    ? formatCurrency(
+                      fromWei(stake?.[tokenType]?.pendingReward),
+                      false,
+                      1,
+                      true
+                    )
+                    : formatCurrency(
+                      fromWei(stake?.[tokenType]?.pendingReward)
+                    )}{" "}
+                </div>
               </div>
             </div>
-            <div className="text-center mt-4">
-              <div className={classes.tokenTitle}>Claimed</div>
-              <div className={classes.tokenAmount}>
-                {" "}
-                {tokenType === "PWAR"
-                  ? formatCurrency(
-                    fromWei(stake?.[tokenType]?.rewardClaimed),
-                    false,
-                    1,
-                    true
-                  )
-                  : formatCurrency(
-                    fromWei(stake?.[tokenType]?.rewardClaimed)
-                  )}{" "}
-              </div>
-            </div>
-            <div className="text-center mt-4">
-              <div className={classes.tokenTitle}>Pending</div>
-              <div className={classes.tokenAmount}>
-                {" "}
-                {tokenType === "PWAR"
-                  ? formatCurrency(
-                    fromWei(stake?.[tokenType]?.pendingReward),
-                    false,
-                    1,
-                    true
-                  )
-                  : formatCurrency(
-                    fromWei(stake?.[tokenType]?.pendingReward)
-                  )}{" "}
-              </div>
-            </div>
-          </div>
+          )}
+
 
           <div className={classes.buttons}>
-            {!approved[tokenType] ? (
+            {!active && (
+              <div className="text-center">
+                <p className={classes.hint}>Connect wallet</p>
+              </div>
+            )}
+            {active && !approved?.[tokenType] && (
               <div className="text-center">
                 <CustomButton
                   disabled={approveDisableStatus(tokenType)}
@@ -500,7 +521,8 @@ const Staking = ({
                   </span>
                 </p>
               </div>
-            ) : (
+            )}
+            {active && approved?.[tokenType] && (
               <div className={classes.stakeButtons}>
                 <CustomButton
                   disabled={claimDisableStatus(tokenType)}

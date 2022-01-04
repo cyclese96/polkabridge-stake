@@ -68,7 +68,7 @@ const Wallet = ({
   onWalletClick,
 }) => {
 
-  const { active, account, activate } = useWeb3React();
+  const { active, account } = useWeb3React();
 
   const classes = useStyles();
 

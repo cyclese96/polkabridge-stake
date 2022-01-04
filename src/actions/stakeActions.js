@@ -88,14 +88,25 @@ export const fetchPbrMarketData = () => async (dispatch) => {
   }
 }
 
+const getTokenBalance = async (tokenContract, account) => {
+  try {
+    const balance = await tokenContract.methods.balanceOf(account).call();
+    return balance;
+  } catch (error) {
+    console.log("getTokenBalance ", error);
+    return 0;
+  }
+}
 
 export const getPoolInfo = (tokenSymbol, pid, account, network) => async (dispatch) => {
 
   try {
 
-    if (!tokenSymbol || !account || !network) {
+    if (!tokenSymbol) {
       return
     }
+
+    // console.log('getting pool info ', { pid, account, network })
 
     const currStakingContract = stakeContract(network);
     const tokenAddress = tokenContarctAddresses?.[network]?.[tokenSymbol];
@@ -104,7 +115,7 @@ export const getPoolInfo = (tokenSymbol, pid, account, network) => async (dispat
     const [poolInfo, tokenPrice, tokenBalance] = await Promise.all([
       currStakingContract.methods.getPoolInfo(pid).call(),
       fetchTokenPrice(tokenSymbol),
-      tokenContract.methods.balanceOf(account).call()
+      getTokenBalance(tokenContract, account)
     ])
     const poolObj = {
       accTokenPerShare: poolInfo[0],

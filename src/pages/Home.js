@@ -9,11 +9,6 @@ import Wallet from "../common/Wallet";
 import PropTypes from "prop-types";
 import { connectWallet, getAccountBalance } from "../actions/accountActions";
 import { connect } from "react-redux";
-// import {
-//   isMetaMaskInstalled,
-//   getCurrentNetworkId,
-//   getCurrentAccount,
-// } from "../utils/helper";
 
 import {
   bscConfig,
@@ -241,38 +236,6 @@ const Home = ({
     onNetworkChangeUpdate();
   }, []);
 
-  // useEffect(async () => {
-  //   let network = "";
-  //   const account = await getCurrentAccount();
-
-  //   // alert(account)
-  //   if (isMetaMaskInstalled()) {
-  //     const networkId = await getCurrentNetworkId();
-  //     setCurrentChainId(networkId);
-
-  //     network = getCurrentNetwork(networkId.toString());
-  //     store.dispatch({
-  //       type: CHANGE_NETWORK,
-  //       payload: network,
-  //     });
-  //   } else {
-  //     network = etheriumNetwork;
-  //   }
-
-  //   if (!isMetaMaskInstalled()) {
-  //     return;
-  //   }
-
-  //   await connectWallet(false, network);
-  // }, []);
-
-
-  // useEffect(() => {
-
-  //   console.log('checking connection ', { account, active, chainId, library })
-  //   activate(connectors.injected)
-  // }, [account, active])
-
   useEffect(() => {
     if (JSON.stringify(error).includes("-32000")) {
       alert(
@@ -340,7 +303,7 @@ const Home = ({
               )}
             </div>
           )}
-          {connected && (
+          {(
             <div className="mt-3">
               {supportedStaking[currentNetwork].length === 0 && (
                 <div style={{ textAlign: "center", color: "white" }}></div>
