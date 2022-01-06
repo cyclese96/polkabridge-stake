@@ -22,7 +22,6 @@ import AccountDialog from "./AccountDialog";
 import DotCircle from "./DotCircle";
 import NetworkSelect from "./NetworkSelect";
 import { useWeb3React } from '@web3-react/core'
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
 import connectors from "../connection/connectors";
 
 const useStyles = makeStyles((theme) => ({
@@ -242,12 +241,12 @@ const Navbar = ({ currentNetwork, chainId }) => {
     try {
       const connector = connectors.injected;
 
-      if (
-        connector instanceof WalletConnectConnector &&
-        connector.walletConnectProvider?.wc?.uri
-      ) {
-        connector.walletConnectProvider = undefined
-      }
+      // if (
+      //   connector instanceof WalletConnectConnector &&
+      //   connector.walletConnectProvider?.wc?.uri
+      // ) {
+      //   connector.walletConnectProvider = undefined
+      // }
 
       await activate(connector)
       localStorage.connected = "yes";

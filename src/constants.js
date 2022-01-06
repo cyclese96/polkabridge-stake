@@ -1,5 +1,5 @@
 
-const testing = true;
+const testing = false;
 export const currentConnection = testing ? "testnet" : "mainnet";
 
 // stake contract addresses
@@ -276,7 +276,8 @@ export const supportedChainIds = [
   137,
   80001,
   1666600000,//harmony mainnet
-  1666700000,// harmony testnet
+  1666700000,// harmony testnet,
+  5
 
 ]
 

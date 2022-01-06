@@ -3,10 +3,10 @@ import Web3 from "web3";
 import {
   apyConstants,
 } from "../constants";
-import web3 from "../web";
 import config from "./config";
 
 export const fromWei = (tokens) => {
+  const web3 = new Web3(window?.ethereum)
   if (!tokens) {
     return web3.utils.fromWei("0", "ether");
   }
@@ -15,6 +15,7 @@ export const fromWei = (tokens) => {
 };
 
 export const toWei = (tokens) => {
+  const web3 = new Web3(window?.ethereum)
   if (!tokens) {
     return web3.utils.toWei("0", "ether");
   }
@@ -37,6 +38,7 @@ export const getCurrentAccount = async () => {
 
 export const getNetworkBalance = async (accountAddress) => {
   try {
+    const web3 = new Web3(window?.ethereum)
     const bal = web3.eth.getBalance(accountAddress);
     return bal;
   } catch (error) {
@@ -46,8 +48,8 @@ export const getNetworkBalance = async (accountAddress) => {
 };
 
 export const getCurrentNetworkId = async () => {
+  const web3 = new Web3(window.ethereum);
   if (window.ethereum) {
-    const web3 = new Web3(window.ethereum);
     const id = await web3.eth.getChainId();
 
     if (id) {
