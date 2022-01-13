@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Avatar, Button, Card } from "@material-ui/core";
 import Loader from "./Loader";
-import { formatLargeNumber } from "../utils/helper";
+import { formatCurrency, formatLargeNumber } from "../utils/helper";
 import { maticNetwork } from "../constants";
+import { connect } from "react-redux";
+import { fetchPbrMarketData } from "../actions/stakeActions";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -102,14 +104,17 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-export default function PbrStatistics({
-  price,
-  mCap,
-  change,
-  poolLoading,
-  network,
-}) {
+
+const PbrStatistics = ({
+  account: { currentAccount, currentNetwork },
+  stake: { pbrMarketData, poolLoading },
+  fetchPbrMarketData,
+}) => {
   const classes = useStyles();
+
+  useEffect(() => {
+    fetchPbrMarketData();
+  }, []);
 
   return (
     <Card className={classes.card} elevation={10}>
@@ -138,7 +143,7 @@ export default function PbrStatistics({
             <a
               target="_blank"
               href={
-                network === maticNetwork
+                currentNetwork === maticNetwork
                   ? "https://quickswap.exchange/#/swap?inputCurrency=MATIC&outputCurrency=0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0"
                   : "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x298d492e8c1d909d3f63bc4a36c66c64acb3d695"
               }
@@ -152,17 +157,21 @@ export default function PbrStatistics({
           <div className={classes.desktop}>
             <div className="text-center mt-4">
               <div className={classes.tokenTitle}>Price</div>
-              <div className={classes.tokenAmount}>{price}</div>
+              <div className={classes.tokenAmount}>
+                {pbrMarketData?.tokenPrice}
+              </div>
             </div>
             <div className="text-center mt-4">
               <div className={classes.tokenTitle}>Market Cap</div>
               <div className={classes.tokenAmount}>
-                {formatLargeNumber(mCap)}
+                {formatLargeNumber(pbrMarketData?.mCap)}
               </div>
             </div>
             <div className="text-center mt-4">
               <div className={classes.tokenTitle}> 24Hr Change</div>
-              <div className={classes.tokenAmount}>{change} %</div>
+              <div className={classes.tokenAmount}>
+                {formatCurrency(pbrMarketData?.change, true, 2)}%
+              </div>
             </div>
           </div>
         </div>
@@ -174,4 +183,13 @@ export default function PbrStatistics({
       )}
     </Card>
   );
-}
+};
+
+const mapStateToProps = (state) => ({
+  account: state.account,
+  stake: state.stake,
+});
+
+export default connect(mapStateToProps, { fetchPbrMarketData })(
+  React.memo(PbrStatistics)
+);

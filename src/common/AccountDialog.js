@@ -1,5 +1,5 @@
-import React from "react";
-import { makeStyles, withStyles } from "@material-ui/core/styles";
+import React, { useMemo } from "react";
+import { makeStyles } from "@material-ui/core/styles";
 import Dialog from "@material-ui/core/Dialog";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
@@ -17,12 +17,10 @@ import {
   SHOE,
   WELT,
   AOG,
+  tokenName,
+  tokenLogo,
+  LABS,
 } from "../constants";
-import biteImg from "../assets/bite.png";
-import corgibImg from "../assets/corgi.png";
-import clf365Img from "../assets/clf365.png";
-import pwarImg from "../assets/pwar.png";
-import puntImg from "../assets/punt.png";
 
 import { formatCurrency, fromWei } from "../utils/helper";
 import { connect } from "react-redux";
@@ -154,13 +152,13 @@ const useStyles = makeStyles((theme) => ({
 const AccountDialog = ({
   open,
   handleClose,
-  logout,
-  account: { currentAccount, balance, connected, currentNetwork },
+  handleLogout,
+  account: { currentAccount, balance, currentNetwork },
 }) => {
   const classes = useStyles();
   const onSingOut = () => {
     localStorage.setItem(`logout${currentAccount}`, currentAccount);
-    logout();
+    handleLogout();
     handleClose();
   };
 
@@ -168,10 +166,11 @@ const AccountDialog = ({
     if (currentNetwork === etheriumNetwork) {
       return [
         { coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
-        { coin: PUN, balance: formatCurrency(fromWei(balance[PUN])) },
-        { coin: SHOE, balance: formatCurrency(fromWei(balance[SHOE])) },
-        { coin: BITE, balance: formatCurrency(fromWei(balance[BITE])) },
-        { coin: CFL365, balance: formatCurrency(fromWei(balance[CFL365])) },
+        { coin: LABS, balance: formatCurrency(fromWei(balance[LABS])) },
+        // { coin: PUN, balance: formatCurrency(fromWei(balance[PUN])) },
+        // { coin: SHOE, balance: formatCurrency(fromWei(balance[SHOE])) },
+        // { coin: BITE, balance: formatCurrency(fromWei(balance[BITE])) },
+        // { coin: CFL365, balance: formatCurrency(fromWei(balance[CFL365])) },
       ];
     } else {
       if (currentNetwork === maticNetwork) {
@@ -206,33 +205,6 @@ const AccountDialog = ({
     }
   };
 
-  const tokenLogo = {
-    PBR: "img/symbol.png",
-    BITE: biteImg,
-    CORGIB: corgibImg,
-    PWAR: pwarImg,
-    CFL365: clf365Img,
-    PUN: puntImg,
-    SHOE: "img/shoefy.png",
-    WELT: "img/welt.png",
-    GRAV: "img/grv.png",
-    DEFLY: "img/defly.png",
-    AOG: "img/aog.png",
-  };
-
-  const tokenName = {
-    PBR: "PolkaBridge",
-    BITE: "DragonBite",
-    CORGIB: "Corgi Of PolkaBridge",
-    PWAR: "PolkaWar",
-    CFL365: "CFL 365",
-    PUN: "CryptoPunt",
-    SHOE: "Shoefy Private",
-    WELT: "FabWelt",
-    GRAV: "Graviton Zero",
-    DEFLY: "DeflyBall",
-    AOG: "Age of Gods",
-  };
   return (
     <div>
       <Dialog
@@ -280,14 +252,14 @@ const AccountDialog = ({
                   <div className="d-flex justify-content-start">
                     <div className={classes.logoWrapper}>
                       <img
-                        src={tokenLogo[coinObj.coin]}
+                        src={tokenLogo?.[coinObj.coin]}
                         className={classes.logo}
                       />
                     </div>
                     <div>
                       <div className={classes.tokenTitle}>{coinObj.coin}</div>
                       <div className={classes.tokenSubtitle}>
-                        {tokenName[coinObj.coin]}
+                        {tokenName?.[coinObj.coin]}
                       </div>
                     </div>
                   </div>

@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-// import Button from "@material-ui/core/Button";
 import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
 import SwipeableDrawer from "@material-ui/core/SwipeableDrawer";
@@ -17,24 +16,13 @@ import FlareOutlined from "@material-ui/icons/FlareOutlined";
 import TouchAppOutlined from "@material-ui/icons/TouchAppOutlined";
 import VpnLockOutlined from "@material-ui/icons/VpnLockOutlined";
 import CategoryIcon from "@material-ui/icons/Category";
-
-// import CustomSnackBar from "./CustomSnackbar";
 import { EqualizerOutlined } from "@material-ui/icons";
 import Wallet from "./Wallet";
 import AccountDialog from "./AccountDialog";
-import etherIcon from "../assets/ether.png";
-import binanceIcon from "../assets/binance.png";
-import harmonyIcon from "../assets/one.png";
-import polygonIcon from "../assets/polygon.png";
 import DotCircle from "./DotCircle";
-import {
-  bscNetwork,
-  etheriumNetwork,
-  harmonyNetwork,
-  maticNetwork,
-} from "../constants";
 import NetworkSelect from "./NetworkSelect";
-import useNetwork from "./useNetwork";
+import { useWeb3React } from "@web3-react/core";
+import connectors from "../connection/connectors";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -237,35 +225,50 @@ const Navbar = ({ currentNetwork, chainId }) => {
     right: false,
   });
 
-  const [alertObject, showAlert] = React.useState({
-    status: false,
-    message: "",
-  });
-
   const [accountDialog, setAccountDialog] = useState(false);
 
   const toggleDrawer = (anchor, open) => (event) => {
     setState({ ...state, [anchor]: open });
   };
 
-  const handleClose = () => {
-    showAlert({ status: false, message: "" });
+  const { active, account, activate, deactivate } = useWeb3React();
+
+  const createConnectHandler = async () => {
+    try {
+      const connector = connectors.injected;
+
+      // if (
+      //   connector instanceof WalletConnectConnector &&
+      //   connector.walletConnectProvider?.wc?.uri
+      // ) {
+      //   connector.walletConnectProvider = undefined
+      // }
+
+      await activate(connector);
+      localStorage.connected = "yes";
+    } catch (error) {
+      console.error("createConnectHandler", error);
+    }
   };
 
-  // const { chainId, status } = useNetwork()
+  useEffect(() => {
+    if (!active && localStorage.connected === "yes") {
+      createConnectHandler();
+    }
+  }, [active]);
 
-  // useEffect(() => {
-  //   console.log('useNetwork:  network id', chainId)
-  //   console.log('useNetwork: status', status)
-  //   if (status === 'network changing') {
-  //     var result = window.confirm('Do you want reload the page ?')
-  //     if (result) {
-  //       window.location.reload()
-  //     } else {
-  //       console.log('closed')
-  //     }
-  //   }
-  // }, [chainId])
+  const handleLogout = () => {
+    localStorage.connected = "none";
+    deactivate();
+  };
+
+  const handleWalletClick = () => {
+    if (active) {
+      setAccountDialog(true);
+    } else {
+      createConnectHandler();
+    }
+  };
 
   const list = (anchor) => (
     <div
@@ -327,70 +330,20 @@ const Navbar = ({ currentNetwork, chainId }) => {
         ))}
         <Divider />
         <ListItem button style={{ marginLeft: 10 }}>
-          <Wallet onWalletClick={() => setAccountDialog(true)} />
+          <Wallet onWalletClick={handleWalletClick} />
         </ListItem>
         <ListItem button style={{ marginLeft: 10, marginTop: 10 }}>
-          {/* {renderIcon()} */}
-          {/* <div > */}
-          <NetworkSelect selectedNetwork={chainId} />
-          {/* </div> */}
+          {active && <NetworkSelect selectedNetwork={chainId} />}
         </ListItem>
       </List>
     </div>
   );
 
-  const renderIcon = () => {
-    if (currentNetwork === etheriumNetwork) {
-      return (
-        <div className={classes.network}>
-          <img
-            className={classes.networkIcon}
-            src={etherIcon}
-            alt={currentNetwork}
-          />
-          <span style={{ color: "white", marginLeft: 5 }}>Ethereum</span>
-        </div>
-      );
-    } else if (currentNetwork === bscNetwork) {
-      return (
-        <div className={classes.network}>
-          <img
-            className={classes.networkIcon}
-            src={binanceIcon}
-            alt={currentNetwork}
-          />
-          <span style={{ color: "white", marginLeft: 5 }}>BSC</span>
-        </div>
-      );
-    } else if (currentNetwork === harmonyNetwork) {
-      return (
-        <div className={classes.network}>
-          <img
-            className={classes.networkIcon}
-            src={harmonyIcon}
-            // alt={currentNetwork}
-          />
-          <span style={{ color: "white", marginLeft: 5 }}>Harmony</span>
-        </div>
-      );
-    } else
-      return (
-        <div className={classes.network}>
-          <img className={classes.networkIcon} src={polygonIcon} />
-          <span style={{ color: "white", marginLeft: 5 }}>Polygon</span>
-        </div>
-      );
-  };
-
   return (
     <div className={classes.grow}>
-      {/* <CustomSnackBar
-        handleClose={handleClose}
-        status={alertObject.status}
-        message={alertObject.message}
-      /> */}
       <AccountDialog
         open={accountDialog}
+        handleLogout={handleLogout}
         handleClose={() => setAccountDialog(false)}
       />
       <AppBar
@@ -465,11 +418,8 @@ const Navbar = ({ currentNetwork, chainId }) => {
           </div>
 
           <div className={classes.grow} />
-          {/* <div style={{ paddingRight: 10 }}>{renderIcon()}</div> */}
-          <div>
-            <NetworkSelect selectedNetwork={chainId} />
-          </div>
-          <Wallet onWalletClick={() => setAccountDialog(true)} />
+          <div>{active && <NetworkSelect selectedNetwork={chainId} />}</div>
+          <Wallet onWalletClick={handleWalletClick} />
         </Toolbar>
 
         <Toolbar className={classes.sectionMobile}>
@@ -512,4 +462,4 @@ const Navbar = ({ currentNetwork, chainId }) => {
   );
 };
 
-export default Navbar;
+export default React.memo(Navbar);

@@ -8,14 +8,8 @@ import Footer from "../common/Footer";
 import Wallet from "../common/Wallet";
 import PropTypes from "prop-types";
 import { connectWallet, getAccountBalance } from "../actions/accountActions";
-import { getPoolInfo } from "../actions/stakeActions";
 import { connect } from "react-redux";
-import {
-  formatCurrency,
-  isMetaMaskInstalled,
-  getCurrentNetworkId,
-  getCurrentAccount,
-} from "../utils/helper";
+
 import {
   bscConfig,
   bscNetwork,
@@ -24,15 +18,18 @@ import {
   harmonyConfig,
   harmonyNetwork,
   maticNetwork,
-  supportedNetworks,
   supportedStaking,
   unsupportedStaking,
 } from "../constants";
-import { CHANGE_NETWORK, RESET_USER_STAKE } from "../actions/types";
+import {
+  CHANGE_NETWORK,
+  CONNECT_WALLET,
+  RESET_USER_STAKE,
+} from "../actions/types";
 import store from "../store";
 import BalanceCard from "../common/BalanceCard";
 import PbrStatistics from "../common/PbrStatistics";
-import EndedPools from "../components/EndedPools";
+import { useWeb3React } from "@web3-react/core";
 
 const useStyles = makeStyles((theme) => ({
   background: {
@@ -153,10 +150,8 @@ const useStyles = makeStyles((theme) => ({
 
 const Home = ({
   connectWallet,
-  getPoolInfo,
   account: { currentAccount, connected, currentNetwork, error, loading },
   getAccountBalance,
-  stake: { pool, poolLoading },
 }) => {
   const classes = useStyles();
   const [dialog, setDialog] = React.useState({
@@ -165,6 +160,9 @@ const Home = ({
     tokenType: null,
   });
   const [currentChainId, setCurrentChainId] = useState(null);
+
+  const { active, account, activate, deactivate, chainId, library } =
+    useWeb3React();
 
   const onStake = (tokenType) => {
     setDialog({ open: true, type: "stake", tokenType: tokenType });
@@ -178,7 +176,7 @@ const Home = ({
     setDialog({ open: false, type: null });
   };
 
-  const getCurrentNetwork = (networkId) => {
+  const getCurrentNetworkName = (networkId) => {
     const _id = networkId.toString();
     if (
       _id === bscConfig.network_id.mainnet ||
@@ -201,134 +199,41 @@ const Home = ({
   };
 
   useEffect(() => {
+    if (!chainId || !active) {
+      return;
+    }
+
+    const _network = getCurrentNetworkName(chainId);
+
+    store.dispatch({
+      type: CONNECT_WALLET,
+      payload: account,
+    });
+    store.dispatch({
+      type: CHANGE_NETWORK,
+      payload: _network,
+    });
+
+    getAccountBalance(account, _network);
+  }, [chainId, active, account]);
+
+  useEffect(() => {
     async function onNetworkChangeUpdate() {
       if (typeof window.web3 !== "undefined") {
         window.ethereum.on("accountsChanged", async (accounts) => {
           if (accounts.length === 0) {
+            localStorage.connected = "none";
             return;
           }
-          console.log("updating balance", accounts[0]);
-          const _networkId = await getCurrentNetworkId();
-          const _network = getCurrentNetwork(_networkId);
-          console.log("connectWallet current network ", _network);
-          await update(accounts[0], _network);
         });
 
-        window.ethereum.on("networkChanged", async (networkId) => {
-          const network = getCurrentNetwork(networkId);
-          setCurrentChainId(parseInt(networkId));
-          console.log("connectWallet current network ", network);
-          store.dispatch({
-            type: CHANGE_NETWORK,
-            payload: network,
-          });
-
-          await update(currentAccount, network);
+        window.ethereum.on("disconnect", (error) => {
+          console.log("disconnected ", error);
+          localStorage.connected = "none";
         });
-        async function update(_account, _network) {
-          console.log("connectWallet updating on network ", _network);
-
-          store.dispatch({
-            type: RESET_USER_STAKE,
-          });
-
-          await connectWallet(false, _network);
-          await getPoolInfo(_network);
-
-          await getAccountBalance(_account, _network);
-        }
       }
     }
     onNetworkChangeUpdate();
-  }, []);
-
-  const getCurrentTokenType = () => {
-    if (
-      currentNetwork === etheriumNetwork ||
-      currentNetwork === maticNetwork ||
-      currentNetwork === harmonyNetwork
-    ) {
-      return "PBR";
-    } else {
-      return "CORGIB";
-    }
-  };
-
-  const getCurrentPool = () => {
-    if (
-      currentNetwork === etheriumNetwork ||
-      currentNetwork === maticNetwork ||
-      currentNetwork === harmonyNetwork
-    ) {
-      return pool.PBR;
-    } else {
-      return pool.CORGIB;
-    }
-  };
-
-  const getCurrentTokenPrice = () => {
-    if (
-      currentNetwork === etheriumNetwork ||
-      currentNetwork === maticNetwork ||
-      currentNetwork === harmonyNetwork
-    ) {
-      return formatCurrency(getCurrentPool().tokenPrice, true, 2);
-    } else {
-      return formatCurrency(getCurrentPool().tokenPrice, true, 2);
-    }
-  };
-  const getCurrentTokenChange = () => {
-    if (
-      currentNetwork === etheriumNetwork ||
-      currentNetwork === maticNetwork ||
-      currentNetwork === harmonyNetwork
-    ) {
-      return formatCurrency(getCurrentPool().change, true, 2);
-    } else {
-      return formatCurrency(getCurrentPool().change, true, 2);
-    }
-  };
-
-  const getCurrentTokenMCap = () => {
-    // if (currentNetwork === etheriumNetwork || currentNetwork === maticNetwork) {
-    //   return getCurrentPool().mCap//formatCurrency(, false, 0);
-    // } else {
-    return getCurrentPool().mCap; //formatCurrency(, false, 0);
-    // }
-  };
-
-  useEffect(async () => {
-    let network = "";
-    const account = await getCurrentAccount();
-
-    // alert(account)
-    if (isMetaMaskInstalled()) {
-      const networkId = await getCurrentNetworkId();
-      setCurrentChainId(networkId);
-      // console.log("connectWallet network id", networkId);
-      if (!supportedNetworks.includes(networkId.toString())) {
-        // alert('This network is not supported yet! Please switch to Ethereum or Smart Chain network')
-      }
-      network = getCurrentNetwork(networkId.toString());
-      // console.log("current network ", network);
-      // alert(`current network set to  ${network}` )
-      store.dispatch({
-        type: CHANGE_NETWORK,
-        payload: network,
-      });
-      await getPoolInfo(network);
-    } else {
-      // alert('meta mask not installed')
-      network = etheriumNetwork;
-      await getPoolInfo(network);
-    }
-
-    if (!isMetaMaskInstalled()) {
-      return;
-    }
-
-    await connectWallet(false, network);
-    await getAccountBalance(account, network);
   }, []);
 
   useEffect(() => {
@@ -339,7 +244,6 @@ const Home = ({
     } else if (JSON.stringify(error).includes("User rejected transaction")) {
       alert(`Transaction cancelled`);
     }
-    // alert(JSON.stringify(error))
   }, [JSON.stringify(error)]);
 
   return (
@@ -353,14 +257,7 @@ const Home = ({
           <div className={classes.divider} />
           <div className="row mt-5">
             <div className="col-md-8 mb-3">
-              <PbrStatistics
-                poolLoading={poolLoading}
-                tokenType={getCurrentTokenType()}
-                price={getCurrentTokenPrice()}
-                mCap={getCurrentTokenMCap()}
-                change={getCurrentTokenChange()}
-                network={currentNetwork}
-              />
+              <PbrStatistics />
             </div>
             <div className="col-md-4">
               <div>
@@ -377,7 +274,7 @@ const Home = ({
               </p>
             </div>
           )}
-          {connected && (
+          {
             <div className="mt-3">
               {supportedStaking[currentNetwork].length === 0 && (
                 <div style={{ textAlign: "center", color: "white" }}>
@@ -398,7 +295,6 @@ const Home = ({
                           onStake={onStake}
                           onUnstake={onUnStake}
                           tokenType={token}
-                          price={getCurrentTokenPrice()}
                         />
                       </div>
                     </div>
@@ -406,8 +302,8 @@ const Home = ({
                 </div>
               )}
             </div>
-          )}
-          {connected && (
+          }
+          {
             <div className="mt-3">
               {supportedStaking[currentNetwork].length === 0 && (
                 <div style={{ textAlign: "center", color: "white" }}></div>
@@ -422,11 +318,10 @@ const Home = ({
                   {unsupportedStaking[currentNetwork].map((token) => (
                     <div className="col-md-4 mt-3">
                       <div className={classes.card}>
-                        <EndedPools
+                        <SingleStakeCard
                           onStake={onStake}
                           onUnstake={onUnStake}
                           tokenType={token}
-                          price={getCurrentTokenPrice()}
                         />
                       </div>
                     </div>
@@ -434,7 +329,7 @@ const Home = ({
                 </div>
               )}
             </div>
-          )}
+          }
 
           <StakeDialog
             open={dialog.open}
@@ -455,16 +350,13 @@ const Home = ({
 Home.propTypes = {
   connectWallet: PropTypes.func.isRequired,
   account: PropTypes.object.isRequired,
-  stake: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   account: state.account,
-  stake: state.stake,
 });
 
 export default connect(mapStateToProps, {
   connectWallet,
-  getPoolInfo,
   getAccountBalance,
 })(Home);

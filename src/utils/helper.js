@@ -1,25 +1,10 @@
 import BigNumber from "bignumber.js";
 import Web3 from "web3";
-import {
-  BITE,
-  CFL365,
-  CORGIB,
-  maticNetwork,
-  PBR,
-  PWAR,
-  apyConstants,
-  harmonyNetwork,
-  SHOE,
-  PUN,
-  WELT,
-  GRAV,
-  DEFLY,
-  AOG,
-} from "../constants";
-import web3 from "../web";
+import { apyConstants } from "../constants";
 import config from "./config";
 
 export const fromWei = (tokens) => {
+  const web3 = new Web3(window?.ethereum);
   if (!tokens) {
     return web3.utils.fromWei("0", "ether");
   }
@@ -28,6 +13,7 @@ export const fromWei = (tokens) => {
 };
 
 export const toWei = (tokens) => {
+  const web3 = new Web3(window?.ethereum);
   if (!tokens) {
     return web3.utils.toWei("0", "ether");
   }
@@ -39,8 +25,7 @@ export const getCurrentAccount = async () => {
 
   try {
     accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
-    // accounts = await web3.eth.getAccounts();
-    // console.log('accounts', accounts)
+
     const accountAddress = accounts.length > 0 ? accounts[0] : null;
     return accountAddress;
   } catch (error) {
@@ -51,6 +36,7 @@ export const getCurrentAccount = async () => {
 
 export const getNetworkBalance = async (accountAddress) => {
   try {
+    const web3 = new Web3(window?.ethereum);
     const bal = web3.eth.getBalance(accountAddress);
     return bal;
   } catch (error) {
@@ -60,8 +46,8 @@ export const getNetworkBalance = async (accountAddress) => {
 };
 
 export const getCurrentNetworkId = async () => {
+  const web3 = new Web3(window.ethereum);
   if (window.ethereum) {
-    const web3 = new Web3(window.ethereum);
     const id = await web3.eth.getChainId();
 
     if (id) {
@@ -122,19 +108,19 @@ function convertToInternationalCurrencySystem(labelValue, formatter) {
   // Nine Zeroes for Billions
   return Math.abs(Number(labelValue)) >= 1.0e9
     ? formatter
-      .format((Math.abs(Number(labelValue)) / 1.0e9).toFixed(2))
-      .slice(1) + "B"
+        .format((Math.abs(Number(labelValue)) / 1.0e9).toFixed(2))
+        .slice(1) + "B"
     : // Six Zeroes for Millions
     Math.abs(Number(labelValue)) >= 1.0e6
-      ? formatter
+    ? formatter
         .format((Math.abs(Number(labelValue)) / 1.0e6).toFixed(2))
         .slice(1) + "M"
-      : // Three Zeroes for Thousands
-      Math.abs(Number(labelValue)) >= 1.0e3
-        ? formatter
-          .format((Math.abs(Number(labelValue)) / 1.0e3).toFixed(2))
-          .slice(1) + "K"
-        : formatter.format(Math.abs(Number(labelValue))).slice(1);
+    : // Three Zeroes for Thousands
+    Math.abs(Number(labelValue)) >= 1.0e3
+    ? formatter
+        .format((Math.abs(Number(labelValue)) / 1.0e3).toFixed(2))
+        .slice(1) + "K"
+    : formatter.format(Math.abs(Number(labelValue))).slice(1);
 }
 
 export const resetCurrencyFormatting = (value) => {
@@ -161,108 +147,22 @@ const getCalculatedApy = (blocksPerYear, rewardPerBlock, totalTokenStaked) => {
 };
 
 export const getApy = (tokenType, poolObj, network) => {
-  // let tokenPrice = new BigNumber(poolObj.tokenPrice);
-  const total_token_locked = new BigNumber(fromWei(poolObj.totalTokenStaked));
+  try {
+    const totalTokenLocked = new BigNumber(fromWei(poolObj?.totalTokenStaked));
+    const blocksPerYear =
+      apyConstants?.[network]?.[tokenType]?.NUMBER_BLOCKS_PER_YEAR;
+    const rewardPerBlock =
+      apyConstants?.[network]?.[tokenType]?.AVG_REWARD_PER_BLOCK;
+    const apy = getCalculatedApy(
+      blocksPerYear,
+      rewardPerBlock,
+      totalTokenLocked
+    );
 
-  switch (tokenType) {
-    case CORGIB:
-      const corgibApy = getCalculatedApy(
-        apyConstants.bsc.CORGIB.NUMBER_BLOCKS_PER_YEAR,
-        apyConstants.bsc.CORGIB.AVG_REWARD_PER_BLOCK,
-        total_token_locked
-      );
-      return corgibApy;
-    case PWAR:
-      const pwarApy = getCalculatedApy(
-        apyConstants.bsc.PWAR.NUMBER_BLOCKS_PER_YEAR,
-        apyConstants.bsc.PWAR.AVG_REWARD_PER_BLOCK,
-        total_token_locked
-      );
-      return pwarApy;
-    case GRAV:
-      const gravApy = getCalculatedApy(
-        apyConstants.bsc.GRAV.NUMBER_BLOCKS_PER_YEAR,
-        apyConstants.bsc.GRAV.AVG_REWARD_PER_BLOCK,
-        total_token_locked
-      );
-      return gravApy;
-
-    case DEFLY:
-      const deflyApy = getCalculatedApy(
-        apyConstants.bsc.DEFLY.NUMBER_BLOCKS_PER_YEAR,
-        apyConstants.bsc.DEFLY.AVG_REWARD_PER_BLOCK,
-        total_token_locked
-      );
-      return deflyApy;
-
-    case AOG:
-      const aogApy = getCalculatedApy(
-        apyConstants.bsc.AOG.NUMBER_BLOCKS_PER_YEAR,
-        apyConstants.bsc.AOG.AVG_REWARD_PER_BLOCK,
-        total_token_locked
-      );
-      return aogApy;
-
-    case PBR:
-      if (network === maticNetwork) {
-        const _apy = getCalculatedApy(
-          apyConstants.polygon.PBR.NUMBER_BLOCKS_PER_YEAR,
-          apyConstants.polygon.PBR.AVG_REWARD_PER_BLOCK,
-          total_token_locked
-        );
-        return _apy;
-      } else if (network === harmonyNetwork) {
-        // console.log('getPoolInfo:  calculating apy in ', network)
-        const _apy = getCalculatedApy(
-          apyConstants.harmony.PBR.NUMBER_BLOCKS_PER_YEAR,
-          apyConstants.harmony.PBR.AVG_REWARD_PER_BLOCK,
-          total_token_locked
-        );
-        return _apy;
-      }
-      const _apy = getCalculatedApy(
-        apyConstants.ethereum.PBR.NUMBER_BLOCKS_PER_YEAR,
-        apyConstants.ethereum.PBR.AVG_REWARD_PER_BLOCK,
-        total_token_locked
-      );
-      return _apy;
-    case BITE:
-      const biteApy = getCalculatedApy(
-        apyConstants.ethereum.BITE.NUMBER_BLOCKS_PER_YEAR,
-        apyConstants.ethereum.BITE.AVG_REWARD_PER_BLOCK,
-        total_token_locked
-      );
-      return biteApy;
-    case CFL365:
-      const clfApy = getCalculatedApy(
-        apyConstants.ethereum.CFL365.NUMBER_BLOCKS_PER_YEAR,
-        apyConstants.ethereum.CFL365.AVG_REWARD_PER_BLOCK,
-        total_token_locked
-      );
-      return clfApy;
-    case SHOE:
-      const shoeApy = getCalculatedApy(
-        apyConstants.ethereum.SHOE.NUMBER_BLOCKS_PER_YEAR,
-        apyConstants.ethereum.SHOE.AVG_REWARD_PER_BLOCK,
-        total_token_locked
-      );
-      return shoeApy;
-    case PUN:
-      const punApy = getCalculatedApy(
-        apyConstants.ethereum.PUN.NUMBER_BLOCKS_PER_YEAR,
-        apyConstants.ethereum.PUN.AVG_REWARD_PER_BLOCK,
-        total_token_locked
-      );
-      return punApy;
-    case WELT:
-      const weltApy = getCalculatedApy(
-        apyConstants.polygon.WELT.NUMBER_BLOCKS_PER_YEAR,
-        apyConstants.polygon.WELT.AVG_REWARD_PER_BLOCK,
-        total_token_locked
-      );
-      return weltApy;
-    default:
-      return 0;
+    return apy;
+  } catch (error) {
+    console.log("getApy ", { tokenType, network, error });
+    return 0;
   }
 };
 
