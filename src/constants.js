@@ -43,6 +43,10 @@ export const tokenContarctAddresses = {
       currentConnection === "mainnet"
         ? "0x0fd67b4ceb9b607ef206904ec73459c4880132c9"
         : "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
+    LABS:
+      currentConnection === "mainnet"
+        ? "0x8b0e42f366ba502d787bb134478adfae966c8798"
+        : "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
   },
   matic: {
     PBR:
@@ -95,6 +99,7 @@ export const WELT = "WELT";
 export const GRAV = "GRAV";
 export const DEFLY = "DEFLY";
 export const AOG = "AOG";
+export const LABS = "LABS";
 
 export const tokenLogo = {
   PBR: "img/symbol.png",
@@ -108,6 +113,7 @@ export const tokenLogo = {
   GRAV: "img/grv.png",
   DEFLY: "img/defly.png",
   AOG: "img/aog.png",
+  LABS: "img/labs.png",
 };
 
 export const tokenName = {
@@ -122,6 +128,7 @@ export const tokenName = {
   GRAV: "Graviton Zero",
   DEFLY: "DeflyBall",
   AOG: "Age of Gods",
+  LABS: "LABS Group",
 };
 
 export const tokenInfo = {
@@ -189,6 +196,12 @@ export const tokenInfo = {
       info: "https://coinmarketcap.com/currencies/shoefy/ico/",
     },
   },
+  LABS: {
+    ethereum: {
+      buy: `https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=${tokenContarctAddresses.ethereum.LABS}`,
+      info: "https://coinmarketcap.com/currencies/labs-group/",
+    },
+  },
   WELT: {
     matic: {
       buy: `https://quickswap.exchange/#/swap?inputCurrency=MATIC&outputCurrency=${tokenContarctAddresses.matic.WELT}`,
@@ -210,6 +223,7 @@ export const poolId = {
   GRAV: 2,
   DEFLY: 3,
   AOG: 4,
+  LABS: 5,
 };
 
 export const apyConstants = {
@@ -231,6 +245,10 @@ export const apyConstants = {
       AVG_REWARD_PER_BLOCK: 0,
     },
     PUN: {
+      NUMBER_BLOCKS_PER_YEAR: 2400000,
+      AVG_REWARD_PER_BLOCK: 0,
+    },
+    LABS: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
       AVG_REWARD_PER_BLOCK: 0,
     },
@@ -290,6 +308,7 @@ export const coingeckoTokenId = {
   CORGIB: "the-corgi-of-polkabridge",
   PWAR: "polkawar",
   GRAV: "graviton-zero",
+  LABS: "labs-group",
 };
 
 export const infuraKovenApi = `https://kovan.infura.io/v3/${
@@ -359,9 +378,9 @@ export const claimTokens = "1";
 export const supportedNetworks = ["1", "56", "137"];
 
 export const supportedStaking = {
-  ethereum: ["PBR"],
-  bsc: ["CORGIB", "PWAR", "GRAV", "DEFLY"],
-  matic: ["PBR", "WELT"],
+  ethereum: [PBR, LABS],
+  bsc: [CORGIB, PWAR, GRAV, DEFLY],
+  matic: [PBR, WELT],
   harmony: [],
 };
 

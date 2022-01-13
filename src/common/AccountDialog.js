@@ -19,6 +19,7 @@ import {
   AOG,
   tokenName,
   tokenLogo,
+  LABS,
 } from "../constants";
 
 import { formatCurrency, fromWei } from "../utils/helper";
@@ -165,10 +166,11 @@ const AccountDialog = ({
     if (currentNetwork === etheriumNetwork) {
       return [
         { coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
-        { coin: PUN, balance: formatCurrency(fromWei(balance[PUN])) },
-        { coin: SHOE, balance: formatCurrency(fromWei(balance[SHOE])) },
-        { coin: BITE, balance: formatCurrency(fromWei(balance[BITE])) },
-        { coin: CFL365, balance: formatCurrency(fromWei(balance[CFL365])) },
+        { coin: LABS, balance: formatCurrency(fromWei(balance[LABS])) },
+        // { coin: PUN, balance: formatCurrency(fromWei(balance[PUN])) },
+        // { coin: SHOE, balance: formatCurrency(fromWei(balance[SHOE])) },
+        // { coin: BITE, balance: formatCurrency(fromWei(balance[BITE])) },
+        // { coin: CFL365, balance: formatCurrency(fromWei(balance[CFL365])) },
       ];
     } else {
       if (currentNetwork === maticNetwork) {

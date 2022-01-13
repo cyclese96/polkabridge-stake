@@ -1,4 +1,5 @@
-import { Button, CircularProgress, makeStyles } from "@material-ui/core";
+import { CircularProgress, makeStyles } from "@material-ui/core";
+import React from "react";
 
 const useStyles = makeStyles((theme) => ({}));
 
@@ -18,4 +19,4 @@ const Loader = ({ height }) => {
   );
 };
 
-export default Loader;
+export default React.memo(Loader);

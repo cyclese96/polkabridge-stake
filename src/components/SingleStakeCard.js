@@ -1,5 +1,5 @@
 import { Button, Card, Divider, makeStyles } from "@material-ui/core";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
 import CustomButton from "./CustomButton";
 import {
@@ -550,4 +550,4 @@ export default connect(mapStateToProps, {
   getPoolInfo,
   getAccountBalance,
   unstakeTokens,
-})(Staking);
+})(React.memo(Staking));
