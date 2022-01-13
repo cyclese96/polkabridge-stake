@@ -1,39 +1,87 @@
-
 const testing = false;
 export const currentConnection = testing ? "testnet" : "mainnet";
 
 // stake contract addresses
 export const stakeContractAdrresses = {
-  ethereum: currentConnection === 'mainnet' ? "0x1b46b72c5280f30Fbe8A958B4f3c348FD0fD2E55" : "0x7678f0AF7304e01554E2D49D96E55C8de4975c66",
-  matic: currentConnection === "mainnet" ? "0x6335aF028e77B574423733443678aD4cb9e15B3D" : "0x55950cF279Ba5b43263f4Df54833b85F684B333F",
-  harmony: currentConnection === "mainnet" ? "0x7a1238cba81de51158c150ffb48a2dba14b987bd" : "0x7a1238cba81de51158c150ffb48a2dba14b987bd",
-  bsc: currentConnection === "mainnet" ? "0x064dE1e65df3F40Afd7fb9E8A1Af61bD4545f4a1" : "0xA5c2186CFb734828EE89a4087FD571F12Af1E895",
+  ethereum:
+    currentConnection === "mainnet"
+      ? "0x1b46b72c5280f30Fbe8A958B4f3c348FD0fD2E55"
+      : "0x7678f0AF7304e01554E2D49D96E55C8de4975c66",
+  matic:
+    currentConnection === "mainnet"
+      ? "0x6335aF028e77B574423733443678aD4cb9e15B3D"
+      : "0x55950cF279Ba5b43263f4Df54833b85F684B333F",
+  harmony:
+    currentConnection === "mainnet"
+      ? "0x7a1238cba81de51158c150ffb48a2dba14b987bd"
+      : "0x7a1238cba81de51158c150ffb48a2dba14b987bd",
+  bsc:
+    currentConnection === "mainnet"
+      ? "0x064dE1e65df3F40Afd7fb9E8A1Af61bD4545f4a1"
+      : "0xA5c2186CFb734828EE89a4087FD571F12Af1E895",
 };
 
 export const tokenContarctAddresses = {
-
   ethereum: {
-    PBR: currentConnection === 'mainnet' ? "0x298d492e8c1d909D3F63Bc4A36C66c64ACB3d695" : "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
-    BITE: currentConnection === 'mainnet' ? "0x4eed0fa8de12d5a86517f214c2f11586ba2ed88d" : "0xA9Bf3904f7216B4cA2BA862Ac27b9469c030C0eA",
-    CFL365: currentConnection === 'mainnet' ? "0xcd6adc6b8bd396e2d53ccd7d7257b4de55be4fbe" : "0x1F6fE20C82950F5139e8b31D5C32A73EE992e9E1",
-    PUN: currentConnection === 'mainnet' ? "0x31903e333809897ee57af57567f4377a1a78756c" : "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
-    SHOE: currentConnection === 'mainnet' ? "0x0fd67b4ceb9b607ef206904ec73459c4880132c9" : "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
+    PBR:
+      currentConnection === "mainnet"
+        ? "0x298d492e8c1d909D3F63Bc4A36C66c64ACB3d695"
+        : "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
+    BITE:
+      currentConnection === "mainnet"
+        ? "0x4eed0fa8de12d5a86517f214c2f11586ba2ed88d"
+        : "0xA9Bf3904f7216B4cA2BA862Ac27b9469c030C0eA",
+    CFL365:
+      currentConnection === "mainnet"
+        ? "0xcd6adc6b8bd396e2d53ccd7d7257b4de55be4fbe"
+        : "0x1F6fE20C82950F5139e8b31D5C32A73EE992e9E1",
+    PUN:
+      currentConnection === "mainnet"
+        ? "0x31903e333809897ee57af57567f4377a1a78756c"
+        : "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
+    SHOE:
+      currentConnection === "mainnet"
+        ? "0x0fd67b4ceb9b607ef206904ec73459c4880132c9"
+        : "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
   },
   matic: {
-    PBR: currentConnection === 'mainnet' ? "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0" : "0x6024ca0b7c12846a396a5d860ff885233ef16dd0",
-    WELT: currentConnection === 'mainnet' ? "0x23E8B6A3f6891254988B84Da3738D2bfe5E703b9" : "0x6024ca0b7c12846a396a5d860ff885233ef16dd0",
+    PBR:
+      currentConnection === "mainnet"
+        ? "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0"
+        : "0x6024ca0b7c12846a396a5d860ff885233ef16dd0",
+    WELT:
+      currentConnection === "mainnet"
+        ? "0x23E8B6A3f6891254988B84Da3738D2bfe5E703b9"
+        : "0x6024ca0b7c12846a396a5d860ff885233ef16dd0",
   },
   harmony: {
-    PBR: currentConnection === 'mainnet' ? "0xfc649ce83d2b25086bf645ca88a9621b5e8a36fa" : "0xfc649ce83d2b25086bf645ca88a9621b5e8a36fa",
+    PBR:
+      currentConnection === "mainnet"
+        ? "0xfc649ce83d2b25086bf645ca88a9621b5e8a36fa"
+        : "0xfc649ce83d2b25086bf645ca88a9621b5e8a36fa",
   },
   bsc: {
-    PWAR: currentConnection === 'mainnet' ? "0x16153214E683018D5aA318864c8e692b66E16778" : "0x16153214E683018D5aA318864c8e692b66E16778",
-    CORGIB: currentConnection === 'mainnet' ? "0x1cfd6813a59d7b90c41dd5990ed99c3bf2eb8f55" : "0xE428Cc8A06Cdba0ad5074180f8E80ec6D4083b24",
-    GRAV: currentConnection === 'mainnet' ? "0xa6168c7e5eb7c5c379f3a1d7cf1073e09b2f031e" : "0x16153214E683018D5aA318864c8e692b66E16778",
-    DEFLY: currentConnection === 'mainnet' ? "0x0fe6a599c280853621a11c12e1a68e6949cbd08a" : "0x16153214E683018D5aA318864c8e692b66E16778",
-    AOG: currentConnection === 'mainnet' ? "0x40c8225329bd3e28a043b029e0d07a5344d2c27c" : "0x16153214E683018D5aA318864c8e692b66E16778",
-  }
-
+    PWAR:
+      currentConnection === "mainnet"
+        ? "0x16153214E683018D5aA318864c8e692b66E16778"
+        : "0x16153214E683018D5aA318864c8e692b66E16778",
+    CORGIB:
+      currentConnection === "mainnet"
+        ? "0x1cfd6813a59d7b90c41dd5990ed99c3bf2eb8f55"
+        : "0xE428Cc8A06Cdba0ad5074180f8E80ec6D4083b24",
+    GRAV:
+      currentConnection === "mainnet"
+        ? "0xa6168c7e5eb7c5c379f3a1d7cf1073e09b2f031e"
+        : "0x16153214E683018D5aA318864c8e692b66E16778",
+    DEFLY:
+      currentConnection === "mainnet"
+        ? "0x0fe6a599c280853621a11c12e1a68e6949cbd08a"
+        : "0x16153214E683018D5aA318864c8e692b66E16778",
+    AOG:
+      currentConnection === "mainnet"
+        ? "0x40c8225329bd3e28a043b029e0d07a5344d2c27c"
+        : "0x16153214E683018D5aA318864c8e692b66E16778",
+  },
 };
 
 export const PBR = "PBR";
@@ -229,8 +277,8 @@ export const apyConstants = {
 
 export const tokenPriceConstants = {
   DEFLY: 0.06,
-  AOG: 0.3
-}
+  AOG: 0.3,
+};
 
 export const coingeckoTokenId = {
   PBR: "polkabridge",
@@ -242,19 +290,17 @@ export const coingeckoTokenId = {
   CORGIB: "the-corgi-of-polkabridge",
   PWAR: "polkawar",
   GRAV: "graviton-zero",
-}
+};
 
-export const infuraKovenApi = `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_KEY && process.env.REACT_APP_INFURA_KEY.split(
-  ""
-)
-  .reverse()
-  .join("")}`;
+export const infuraKovenApi = `https://kovan.infura.io/v3/${
+  process.env.REACT_APP_INFURA_KEY &&
+  process.env.REACT_APP_INFURA_KEY.split("").reverse().join("")
+}`;
 
-export const infuraMainnetApi = `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY && process.env.REACT_APP_INFURA_KEY.split(
-  ""
-)
-  .reverse()
-  .join("")}`;
+export const infuraMainnetApi = `https://mainnet.infura.io/v3/${
+  process.env.REACT_APP_INFURA_KEY &&
+  process.env.REACT_APP_INFURA_KEY.split("").reverse().join("")
+}`;
 
 export const etheriumNetwork = "ethereum";
 export const bscNetwork = "bsc";
@@ -275,11 +321,10 @@ export const supportedChainIds = [
   97,
   137,
   80001,
-  1666600000,//harmony mainnet
-  1666700000,// harmony testnet,
-  5
-
-]
+  1666600000, //harmony mainnet
+  1666700000, // harmony testnet,
+  5,
+];
 
 export const bscConfig = {
   network_id: {

@@ -43,7 +43,7 @@ export default function (state = initalState, action) {
         ...state,
         balance: {
           ...state.balance,
-          ...action.payload
+          ...action.payload,
         },
       };
     case SHOW_LOADING:
@@ -51,9 +51,9 @@ export default function (state = initalState, action) {
         ...state,
         loading: {
           ...state.loading,
-          ...action.payload
-        }
-      }
+          ...action.payload,
+        },
+      };
 
     case CHANGE_NETWORK:
       return {
@@ -63,7 +63,7 @@ export default function (state = initalState, action) {
     case HIDE_LOADING:
       return {
         ...state,
-        loading: initalState.loading
+        loading: initalState.loading,
       };
     case ERROR:
       return {

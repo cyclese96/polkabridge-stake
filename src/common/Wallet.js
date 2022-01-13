@@ -4,7 +4,6 @@ import { useWeb3React } from "@web3-react/core";
 import { connect } from "react-redux";
 import { connectWallet } from "../actions/accountActions";
 
-
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -63,11 +62,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Wallet = ({
-  connectWallet,
-  onWalletClick,
-}) => {
-
+const Wallet = ({ connectWallet, onWalletClick }) => {
   const { active, account } = useWeb3React();
 
   const classes = useStyles();

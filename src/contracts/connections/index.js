@@ -14,7 +14,6 @@ import {
 } from "../../constants";
 import { isMetaMaskInstalled } from "../../utils/helper";
 
-
 export const erc20TokenContract = (network, tokenAddress) => {
   const abi = PolkaBridge;
   const connection = getCurrentConnection(network, abi, tokenAddress);
@@ -24,34 +23,29 @@ export const erc20TokenContract = (network, tokenAddress) => {
 export const stakeContract = (network) => {
   // console.log('initializing web3 connection on ', network)
   if (network === bscNetwork) {
-
     const address = stakeContractAdrresses?.[network];
 
     const abi = CorgibStaking;
     const connection = getCurrentConnection(network, abi, address);
     return connection;
   } else if (network === maticNetwork) {
-
     const address = stakeContractAdrresses?.[network];
     const abi = PolkaBridgeStakingMatic;
     const connection = getCurrentConnection(network, abi, address);
     return connection;
   } else if (network === harmonyNetwork) {
-
-
     const address = stakeContractAdrresses?.[network];
 
     const abi = PolkaBridgeStaking;
     const connection = getCurrentConnection(network, abi, address);
     return connection;
   } else if (network === etheriumNetwork) {
-
     const address = stakeContractAdrresses?.[network];
     const abi = PolkaBridgeStaking;
     const connection = getCurrentConnection(network, abi, address);
     return connection;
   } else {
-    return null
+    return null;
   }
 };
 
@@ -64,8 +58,16 @@ const getCurrentConnection = (blockChainNetwork, abi, contractAddress) => {
     } else {
       const infura =
         currentConnection === "testnet"
-          ? `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_KEY.split('').reverse().join('')}`
-          : `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY.split('').reverse().join('')}`;
+          ? `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_KEY.split(
+              ""
+            )
+              .reverse()
+              .join("")}`
+          : `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY.split(
+              ""
+            )
+              .reverse()
+              .join("")}`;
 
       const web3 = new Web3(new Web3.providers.HttpProvider(infura));
       return new web3.eth.Contract(abi, contractAddress);

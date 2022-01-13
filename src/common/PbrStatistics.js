@@ -7,7 +7,6 @@ import { maticNetwork } from "../constants";
 import { connect } from "react-redux";
 import { fetchPbrMarketData } from "../actions/stakeActions";
 
-
 const useStyles = makeStyles((theme) => ({
   card: {
     height: 340,
@@ -109,14 +108,13 @@ const useStyles = makeStyles((theme) => ({
 const PbrStatistics = ({
   account: { currentAccount, currentNetwork },
   stake: { pbrMarketData, poolLoading },
-  fetchPbrMarketData
+  fetchPbrMarketData,
 }) => {
-
   const classes = useStyles();
 
   useEffect(() => {
     fetchPbrMarketData();
-  }, [])
+  }, []);
 
   return (
     <Card className={classes.card} elevation={10}>
@@ -159,7 +157,9 @@ const PbrStatistics = ({
           <div className={classes.desktop}>
             <div className="text-center mt-4">
               <div className={classes.tokenTitle}>Price</div>
-              <div className={classes.tokenAmount}>{pbrMarketData?.tokenPrice}</div>
+              <div className={classes.tokenAmount}>
+                {pbrMarketData?.tokenPrice}
+              </div>
             </div>
             <div className="text-center mt-4">
               <div className={classes.tokenTitle}>Market Cap</div>
@@ -169,7 +169,9 @@ const PbrStatistics = ({
             </div>
             <div className="text-center mt-4">
               <div className={classes.tokenTitle}> 24Hr Change</div>
-              <div className={classes.tokenAmount}>{formatCurrency(pbrMarketData?.change, true, 2)}%</div>
+              <div className={classes.tokenAmount}>
+                {formatCurrency(pbrMarketData?.change, true, 2)}%
+              </div>
             </div>
           </div>
         </div>
@@ -181,11 +183,13 @@ const PbrStatistics = ({
       )}
     </Card>
   );
-}
+};
 
 const mapStateToProps = (state) => ({
   account: state.account,
-  stake: state.stake
-})
+  stake: state.stake,
+});
 
-export default connect(mapStateToProps, { fetchPbrMarketData })(PbrStatistics); 
+export default connect(mapStateToProps, { fetchPbrMarketData })(
+  React.memo(PbrStatistics)
+);

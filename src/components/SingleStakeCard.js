@@ -230,12 +230,10 @@ const Staking = ({
   onStake,
   onUnstake,
 }) => {
-
   const classes = useStyles();
   const { active } = useWeb3React();
 
   useEffect(async () => {
-
     // if (!currentNetwork || !currentAccount) {
     //   return
     // }
@@ -243,21 +241,19 @@ const Staking = ({
     const pid = poolId?.[tokenType];
     await Promise.all([
       getPoolInfo(tokenType, pid, currentAccount, currentNetwork),
-      getUserStakedData(tokenType, currentNetwork)
+      getUserStakedData(tokenType, currentNetwork),
     ]);
-
   }, [currentAccount, currentNetwork]);
 
   useEffect(() => {
     if (!active) {
       store.dispatch({
-        type: RESET_USER_STAKE
-      })
+        type: RESET_USER_STAKE,
+      });
     }
-  }, [active])
+  }, [active]);
 
   const handleApprove = async (tokenType) => {
-
     const tokenWeiAmountToApprove =
       currentNetwork === bscNetwork
         ? "999999999999999999999999999999999999"
@@ -290,17 +286,13 @@ const Staking = ({
       getPoolInfo(tokenType, pid, currentAccount, currentNetwork),
       getAccountBalance(currentNetwork),
     ]);
-
   };
 
   const currentAmount = (tokenType) => {
     return stake[tokenType] ? stake[tokenType].amount : 0;
   };
 
-
-
   const getCurrencyFormatForToken = (tokenType, tokens) => {
-
     return formatLargeNumber(fromWei(tokens));
   };
 
@@ -320,17 +312,12 @@ const Staking = ({
   };
 
   const withdrawDisableStatus = (_tokenType) => {
-
     return false;
-
   };
 
   const approveDisableStatus = (_tokenType) => {
-
     return false;
-
   };
-
 
   return (
     <Card elevation={10} className={classes.card}>
@@ -385,7 +372,6 @@ const Staking = ({
             </a>
           </div>
           <div style={{ minHeight: 120, paddingLeft: 10, paddingRight: 10 }}>
-
             <div className="mt-3">
               <div className="d-flex justify-content-between mt-1">
                 <div className="d-flex justify-content-start">
@@ -393,7 +379,9 @@ const Staking = ({
                     <div className={classes.tokenTitle}>APY</div>
                   </div>
                 </div>
-                <div className={classes.tokenAmount}>{formatCurrency(pool?.[tokenType]?.apy, false, 1, true)}%</div>
+                <div className={classes.tokenAmount}>
+                  {formatCurrency(pool?.[tokenType]?.apy, false, 1, true)}%
+                </div>
               </div>
               <div className="d-flex justify-content-between mt-2">
                 <div className="d-flex justify-content-start">
@@ -417,9 +405,7 @@ const Staking = ({
                 <div className={classes.tokenAmount}>
                   {formatLargeNumber(
                     fromWei(
-                      pool[tokenType]
-                        ? pool[tokenType].totalTokenClaimed
-                        : "0"
+                      pool[tokenType] ? pool[tokenType].totalTokenClaimed : "0"
                     )
                   )}
                 </div>
@@ -432,18 +418,19 @@ const Staking = ({
                       $
                       {pool[tokenType]
                         ? formatLargeNumber(
-                          fromWei(pool?.[tokenType]?.totalTokenStaked) *
-                          (tokenType === "CORGIB"
-                            ? parseFloat(pool?.[tokenType]?.tokenPriceCorgib)
-                            : parseFloat(pool?.[tokenType]?.tokenPrice))
-                        )
+                            fromWei(pool?.[tokenType]?.totalTokenStaked) *
+                              (tokenType === "CORGIB"
+                                ? parseFloat(
+                                    pool?.[tokenType]?.tokenPriceCorgib
+                                  )
+                                : parseFloat(pool?.[tokenType]?.tokenPrice))
+                          )
                         : "0"}
                     </span>
                   </div>
                 </div>
               </div>
             </div>
-
           </div>
 
           <Divider style={{ backgroundColor: "#616161", height: 1 }} />
@@ -456,11 +443,11 @@ const Staking = ({
                   {" "}
                   {tokenType === "PWAR"
                     ? formatCurrency(
-                      fromWei(stake?.[tokenType]?.amount),
-                      false,
-                      1,
-                      true
-                    )
+                        fromWei(stake?.[tokenType]?.amount),
+                        false,
+                        1,
+                        true
+                      )
                     : formatCurrency(fromWei(stake?.[tokenType]?.amount))}{" "}
                 </div>
               </div>
@@ -470,14 +457,14 @@ const Staking = ({
                   {" "}
                   {tokenType === "PWAR"
                     ? formatCurrency(
-                      fromWei(stake?.[tokenType]?.rewardClaimed),
-                      false,
-                      1,
-                      true
-                    )
+                        fromWei(stake?.[tokenType]?.rewardClaimed),
+                        false,
+                        1,
+                        true
+                      )
                     : formatCurrency(
-                      fromWei(stake?.[tokenType]?.rewardClaimed)
-                    )}{" "}
+                        fromWei(stake?.[tokenType]?.rewardClaimed)
+                      )}{" "}
                 </div>
               </div>
               <div className="text-center mt-4">
@@ -486,19 +473,18 @@ const Staking = ({
                   {" "}
                   {tokenType === "PWAR"
                     ? formatCurrency(
-                      fromWei(stake?.[tokenType]?.pendingReward),
-                      false,
-                      1,
-                      true
-                    )
+                        fromWei(stake?.[tokenType]?.pendingReward),
+                        false,
+                        1,
+                        true
+                      )
                     : formatCurrency(
-                      fromWei(stake?.[tokenType]?.pendingReward)
-                    )}{" "}
+                        fromWei(stake?.[tokenType]?.pendingReward)
+                      )}{" "}
                 </div>
               </div>
             </div>
           )}
-
 
           <div className={classes.buttons}>
             {!active && (

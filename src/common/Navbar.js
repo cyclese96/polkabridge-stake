@@ -21,7 +21,7 @@ import Wallet from "./Wallet";
 import AccountDialog from "./AccountDialog";
 import DotCircle from "./DotCircle";
 import NetworkSelect from "./NetworkSelect";
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3React } from "@web3-react/core";
 import connectors from "../connection/connectors";
 
 const useStyles = makeStyles((theme) => ({
@@ -231,13 +231,9 @@ const Navbar = ({ currentNetwork, chainId }) => {
     setState({ ...state, [anchor]: open });
   };
 
-
-
-  const { active, account, activate, deactivate, } = useWeb3React();
-
+  const { active, account, activate, deactivate } = useWeb3React();
 
   const createConnectHandler = async () => {
-
     try {
       const connector = connectors.injected;
 
@@ -248,42 +244,31 @@ const Navbar = ({ currentNetwork, chainId }) => {
       //   connector.walletConnectProvider = undefined
       // }
 
-      await activate(connector)
+      await activate(connector);
       localStorage.connected = "yes";
     } catch (error) {
-      console.error("createConnectHandler", error)
+      console.error("createConnectHandler", error);
     }
-  }
+  };
 
   useEffect(() => {
-
     if (!active && localStorage.connected === "yes") {
       createConnectHandler();
     }
-
-  }, [active])
-
+  }, [active]);
 
   const handleLogout = () => {
-
-    localStorage.connected = "none"
-    deactivate()
-
-  }
+    localStorage.connected = "none";
+    deactivate();
+  };
 
   const handleWalletClick = () => {
-
     if (active) {
       setAccountDialog(true);
-
     } else {
       createConnectHandler();
     }
-
-  }
-
-
-
+  };
 
   const list = (anchor) => (
     <div
@@ -354,15 +339,12 @@ const Navbar = ({ currentNetwork, chainId }) => {
     </div>
   );
 
-
   return (
     <div className={classes.grow}>
-
       <AccountDialog
         open={accountDialog}
         handleLogout={handleLogout}
         handleClose={() => setAccountDialog(false)}
-
       />
       <AppBar
         color="transparent"
@@ -436,9 +418,7 @@ const Navbar = ({ currentNetwork, chainId }) => {
           </div>
 
           <div className={classes.grow} />
-          <div>
-            {active && <NetworkSelect selectedNetwork={chainId} />}
-          </div>
+          <div>{active && <NetworkSelect selectedNetwork={chainId} />}</div>
           <Wallet onWalletClick={handleWalletClick} />
         </Toolbar>
 

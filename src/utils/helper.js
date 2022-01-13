@@ -1,12 +1,10 @@
 import BigNumber from "bignumber.js";
 import Web3 from "web3";
-import {
-  apyConstants,
-} from "../constants";
+import { apyConstants } from "../constants";
 import config from "./config";
 
 export const fromWei = (tokens) => {
-  const web3 = new Web3(window?.ethereum)
+  const web3 = new Web3(window?.ethereum);
   if (!tokens) {
     return web3.utils.fromWei("0", "ether");
   }
@@ -15,7 +13,7 @@ export const fromWei = (tokens) => {
 };
 
 export const toWei = (tokens) => {
-  const web3 = new Web3(window?.ethereum)
+  const web3 = new Web3(window?.ethereum);
   if (!tokens) {
     return web3.utils.toWei("0", "ether");
   }
@@ -38,7 +36,7 @@ export const getCurrentAccount = async () => {
 
 export const getNetworkBalance = async (accountAddress) => {
   try {
-    const web3 = new Web3(window?.ethereum)
+    const web3 = new Web3(window?.ethereum);
     const bal = web3.eth.getBalance(accountAddress);
     return bal;
   } catch (error) {
@@ -110,19 +108,19 @@ function convertToInternationalCurrencySystem(labelValue, formatter) {
   // Nine Zeroes for Billions
   return Math.abs(Number(labelValue)) >= 1.0e9
     ? formatter
-      .format((Math.abs(Number(labelValue)) / 1.0e9).toFixed(2))
-      .slice(1) + "B"
+        .format((Math.abs(Number(labelValue)) / 1.0e9).toFixed(2))
+        .slice(1) + "B"
     : // Six Zeroes for Millions
     Math.abs(Number(labelValue)) >= 1.0e6
-      ? formatter
+    ? formatter
         .format((Math.abs(Number(labelValue)) / 1.0e6).toFixed(2))
         .slice(1) + "M"
-      : // Three Zeroes for Thousands
-      Math.abs(Number(labelValue)) >= 1.0e3
-        ? formatter
-          .format((Math.abs(Number(labelValue)) / 1.0e3).toFixed(2))
-          .slice(1) + "K"
-        : formatter.format(Math.abs(Number(labelValue))).slice(1);
+    : // Three Zeroes for Thousands
+    Math.abs(Number(labelValue)) >= 1.0e3
+    ? formatter
+        .format((Math.abs(Number(labelValue)) / 1.0e3).toFixed(2))
+        .slice(1) + "K"
+    : formatter.format(Math.abs(Number(labelValue))).slice(1);
 }
 
 export const resetCurrencyFormatting = (value) => {
@@ -149,24 +147,24 @@ const getCalculatedApy = (blocksPerYear, rewardPerBlock, totalTokenStaked) => {
 };
 
 export const getApy = (tokenType, poolObj, network) => {
-
   try {
-
     const totalTokenLocked = new BigNumber(fromWei(poolObj?.totalTokenStaked));
-    const blocksPerYear = apyConstants?.[network]?.[tokenType]?.NUMBER_BLOCKS_PER_YEAR;
-    const rewardPerBlock = apyConstants?.[network]?.[tokenType]?.AVG_REWARD_PER_BLOCK;
-    const apy = getCalculatedApy(blocksPerYear, rewardPerBlock, totalTokenLocked);
+    const blocksPerYear =
+      apyConstants?.[network]?.[tokenType]?.NUMBER_BLOCKS_PER_YEAR;
+    const rewardPerBlock =
+      apyConstants?.[network]?.[tokenType]?.AVG_REWARD_PER_BLOCK;
+    const apy = getCalculatedApy(
+      blocksPerYear,
+      rewardPerBlock,
+      totalTokenLocked
+    );
 
     return apy;
-
   } catch (error) {
-
-    console.log("getApy ", { tokenType, network, error })
+    console.log("getApy ", { tokenType, network, error });
     return 0;
-
   }
-
-}
+};
 
 //input  { chainId, chainName, currency: {name, symbol, decimals }, rpcUrls, blockExplorer }
 export const setupNetwork = async (networkObject) => {

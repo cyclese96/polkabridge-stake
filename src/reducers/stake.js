@@ -13,28 +13,27 @@ const initalState = {
   stake: {},
   pool: {},
   poolLoading: false,
-  pbrMarketData: {}
+  pbrMarketData: {},
 };
 
 export default function (state = initalState, action) {
   switch (action.type) {
-
     case LOAD_PBR_MARKET_DATA:
       return {
         ...state,
         pbrMarketData: {
           ...state.pbrMarketData,
-          ...action.payload
-        }
-      }
+          ...action.payload,
+        },
+      };
     case LOAD_STAKE_POOL:
       return {
         ...state,
         pool: {
           ...state.pool,
-          ...action.payload
-        }
-      }
+          ...action.payload,
+        },
+      };
     case RESET_USER_STAKE:
       return {
         ...state,
@@ -56,17 +55,17 @@ export default function (state = initalState, action) {
         ...state,
         approved: {
           ...state.approved,
-          ...action.payload
-        }
-      }
+          ...action.payload,
+        },
+      };
     case GET_USER_STAKE_DATA:
       return {
         ...state,
         stake: {
           ...state.stake,
-          ...action.payload
-        }
-      }
+          ...action.payload,
+        },
+      };
     default:
       return state;
   }

@@ -85,8 +85,6 @@ function BalanceCard(props) {
   } = props;
   const classes = useStyles();
 
-
-
   const getCoins = () => {
     if (currentNetwork === etheriumNetwork) {
       return [
@@ -129,9 +127,16 @@ function BalanceCard(props) {
     }
   };
 
-  const balances = useMemo(() => Object.keys(balance).map(_token => {
-    return { coin: _token, balance: formatCurrency(fromWei(balance?.[_token])) }
-  }), [currentNetwork, balance])
+  const balances = useMemo(
+    () =>
+      Object.keys(balance).map((_token) => {
+        return {
+          coin: _token,
+          balance: formatCurrency(fromWei(balance?.[_token])),
+        };
+      }),
+    [currentNetwork, balance]
+  );
 
   return (
     <Card className={classes.card} elevation={10}>
@@ -147,7 +152,10 @@ function BalanceCard(props) {
             <div className="d-flex justify-content-between mt-4">
               <div className="d-flex justify-content-start">
                 <div className={classes.logoWrapper}>
-                  <img src={tokenLogo?.[coinObj.coin]} className={classes.logo} />
+                  <img
+                    src={tokenLogo?.[coinObj.coin]}
+                    className={classes.logo}
+                  />
                 </div>
                 <div>
                   <div className={classes.tokenTitle}>{coinObj.coin}</div>

@@ -1,16 +1,18 @@
-import { UAuthConnector } from '@uauth/web3-react'
+import { UAuthConnector } from "@uauth/web3-react";
 // import { AbstractConnector } from '@web3-react/abstract-connector'
-import { InjectedConnector } from '@web3-react/injected-connector'
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector'
-import { supportedChainIds } from '../constants'
+import { InjectedConnector } from "@web3-react/injected-connector";
+import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
+import { supportedChainIds } from "../constants";
 
 // Instanciate your other connectors.
-export const injected = new InjectedConnector({ supportedChainIds: supportedChainIds })
+export const injected = new InjectedConnector({
+  supportedChainIds: supportedChainIds,
+});
 
 export const walletconnect = new WalletConnectConnector({
   infuraId: process.env.REACT_APP_INFURA_ID,
   qrcode: true,
-})
+});
 
 export const uauth = new UAuthConnector({
   clientID: process.env?.REACT_APP_CLIENT_ID,
@@ -20,16 +22,16 @@ export const uauth = new UAuthConnector({
   fallbackIssuer: process.env?.REACT_APP_FALLBACK_ISSUER,
 
   // Scope must include openid and wallet
-  scope: 'openid wallet',
+  scope: "openid wallet",
 
   // Injected and walletconnect connectors are required
   connectors: { injected, walletconnect },
-})
+});
 
 const connectors = {
   injected,
   walletconnect,
   uauth,
-}
+};
 
-export default connectors
+export default connectors;

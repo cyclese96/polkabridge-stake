@@ -21,11 +21,15 @@ import {
   supportedStaking,
   unsupportedStaking,
 } from "../constants";
-import { CHANGE_NETWORK, CONNECT_WALLET, RESET_USER_STAKE } from "../actions/types";
+import {
+  CHANGE_NETWORK,
+  CONNECT_WALLET,
+  RESET_USER_STAKE,
+} from "../actions/types";
 import store from "../store";
 import BalanceCard from "../common/BalanceCard";
 import PbrStatistics from "../common/PbrStatistics";
-import { useWeb3React } from '@web3-react/core'
+import { useWeb3React } from "@web3-react/core";
 
 const useStyles = makeStyles((theme) => ({
   background: {
@@ -157,7 +161,8 @@ const Home = ({
   });
   const [currentChainId, setCurrentChainId] = useState(null);
 
-  const { active, account, activate, deactivate, chainId, library } = useWeb3React();
+  const { active, account, activate, deactivate, chainId, library } =
+    useWeb3React();
 
   const onStake = (tokenType) => {
     setDialog({ open: true, type: "stake", tokenType: tokenType });
@@ -194,25 +199,23 @@ const Home = ({
   };
 
   useEffect(() => {
-
     if (!chainId || !active) {
-      return
+      return;
     }
 
     const _network = getCurrentNetworkName(chainId);
 
     store.dispatch({
       type: CONNECT_WALLET,
-      payload: account
-    })
+      payload: account,
+    });
     store.dispatch({
       type: CHANGE_NETWORK,
       payload: _network,
     });
 
-    getAccountBalance(account, _network)
-
-  }, [chainId, active, account])
+    getAccountBalance(account, _network);
+  }, [chainId, active, account]);
 
   useEffect(() => {
     async function onNetworkChangeUpdate() {
@@ -222,15 +225,12 @@ const Home = ({
             localStorage.connected = "none";
             return;
           }
-
         });
 
         window.ethereum.on("disconnect", (error) => {
-          console.log('disconnected ', error)
+          console.log("disconnected ", error);
           localStorage.connected = "none";
-
         });
-
       }
     }
     onNetworkChangeUpdate();
@@ -274,7 +274,7 @@ const Home = ({
               </p>
             </div>
           )}
-          {(
+          {
             <div className="mt-3">
               {supportedStaking[currentNetwork].length === 0 && (
                 <div style={{ textAlign: "center", color: "white" }}>
@@ -302,8 +302,8 @@ const Home = ({
                 </div>
               )}
             </div>
-          )}
-          {(
+          }
+          {
             <div className="mt-3">
               {supportedStaking[currentNetwork].length === 0 && (
                 <div style={{ textAlign: "center", color: "white" }}></div>
@@ -329,7 +329,7 @@ const Home = ({
                 </div>
               )}
             </div>
-          )}
+          }
 
           <StakeDialog
             open={dialog.open}
