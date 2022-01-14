@@ -19,9 +19,10 @@ import {
   getPoolInfo,
   stakeTokens,
   unstakeTokens,
+  getUserStakedData,
 } from "../actions/stakeActions";
 import { getAccountBalance } from "../actions/accountActions";
-import { minimumStakingAmount } from "../constants";
+import { minimumStakingAmount, poolId } from "../constants";
 import BigNumber from "bignumber.js";
 
 const styles = (theme) => ({
@@ -160,6 +161,7 @@ const StakeDialog = ({
   stakeTokens,
   unstakeTokens,
   getAccountBalance,
+  getUserStakedData,
   getPoolInfo,
   open,
   handleClose,
@@ -261,8 +263,10 @@ const StakeDialog = ({
       );
     }
     handleClose();
-    getPoolInfo(currentNetwork);
+    const pid = poolId?.[tokenType];
+    getPoolInfo(tokenType, pid, currentAccount, currentNetwork);
     getAccountBalance(currentNetwork);
+    getUserStakedData(tokenType, currentNetwork);
   };
 
   const handleMax = () => {
@@ -410,4 +414,5 @@ export default connect(mapStateToProps, {
   unstakeTokens,
   getAccountBalance,
   getPoolInfo,
+  getUserStakedData,
 })(StakeDialog);

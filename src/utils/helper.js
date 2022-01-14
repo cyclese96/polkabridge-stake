@@ -153,6 +153,9 @@ export const getApy = (tokenType, poolObj, network) => {
       apyConstants?.[network]?.[tokenType]?.NUMBER_BLOCKS_PER_YEAR;
     const rewardPerBlock =
       apyConstants?.[network]?.[tokenType]?.AVG_REWARD_PER_BLOCK;
+    if (!rewardPerBlock || !blocksPerYear) {
+      return "0";
+    }
     const apy = getCalculatedApy(
       blocksPerYear,
       rewardPerBlock,
