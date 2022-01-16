@@ -47,10 +47,12 @@ const CustomButton = ({
   children,
   variant = "primary",
   disabled = false,
+  hidden = false,
 }) => {
   const classes = useStyles();
   return (
     <Button
+      hidden={hidden}
       onClick={onClick}
       color="primary"
       variant="contained"

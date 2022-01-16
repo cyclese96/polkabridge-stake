@@ -20,6 +20,7 @@ import {
   tokenName,
   tokenLogo,
   LABS,
+  harmonyNetwork,
 } from "../constants";
 
 import { formatCurrency, fromWei } from "../utils/helper";
@@ -172,36 +173,36 @@ const AccountDialog = ({
         // { coin: BITE, balance: formatCurrency(fromWei(balance[BITE])) },
         // { coin: CFL365, balance: formatCurrency(fromWei(balance[CFL365])) },
       ];
+    } else if (currentNetwork === maticNetwork) {
+      return [
+        { coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
+        { coin: WELT, balance: formatCurrency(fromWei(balance[WELT])) },
+      ];
+    } else if (currentNetwork === harmonyNetwork) {
+      return [{ coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) }];
     } else {
-      if (currentNetwork === maticNetwork) {
-        return [
-          { coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
-          { coin: WELT, balance: formatCurrency(fromWei(balance[WELT])) },
-        ];
-      } else {
-        return [
-          {
-            coin: "CORGIB",
-            balance: formatCurrency(fromWei(balance["CORGIB"])),
-          },
-          {
-            coin: "PWAR",
-            balance: formatCurrency(fromWei(balance["PWAR"]), false, 1, true),
-          },
-          {
-            coin: GRAV,
-            balance: formatCurrency(fromWei(balance?.GRAV), false, 1, true),
-          },
-          {
-            coin: DEFLY,
-            balance: formatCurrency(fromWei(balance?.DEFLY), false, 1, true),
-          },
-          {
-            coin: AOG,
-            balance: formatCurrency(fromWei(balance?.AOG), false, 1, true),
-          },
-        ];
-      }
+      return [
+        {
+          coin: "CORGIB",
+          balance: formatCurrency(fromWei(balance["CORGIB"])),
+        },
+        {
+          coin: "PWAR",
+          balance: formatCurrency(fromWei(balance["PWAR"]), false, 1, true),
+        },
+        {
+          coin: GRAV,
+          balance: formatCurrency(fromWei(balance?.GRAV), false, 1, true),
+        },
+        {
+          coin: DEFLY,
+          balance: formatCurrency(fromWei(balance?.DEFLY), false, 1, true),
+        },
+        {
+          coin: AOG,
+          balance: formatCurrency(fromWei(balance?.AOG), false, 1, true),
+        },
+      ];
     }
   };
 

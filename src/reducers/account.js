@@ -69,6 +69,7 @@ export default function (state = initalState, action) {
       return {
         ...state,
         error: action.payload,
+        balance: initalState.balance,
       };
     default:
       return state;

@@ -322,6 +322,7 @@ const Home = ({
                           onStake={onStake}
                           onUnstake={onUnStake}
                           tokenType={token}
+                          stopped={true}
                         />
                       </div>
                     </div>

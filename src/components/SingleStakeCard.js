@@ -229,6 +229,7 @@ const Staking = ({
   unstakeTokens,
   onStake,
   onUnstake,
+  stopped = false,
 }) => {
   const classes = useStyles();
   const { active } = useWeb3React();
@@ -297,9 +298,6 @@ const Staking = ({
   };
 
   const claimDisableStatus = (_tokenType) => {
-    // if (_tokenType === PUN) {
-    //   return true;
-    // }
     return currentAmount(_tokenType) == 0;
   };
 
@@ -511,6 +509,7 @@ const Staking = ({
             {active && approved?.[tokenType] && (
               <div className={classes.stakeButtons}>
                 <CustomButton
+                  hidden={stopped}
                   disabled={claimDisableStatus(tokenType)}
                   onClick={() => handleClaim(tokenType)}
                 >
@@ -519,6 +518,7 @@ const Staking = ({
 
                 <CustomButton
                   disabled={stakeDisableStatus(tokenType)}
+                  hidden={stopped}
                   onClick={() => onStake(tokenType)}
                 >
                   Stake
