@@ -250,7 +250,7 @@ export const apyConstants = {
     },
     LABS: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
-      AVG_REWARD_PER_BLOCK: 0,
+      AVG_REWARD_PER_BLOCK: 10.7,
     },
   },
   matic: {
