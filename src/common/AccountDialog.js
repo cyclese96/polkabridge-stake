@@ -190,18 +190,18 @@ const AccountDialog = ({
           coin: "PWAR",
           balance: formatCurrency(fromWei(balance["PWAR"]), false, 1, true),
         },
-        {
-          coin: GRAV,
-          balance: formatCurrency(fromWei(balance?.GRAV), false, 1, true),
-        },
-        {
-          coin: DEFLY,
-          balance: formatCurrency(fromWei(balance?.DEFLY), false, 1, true),
-        },
-        {
-          coin: AOG,
-          balance: formatCurrency(fromWei(balance?.AOG), false, 1, true),
-        },
+        // {
+        //   coin: GRAV,
+        //   balance: formatCurrency(fromWei(balance?.GRAV), false, 1, true),
+        // },
+        // {
+        //   coin: DEFLY,
+        //   balance: formatCurrency(fromWei(balance?.DEFLY), false, 1, true),
+        // },
+        // {
+        //   coin: AOG,
+        //   balance: formatCurrency(fromWei(balance?.AOG), false, 1, true),
+        // },
       ];
     }
   };

@@ -276,11 +276,11 @@ export const apyConstants = {
     },
     GRAV: {
       NUMBER_BLOCKS_PER_YEAR: 10000000,
-      AVG_REWARD_PER_BLOCK: 0.19,
+      AVG_REWARD_PER_BLOCK: 0, //0.19,
     },
     DEFLY: {
       NUMBER_BLOCKS_PER_YEAR: 10000000,
-      AVG_REWARD_PER_BLOCK: 0.59,
+      AVG_REWARD_PER_BLOCK: 0, //0.59,
     },
     AOG: {
       NUMBER_BLOCKS_PER_YEAR: 10000000,
@@ -379,14 +379,14 @@ export const supportedNetworks = ["1", "56", "137"];
 
 export const supportedStaking = {
   ethereum: [PBR, LABS],
-  bsc: [CORGIB, PWAR, GRAV, DEFLY],
+  bsc: [CORGIB, PWAR],
   matic: [PBR, WELT],
   harmony: [],
 };
 
 export const unsupportedStaking = {
   ethereum: ["PUN", "CFL365", "SHOE", "BITE"],
-  bsc: ["AOG"],
+  bsc: ["AOG", GRAV, DEFLY],
   matic: [],
   harmony: [],
 };
