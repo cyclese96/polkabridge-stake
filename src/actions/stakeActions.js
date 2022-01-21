@@ -226,7 +226,7 @@ export const getUserStakedData = (tokenType, network) => async (dispatch) => {
     if (new BigNumber(allowance).gt(0)) {
       apprObj[tokenType] = true;
     } else {
-      apprObj[tokenType] = true;
+      apprObj[tokenType] = false;
     }
 
     dispatch({

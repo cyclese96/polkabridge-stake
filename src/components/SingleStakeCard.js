@@ -220,7 +220,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Staking = ({
   stake: { stake, pool, approved },
-  account: { currentAccount, currentNetwork, loading, error },
+  account: { currentAccount, currentNetwork, loading },
   tokenType,
   getUserStakedData,
   confirmAllowance,
