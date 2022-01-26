@@ -24,6 +24,7 @@ import {
   tokenInfo,
   tokenLogo,
   tokenName,
+  LABS,
 } from "../constants";
 import Loader from "./../common/Loader";
 import DotCircle from "./../common/DotCircle";
@@ -216,6 +217,26 @@ const useStyles = makeStyles((theme) => ({
       fontSize: 13,
     },
   },
+  borderButtonRegister: {
+    background: "rgba(224, 7, 125, 0.7)",
+    color: "white",
+    width: "fit-content",
+    height: 32,
+    textTransform: "none",
+    borderRadius: 30,
+    fontSize: 15,
+    marginRight: 5,
+    marginLeft: 5,
+    border: "1px solid rgba(224, 7, 125, 0.3)",
+    padding: "5px 20px 5px 20px",
+    "&:hover": {
+      background: "rgba(224, 7, 125, 0.7)",
+    },
+    [theme.breakpoints.down("sm")]: {
+      width: "fit-content",
+      fontSize: 13,
+    },
+  },
 }));
 
 const Staking = ({
@@ -352,6 +373,16 @@ const Staking = ({
             <div className={classes.earn}>Earn {tokenName[tokenType]}</div>
           </div>
           <div className="d-flex justify-content-center  pt-3">
+            {tokenType === LABS && (
+              <a href="https://forms.gle/jqadUuQmKhzSrf678" target="_blank">
+                <Button
+                  variant="contained"
+                  className={classes.borderButtonRegister}
+                >
+                  IDO Register
+                </Button>
+              </a>
+            )}
             <a
               href={tokenInfo?.[tokenType]?.[currentNetwork]?.buy}
               target="_blank"
