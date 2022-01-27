@@ -7,7 +7,7 @@ import Footer from "../common/Footer";
 
 import Wallet from "../common/Wallet";
 import PropTypes from "prop-types";
-import { connectWallet, getAccountBalance } from "../actions/accountActions";
+import { getAccountBalance } from "../actions/accountActions";
 import { connect } from "react-redux";
 
 import {
@@ -21,11 +21,7 @@ import {
   supportedStaking,
   unsupportedStaking,
 } from "../constants";
-import {
-  CHANGE_NETWORK,
-  CONNECT_WALLET,
-  RESET_USER_STAKE,
-} from "../actions/types";
+import { CHANGE_NETWORK, CONNECT_WALLET } from "../actions/types";
 import store from "../store";
 import BalanceCard from "../common/BalanceCard";
 import PbrStatistics from "../common/PbrStatistics";
@@ -149,8 +145,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Home = ({
-  connectWallet,
-  account: { currentAccount, connected, currentNetwork, error, loading },
+  account: { connected, currentNetwork, error, loading },
   getAccountBalance,
 }) => {
   const classes = useStyles();
@@ -358,6 +353,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, {
-  connectWallet,
   getAccountBalance,
 })(Home);

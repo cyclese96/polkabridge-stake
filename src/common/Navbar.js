@@ -23,6 +23,8 @@ import DotCircle from "./DotCircle";
 import NetworkSelect from "./NetworkSelect";
 import { useWeb3React } from "@web3-react/core";
 import connectors from "../connection/connectors";
+import { isMetaMaskInstalled } from "../utils/helper";
+import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -233,16 +235,13 @@ const Navbar = ({ currentNetwork, chainId }) => {
 
   const { active, account, activate, deactivate } = useWeb3React();
 
-  const createConnectHandler = async () => {
+  const createConnectHandler = async (connector) => {
     try {
-      const connector = connectors.injected;
-
-      // if (
-      //   connector instanceof WalletConnectConnector &&
-      //   connector.walletConnectProvider?.wc?.uri
-      // ) {
-      //   connector.walletConnectProvider = undefined
-      // }
+      console.log("trying connection with ", connector);
+      // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
+      if (connector instanceof WalletConnectConnector) {
+        connector.walletConnectProvider = undefined;
+      }
 
       await activate(connector);
       localStorage.connected = "yes";
@@ -253,7 +252,8 @@ const Navbar = ({ currentNetwork, chainId }) => {
 
   useEffect(() => {
     if (!active && localStorage.connected === "yes") {
-      createConnectHandler();
+      const connector = connectors.injected;
+      createConnectHandler(connector);
     }
   }, [active]);
 
@@ -266,7 +266,13 @@ const Navbar = ({ currentNetwork, chainId }) => {
     if (active) {
       setAccountDialog(true);
     } else {
-      createConnectHandler();
+      if (isMetaMaskInstalled()) {
+        const connector = connectors.injected;
+        createConnectHandler(connector);
+      } else {
+        const connector = connectors.walletconnect;
+        createConnectHandler(connector);
+      }
     }
   };
 
