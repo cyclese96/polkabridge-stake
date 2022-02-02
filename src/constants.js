@@ -380,14 +380,14 @@ export const supportedNetworks = ["1", "56", "137"];
 export const supportedStaking = {
   ethereum: [PBR, LABS],
   bsc: [CORGIB, PWAR],
-  matic: [PBR, WELT],
+  matic: [PBR],
   harmony: [],
 };
 
 export const unsupportedStaking = {
   ethereum: ["PUN", "CFL365", "SHOE", "BITE"],
   bsc: ["AOG", GRAV, DEFLY],
-  matic: [],
+  matic: [WELT],
   harmony: [],
 };
 
