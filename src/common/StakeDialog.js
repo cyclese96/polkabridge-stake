@@ -6,7 +6,7 @@ import MuiDialogTitle from "@material-ui/core/DialogTitle";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import Typography from "@material-ui/core/Typography";
-import { CircularProgress, TextField } from "@material-ui/core";
+import { CircularProgress } from "@material-ui/core";
 import CustomButton from "./../components/CustomButton";
 import {
   formatCurrency,
@@ -283,21 +283,6 @@ const StakeDialog = ({
     setError({});
   };
 
-  // const currentBalance = () => {
-  //   // if (tokenType === 'PBR') {
-  //   //   return fromWei(pbrBalance)
-  //   // } else if (tokenType === 'BITE') {
-  //   //   return fromWei(biteBalance)
-  //   // } else {
-  //   //   return fromWei(corgibBalance)
-  //   // }
-  //   return balance[tokenType]
-  // }
-
-  // const currentStakedAmount = () => {
-
-  //   return stake[tokenType].amount
-  // }
   const currentFormattedBalance = () => {
     if (tokenType === "PWAR") {
       return formatCurrency(fromWei(balance[tokenType]), false, 1, true);

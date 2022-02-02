@@ -5,24 +5,7 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import CustomButton from "../components/CustomButton";
 import { FileCopy } from "@material-ui/icons";
-import {
-  BITE,
-  CFL365,
-  etheriumNetwork,
-  GRAV,
-  DEFLY,
-  maticNetwork,
-  PBR,
-  PUN,
-  SHOE,
-  WELT,
-  AOG,
-  tokenName,
-  tokenLogo,
-  LABS,
-  harmonyNetwork,
-} from "../constants";
-
+import { tokenName, tokenLogo, supportedStaking, CORGIB } from "../constants";
 import { formatCurrency, fromWei } from "../utils/helper";
 import { connect } from "react-redux";
 import { logout } from "../actions/accountActions";
@@ -163,48 +146,17 @@ const AccountDialog = ({
     handleClose();
   };
 
-  const getCoins = () => {
-    if (currentNetwork === etheriumNetwork) {
-      return [
-        { coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
-        { coin: LABS, balance: formatCurrency(fromWei(balance[LABS])) },
-        // { coin: PUN, balance: formatCurrency(fromWei(balance[PUN])) },
-        // { coin: SHOE, balance: formatCurrency(fromWei(balance[SHOE])) },
-        // { coin: BITE, balance: formatCurrency(fromWei(balance[BITE])) },
-        // { coin: CFL365, balance: formatCurrency(fromWei(balance[CFL365])) },
-      ];
-    } else if (currentNetwork === maticNetwork) {
-      return [
-        { coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
-        { coin: WELT, balance: formatCurrency(fromWei(balance[WELT])) },
-      ];
-    } else if (currentNetwork === harmonyNetwork) {
-      return [{ coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) }];
-    } else {
-      return [
-        {
-          coin: "CORGIB",
-          balance: formatCurrency(fromWei(balance["CORGIB"])),
-        },
-        {
-          coin: "PWAR",
-          balance: formatCurrency(fromWei(balance["PWAR"]), false, 1, true),
-        },
-        // {
-        //   coin: GRAV,
-        //   balance: formatCurrency(fromWei(balance?.GRAV), false, 1, true),
-        // },
-        // {
-        //   coin: DEFLY,
-        //   balance: formatCurrency(fromWei(balance?.DEFLY), false, 1, true),
-        // },
-        // {
-        //   coin: AOG,
-        //   balance: formatCurrency(fromWei(balance?.AOG), false, 1, true),
-        // },
-      ];
-    }
-  };
+  const balanceTokens = useMemo(() => {
+    return supportedStaking?.[currentNetwork].map((_token) => {
+      return {
+        coin: _token,
+        balance:
+          _token !== CORGIB
+            ? formatCurrency(fromWei(balance?.[_token]), false, 1, true)
+            : formatCurrency(fromWei(balance?.[_token])),
+      };
+    });
+  }, [currentNetwork, balance]);
 
   return (
     <div>
@@ -247,7 +199,7 @@ const AccountDialog = ({
           </div>
 
           <div style={{ width: "100%", paddingLeft: 20, paddingRight: 20 }}>
-            {getCoins().map(function (coinObj, index) {
+            {balanceTokens?.map(function (coinObj, index) {
               return (
                 <div className="d-flex justify-content-between mt-4">
                   <div className="d-flex justify-content-start">

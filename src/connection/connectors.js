@@ -10,7 +10,9 @@ export const injected = new InjectedConnector({
 });
 
 export const walletconnect = new WalletConnectConnector({
+  supportedChainIds: supportedChainIds,
   infuraId: process.env.REACT_APP_INFURA_ID,
+  // rpc: { 1: process.env.REACT_APP_INFURA_ID },
   qrcode: true,
 });
 

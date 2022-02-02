@@ -1,26 +1,10 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Card } from "@material-ui/core";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { formatCurrency, fromWei } from "../utils/helper";
-import {
-  BITE,
-  CFL365,
-  etheriumNetwork,
-  GRAV,
-  DEFLY,
-  harmonyNetwork,
-  maticNetwork,
-  PBR,
-  PUN,
-  SHOE,
-  WELT,
-  AOG,
-  tokenLogo,
-  tokenName,
-  LABS,
-} from "../constants";
+import { tokenLogo, tokenName, supportedStaking, CORGIB } from "../constants";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -86,66 +70,24 @@ function BalanceCard(props) {
   } = props;
   const classes = useStyles();
 
-  const getCoins = () => {
-    if (currentNetwork === etheriumNetwork) {
-      return [
-        { coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
-        { coin: LABS, balance: formatCurrency(fromWei(balance?.[LABS])) },
-        // { coin: PUN, balance: formatCurrency(fromWei(balance[PUN])) },
-        // { coin: SHOE, balance: formatCurrency(fromWei(balance[SHOE])) },
-        // { coin: BITE, balance: formatCurrency(fromWei(balance[BITE])) },
-        // { coin: CFL365, balance: formatCurrency(fromWei(balance[CFL365])) },
-      ];
-    } else if (currentNetwork === maticNetwork) {
-      return [
-        { coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) },
-        { coin: WELT, balance: formatCurrency(fromWei(balance[WELT])) },
-      ];
-    } else if (currentNetwork === harmonyNetwork) {
-      return [{ coin: PBR, balance: formatCurrency(fromWei(balance[PBR])) }];
-    } else {
-      return [
-        {
-          coin: "CORGIB",
-          balance: formatCurrency(fromWei(balance["CORGIB"])),
-        },
-        {
-          coin: "PWAR",
-          balance: formatCurrency(fromWei(balance["PWAR"]), false, 1, true),
-        },
-        // {
-        //   coin: GRAV,
-        //   balance: formatCurrency(fromWei(balance?.GRAV), false, 1, true),
-        // },
-        // {
-        //   coin: DEFLY,
-        //   balance: formatCurrency(fromWei(balance?.DEFLY), false, 1, true),
-        // },
-        // {
-        //   coin: AOG,
-        //   balance: formatCurrency(fromWei(balance?.AOG), false, 1, true),
-        // },
-      ];
-    }
-  };
-
-  const balances = useMemo(
-    () =>
-      Object.keys(balance).map((_token) => {
-        return {
-          coin: _token,
-          balance: formatCurrency(fromWei(balance?.[_token])),
-        };
-      }),
-    [currentNetwork, balance]
-  );
+  const balanceTokens = useMemo(() => {
+    return supportedStaking?.[currentNetwork].map((_token) => {
+      return {
+        coin: _token,
+        balance:
+          _token !== CORGIB
+            ? formatCurrency(fromWei(balance?.[_token]), false, 1, true)
+            : formatCurrency(fromWei(balance?.[_token])),
+      };
+    });
+  }, [currentNetwork, balance]);
 
   return (
     <Card className={classes.card} elevation={10}>
       <h6 className={classes.title}>Your Balance</h6>
 
       <div className="mt-4">
-        {getCoins()?.map(function (coinObj, index) {
+        {balanceTokens?.map(function (coinObj, index) {
           // if (
           //   account.balance[key] !== null &&
           //   account.balance[key] !== undefined
