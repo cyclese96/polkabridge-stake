@@ -404,3 +404,11 @@ export const minimumStakingAmount = {
   DEFLY: 1,
   AOG: 1,
 };
+
+export const ankrRpc = {
+  ethereum: "https://rpc.ankr.com/eth",
+  polygon: "https://rpc.ankr.com/polygon",
+  moonriver: "",
+  bsc: "https://rpc.ankr.com/bsc",
+  harmony: "",
+};

@@ -9,7 +9,7 @@ import { fetchPbrMarketData } from "../actions/stakeActions";
 
 const useStyles = makeStyles((theme) => ({
   card: {
-    height: 340,
+    height: 360,
     width: "100%",
     padding: 20,
     borderRadius: 30,
@@ -79,6 +79,18 @@ const useStyles = makeStyles((theme) => ({
     color: "#f9f9f9",
     fontSize: 12,
   },
+  rpcLabel: {
+    textAlign: "center",
+    color: "#f9f9f9",
+    fontSize: 12,
+    paddingTop: 3,
+    // marginBottom: 4,
+  },
+  icon: {
+    width: 20,
+    height: "100%",
+    marginRight: 10,
+  },
   desktop: {
     display: "flex",
     flexDirection: "row",
@@ -136,7 +148,14 @@ const PbrStatistics = ({
                   marginRight: 5,
                 }}
               ></div>
-              <div className={classes.earn}>All in one defi application</div>
+              {/* <div className={classes.earn}>All in one defi application</div> */}
+            </div>
+            <div className={classes.rpcLabel}>
+              <img
+                src="https://assets.coingecko.com/coins/images/4324/small/U85xTl2.png?1608111978"
+                className={classes.icon}
+              />
+              RPC powered by ANKR protocol
             </div>
           </div>
           <div className="text-center mt-4">

@@ -5,8 +5,8 @@ import PolkaBridgeStaking from "../abi/PolkaBridgeStaking.json";
 import PolkaBridgeStakingMatic from "../abi/polkabridgeStakingMatic.json";
 import CorgibStaking from "../abi/CorgibStaking.json";
 import {
+  ankrRpc,
   bscNetwork,
-  currentConnection,
   etheriumNetwork,
   harmonyNetwork,
   maticNetwork,
@@ -21,7 +21,6 @@ export const erc20TokenContract = (network, tokenAddress) => {
 };
 
 export const stakeContract = (network) => {
-  // console.log('initializing web3 connection on ', network)
   if (network === bscNetwork) {
     const address = stakeContractAdrresses?.[network];
 
@@ -51,48 +50,24 @@ export const stakeContract = (network) => {
 
 const getCurrentConnection = (blockChainNetwork, abi, contractAddress) => {
   // console.log('initializing   matic instance', blockChainNetwork)
-  if (blockChainNetwork === etheriumNetwork) {
-    if (isMetaMaskInstalled()) {
-      const web3 = new Web3(window.ethereum);
-      return new web3.eth.Contract(abi, contractAddress);
-    } else {
-      const infura =
-        currentConnection === "testnet"
-          ? `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_KEY.split(
-              ""
-            )
-              .reverse()
-              .join("")}`
-          : `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY.split(
-              ""
-            )
-              .reverse()
-              .join("")}`;
+  // const infura =
+  //   currentConnection === "testnet"
+  //     ? `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_KEY.split(
+  //         ""
+  //       )
+  //         .reverse()
+  //         .join("")}`
+  //     : `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY.split(
+  //         ""
+  //       )
+  //         .reverse()
+  //         .join("")}`;
+  const _ankrRpc = ankrRpc?.[blockChainNetwork];
 
-      const web3 = new Web3(new Web3.providers.HttpProvider(infura));
-      return new web3.eth.Contract(abi, contractAddress);
-    }
-  } else if (blockChainNetwork === maticNetwork) {
-    // const rpc =
-    //   currentConnection === "testnet"
-    //     ? maticConfig.network_rpc_testnet
-    //     : maticConfig.network_rpc_mainnet;
-    // console.log('initializing   matic instance')
-    const web3 = new Web3(window.ethereum);
-
-    return new web3.eth.Contract(abi, contractAddress);
-  } else if (blockChainNetwork === harmonyNetwork) {
-    // const rpc =
-    //   currentConnection === "testnet"
-    //     ? maticConfig.network_rpc_testnet
-    //     : maticConfig.network_rpc_mainnet;
-    const web3 = new Web3(window.ethereum);
-
-    return new web3.eth.Contract(abi, contractAddress);
-  } else {
-    // const web3 = new Web3(new Web3.providers.HttpProvider(bscConfig.network_rpc_testnet));
-    // const web3 = new Web3('https://data-seed-prebsc-1-s1.binance.org:8545');
-    const web3 = new Web3(window.ethereum);
-    return new web3.eth.Contract(abi, contractAddress);
-  }
+  const web3 = isMetaMaskInstalled()
+    ? new Web3(window.ethereum)
+    : new Web3(
+        new Web3.providers.HttpProvider(_ankrRpc ? _ankrRpc : ankrRpc.ethereum)
+      );
+  return new web3.eth.Contract(abi, contractAddress);
 };

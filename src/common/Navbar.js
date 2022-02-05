@@ -339,7 +339,7 @@ const Navbar = ({ currentNetwork, chainId }) => {
           <Wallet onWalletClick={handleWalletClick} />
         </ListItem>
         <ListItem button style={{ marginLeft: 10, marginTop: 10 }}>
-          {active && <NetworkSelect selectedNetwork={chainId} />}
+          {<NetworkSelect />}
         </ListItem>
       </List>
     </div>
@@ -424,7 +424,7 @@ const Navbar = ({ currentNetwork, chainId }) => {
           </div>
 
           <div className={classes.grow} />
-          <div>{active && <NetworkSelect selectedNetwork={chainId} />}</div>
+          <div>{<NetworkSelect selectedNetwork={chainId} />}</div>
           <Wallet onWalletClick={handleWalletClick} />
         </Toolbar>
 
