@@ -1,5 +1,5 @@
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import SingleStakeCard from "../components/SingleStakeCard";
 import StakeDialog from "../common/StakeDialog";
 import Navbar from "../common/Navbar";
@@ -10,17 +10,7 @@ import PropTypes from "prop-types";
 import { getAccountBalance } from "../actions/accountActions";
 import { connect } from "react-redux";
 
-import {
-  bscConfig,
-  bscNetwork,
-  etherConfig,
-  etheriumNetwork,
-  harmonyConfig,
-  harmonyNetwork,
-  maticNetwork,
-  supportedStaking,
-  unsupportedStaking,
-} from "../constants";
+import { supportedStaking, unsupportedStaking } from "../constants";
 import { CHANGE_NETWORK, CONNECT_WALLET } from "../actions/types";
 import store from "../store";
 import BalanceCard from "../common/BalanceCard";
