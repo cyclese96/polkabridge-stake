@@ -9,7 +9,7 @@ import {
   harmonyNetworkDetail,
   polygonNetworkDetail,
 } from "../utils/networkConstants";
-import { setupNetwork } from "../utils/helper";
+import { getCurrentNetworkName, setupNetwork } from "../utils/helper";
 import config from "../utils/config";
 import { currentConnection } from "../constants";
 
@@ -18,6 +18,8 @@ import binanceIcon from "../assets/binance.png";
 import harmonyIcon from "../assets/one.png";
 import polygonIcon from "../assets/polygon.png";
 import { useWeb3React } from "@web3-react/core";
+import { CHANGE_NETWORK } from "../actions/types";
+import store from "../store";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,13 +52,13 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: 3,
   },
 }));
-export default function NetworkSelect({ selectedNetwork }) {
+export default function NetworkSelect() {
   const classes = useStyles();
   const [network, setNetwork] = React.useState(
     parseInt(localStorage.getItem("currentNetwork") || config.chainId)
   );
 
-  const { chainId } = useWeb3React();
+  const { chainId, active } = useWeb3React();
 
   useEffect(() => {
     if (!chainId) {
@@ -65,14 +67,27 @@ export default function NetworkSelect({ selectedNetwork }) {
 
     // handleChange(chainId);
     setNetwork(chainId);
-  }, [chainId]);
+  }, [chainId, network]);
+
+  const handleChangeNetwork = (_selected) => {
+    store.dispatch({
+      type: CHANGE_NETWORK,
+      payload: getCurrentNetworkName(_selected),
+    });
+    setNetwork(_selected);
+  };
 
   const handleChange = (_selected) => {
     if (network === _selected) {
       return;
     }
     localStorage.setItem("currentNetwork", _selected);
-    // setNetwork(_selected);
+
+    // handle network stated when metamask in not available
+    if (!active) {
+      handleChangeNetwork(_selected);
+    }
+
     if ([56, 97].includes(_selected)) {
       setupNetwork(
         currentConnection === "mainnet"

@@ -1,5 +1,5 @@
 import makeStyles from "@material-ui/core/styles/makeStyles";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import SingleStakeCard from "../components/SingleStakeCard";
 import StakeDialog from "../common/StakeDialog";
 import Navbar from "../common/Navbar";
@@ -26,6 +26,7 @@ import store from "../store";
 import BalanceCard from "../common/BalanceCard";
 import PbrStatistics from "../common/PbrStatistics";
 import { useWeb3React } from "@web3-react/core";
+import { getCurrentNetworkName } from "../utils/helper";
 
 const useStyles = makeStyles((theme) => ({
   background: {
@@ -154,10 +155,8 @@ const Home = ({
     type: null,
     tokenType: null,
   });
-  const [currentChainId, setCurrentChainId] = useState(null);
 
-  const { active, account, activate, deactivate, chainId, library } =
-    useWeb3React();
+  const { active, account, chainId } = useWeb3React();
 
   const onStake = (tokenType) => {
     setDialog({ open: true, type: "stake", tokenType: tokenType });
@@ -171,30 +170,18 @@ const Home = ({
     setDialog({ open: false, type: null });
   };
 
-  const getCurrentNetworkName = (networkId) => {
-    const _id = networkId.toString();
-    if (
-      _id === bscConfig.network_id.mainnet ||
-      _id === bscConfig.network_id.testnet
-    ) {
-      return bscNetwork;
-    } else if (
-      _id === etherConfig.network_id.mainet ||
-      _id === etherConfig.network_id.koven
-    ) {
-      return etheriumNetwork;
-    } else if (
-      _id === harmonyConfig.chainId.mainnet ||
-      _id === harmonyConfig.chainId.testnet
-    ) {
-      return harmonyNetwork;
-    } else {
-      return maticNetwork;
-    }
-  };
-
   useEffect(() => {
     if (!chainId || !active) {
+      if (localStorage.currentNetwork) {
+        console.log("currenNetwork", localStorage.currentNetwork);
+        const _network = getCurrentNetworkName(chainId);
+
+        store.dispatch({
+          type: CHANGE_NETWORK,
+          payload: _network,
+        });
+      }
+
       return;
     }
 
@@ -232,6 +219,10 @@ const Home = ({
   }, []);
 
   useEffect(() => {
+    console.log("current network ", currentNetwork);
+  }, [currentNetwork]);
+
+  useEffect(() => {
     if (JSON.stringify(error).includes("-32000")) {
       alert(
         `You don't have enough balance to pay gas fee for the transaction!`
@@ -241,10 +232,19 @@ const Home = ({
     }
   }, [JSON.stringify(error)]);
 
+  const supportedStakingPools = useMemo(
+    () => supportedStaking[currentNetwork],
+    [currentNetwork]
+  );
+  const unSupportedStakingPools = useMemo(
+    () => unsupportedStaking[currentNetwork],
+    [currentNetwork]
+  );
+
   return (
     <div>
       <section className="appbar-section">
-        <Navbar currentNetwork={currentNetwork} chainId={currentChainId} />
+        <Navbar />
       </section>
       <div className="container">
         <div className={classes.background}>
@@ -271,19 +271,19 @@ const Home = ({
           )}
           {
             <div className="mt-3">
-              {supportedStaking[currentNetwork].length === 0 && (
+              {supportedStakingPools.length === 0 && (
                 <div style={{ textAlign: "center", color: "white" }}>
                   No Staking pool available.
                 </div>
               )}
 
-              {supportedStaking[currentNetwork].length > 0 && (
+              {supportedStakingPools.length > 0 && (
                 <div className="row">
                   <div>
                     <h1 className={classes.title}>Active Pools</h1>
                     <div className={classes.dividerPool} />
                   </div>
-                  {supportedStaking[currentNetwork].map((token) => (
+                  {supportedStakingPools.map((token) => (
                     <div className="col-md-4">
                       <div className={classes.card}>
                         <SingleStakeCard
@@ -300,17 +300,17 @@ const Home = ({
           }
           {
             <div className="mt-3">
-              {supportedStaking[currentNetwork].length === 0 && (
+              {supportedStakingPools.length === 0 && (
                 <div style={{ textAlign: "center", color: "white" }}></div>
               )}
 
-              {unsupportedStaking[currentNetwork].length > 0 && (
+              {unSupportedStakingPools.length > 0 && (
                 <div className="row mt-5">
                   <div>
                     <h1 className={classes.title}>Ended Pool</h1>
                     <div className={classes.dividerPool} />
                   </div>
-                  {unsupportedStaking[currentNetwork].map((token) => (
+                  {unSupportedStakingPools.map((token) => (
                     <div className="col-md-4 mt-3">
                       <div className={classes.card}>
                         <SingleStakeCard

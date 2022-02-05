@@ -1,6 +1,12 @@
 import BigNumber from "bignumber.js";
 import Web3 from "web3";
-import { apyConstants } from "../constants";
+import {
+  apyConstants,
+  bscNetwork,
+  etheriumNetwork,
+  harmonyNetwork,
+  maticNetwork,
+} from "../constants";
 import config from "./config";
 
 export const fromWei = (tokens) => {
@@ -198,5 +204,20 @@ export const setupNetwork = async (networkObject) => {
       "Can't setup the BSC network on metamask because window.ethereum is undefined"
     );
     return false;
+  }
+};
+
+export const getCurrentNetworkName = (networkId) => {
+  const _id = parseInt(networkId);
+  if ([config.bscChain, config.bscChainTestent].includes(_id)) {
+    return bscNetwork;
+  } else if (
+    [config.polygon_chain_mainnet, config.polygon_chain_testnet].includes(_id)
+  ) {
+    return maticNetwork;
+  } else if ([config.hmyChainMainnet, config.hmyChainMainnet].includes(_id)) {
+    return harmonyNetwork;
+  } else {
+    return etheriumNetwork;
   }
 };
