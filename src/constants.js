@@ -311,16 +311,6 @@ export const coingeckoTokenId = {
   LABS: "labs-group",
 };
 
-export const infuraKovenApi = `https://kovan.infura.io/v3/${
-  process.env.REACT_APP_INFURA_KEY &&
-  process.env.REACT_APP_INFURA_KEY.split("").reverse().join("")
-}`;
-
-export const infuraMainnetApi = `https://mainnet.infura.io/v3/${
-  process.env.REACT_APP_INFURA_KEY &&
-  process.env.REACT_APP_INFURA_KEY.split("").reverse().join("")
-}`;
-
 export const etheriumNetwork = "ethereum";
 export const bscNetwork = "bsc";
 export const maticNetwork = "matic";
@@ -359,11 +349,6 @@ export const maticConfig = {
     mainnet: "137",
     testnet: "80001",
   },
-  network_rpc_mainnet: `https://polygon-mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY.split(
-    ""
-  )
-    .reverse()
-    .join("")}`,
   network_rpc_testnet: "https://mumbai-explorer.matic.today",
 };
 
