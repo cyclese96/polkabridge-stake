@@ -25,6 +25,7 @@ import { useWeb3React } from "@web3-react/core";
 import connectors from "../connection/connectors";
 import { isMetaMaskInstalled } from "../utils/helper";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
+import WalletDialog from "./WalletDialog";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -352,6 +353,7 @@ const Navbar = ({ currentNetwork, chainId }) => {
         handleLogout={handleLogout}
         handleClose={() => setAccountDialog(false)}
       />
+      <WalletDialog />
       <AppBar
         color="transparent"
         position="fixed"
