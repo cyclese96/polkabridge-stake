@@ -10,6 +10,7 @@ import { formatCurrency, fromWei } from "../utils/helper";
 import { connect } from "react-redux";
 import { logout } from "../actions/accountActions";
 import { Card } from "@material-ui/core";
+import { useWeb3React } from "@web3-react/core";
 
 const useStyles = makeStyles((theme) => ({
   background: {
@@ -66,10 +67,7 @@ const useStyles = makeStyles((theme) => ({
       background: "rgba(224, 7, 125, 0.7)",
     },
   },
-  buttons: {
-    // marginTop: 80,
-    // marginBottom: 20,
-  },
+  buttons: {},
   numbers: {
     color: "#E0077D",
     fontSize: 20,
@@ -79,7 +77,6 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 5,
     color: "#919191",
     display: "inline-block",
-    // position: "relative",
   },
   title: {
     textAlign: "center",
@@ -131,20 +128,33 @@ const useStyles = makeStyles((theme) => ({
       fontSize: 12,
     },
   },
+  singleWalletCard: {
+    marginBottom: 20,
+    padding: "10px 20px 10px 20px",
+    width: "100%",
+    backgroundColor: "#161c2b",
+    border: "1px solid #282b33",
+    borderRadius: 10,
+    cursor: "pointer",
+  },
 }));
 
 const AccountDialog = ({
   open,
   handleClose,
   handleLogout,
+  handleConnection,
   account: { currentAccount, balance, currentNetwork },
 }) => {
   const classes = useStyles();
+
   const onSingOut = () => {
     localStorage.setItem(`logout${currentAccount}`, currentAccount);
     handleLogout();
     handleClose();
   };
+
+  const { active } = useWeb3React();
 
   const balanceTokens = useMemo(() => {
     return supportedStaking?.[currentNetwork].map((_token) => {
@@ -170,64 +180,145 @@ const AccountDialog = ({
           style: { borderRadius: 25, backgroundColor: "#121827" },
         }}
       >
-        <Card elevation={10} className={classes.background}>
-          <div style={{ width: "100%" }}>
-            <div className="d-flex justify-content-between align-items-center">
-              <div style={{ width: 40 }}></div>
-              <div className={classes.heading}>My Wallet</div>
-              <IconButton aria-label="close" onClick={handleClose}>
-                <CloseIcon style={{ color: "#919191" }} />
-              </IconButton>
-            </div>
-            <div
-              style={{ paddingLeft: 10, paddingRight: 10, textAlign: "center" }}
-            >
-              <h6 htmlFor="username" className={classes.subheading}>
-                {[...currentAccount].splice(0, 7)} {"..."}
-                {[...currentAccount].splice([...currentAccount].length - 7, 7)}
-                <IconButton style={{ padding: 0 }}>
-                  {" "}
-                  <FileCopy
-                    className={classes.copyIcon}
-                    onClick={() =>
-                      navigator.clipboard.writeText(currentAccount)
-                    }
-                  />
+        {active && (
+          <Card elevation={10} className={classes.background}>
+            <div style={{ width: "100%" }}>
+              <div className="d-flex justify-content-between align-items-center">
+                <div style={{ width: 40 }}></div>
+                <div className={classes.heading}>My Wallet</div>
+                <IconButton aria-label="close" onClick={handleClose}>
+                  <CloseIcon style={{ color: "#919191" }} />
                 </IconButton>
-              </h6>
+              </div>
+              <div
+                style={{
+                  paddingLeft: 10,
+                  paddingRight: 10,
+                  textAlign: "center",
+                }}
+              >
+                <h6 htmlFor="username" className={classes.subheading}>
+                  {[...currentAccount].splice(0, 7)} {"..."}
+                  {[...currentAccount].splice(
+                    [...currentAccount].length - 7,
+                    7
+                  )}
+                  <IconButton style={{ padding: 0 }}>
+                    {" "}
+                    <FileCopy
+                      className={classes.copyIcon}
+                      onClick={() =>
+                        navigator.clipboard.writeText(currentAccount)
+                      }
+                    />
+                  </IconButton>
+                </h6>
+              </div>
             </div>
-          </div>
 
-          <div style={{ width: "100%", paddingLeft: 20, paddingRight: 20 }}>
-            {balanceTokens?.map(function (coinObj, index) {
-              return (
-                <div className="d-flex justify-content-between mt-4">
-                  <div className="d-flex justify-content-start">
-                    <div className={classes.logoWrapper}>
-                      <img
-                        src={tokenLogo?.[coinObj.coin]}
-                        className={classes.logo}
-                      />
+            <div style={{ width: "100%", paddingLeft: 20, paddingRight: 20 }}>
+              {balanceTokens?.map(function (coinObj, index) {
+                return (
+                  <div className="d-flex justify-content-between mt-4">
+                    <div className="d-flex justify-content-start">
+                      <div className={classes.logoWrapper}>
+                        <img
+                          src={tokenLogo?.[coinObj.coin]}
+                          className={classes.logo}
+                        />
+                      </div>
+                      <div>
+                        <div className={classes.tokenTitle}>{coinObj.coin}</div>
+                        <div className={classes.tokenSubtitle}>
+                          {tokenName?.[coinObj.coin]}
+                        </div>
+                      </div>
                     </div>
-                    <div>
-                      <div className={classes.tokenTitle}>{coinObj.coin}</div>
-                      <div className={classes.tokenSubtitle}>
-                        {tokenName?.[coinObj.coin]}
+                    <div className={classes.tokenAmount}>{coinObj.balance}</div>
+                  </div>
+                );
+              })}
+            </div>
+
+            <div className={classes.buttons}>
+              <CustomButton variant="light" onClick={handleClose}>
+                Cancel
+              </CustomButton>
+              <CustomButton onClick={onSingOut}>Sign out</CustomButton>
+            </div>
+          </Card>
+        )}
+        {!active && (
+          <Card elevation={10} className={classes.background}>
+            <div style={{ width: "100%" }}>
+              <div className="d-flex justify-content-between align-items-center">
+                <div style={{ width: 40 }}></div>
+                <div className={classes.heading}>Connect You Wallet</div>
+                <IconButton aria-label="close" onClick={handleClose}>
+                  <CloseIcon style={{ color: "#919191" }} />
+                </IconButton>
+              </div>
+
+              <div style={{ width: "100%", paddingLeft: 20, paddingRight: 20 }}>
+                <div className="mt-4">
+                  <div
+                    className={classes.singleWalletCard}
+                    onClick={() => handleConnection("injected")}
+                  >
+                    <div className="d-flex justify-content-start align-items-center">
+                      <div className={classes.logoWrapper}>
+                        <img
+                          src={
+                            "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/1200px-MetaMask_Fox.svg.png"
+                          }
+                          className={classes.logo}
+                        />
+                      </div>
+                      <div className={classes.tokenTitle}>Metamask</div>
+                    </div>
+                  </div>
+
+                  <div
+                    className={classes.singleWalletCard}
+                    onClick={() => handleConnection("unstoppable")}
+                  >
+                    <div className="d-flex justify-content-start align-items-center">
+                      <div className={classes.logoWrapper}>
+                        <img
+                          src={
+                            "https://avatars.githubusercontent.com/u/36172275?s=280&v=4"
+                          }
+                          className={classes.logo}
+                        />
+                      </div>
+                      <div className={classes.tokenTitle}>
+                        Unstoppable Domains
                       </div>
                     </div>
                   </div>
-                  <div className={classes.tokenAmount}>{coinObj.balance}</div>
+
+                  <div
+                    className={classes.singleWalletCard}
+                    onClick={() => handleConnection("walletConnect")}
+                  >
+                    <div className="d-flex justify-content-start align-items-center">
+                      <div className={classes.logoWrapper}>
+                        <img src="img/wc.png" className={classes.logo} />
+                      </div>
+                      <div className={classes.tokenTitle}>Walletconnect</div>
+                    </div>
+                  </div>
                 </div>
-              );
-            })}
-          </div>
-          <div className={classes.buttons}>
-            <CustomButton variant="light" onClick={handleClose}>
-              Cancel
-            </CustomButton>
-            <CustomButton onClick={onSingOut}>Sign out</CustomButton>
-          </div>
-        </Card>
+              </div>
+            </div>
+
+            <div className={classes.buttons}>
+              <CustomButton variant="light" onClick={handleClose}>
+                Cancel
+              </CustomButton>
+            </div>
+          </Card>
+        )}
       </Dialog>
     </div>
   );
