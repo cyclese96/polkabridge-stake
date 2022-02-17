@@ -317,12 +317,7 @@ const Navbar = ({ currentNetwork, chainId }) => {
             id: "features",
             icon: <FlareOutlined />,
           },
-          {
-            name: "Prediction",
-            link: "#",
-            id: "usecase",
-            icon: <CategoryIcon />,
-          },
+
           {},
         ].map((tab, index) => (
           <ListItem button key={tab.name} onClick={toggleDrawer(anchor, false)}>
@@ -408,20 +403,9 @@ const Navbar = ({ currentNetwork, chainId }) => {
             </a>
           </div>
 
-          <div>
-            <a href="#" className={classes.navbarItemsDesktop}>
-              Prediction <DotCircle />
-            </a>
-          </div>
 
-          <div>
-            <a
-              href="https://corgib.polkabridge.org/bet"
-              className={classes.navbarItemsDesktop}
-            >
-              Betting <DotCircle />
-            </a>
-          </div>
+
+
 
           <div className={classes.grow} />
           <div>{<NetworkSelect selectedNetwork={chainId} />}</div>
