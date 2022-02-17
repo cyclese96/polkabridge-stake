@@ -23,9 +23,7 @@ import DotCircle from "./DotCircle";
 import NetworkSelect from "./NetworkSelect";
 import { useWeb3React } from "@web3-react/core";
 import connectors from "../connection/connectors";
-import { isMetaMaskInstalled } from "../utils/helper";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
-import WalletDialog from "./WalletDialog";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -263,18 +261,24 @@ const Navbar = ({ currentNetwork, chainId }) => {
     deactivate();
   };
 
-  const handleWalletClick = () => {
-    if (active) {
-      setAccountDialog(true);
+  const handleWalletConnect = (connectorType = "injected") => {
+    let connector;
+    if (connectorType === "injected") {
+      connector = connectors.injected;
+    } else if (connectorType === "walletConnect") {
+      connector = connectors.walletconnect;
+    } else if (connectorType === "unstoppable") {
+      connector = connectors.uauth;
     } else {
-      if (isMetaMaskInstalled()) {
-        const connector = connectors.injected;
-        createConnectHandler(connector);
-      } else {
-        const connector = connectors.walletconnect;
-        createConnectHandler(connector);
-      }
+      connector = connectors.injected;
     }
+
+    createConnectHandler(connector);
+    setAccountDialog(false);
+  };
+
+  const handleWalletClick = () => {
+    setAccountDialog(true);
   };
 
   const list = (anchor) => (
@@ -352,8 +356,8 @@ const Navbar = ({ currentNetwork, chainId }) => {
         open={accountDialog}
         handleLogout={handleLogout}
         handleClose={() => setAccountDialog(false)}
+        handleConnection={handleWalletConnect}
       />
-      <WalletDialog />
       <AppBar
         color="transparent"
         position="fixed"
