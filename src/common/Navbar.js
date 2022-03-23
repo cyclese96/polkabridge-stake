@@ -396,6 +396,15 @@ const Navbar = ({ currentNetwork, chainId }) => {
           </div>
           <div>
             <a
+              href="https://ino.polkabridge.org"
+              target="_blank"
+              className={classes.navbarItemsDesktop}
+            >
+              INO <DotCircle />
+            </a>
+          </div>
+          <div>
+            <a
               href="https://swap.polkabridge.org"
               className={classes.navbarItemsDesktop}
             >
