@@ -1,5 +1,6 @@
 import { Button, Card, Divider, makeStyles } from "@material-ui/core";
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo } from "react";
+import { BigNumber } from "bignumber.js";
 
 import CustomButton from "./CustomButton";
 import {
@@ -25,6 +26,7 @@ import {
   tokenLogo,
   tokenName,
   LABS,
+  CORGIB,
 } from "../constants";
 import Loader from "./../common/Loader";
 import DotCircle from "./../common/DotCircle";
@@ -338,6 +340,25 @@ const Staking = ({
     return false;
   };
 
+  const totalValueLocked = useMemo(() => {
+    if (!pool?.[tokenType]) {
+      return "0";
+    }
+
+    if (tokenType === CORGIB) {
+      const _locked = new BigNumber(
+        fromWei(pool?.[tokenType]?.totalTokenStaked)
+      )
+        .multipliedBy(pool?.[tokenType]?.tokenPriceCorgib)
+        .toString();
+    }
+    return formatLargeNumber(
+      new BigNumber(fromWei(pool?.[tokenType]?.totalTokenStaked))
+        .multipliedBy(pool?.[tokenType]?.tokenPrice)
+        .toString()
+    );
+  }, [pool, tokenType]);
+
   return (
     <Card elevation={10} className={classes.card}>
       {loading[tokenType] && (
@@ -444,17 +465,7 @@ const Staking = ({
                   <div className={classes.tokenTitleTvl}>
                     Total Value Locked:{" "}
                     <span className={classes.tokenAmountTvl}>
-                      $
-                      {pool[tokenType]
-                        ? formatLargeNumber(
-                            fromWei(pool?.[tokenType]?.totalTokenStaked) *
-                              (tokenType === "CORGIB"
-                                ? parseFloat(
-                                    pool?.[tokenType]?.tokenPriceCorgib
-                                  )
-                                : parseFloat(pool?.[tokenType]?.tokenPrice))
-                          )
-                        : "0"}
+                      $ {totalValueLocked}
                     </span>
                   </div>
                 </div>
