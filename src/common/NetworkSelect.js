@@ -17,9 +17,9 @@ import etherIcon from "../assets/ether.png";
 import binanceIcon from "../assets/binance.png";
 import harmonyIcon from "../assets/one.png";
 import polygonIcon from "../assets/polygon.png";
-import { useWeb3React } from "@web3-react/core";
 import { CHANGE_NETWORK } from "../actions/types";
 import store from "../store";
+import useActiveWeb3React from "../hooks/useActiveWeb3React";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -58,7 +58,7 @@ export default function NetworkSelect() {
     parseInt(localStorage.getItem("currentNetwork") || config.chainId)
   );
 
-  const { chainId, active } = useWeb3React();
+  const { chainId, active } = useActiveWeb3React();
 
   useEffect(() => {
     if (!chainId) {

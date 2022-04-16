@@ -13,35 +13,36 @@ import {
   stakeContractAdrresses,
 } from "../../constants";
 import { isMetaMaskInstalled } from "../../utils/helper";
+import { getContract } from "../../utils/contractUtils";
 
-export const erc20TokenContract = (network, tokenAddress) => {
+export const erc20TokenContract = (network, tokenAddress, library) => {
   const abi = PolkaBridge;
-  const connection = getCurrentConnection(network, abi, tokenAddress);
+  const connection = getContract(tokenAddress, abi, library); //getCurrentConnection(network, abi, tokenAddress);
   return connection;
 };
 
-export const stakeContract = (network) => {
+export const stakeContract = (network, library) => {
   if (network === bscNetwork) {
     const address = stakeContractAdrresses?.[network];
 
     const abi = CorgibStaking;
-    const connection = getCurrentConnection(network, abi, address);
+    const connection = getContract(address, abi, library); //getCurrentConnection(network, abi, address);
     return connection;
   } else if (network === maticNetwork) {
     const address = stakeContractAdrresses?.[network];
     const abi = PolkaBridgeStakingMatic;
-    const connection = getCurrentConnection(network, abi, address);
+    const connection = getContract(address, abi, library); //getCurrentConnection(network, abi, address);
     return connection;
   } else if (network === harmonyNetwork) {
     const address = stakeContractAdrresses?.[network];
 
     const abi = PolkaBridgeStaking;
-    const connection = getCurrentConnection(network, abi, address);
+    const connection = getContract(address, abi, library); //getCurrentConnection(network, abi, address);
     return connection;
   } else if (network === etheriumNetwork) {
     const address = stakeContractAdrresses?.[network];
     const abi = PolkaBridgeStaking;
-    const connection = getCurrentConnection(network, abi, address);
+    const connection = getContract(address, abi, library); //getCurrentConnection(network, abi, address);
     return connection;
   } else {
     return null;

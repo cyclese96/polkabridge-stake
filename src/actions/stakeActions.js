@@ -24,6 +24,7 @@ import {
   coingeckoTokenId,
   stakeContractAdrresses,
 } from "../constants";
+import { getContract } from "../utils/contractUtils";
 
 const fetchTokenPrice = async (tokenSymbol) => {
   try {
@@ -168,7 +169,7 @@ export const checkAllowance =
   };
 
 export const confirmAllowance =
-  (balance, tokenType, network, account) => async (dispatch) => {
+  (balance, tokenType, tokenContract, account, network) => async (dispatch) => {
     try {
       const loadingObj = {};
       loadingObj[`${tokenType}`] = true;
@@ -176,15 +177,18 @@ export const confirmAllowance =
         type: SHOW_LOADING,
         payload: loadingObj,
       });
-
-      const tokenAddress = tokenContarctAddresses?.[network]?.[tokenType];
-      const tokenContract = erc20TokenContract(network, tokenAddress);
+      console.log("confirmAllowance contract ", {
+        address: tokenContract?.address,
+        contract: tokenContract,
+        methods: tokenContract.methods,
+      });
+      // const tokenAddress = tokenContarctAddresses?.[network]?.[tokenType];
+      // const tokenContract = erc20TokenContract(network, tokenAddress, library);
 
       const stakeContractAddress = stakeContractAdrresses?.[network];
 
-      await tokenContract.methods
-        .approve(stakeContractAddress, balance)
-        .send({ from: account, gasPrice: 100000000000 });
+      await tokenContract.approve(stakeContractAddress, balance);
+      // .send({ from: account, gasPrice: 100000000000 });
 
       const apprObj = {};
       apprObj[tokenType] = true;

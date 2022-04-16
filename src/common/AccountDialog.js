@@ -10,7 +10,7 @@ import { formatCurrency, fromWei } from "../utils/helper";
 import { connect } from "react-redux";
 import { logout } from "../actions/accountActions";
 import { Card } from "@material-ui/core";
-import { useWeb3React } from "@web3-react/core";
+import useActiveWeb3React from "../hooks/useActiveWeb3React";
 
 const useStyles = makeStyles((theme) => ({
   background: {
@@ -154,7 +154,7 @@ const AccountDialog = ({
     handleClose();
   };
 
-  const { active } = useWeb3React();
+  const { active } = useActiveWeb3React();
 
   const balanceTokens = useMemo(() => {
     return supportedStaking?.[currentNetwork].map((_token) => {

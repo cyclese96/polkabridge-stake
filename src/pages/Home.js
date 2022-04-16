@@ -15,8 +15,8 @@ import { CHANGE_NETWORK, CONNECT_WALLET } from "../actions/types";
 import store from "../store";
 import BalanceCard from "../common/BalanceCard";
 import PbrStatistics from "../common/PbrStatistics";
-import { useWeb3React } from "@web3-react/core";
 import { getCurrentNetworkName } from "../utils/helper";
+import useActiveWeb3React from "../hooks/useActiveWeb3React";
 
 const useStyles = makeStyles((theme) => ({
   background: {
@@ -146,7 +146,7 @@ const Home = ({
     tokenType: null,
   });
 
-  const { active, account, chainId } = useWeb3React();
+  const { active, account, chainId } = useActiveWeb3React();
 
   const onStake = (tokenType) => {
     setDialog({ open: true, type: "stake", tokenType: tokenType });

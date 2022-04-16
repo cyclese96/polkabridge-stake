@@ -1,5 +1,5 @@
 import { Button, Card, Divider, makeStyles } from "@material-ui/core";
-import React, { useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { BigNumber } from "bignumber.js";
 
 import CustomButton from "./CustomButton";
@@ -27,12 +27,14 @@ import {
   tokenName,
   LABS,
   CORGIB,
+  tokenContarctAddresses,
 } from "../constants";
 import Loader from "./../common/Loader";
 import DotCircle from "./../common/DotCircle";
-import { useWeb3React } from "@web3-react/core";
 import { RESET_USER_STAKE } from "../actions/types";
 import store from "../store";
+import useActiveWeb3React from "../hooks/useActiveWeb3React";
+import { useTokenContract } from "../hooks/useContract";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -255,7 +257,7 @@ const Staking = ({
   stopped = false,
 }) => {
   const classes = useStyles();
-  const { active } = useWeb3React();
+  const { chainId, active, library } = useActiveWeb3React();
 
   useEffect(async () => {
     // if (!currentNetwork || !currentAccount) {
@@ -277,23 +279,46 @@ const Staking = ({
     }
   }, [active]);
 
-  const handleApprove = async (tokenType) => {
+  const tokenContract = useTokenContract(
+    tokenContarctAddresses.ethereum?.[tokenType]
+  );
+
+  useEffect(() => {
+    console.log("token contract ", {
+      address: tokenContract?.address,
+      contract: tokenContract,
+    });
+  }, [tokenContract]);
+
+  const handleApprove = useCallback(() => {
     const tokenWeiAmountToApprove =
       currentNetwork === bscNetwork
         ? "999999999999999999999999999999999999"
         : toWei("999999999");
-
-    await confirmAllowance(
+    confirmAllowance(
       tokenWeiAmountToApprove,
       tokenType,
-      currentNetwork,
-      currentAccount
+      tokenContract,
+      currentAccount,
+      currentNetwork
     );
-    // alert(
-    //   `tokenType: ${tokenType}  currentNetwork: ${currentNetwork} tokenAmount:  ${tokenWeiAmountToApprove}`
-    // );
-    await getUserStakedData(tokenType, currentNetwork);
-  };
+  }, [tokenContract, chainId]);
+  // const handleApprove = async (tokenType) => {
+  //   const tokenWeiAmountToApprove =
+  //     currentNetwork === bscNetwork
+  //       ? "999999999999999999999999999999999999"
+  //       : toWei("999999999");
+
+  //   await confirmAllowance(
+  //     tokenWeiAmountToApprove,
+  //     tokenType,
+  //     currentNetwork,
+  //     currentAccount,
+  //     library
+  //   );
+
+  //   await getUserStakedData(tokenType, currentNetwork);
+  // };
 
   const handleClaim = async (tokenType) => {
     const tokensToClaim = claimTokens;
@@ -302,7 +327,8 @@ const Staking = ({
       tokensToClaim,
       currentAccount,
       tokenType,
-      currentNetwork
+      currentNetwork,
+      library
     );
 
     const pid = poolId?.[tokenType];

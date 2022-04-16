@@ -1,7 +1,7 @@
 import { Button, makeStyles } from "@material-ui/core";
 import { AccountBalanceWallet } from "@material-ui/icons";
-import { useWeb3React } from "@web3-react/core";
 import { connect } from "react-redux";
+import useActiveWeb3React from "../hooks/useActiveWeb3React";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -62,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Wallet = ({ onWalletClick }) => {
-  const { active, account } = useWeb3React();
+  const { active, account } = useActiveWeb3React();
 
   const classes = useStyles();
 

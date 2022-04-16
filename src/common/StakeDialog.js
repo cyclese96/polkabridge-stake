@@ -24,6 +24,7 @@ import {
 import { getAccountBalance } from "../actions/accountActions";
 import { minimumStakingAmount, poolId } from "../constants";
 import BigNumber from "bignumber.js";
+import useActiveWeb3React from "../hooks/useActiveWeb3React";
 
 const styles = (theme) => ({
   root: {
@@ -172,6 +173,7 @@ const StakeDialog = ({
   const [inputTokens, setTokenValue] = useState("");
   const [formattedInputTokens, setFormattedValue] = useState("");
   const [error, setError] = useState({ status: false, message: "" });
+  const { active, library } = useActiveWeb3React();
 
   const handleInputChange = (e) => {
     if (
@@ -252,14 +254,16 @@ const StakeDialog = ({
         enteredTokens.toString(),
         currentAccount,
         tokenType,
-        currentNetwork
+        currentNetwork,
+        library
       );
     } else {
       await unstakeTokens(
         inputTokens,
         currentAccount,
         tokenType,
-        currentNetwork
+        currentNetwork,
+        library
       );
     }
     handleClose();

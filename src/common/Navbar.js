@@ -21,9 +21,9 @@ import Wallet from "./Wallet";
 import AccountDialog from "./AccountDialog";
 import DotCircle from "./DotCircle";
 import NetworkSelect from "./NetworkSelect";
-import { useWeb3React } from "@web3-react/core";
 import connectors from "../connection/connectors";
 import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
+import useActiveWeb3React from "../hooks/useActiveWeb3React";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -232,7 +232,7 @@ const Navbar = ({ currentNetwork, chainId }) => {
     setState({ ...state, [anchor]: open });
   };
 
-  const { active, account, activate, deactivate } = useWeb3React();
+  const { active, account, activate, deactivate } = useActiveWeb3React();
 
   const createConnectHandler = async (connector) => {
     try {
@@ -417,10 +417,6 @@ const Navbar = ({ currentNetwork, chainId }) => {
               Lending <DotCircle />
             </a>
           </div>
-
-
-
-
 
           <div className={classes.grow} />
           <div>{<NetworkSelect selectedNetwork={chainId} />}</div>
