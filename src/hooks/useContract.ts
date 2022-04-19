@@ -1,18 +1,12 @@
 import { Contract } from "@ethersproject/contracts";
-
 import { useMemo } from "react";
-
 import { getContract } from "../utils/contractUtils";
-// import MulticallABI from "../contracts/abi/multicall.json";
+import MulticallABI from "../contracts/abi/multicall.json";
 import useActiveWeb3React from "./useActiveWeb3React";
-// import { MULTICALL_ADDRESS } from "constants/index";
 import ERC20_ABI from "../contracts/abi/erc20.json";
 import STAKE_ABI from "../contracts/abi/PolkaBridgeStaking.json";
 import { STAKE_ADDRESSES } from "../constants";
-import { Interface } from "@ethersproject/abi";
-
-// import WETH_ABI from "../contracts/abi/weth.json";
-// import { WETH } from "polkabridge-sdk";
+import { MULTICALL_ADDRESS } from "../utils/chains";
 
 // returns null on errors
 export function useContract<T extends Contract = Contract>(
@@ -49,40 +43,27 @@ export function useContract<T extends Contract = Contract>(
   ]) as T;
 }
 
-// export function useInterfaceMulticall(): Contract | null {
-//   const { chainId } = useActiveWeb3React();
+export function useInterfaceMulticall(): Contract | null {
+  const { chainId } = useActiveWeb3React();
 
-//   return useContract(MULTICALL_ADDRESS, MulticallABI, false);
-// }
+  return useContract(MULTICALL_ADDRESS?.[chainId || 1], MulticallABI, false);
+}
 
 export function useTokenContract(
   tokenAddress?: string,
   withSignerIfPossible?: boolean
 ): Contract | null {
-  const ERC20_INTERFACE = new Interface(ERC20_ABI);
-
-  return useContract(tokenAddress, ERC20_INTERFACE, withSignerIfPossible);
+  return useContract(tokenAddress, ERC20_ABI, withSignerIfPossible);
 }
 
-// export function useStakeContract(
-//   withSignerIfPossible?: boolean
-// ): Contract | null {
-//   const { chainId } = useActiveWeb3React();
+export function useStakeContract(
+  withSignerIfPossible?: boolean
+): Contract | null {
+  const { chainId } = useActiveWeb3React();
 
-//   return useContract(
-//     STAKE_ADDRESSES?.[chainId || 1],
-//     STAKE_ABI,
-//     withSignerIfPossible
-//   );
-// }
-
-// export function useWETHContract(
-//   withSignerIfPossible?: boolean
-// ): Contract | null {
-//   const { chainId } = useActiveWeb3React();
-//   return useContract(
-//     chainId ? WETH[chainId].address : undefined,
-//     WETH_ABI,
-//     withSignerIfPossible
-//   );
-// }
+  return useContract(
+    STAKE_ADDRESSES[!chainId ? 1 : chainId],
+    STAKE_ABI,
+    withSignerIfPossible
+  );
+}

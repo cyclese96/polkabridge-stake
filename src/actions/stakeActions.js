@@ -23,35 +23,10 @@ import {
   tokenPriceConstants,
   coingeckoTokenId,
   stakeContractAdrresses,
+  STAKE_ADDRESSES,
 } from "../constants";
-import { getContract } from "../utils/contractUtils";
 
-const fetchTokenPrice = async (tokenSymbol) => {
-  try {
-    if (!tokenSymbol) {
-      return null;
-    }
-
-    if (Object.keys(tokenPriceConstants).includes(tokenSymbol)) {
-      return tokenPriceConstants[tokenSymbol];
-    }
-
-    const token_id = coingeckoTokenId?.[tokenSymbol];
-
-    const priceRes = await axios.get(
-      config.coingecko +
-        `/v3/simple/price?ids=${token_id}&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false`
-    );
-    const priceData = priceRes.data;
-    const tokenPrice = priceData?.[token_id] ? priceData[token_id].usd : "---";
-
-    return tokenPrice;
-  } catch (error) {
-    console.log("fetchTokenPrice ", { tokenSymbol, error });
-    return 0;
-  }
-};
-
+// Note: these functions has been depricated
 export const fetchPbrMarketData = () => async (dispatch) => {
   try {
     const { data } = await axios.get(
@@ -91,15 +66,13 @@ export const getPoolInfo =
         return;
       }
 
-      // console.log('getting pool info ', { pid, account, network })
-
       const currStakingContract = stakeContract(network);
       const tokenAddress = tokenContarctAddresses?.[network]?.[tokenSymbol];
       const tokenContract = erc20TokenContract(network, tokenAddress);
 
       const [poolInfo, tokenPrice, tokenBalance] = await Promise.all([
         currStakingContract.methods.getPoolInfo(pid).call(),
-        fetchTokenPrice(tokenSymbol),
+        // fetchTokenPrice(tokenSymbol),
         getTokenBalance(tokenContract, account),
       ]);
       const poolObj = {
@@ -169,7 +142,7 @@ export const checkAllowance =
   };
 
 export const confirmAllowance =
-  (balance, tokenType, tokenContract, account, network) => async (dispatch) => {
+  (balance, tokenType, tokenContract, account, chainId) => async (dispatch) => {
     try {
       const loadingObj = {};
       loadingObj[`${tokenType}`] = true;
@@ -177,18 +150,10 @@ export const confirmAllowance =
         type: SHOW_LOADING,
         payload: loadingObj,
       });
-      console.log("confirmAllowance contract ", {
-        address: tokenContract?.address,
-        contract: tokenContract,
-        methods: tokenContract.methods,
-      });
-      // const tokenAddress = tokenContarctAddresses?.[network]?.[tokenType];
-      // const tokenContract = erc20TokenContract(network, tokenAddress, library);
 
-      const stakeContractAddress = stakeContractAdrresses?.[network];
+      const stakeContractAddress = STAKE_ADDRESSES?.[chainId];
 
       await tokenContract.approve(stakeContractAddress, balance);
-      // .send({ from: account, gasPrice: 100000000000 });
 
       const apprObj = {};
       apprObj[tokenType] = true;
@@ -205,67 +170,68 @@ export const confirmAllowance =
     });
   };
 
-export const getUserStakedData = (tokenType, network) => async (dispatch) => {
-  const loadingObj = {};
-  loadingObj[`${tokenType}`] = true;
-  dispatch({
-    type: SHOW_LOADING,
-    payload: loadingObj,
-  });
+export const getUserStakedData =
+  (tokenType, network, library) => async (dispatch) => {
+    const loadingObj = {};
+    loadingObj[`${tokenType}`] = true;
+    dispatch({
+      type: SHOW_LOADING,
+      payload: loadingObj,
+    });
 
-  try {
-    const account = await getCurrentAccount();
+    try {
+      const account = await getCurrentAccount();
 
-    const tokenAddress = tokenContarctAddresses?.[network]?.[tokenType];
-    const tokenContract = erc20TokenContract(network, tokenAddress);
+      const tokenAddress = tokenContarctAddresses?.[network]?.[tokenType];
+      const tokenContract = erc20TokenContract(network, tokenAddress, library);
 
-    const pool = poolId[tokenType];
-    const currStakeContract = stakeContract(network);
+      const pool = poolId[tokenType];
+      const currStakeContract = stakeContract(network, library);
 
-    const allowance = await tokenContract.methods
-      .allowance(account, currStakeContract._address)
-      .call();
+      const allowance = await tokenContract
+        .allowance(account, currStakeContract._address)
+        .call();
 
-    const apprObj = {};
-    if (new BigNumber(allowance).gt(0)) {
-      apprObj[tokenType] = true;
-    } else {
-      apprObj[tokenType] = false;
+      const apprObj = {};
+      if (new BigNumber(allowance).gt(0)) {
+        apprObj[tokenType] = true;
+      } else {
+        apprObj[tokenType] = false;
+      }
+
+      dispatch({
+        type: ALLOWANCE_UPDATE,
+        payload: apprObj,
+      });
+
+      const [stakedData, pendingReward] = await Promise.all([
+        currStakeContract?.estimateGas.userInfo(pool, account),
+        currStakeContract?.estimateGas?.pendingReward(pool, account),
+      ]);
+
+      const stakeObj = {};
+
+      stakeObj[tokenType] = {
+        amount: stakedData.amount,
+        rewardClaimed: stakedData.rewardClaimed,
+        pendingReward: pendingReward,
+      };
+
+      dispatch({
+        type: GET_USER_STAKE_DATA,
+        payload: stakeObj,
+      });
+    } catch (error) {
+      dispatch({
+        type: ERROR,
+        payload: "Failed to update balance",
+      });
     }
-
     dispatch({
-      type: ALLOWANCE_UPDATE,
-      payload: apprObj,
+      type: HIDE_LOADING,
+      payload: tokenType,
     });
-
-    const [stakedData, pendingReward] = await Promise.all([
-      currStakeContract.methods.userInfo(pool, account).call(),
-      currStakeContract.methods.pendingReward(pool, account).call(),
-    ]);
-
-    const stakeObj = {};
-
-    stakeObj[tokenType] = {
-      amount: stakedData.amount,
-      rewardClaimed: stakedData.rewardClaimed,
-      pendingReward: pendingReward,
-    };
-
-    dispatch({
-      type: GET_USER_STAKE_DATA,
-      payload: stakeObj,
-    });
-  } catch (error) {
-    dispatch({
-      type: ERROR,
-      payload: "Failed to update balance",
-    });
-  }
-  dispatch({
-    type: HIDE_LOADING,
-    payload: tokenType,
-  });
-};
+  };
 
 export const stakeTokens =
   (tokens, account, tokenType, network) => async (dispatch) => {

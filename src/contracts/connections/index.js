@@ -11,45 +11,50 @@ import {
   harmonyNetwork,
   maticNetwork,
   stakeContractAdrresses,
+  STAKE_ADDRESSES,
 } from "../../constants";
 import { isMetaMaskInstalled } from "../../utils/helper";
 import { getContract } from "../../utils/contractUtils";
+import config from "utils/config";
 
-export const erc20TokenContract = (network, tokenAddress, library) => {
+export const erc20TokenContract = (chainId, tokenAddress, library) => {
   const abi = PolkaBridge;
-  const connection = getContract(tokenAddress, abi, library); //getCurrentConnection(network, abi, tokenAddress);
+  const connection = getCurrentConnection(chainId, abi, tokenAddress);
   return connection;
 };
 
-export const stakeContract = (network, library) => {
-  if (network === bscNetwork) {
-    const address = stakeContractAdrresses?.[network];
+export const stakeContract = (chainId) => {
+  if (chainId?.toString() === "56") {
+    const address = STAKE_ADDRESSES?.[chainId];
 
     const abi = CorgibStaking;
-    const connection = getContract(address, abi, library); //getCurrentConnection(network, abi, address);
+    const connection = getCurrentConnection(chainId, abi, address);
     return connection;
-  } else if (network === maticNetwork) {
-    const address = stakeContractAdrresses?.[network];
+  } else if (chainId?.toString() === "137") {
+    const address = STAKE_ADDRESSES?.[chainId];
     const abi = PolkaBridgeStakingMatic;
-    const connection = getContract(address, abi, library); //getCurrentConnection(network, abi, address);
+    const connection = getCurrentConnection(chainId, abi, address);
     return connection;
-  } else if (network === harmonyNetwork) {
-    const address = stakeContractAdrresses?.[network];
+  } else if (chainId?.toString() === config.hmyChainMainnet?.toString()) {
+    const address = STAKE_ADDRESSES?.[chainId];
 
     const abi = PolkaBridgeStaking;
-    const connection = getContract(address, abi, library); //getCurrentConnection(network, abi, address);
+    const connection = getCurrentConnection(chainId, abi, address);
     return connection;
-  } else if (network === etheriumNetwork) {
-    const address = stakeContractAdrresses?.[network];
+  } else if (chainId?.toString() === "1") {
+    const address = STAKE_ADDRESSES?.[chainId];
     const abi = PolkaBridgeStaking;
-    const connection = getContract(address, abi, library); //getCurrentConnection(network, abi, address);
+    const connection = getCurrentConnection(chainId, abi, address);
     return connection;
   } else {
-    return null;
+    const address = STAKE_ADDRESSES?.[1];
+    const abi = PolkaBridgeStaking;
+    const connection = getCurrentConnection(1, abi, address);
+    return connection;
   }
 };
 
-const getCurrentConnection = (blockChainNetwork, abi, contractAddress) => {
+const getCurrentConnection = (chainId, abi, contractAddress) => {
   // console.log('initializing   matic instance', blockChainNetwork)
   // const infura =
   //   currentConnection === "testnet"
@@ -63,12 +68,12 @@ const getCurrentConnection = (blockChainNetwork, abi, contractAddress) => {
   //       )
   //         .reverse()
   //         .join("")}`;
-  const _ankrRpc = ankrRpc?.[blockChainNetwork];
+  const _ankrRpc = ankrRpc?.[chainId];
 
   const web3 = isMetaMaskInstalled()
     ? new Web3(window.ethereum)
     : new Web3(
-        new Web3.providers.HttpProvider(_ankrRpc ? _ankrRpc : ankrRpc.ethereum)
+        new Web3.providers.HttpProvider(_ankrRpc ? _ankrRpc : ankrRpc[1])
       );
   return new web3.eth.Contract(abi, contractAddress);
 };

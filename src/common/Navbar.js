@@ -22,7 +22,7 @@ import AccountDialog from "./AccountDialog";
 import DotCircle from "./DotCircle";
 import NetworkSelect from "./NetworkSelect";
 import connectors from "../connection/connectors";
-import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
+import { WalletConnectConnector } from "web3-react-walletconnect-connector";
 import useActiveWeb3React from "../hooks/useActiveWeb3React";
 
 const useStyles = makeStyles((theme) => ({

@@ -1,10 +1,16 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Card } from "@material-ui/core";
-import PropTypes from "prop-types";
-import { connect } from "react-redux";
 import { formatCurrency, fromWei } from "../utils/helper";
-import { tokenLogo, tokenName, supportedStaking, CORGIB } from "../constants";
+import {
+  tokenLogo,
+  tokenName,
+  supportedStaking,
+  CORGIB,
+  tokenAddresses,
+} from "../constants";
+import useActiveWeb3React from "hooks/useActiveWeb3React";
+import { useCurrencyBalances } from "hooks/useBalance";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -64,67 +70,53 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "center",
   },
 }));
-function BalanceCard(props) {
-  const {
-    account: { balance, currentNetwork },
-  } = props;
+function BalanceCard() {
   const classes = useStyles();
 
-  const balanceTokens = useMemo(() => {
-    return supportedStaking?.[currentNetwork].map((_token) => {
-      return {
-        coin: _token,
-        balance:
-          _token !== CORGIB
-            ? formatCurrency(fromWei(balance?.[_token]), false, 1, true)
-            : formatCurrency(fromWei(balance?.[_token])),
-      };
+  const { chainId, account } = useActiveWeb3React();
+
+  const tokens = useMemo(() => {
+    return supportedStaking?.[chainId]?.map((_symbol) => {
+      return { symbol: _symbol, address: tokenAddresses?.[_symbol]?.[chainId] };
     });
-  }, [currentNetwork, balance]);
+  }, [chainId]);
+  const balances = useCurrencyBalances(account, tokens);
+
+  useEffect(() => {
+    console.log("balance test ", balances);
+  }, [balances]);
 
   return (
     <Card className={classes.card} elevation={10}>
       <h6 className={classes.title}>Your Balance</h6>
 
       <div className="mt-4">
-        {balanceTokens?.map(function (coinObj, index) {
-          // if (
-          //   account.balance[key] !== null &&
-          //   account.balance[key] !== undefined
-          // ) {
+        {tokens?.map(function (token, index) {
           return (
             <div className="d-flex justify-content-between mt-4">
               <div className="d-flex justify-content-start">
                 <div className={classes.logoWrapper}>
                   <img
-                    src={tokenLogo?.[coinObj.coin]}
+                    src={tokenLogo?.[token?.symbol]}
                     className={classes.logo}
                   />
                 </div>
                 <div>
-                  <div className={classes.tokenTitle}>{coinObj.coin}</div>
+                  <div className={classes.tokenTitle}>{token?.symbol}</div>
                   <div className={classes.tokenSubtitle}>
-                    {tokenName?.[coinObj.coin]}
+                    {tokenName?.[token?.symbol]}
                   </div>
                 </div>
               </div>
-              <div className={classes.tokenAmount}>{coinObj.balance}</div>
+              <div className={classes.tokenAmount}>
+                {formatCurrency(fromWei(balances?.[index]), false, 1, true)}
+              </div>
             </div>
           );
-          // }
         })}
       </div>
-      {/* // )} */}
     </Card>
   );
 }
 
-BalanceCard.propTypes = {
-  account: PropTypes.object.isRequired,
-};
-
-const mapStateToProps = (state) => ({
-  account: state.account,
-});
-
-export default connect(mapStateToProps, {})(React.memo(BalanceCard));
+export default React.memo(BalanceCard);

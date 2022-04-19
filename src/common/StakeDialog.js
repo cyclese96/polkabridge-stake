@@ -22,9 +22,10 @@ import {
   getUserStakedData,
 } from "../actions/stakeActions";
 import { getAccountBalance } from "../actions/accountActions";
-import { minimumStakingAmount, poolId } from "../constants";
+import { minimumStakingAmount, poolId, tokenAddresses } from "../constants";
 import BigNumber from "bignumber.js";
 import useActiveWeb3React from "../hooks/useActiveWeb3React";
+import { useTokenBalance } from "hooks/useBalance";
 
 const styles = (theme) => ({
   root: {
@@ -157,8 +158,8 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const StakeDialog = ({
-  account: { currentAccount, currentNetwork, balance, loading },
-  stake: { stake },
+  // account: { currentAccount, currentNetwork, balance, loading },
+  // stake: { stake },
   stakeTokens,
   unstakeTokens,
   getAccountBalance,
@@ -173,7 +174,22 @@ const StakeDialog = ({
   const [inputTokens, setTokenValue] = useState("");
   const [formattedInputTokens, setFormattedValue] = useState("");
   const [error, setError] = useState({ status: false, message: "" });
-  const { active, library } = useActiveWeb3React();
+  const { active, account, chainId } = useActiveWeb3React();
+
+  const poolToken = useMemo(() => {
+    return {
+      symbol: tokenType,
+      address: tokenAddresses?.[tokenType]?.[chainId],
+    };
+  }, [tokenType, chainId]);
+
+  const userStakedInfo = useUserStakedInfo(poolId?.[tokenType], account);
+
+  const poolTokenBalance = useTokenBalance(account, poolToken);
+
+  useEffect(() => {
+    console.log("pool balance ", poolTokenBalance);
+  }, [poolTokenBalance]);
 
   const handleInputChange = (e) => {
     if (
@@ -192,8 +208,8 @@ const StakeDialog = ({
 
   const onConfirm = async () => {
     let enteredTokens = inputTokens;
-    const stakedTokens = parseFloat(fromWei(stake[tokenType].amount));
-    const balanceTokens = parseFloat(fromWei(balance[tokenType]));
+    const stakedTokens = parseFloat(fromWei(userStakedInfo?.staked));
+    const balanceTokens = parseFloat(fromWei(poolTokenBalance));
 
     if (enteredTokens === "" || new BigNumber(enteredTokens).eq(0)) {
       setError({

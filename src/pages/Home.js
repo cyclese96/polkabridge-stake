@@ -10,13 +10,21 @@ import PropTypes from "prop-types";
 import { getAccountBalance } from "../actions/accountActions";
 import { connect } from "react-redux";
 
-import { supportedStaking, unsupportedStaking } from "../constants";
+import {
+  stakeContractAdrresses,
+  supportedStaking,
+  tokenAddresses,
+  tokenContarctAddresses,
+  unsupportedStaking,
+} from "../constants";
 import { CHANGE_NETWORK, CONNECT_WALLET } from "../actions/types";
 import store from "../store";
 import BalanceCard from "../common/BalanceCard";
 import PbrStatistics from "../common/PbrStatistics";
 import { getCurrentNetworkName } from "../utils/helper";
 import useActiveWeb3React from "../hooks/useActiveWeb3React";
+import { useStakeContract } from "hooks/useContract";
+import { useETHBalances, useTokenBalance } from "hooks/useBalance";
 
 const useStyles = makeStyles((theme) => ({
   background: {
@@ -136,7 +144,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Home = ({
-  account: { connected, currentNetwork, error, loading },
+  account: { connected, error, loading },
   getAccountBalance,
 }) => {
   const classes = useStyles();
@@ -159,6 +167,8 @@ const Home = ({
   const handleClose = () => {
     setDialog({ open: false, type: null });
   };
+
+  const stakeContract = useStakeContract();
 
   useEffect(() => {
     if (!chainId || !active) {
@@ -209,10 +219,6 @@ const Home = ({
   }, []);
 
   useEffect(() => {
-    console.log("current network ", currentNetwork);
-  }, [currentNetwork]);
-
-  useEffect(() => {
     if (JSON.stringify(error).includes("-32000")) {
       alert(
         `You don't have enough balance to pay gas fee for the transaction!`
@@ -223,12 +229,22 @@ const Home = ({
   }, [JSON.stringify(error)]);
 
   const supportedStakingPools = useMemo(
-    () => supportedStaking[currentNetwork],
-    [currentNetwork]
+    () =>
+      Object.keys(supportedStaking).includes(chainId?.toString())
+        ? supportedStaking?.[chainId]
+        : !chainId
+        ? supportedStaking[1]
+        : [],
+    [chainId]
   );
   const unSupportedStakingPools = useMemo(
-    () => unsupportedStaking[currentNetwork],
-    [currentNetwork]
+    () =>
+      Object.keys(unsupportedStaking).includes(chainId?.toString())
+        ? unsupportedStaking?.[chainId]
+        : !chainId
+        ? unsupportedStaking[1]
+        : [],
+    [chainId]
   );
 
   return (
@@ -246,7 +262,7 @@ const Home = ({
             </div>
             <div className="col-md-4">
               <div>
-                <BalanceCard tokens={supportedStaking[currentNetwork]} />
+                <BalanceCard tokens={supportedStaking[chainId]} />
               </div>
             </div>
           </div>
@@ -308,6 +324,7 @@ const Home = ({
                           onUnstake={onUnStake}
                           tokenType={token}
                           stopped={true}
+                          stakeContract={stakeContract}
                         />
                       </div>
                     </div>

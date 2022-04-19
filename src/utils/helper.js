@@ -1,11 +1,14 @@
+import axios from "axios";
 import BigNumber from "bignumber.js";
 import Web3 from "web3";
 import {
   apyConstants,
   bscNetwork,
+  coingeckoTokenId,
   etheriumNetwork,
   harmonyNetwork,
   maticNetwork,
+  tokenPriceConstants,
 } from "../constants";
 import config from "./config";
 
@@ -219,5 +222,31 @@ export const getCurrentNetworkName = (networkId) => {
     return harmonyNetwork;
   } else {
     return etheriumNetwork;
+  }
+};
+
+export const fetchTokenPrice = async (tokenSymbol) => {
+  try {
+    if (!tokenSymbol) {
+      return null;
+    }
+
+    if (Object.keys(tokenPriceConstants).includes(tokenSymbol)) {
+      return tokenPriceConstants[tokenSymbol];
+    }
+
+    const token_id = coingeckoTokenId?.[tokenSymbol];
+
+    const priceRes = await axios.get(
+      config.coingecko +
+        `/v3/simple/price?ids=${token_id}&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false`
+    );
+    const priceData = priceRes.data;
+    const tokenPrice = priceData?.[token_id] ? priceData[token_id].usd : "---";
+
+    return tokenPrice;
+  } catch (error) {
+    console.log("fetchTokenPrice ", { tokenSymbol, error });
+    return 0;
   }
 };
