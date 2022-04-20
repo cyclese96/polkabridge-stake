@@ -262,23 +262,27 @@ const Navbar = ({ chainId }) => {
   };
 
   const handleWalletConnect = (connectorType = "injected") => {
-    let connector;
-    if (connectorType === "injected") {
-      connector = connectors.injected;
-    } else if (connectorType === "walletConnect") {
-      connector = connectors.walletconnect;
-    } else if (connectorType === "unstoppable") {
-      connector = connectors.uauth;
-    } else {
-      connector = connectors.injected;
-    }
+    try {
+      let connector;
+      if (connectorType === "injected") {
+        connector = connectors.injected;
+      } else if (connectorType === "walletConnect") {
+        connector = connectors.walletconnect;
+      } else if (connectorType === "unstoppable") {
+        connector = connectors.uauth;
+      } else {
+        connector = connectors.injected;
+      }
 
-    createConnectHandler(connector);
-    setAccountDialog(false);
+      createConnectHandler(connector);
+      setAccountDialog(false);
+    } catch (error) {}
   };
 
   const handleWalletClick = () => {
-    setAccountDialog(true);
+    try {
+      setAccountDialog(true);
+    } catch (error) {}
   };
 
   const list = (anchor) => (
@@ -336,7 +340,7 @@ const Navbar = ({ chainId }) => {
         ))}
         <Divider />
         <ListItem button style={{ marginLeft: 10 }}>
-          <Wallet onWalletClick={handleWalletClick} />
+          {/* <Wallet onWalletClick={handleWalletClick} /> */}
         </ListItem>
         <ListItem button style={{ marginLeft: 10, marginTop: 10 }}>
           {<NetworkSelect />}
@@ -430,6 +434,9 @@ const Navbar = ({ chainId }) => {
               src="img/logo-white.png"
               style={{ height: 38, width: 150 }}
             />
+          </div>
+          <div style={{ marginTop: 10 }}>
+            <Wallet onWalletClick={handleWalletClick} />
           </div>
 
           <div>

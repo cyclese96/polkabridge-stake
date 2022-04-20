@@ -52,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 7,
     paddingTop: 3,
   },
+  networkName: {},
 }));
 
 const NetworkSelect = ({ account: { currentChain } }) => {
@@ -134,28 +135,28 @@ const NetworkSelect = ({ account: { currentChain } }) => {
             value={currentConnection === "testnet" ? 42 : 1}
             className={classes.buttonDrop}
           >
-            <span>Ethereum</span>
+            <span className={classes.networkName}>Ethereum</span>
             <img className={classes.imgIcon} src={etherIcon} />
           </MenuItem>
           <MenuItem
             value={currentConnection === "testnet" ? 97 : 56}
             className={classes.buttonDrop}
           >
-            <span>BSC</span>
+            <span className={classes.networkName}>BSC</span>
             <img className={classes.imgIcon} src={binanceIcon} />
           </MenuItem>
           <MenuItem
             value={currentConnection === "testnet" ? 80001 : 137}
             className={classes.buttonDrop}
           >
-            <span>Polygon</span>
+            <span className={classes.networkName}>Polygon</span>
             <img className={classes.imgIcon} src={polygonIcon} />
           </MenuItem>
           <MenuItem
             value={currentConnection === "testnet" ? 1666700000 : 1666600000}
             className={classes.buttonDrop}
           >
-            <span>Harmony</span>
+            <span className={classes.networkName}>Harmony</span>
             <img className={classes.imgIcon} src={harmonyIcon} />
           </MenuItem>
         </Select>

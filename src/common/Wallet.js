@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: 0.4,
     textTransform: "none",
     [theme.breakpoints.down("sm")]: {
-      width: 140,
+      width: 100,
     },
   },
   item: {
@@ -50,6 +50,16 @@ const useStyles = makeStyles((theme) => ({
   numbers: {
     color: "#eeeeee",
     fontSize: 14,
+    [theme.breakpoints.down("sm")]: {
+      display: "none",
+    },
+  },
+  numbersMobile: {
+    color: "#eeeeee",
+    fontSize: 14,
+    [theme.breakpoints.up("sm")]: {
+      display: "none",
+    },
   },
   networkIcon: {
     width: 25,
@@ -90,6 +100,11 @@ const Wallet = ({ onWalletClick }) => {
               [...account?.toString()]?.length - 4,
               4
             )}
+          </strong>
+          <strong className={classes.numbersMobile}>
+            {account ? <span></span> : "..."}
+            {[...account?.toString()]?.splice(0, 3)}
+            {".."}
           </strong>
         </Button>
       )}
