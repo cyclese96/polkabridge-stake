@@ -3,8 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useSingleCallResult } from "../state/multicall/hooks";
 import { useStakeContract } from "./useContract";
 import { PoolInfo, Token } from "../utils/interface";
-import { getApy } from "utils/helper";
-import { etheriumNetwork } from "../constants";
+import { getApy, getCurrentNetworkName } from "utils/helper";
 import useActiveWeb3React from "./useActiveWeb3React";
 import { stakeContract } from "contracts/connections/index";
 
@@ -55,7 +54,11 @@ export function usePoolStakedInfo(
         ? {
             staked: poolObj.totalTokenStaked,
             claimed: poolObj.totalTokenClaimed,
-            apy: getApy(poolToken.symbol, poolObj, etheriumNetwork)?.toString(),
+            apy: getApy(
+              poolToken.symbol,
+              poolObj,
+              getCurrentNetworkName(selectedChain)
+            )?.toString(),
           }
         : null,
     [poolToken, active ? poolInfo : poolInfo2, selectedChain]

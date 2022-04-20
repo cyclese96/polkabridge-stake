@@ -163,22 +163,20 @@ const Home = ({
 
   useEffect(() => {
     if (!chainId || !active) {
-      if (localStorage.currentNetwork) {
-        // check if there is existing cached selected network other wise select ethereum chain by default
+      // check if there is existing cached selected network other wise select ethereum chain by default
 
-        const cachedChain = localStorage.getItem("cachedChain");
-        if (!cachedChain) {
-          localStorage.setItem("cachedChain", 1);
-        }
-
-        const _network = getCurrentNetworkName(cachedChain || 1);
-        console.log("setting cached chain to select chain id ", cachedChain);
-
-        store.dispatch({
-          type: CHANGE_NETWORK,
-          payload: { network: _network, chain: cachedChain || 1 },
-        });
+      const cachedChain = localStorage.getItem("cachedChain");
+      if (!cachedChain) {
+        localStorage.setItem("cachedChain", 1);
       }
+
+      const _network = getCurrentNetworkName(cachedChain || 1);
+      console.log("setting cached chain to select chain id ", cachedChain || 1);
+
+      store.dispatch({
+        type: CHANGE_NETWORK,
+        payload: { network: _network, chain: cachedChain || 1 },
+      });
 
       return;
     }
