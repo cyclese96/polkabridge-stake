@@ -82,10 +82,6 @@ function BalanceCard() {
   }, [chainId]);
   const balances = useCurrencyBalances(account, tokens);
 
-  useEffect(() => {
-    console.log("balance test ", balances);
-  }, [balances]);
-
   return (
     <Card className={classes.card} elevation={10}>
       <h6 className={classes.title}>Your Balance</h6>
@@ -109,7 +105,9 @@ function BalanceCard() {
                 </div>
               </div>
               <div className={classes.tokenAmount}>
-                {formatCurrency(fromWei(balances?.[index]), false, 1, true)}
+                {token?.symbol === CORGIB
+                  ? formatCurrency(fromWei(balances?.[index]))
+                  : formatCurrency(fromWei(balances?.[index]), false, 1, true)}
               </div>
             </div>
           );

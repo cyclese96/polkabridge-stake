@@ -4,19 +4,11 @@ import SingleStakeCard from "../components/SingleStakeCard";
 import StakeDialog from "../common/StakeDialog";
 import Navbar from "../common/Navbar";
 import Footer from "../common/Footer";
-
 import Wallet from "../common/Wallet";
 import PropTypes from "prop-types";
 import { getAccountBalance } from "../actions/accountActions";
 import { connect } from "react-redux";
-
-import {
-  stakeContractAdrresses,
-  supportedStaking,
-  tokenAddresses,
-  tokenContarctAddresses,
-  unsupportedStaking,
-} from "../constants";
+import { supportedStaking, unsupportedStaking } from "../constants";
 import { CHANGE_NETWORK, CONNECT_WALLET } from "../actions/types";
 import store from "../store";
 import BalanceCard from "../common/BalanceCard";
@@ -24,7 +16,6 @@ import PbrStatistics from "../common/PbrStatistics";
 import { getCurrentNetworkName } from "../utils/helper";
 import useActiveWeb3React from "../hooks/useActiveWeb3React";
 import { useStakeContract } from "hooks/useContract";
-import { useETHBalances, useTokenBalance } from "hooks/useBalance";
 
 const useStyles = makeStyles((theme) => ({
   background: {
@@ -144,7 +135,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Home = ({
-  account: { connected, error, loading },
+  account: { connected, error, loading, currentChain },
   getAccountBalance,
 }) => {
   const classes = useStyles();
@@ -173,12 +164,19 @@ const Home = ({
   useEffect(() => {
     if (!chainId || !active) {
       if (localStorage.currentNetwork) {
-        console.log("currenNetwork", localStorage.currentNetwork);
-        const _network = getCurrentNetworkName(chainId);
+        // check if there is existing cached selected network other wise select ethereum chain by default
+
+        const cachedChain = localStorage.getItem("cachedChain");
+        if (!cachedChain) {
+          localStorage.setItem("cachedChain", 1);
+        }
+
+        const _network = getCurrentNetworkName(cachedChain || 1);
+        console.log("setting cached chain to select chain id ", cachedChain);
 
         store.dispatch({
           type: CHANGE_NETWORK,
-          payload: _network,
+          payload: { network: _network, chain: cachedChain || 1 },
         });
       }
 
@@ -193,7 +191,7 @@ const Home = ({
     });
     store.dispatch({
       type: CHANGE_NETWORK,
-      payload: _network,
+      payload: { network: _network, chain: chainId },
     });
 
     getAccountBalance(account, _network);
@@ -219,6 +217,22 @@ const Home = ({
   }, []);
 
   useEffect(() => {
+    if (!currentChain) {
+      return;
+    }
+    console.log("chain changed ", currentChain);
+    const cachedChain = localStorage.getItem("cachedChain");
+
+    if (cachedChain && currentChain?.toString() !== cachedChain) {
+      localStorage.setItem("cachedChain", currentChain?.toString());
+
+      window.location.reload();
+    } else if (!cachedChain) {
+      localStorage.setItem("cachedChain", currentChain?.toString());
+    }
+  }, [currentChain]);
+
+  useEffect(() => {
     if (JSON.stringify(error).includes("-32000")) {
       alert(
         `You don't have enough balance to pay gas fee for the transaction!`
@@ -230,21 +244,21 @@ const Home = ({
 
   const supportedStakingPools = useMemo(
     () =>
-      Object.keys(supportedStaking).includes(chainId?.toString())
-        ? supportedStaking?.[chainId]
-        : !chainId
+      Object.keys(supportedStaking).includes(currentChain?.toString())
+        ? supportedStaking?.[currentChain]
+        : !currentChain
         ? supportedStaking[1]
         : [],
-    [chainId]
+    [currentChain]
   );
   const unSupportedStakingPools = useMemo(
     () =>
-      Object.keys(unsupportedStaking).includes(chainId?.toString())
-        ? unsupportedStaking?.[chainId]
-        : !chainId
+      Object.keys(unsupportedStaking).includes(currentChain?.toString())
+        ? unsupportedStaking?.[currentChain]
+        : !currentChain
         ? unsupportedStaking[1]
         : [],
-    [chainId]
+    [currentChain]
   );
 
   return (
@@ -339,6 +353,7 @@ const Home = ({
             type={dialog.type}
             tokenType={dialog.tokenType}
             handleClose={handleClose}
+            stakeContract={stakeContract}
           />
         </div>
 

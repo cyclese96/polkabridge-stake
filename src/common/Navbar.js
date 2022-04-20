@@ -219,7 +219,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Navbar = ({ currentNetwork, chainId }) => {
+const Navbar = ({ chainId }) => {
   const classes = useStyles();
 
   const [state, setState] = React.useState({

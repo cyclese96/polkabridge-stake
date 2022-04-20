@@ -247,7 +247,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Staking = ({
   stake: { stake, pool, approved },
-  account: { loading },
+  account: { loading, currentChain },
   tokenType,
   confirmAllowance,
   unstakeTokens,
@@ -292,7 +292,11 @@ const Staking = ({
     STAKE_ADDRESSES?.[chainId]
   );
 
-  const poolStakedInfo = usePoolStakedInfo(poolId?.[tokenType], poolToken);
+  const poolStakedInfo = usePoolStakedInfo(
+    poolId?.[tokenType],
+    poolToken,
+    currentChain
+  );
 
   const userStakedInfo = useUserStakedInfo(poolId?.[tokenType], account);
 

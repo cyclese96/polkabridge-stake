@@ -1,20 +1,10 @@
 import Web3 from "web3";
 import PolkaBridge from "../abi/PolkaBridge.json";
-
 import PolkaBridgeStaking from "../abi/PolkaBridgeStaking.json";
 import PolkaBridgeStakingMatic from "../abi/polkabridgeStakingMatic.json";
 import CorgibStaking from "../abi/CorgibStaking.json";
-import {
-  ankrRpc,
-  bscNetwork,
-  etheriumNetwork,
-  harmonyNetwork,
-  maticNetwork,
-  stakeContractAdrresses,
-  STAKE_ADDRESSES,
-} from "../../constants";
+import { ankrRpc, STAKE_ADDRESSES } from "../../constants";
 import { isMetaMaskInstalled } from "../../utils/helper";
-import { getContract } from "../../utils/contractUtils";
 import config from "utils/config";
 
 export const erc20TokenContract = (chainId, tokenAddress, library) => {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -26,6 +26,7 @@ import { minimumStakingAmount, poolId, tokenAddresses } from "../constants";
 import BigNumber from "bignumber.js";
 import useActiveWeb3React from "../hooks/useActiveWeb3React";
 import { useTokenBalance } from "hooks/useBalance";
+import { useUserStakedInfo } from "hooks/useUserStakedInfo";
 
 const styles = (theme) => ({
   root: {
@@ -158,7 +159,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const StakeDialog = ({
-  // account: { currentAccount, currentNetwork, balance, loading },
+  account: { balance, loading },
   // stake: { stake },
   stakeTokens,
   unstakeTokens,
@@ -169,6 +170,7 @@ const StakeDialog = ({
   handleClose,
   type,
   tokenType,
+  stakeContract,
 }) => {
   const classes = useStyles();
   const [inputTokens, setTokenValue] = useState("");
@@ -186,10 +188,6 @@ const StakeDialog = ({
   const userStakedInfo = useUserStakedInfo(poolId?.[tokenType], account);
 
   const poolTokenBalance = useTokenBalance(account, poolToken);
-
-  useEffect(() => {
-    console.log("pool balance ", poolTokenBalance);
-  }, [poolTokenBalance]);
 
   const handleInputChange = (e) => {
     if (
@@ -252,48 +250,36 @@ const StakeDialog = ({
     setError({});
 
     if (type === "stake") {
-      // console.log('staking tokens', { inputTokens, currentAccount, tokenType, currentNetwork })
-
       if (
         parseFloat(enteredTokens) === parseFloat(fromWei(balance[tokenType]))
       ) {
-        // console.log("max ");
         enteredTokens -= 1;
       }
 
-      // console.log({
-      //   entered: enteredTokens,
-      //   input: inputTokens,
-      //   bal: parseFloat(fromWei(balance[tokenType])),
-      // });
       await stakeTokens(
         enteredTokens.toString(),
-        currentAccount,
+        account,
         tokenType,
-        currentNetwork,
-        library
+        chainId,
+        stakeContract
       );
     } else {
       await unstakeTokens(
         inputTokens,
-        currentAccount,
+        account,
         tokenType,
-        currentNetwork,
-        library
+        chainId,
+        stakeContract
       );
     }
     handleClose();
-    const pid = poolId?.[tokenType];
-    getPoolInfo(tokenType, pid, currentAccount, currentNetwork);
-    getAccountBalance(currentNetwork);
-    getUserStakedData(tokenType, currentNetwork);
   };
 
   const handleMax = () => {
     if (type === "stake") {
-      setTokenValue(fromWei(balance[tokenType]));
+      setTokenValue(fromWei(poolTokenBalance));
     } else {
-      setTokenValue(fromWei(stake[tokenType].amount));
+      setTokenValue(fromWei(userStakedInfo?.staked));
     }
   };
 
@@ -305,25 +291,18 @@ const StakeDialog = ({
 
   const currentFormattedBalance = () => {
     if (tokenType === "PWAR") {
-      return formatCurrency(fromWei(balance[tokenType]), false, 1, true);
+      return formatCurrency(fromWei(poolTokenBalance), false, 1, true);
     }
 
-    return formatCurrency(fromWei(balance[tokenType]));
+    return formatCurrency(fromWei(poolTokenBalance));
   };
 
   const currentFormattedStakedBal = () => {
     if (tokenType === "PWAR") {
-      return formatCurrency(
-        fromWei(stake[tokenType] ? stake[tokenType].amount : 0),
-        false,
-        1,
-        true
-      );
+      return formatCurrency(fromWei(userStakedInfo?.staked), false, 1, true);
     }
 
-    return formatCurrency(
-      fromWei(stake[tokenType] ? stake[tokenType].amount : 0)
-    );
+    return formatCurrency(fromWei(userStakedInfo?.staked));
   };
   return (
     <div>

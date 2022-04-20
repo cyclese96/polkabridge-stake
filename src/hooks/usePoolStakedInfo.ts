@@ -10,13 +10,14 @@ import { stakeContract } from "contracts/connections/index";
 
 export function usePoolStakedInfo(
   poolId?: number,
-  poolToken?: Token
+  poolToken?: Token,
+  selectedChain?: number
 ): PoolInfo | null {
   const { active } = useActiveWeb3React();
   const currSTakeContract = useStakeContract();
   const [poolInfo2, setPoolData] = useState(null);
 
-  const _stakeContract = stakeContract(1);
+  const _stakeContract = stakeContract(selectedChain);
   const poolInfoInputs = [poolId];
 
   const poolInfo = useSingleCallResult(
@@ -35,10 +36,10 @@ export function usePoolStakedInfo(
   }
 
   useEffect(() => {
-    if (!active) {
+    if (!active && selectedChain) {
       fetchData();
     }
-  }, []);
+  }, [selectedChain]);
 
   const poolObj = {
     accTokenPerShare: active ? poolInfo?.[0]?.toString() : poolInfo2?.[0],
@@ -57,6 +58,6 @@ export function usePoolStakedInfo(
             apy: getApy(poolToken.symbol, poolObj, etheriumNetwork)?.toString(),
           }
         : null,
-    [poolToken, active ? poolInfo : poolInfo2]
+    [poolToken, active ? poolInfo : poolInfo2, selectedChain]
   );
 }

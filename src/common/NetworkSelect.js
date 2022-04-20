@@ -20,6 +20,7 @@ import polygonIcon from "../assets/polygon.png";
 import { CHANGE_NETWORK } from "../actions/types";
 import store from "../store";
 import useActiveWeb3React from "../hooks/useActiveWeb3React";
+import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -52,27 +53,31 @@ const useStyles = makeStyles((theme) => ({
     paddingTop: 3,
   },
 }));
-export default function NetworkSelect() {
+
+const NetworkSelect = ({ account: { currentChain } }) => {
   const classes = useStyles();
+
   const [network, setNetwork] = React.useState(
     parseInt(localStorage.getItem("currentNetwork") || config.chainId)
   );
 
-  const { chainId, active } = useActiveWeb3React();
+  const { active } = useActiveWeb3React();
 
   useEffect(() => {
-    if (!chainId) {
+    if (!currentChain) {
       return;
     }
 
-    // handleChange(chainId);
-    setNetwork(chainId);
-  }, [chainId, network]);
+    setNetwork(currentChain);
+  }, [currentChain]);
 
   const handleChangeNetwork = (_selected) => {
     store.dispatch({
       type: CHANGE_NETWORK,
-      payload: getCurrentNetworkName(_selected),
+      payload: {
+        network: getCurrentNetworkName(_selected),
+        chain: _selected,
+      },
     });
     setNetwork(_selected);
   };
@@ -157,4 +162,10 @@ export default function NetworkSelect() {
       </FormControl>
     </div>
   );
-}
+};
+
+const mapStateToProps = (state) => ({
+  account: state.account,
+});
+
+export default connect(mapStateToProps, {})(NetworkSelect);
