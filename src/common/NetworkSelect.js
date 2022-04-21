@@ -15,11 +15,11 @@ import { currentConnection } from "../constants";
 
 import etherIcon from "../assets/ether.png";
 import binanceIcon from "../assets/binance.png";
-import harmonyIcon from "../assets/one.png";
 import polygonIcon from "../assets/polygon.png";
-import { useWeb3React } from "@web3-react/core";
 import { CHANGE_NETWORK } from "../actions/types";
 import store from "../store";
+import useActiveWeb3React from "../hooks/useActiveWeb3React";
+import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,28 +51,33 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 7,
     paddingTop: 3,
   },
+  networkName: {},
 }));
-export default function NetworkSelect() {
+
+const NetworkSelect = ({ account: { currentChain } }) => {
   const classes = useStyles();
+
   const [network, setNetwork] = React.useState(
     parseInt(localStorage.getItem("currentNetwork") || config.chainId)
   );
 
-  const { chainId, active } = useWeb3React();
+  const { active } = useActiveWeb3React();
 
   useEffect(() => {
-    if (!chainId) {
+    if (!currentChain) {
       return;
     }
 
-    // handleChange(chainId);
-    setNetwork(chainId);
-  }, [chainId, network]);
+    setNetwork(currentChain);
+  }, [currentChain]);
 
   const handleChangeNetwork = (_selected) => {
     store.dispatch({
       type: CHANGE_NETWORK,
-      payload: getCurrentNetworkName(_selected),
+      payload: {
+        network: getCurrentNetworkName(_selected),
+        chain: _selected,
+      },
     });
     setNetwork(_selected);
   };
@@ -129,32 +134,38 @@ export default function NetworkSelect() {
             value={currentConnection === "testnet" ? 42 : 1}
             className={classes.buttonDrop}
           >
-            <span>Ethereum</span>
+            <span className={classes.networkName}>Ethereum</span>
             <img className={classes.imgIcon} src={etherIcon} />
           </MenuItem>
           <MenuItem
             value={currentConnection === "testnet" ? 97 : 56}
             className={classes.buttonDrop}
           >
-            <span>BSC</span>
+            <span className={classes.networkName}>BSC</span>
             <img className={classes.imgIcon} src={binanceIcon} />
           </MenuItem>
           <MenuItem
             value={currentConnection === "testnet" ? 80001 : 137}
             className={classes.buttonDrop}
           >
-            <span>Polygon</span>
+            <span className={classes.networkName}>Polygon</span>
             <img className={classes.imgIcon} src={polygonIcon} />
           </MenuItem>
-          <MenuItem
+          {/* <MenuItem
             value={currentConnection === "testnet" ? 1666700000 : 1666600000}
             className={classes.buttonDrop}
           >
-            <span>Harmony</span>
+            <span className={classes.networkName}>Harmony</span>
             <img className={classes.imgIcon} src={harmonyIcon} />
-          </MenuItem>
+          </MenuItem> */}
         </Select>
       </FormControl>
     </div>
   );
-}
+};
+
+const mapStateToProps = (state) => ({
+  account: state.account,
+});
+
+export default connect(mapStateToProps, {})(NetworkSelect);

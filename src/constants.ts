@@ -1,6 +1,17 @@
 const testing = false;
 export const currentConnection = testing ? "testnet" : "mainnet";
 
+export const STAKE_ADDRESSES: { [index: number]: string } = {
+  1: "0x1b46b72c5280f30Fbe8A958B4f3c348FD0fD2E55",
+  4: "0x7678f0AF7304e01554E2D49D96E55C8de4975c66",
+  137: "0x6335aF028e77B574423733443678aD4cb9e15B3D",
+  80001: "0x55950cF279Ba5b43263f4Df54833b85F684B333F",
+  1666600000: "0x7a1238cba81de51158c150ffb48a2dba14b987bd", //harmony mainnet
+  1666700000: "0x7a1238cba81de51158c150ffb48a2dba14b987bd", // harmony testnet,
+  56: "0x064dE1e65df3F40Afd7fb9E8A1Af61bD4545f4a1", // bsc mainnet
+  97: "0xA5c2186CFb734828EE89a4087FD571F12Af1E895", // bsc testnet
+};
+
 // stake contract addresses
 export const stakeContractAdrresses = {
   ethereum:
@@ -19,6 +30,59 @@ export const stakeContractAdrresses = {
     currentConnection === "mainnet"
       ? "0x064dE1e65df3F40Afd7fb9E8A1Af61bD4545f4a1"
       : "0xA5c2186CFb734828EE89a4087FD571F12Af1E895",
+};
+
+export const tokenAddresses = {
+  PBR: {
+    1: "0x298d492e8c1d909D3F63Bc4A36C66c64ACB3d695", // mainnet
+    42: "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0", // koven
+    137: "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0", //  polygon mainnet
+    80001: "0x6024ca0b7c12846a396a5d860ff885233ef16dd0", // polygon testnet
+  },
+  BITE: {
+    1: "0x4eed0fa8de12d5a86517f214c2f11586ba2ed88d",
+    42: "0xA9Bf3904f7216B4cA2BA862Ac27b9469c030C0eA",
+  },
+  CFL365: {
+    1: "0xcd6adc6b8bd396e2d53ccd7d7257b4de55be4fbe",
+    42: "0x1F6fE20C82950F5139e8b31D5C32A73EE992e9E1",
+  },
+  PUN: {
+    1: "0x31903e333809897ee57af57567f4377a1a78756c",
+    42: "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
+  },
+  SHOE: {
+    1: "0x0fd67b4ceb9b607ef206904ec73459c4880132c9",
+    42: "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
+  },
+  LABS: {
+    1: "0x8b0e42f366ba502d787bb134478adfae966c8798",
+    42: "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
+  },
+  WELT: {
+    1: "0x23E8B6A3f6891254988B84Da3738D2bfe5E703b9",
+    42: "0x6024ca0b7c12846a396a5d860ff885233ef16dd0",
+  },
+  PWAR: {
+    56: "0x16153214E683018D5aA318864c8e692b66E16778",
+    97: "0x16153214E683018D5aA318864c8e692b66E16778",
+  },
+  CORGIB: {
+    56: "0x1cfd6813a59d7b90c41dd5990ed99c3bf2eb8f55",
+    97: "0xE428Cc8A06Cdba0ad5074180f8E80ec6D4083b24",
+  },
+  DEFLY: {
+    56: "0x0fe6a599c280853621a11c12e1a68e6949cbd08a",
+    97: "0x16153214E683018D5aA318864c8e692b66E16778",
+  },
+  AOG: {
+    56: "0x40c8225329bd3e28a043b029e0d07a5344d2c27c",
+    97: "0x16153214E683018D5aA318864c8e692b66E16778",
+  },
+  GRAV: {
+    56: "0xa6168c7e5eb7c5c379f3a1d7cf1073e09b2f031e",
+    97: "0x16153214E683018D5aA318864c8e692b66E16778",
+  },
 };
 
 export const tokenContarctAddresses = {
@@ -133,77 +197,129 @@ export const tokenName = {
 
 export const tokenInfo = {
   PBR: {
-    ethereum: {
+    1: {
       buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x298d492e8c1d909d3f63bc4a36c66c64acb3d695",
       info: "https://www.coingecko.com/en/coins/polkabridge",
     },
-    matic: {
+    42: {
+      buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x298d492e8c1d909d3f63bc4a36c66c64acb3d695",
+      info: "https://www.coingecko.com/en/coins/polkabridge",
+    },
+    137: {
+      buy: "https://quickswap.exchange/#/swap?inputCurrency=MATIC&outputCurrency=0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
+      info: "https://www.coingecko.com/en/coins/polkabridge",
+    },
+    80001: {
       buy: "https://quickswap.exchange/#/swap?inputCurrency=MATIC&outputCurrency=0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
       info: "https://www.coingecko.com/en/coins/polkabridge",
     },
   },
   BITE: {
-    ethereum: {
+    1: {
+      buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x4eed0fa8de12d5a86517f214c2f11586ba2ed88d",
+      info: "https://www.coingecko.com/en/coins/dragonbite",
+    },
+    42: {
       buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x4eed0fa8de12d5a86517f214c2f11586ba2ed88d",
       info: "https://www.coingecko.com/en/coins/dragonbite",
     },
   },
   CORGIB: {
-    bsc: {
+    56: {
+      buy: "https://pancakeswap.finance/swap#/swap?outputCurrency=0x1cfd6813a59d7b90c41dd5990ed99c3bf2eb8f55&inputCurrency=BNB",
+      info: "https://www.coingecko.com/en/coins/the-corgi-of-polkabridge",
+    },
+    97: {
       buy: "https://pancakeswap.finance/swap#/swap?outputCurrency=0x1cfd6813a59d7b90c41dd5990ed99c3bf2eb8f55&inputCurrency=BNB",
       info: "https://www.coingecko.com/en/coins/the-corgi-of-polkabridge",
     },
   },
   PWAR: {
-    bsc: {
+    56: {
+      buy: "https://pancakeswap.finance/swap#/swap?outputCurrency=0x16153214e683018d5aa318864c8e692b66e16778&inputCurrency=BNB",
+      info: "https://www.coingecko.com/en/coins/polkawar",
+    },
+    97: {
       buy: "https://pancakeswap.finance/swap#/swap?outputCurrency=0x16153214e683018d5aa318864c8e692b66e16778&inputCurrency=BNB",
       info: "https://www.coingecko.com/en/coins/polkawar",
     },
   },
   GRAV: {
-    bsc: {
+    56: {
+      buy: `https://pancakeswap.finance/swap#/swap?outputCurrency=${tokenContarctAddresses.bsc.GRAV}&inputCurrency=BNB`,
+      info: "https://www.coingecko.com/en/coins/graviton-zero",
+    },
+    97: {
       buy: `https://pancakeswap.finance/swap#/swap?outputCurrency=${tokenContarctAddresses.bsc.GRAV}&inputCurrency=BNB`,
       info: "https://www.coingecko.com/en/coins/graviton-zero",
     },
   },
   DEFLY: {
-    bsc: {
+    56: {
+      buy: `https://pancakeswap.finance/swap#/swap?outputCurrency=${tokenContarctAddresses.bsc.DEFLY}&inputCurrency=BNB`,
+      info: "https://coinmarketcap.com/currencies/deflyball/",
+    },
+    97: {
       buy: `https://pancakeswap.finance/swap#/swap?outputCurrency=${tokenContarctAddresses.bsc.DEFLY}&inputCurrency=BNB`,
       info: "https://coinmarketcap.com/currencies/deflyball/",
     },
   },
   AOG: {
-    bsc: {
+    56: {
+      buy: `https://pancakeswap.finance/swap#/swap?outputCurrency=${tokenContarctAddresses.bsc.AOG}&inputCurrency=BNB`,
+      info: "https://coinmarketcap.com/currencies/age-of-gods/",
+    },
+    97: {
       buy: `https://pancakeswap.finance/swap#/swap?outputCurrency=${tokenContarctAddresses.bsc.AOG}&inputCurrency=BNB`,
       info: "https://coinmarketcap.com/currencies/age-of-gods/",
     },
   },
   CFL365: {
-    ethereum: {
+    1: {
+      buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xcd6adc6b8bd396e2d53ccd7d7257b4de55be4fbe",
+      info: "https://www.coingecko.com/en/coins/cfl365-finance",
+    },
+    42: {
       buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0xcd6adc6b8bd396e2d53ccd7d7257b4de55be4fbe",
       info: "https://www.coingecko.com/en/coins/cfl365-finance",
     },
   },
   PUN: {
-    ethereum: {
+    1: {
+      buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x31903e333809897ee57af57567f4377a1a78756c",
+      info: "https://www.dextools.io/app/ether/pair-explorer/0xed1ba5252f94e029f41506adeaf90c459c0aca69",
+    },
+    42: {
       buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x31903e333809897ee57af57567f4377a1a78756c",
       info: "https://www.dextools.io/app/ether/pair-explorer/0xed1ba5252f94e029f41506adeaf90c459c0aca69",
     },
   },
   SHOE: {
-    ethereum: {
+    1: {
+      buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x0fd67b4ceb9b607ef206904ec73459c4880132c9",
+      info: "https://coinmarketcap.com/currencies/shoefy/ico/",
+    },
+    42: {
       buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x0fd67b4ceb9b607ef206904ec73459c4880132c9",
       info: "https://coinmarketcap.com/currencies/shoefy/ico/",
     },
   },
   LABS: {
-    ethereum: {
+    1: {
+      buy: `https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=${tokenContarctAddresses.ethereum.LABS}`,
+      info: "https://coinmarketcap.com/currencies/labs-group/",
+    },
+    42: {
       buy: `https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=${tokenContarctAddresses.ethereum.LABS}`,
       info: "https://coinmarketcap.com/currencies/labs-group/",
     },
   },
   WELT: {
-    matic: {
+    137: {
+      buy: `https://quickswap.exchange/#/swap?inputCurrency=MATIC&outputCurrency=${tokenContarctAddresses.matic.WELT}`,
+      info: "https://www.dextools.io/app/polygon/pair-explorer/0x55e49f32fbba12aa360eec55200dafd1ac47aaed",
+    },
+    80001: {
       buy: `https://quickswap.exchange/#/swap?inputCurrency=MATIC&outputCurrency=${tokenContarctAddresses.matic.WELT}`,
       info: "https://www.dextools.io/app/polygon/pair-explorer/0x55e49f32fbba12aa360eec55200dafd1ac47aaed",
     },
@@ -211,7 +327,7 @@ export const tokenInfo = {
 };
 
 //given token name and network, --> poolId
-export const poolId = {
+export const poolId: { [index: string]: number } = {
   PBR: 0,
   BITE: 1,
   CORGIB: 0,
@@ -363,17 +479,23 @@ export const claimTokens = "1";
 export const supportedNetworks = ["1", "56", "137"];
 
 export const supportedStaking = {
-  ethereum: [PBR, LABS],
-  bsc: [CORGIB, PWAR],
-  matic: [PBR],
-  harmony: [],
+  1: [PBR, LABS],
+  42: [PBR, LABS],
+  56: [CORGIB, PWAR],
+  97: [CORGIB, PWAR],
+  137: [PBR],
+  80001: [PBR],
 };
 
 export const unsupportedStaking = {
-  ethereum: ["PUN", "CFL365", "SHOE", "BITE"],
-  bsc: ["AOG", GRAV, DEFLY],
-  matic: [WELT],
-  harmony: [],
+  1: ["PUN", "CFL365", "SHOE", "BITE"],
+  43: ["PUN", "CFL365", "SHOE", "BITE"],
+  56: ["AOG", GRAV, DEFLY],
+  97: ["AOG", GRAV, DEFLY],
+  137: [WELT],
+  80001: [WELT],
+  1666600000: [],
+  1666700000: [],
 };
 
 export const minimumStakingAmount = {
@@ -391,9 +513,12 @@ export const minimumStakingAmount = {
 };
 
 export const ankrRpc = {
-  ethereum: "https://rpc.ankr.com/eth",
-  polygon: "https://rpc.ankr.com/polygon",
-  moonriver: "",
-  bsc: "https://rpc.ankr.com/bsc",
-  harmony: "",
+  1: "https://rpc.ankr.com/eth",
+  137: "https://rpc.ankr.com/polygon",
+  56: "https://rpc.ankr.com/bsc",
 };
+
+export const NetworkContextName = "NETWORK";
+
+export const TokenAllowanceAmount = "999999999";
+export const CorgibAllowanceAmount = "999999999999999999999999999999999999";

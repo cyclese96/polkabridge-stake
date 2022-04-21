@@ -1,7 +1,7 @@
 import { Button, makeStyles } from "@material-ui/core";
 import { AccountBalanceWallet } from "@material-ui/icons";
-import { useWeb3React } from "@web3-react/core";
-import { connect } from "react-redux";
+import React from "react";
+import useActiveWeb3React from "../hooks/useActiveWeb3React";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
     letterSpacing: 0.4,
     textTransform: "none",
     [theme.breakpoints.down("sm")]: {
-      width: 140,
+      width: 100,
     },
   },
   item: {
@@ -50,6 +50,16 @@ const useStyles = makeStyles((theme) => ({
   numbers: {
     color: "#eeeeee",
     fontSize: 14,
+    [theme.breakpoints.down("sm")]: {
+      display: "none",
+    },
+  },
+  numbersMobile: {
+    color: "#eeeeee",
+    fontSize: 14,
+    [theme.breakpoints.up("sm")]: {
+      display: "none",
+    },
   },
   networkIcon: {
     width: 25,
@@ -62,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Wallet = ({ onWalletClick }) => {
-  const { active, account } = useWeb3React();
+  const { active, account } = useActiveWeb3React();
 
   const classes = useStyles();
 
@@ -91,14 +101,15 @@ const Wallet = ({ onWalletClick }) => {
               4
             )}
           </strong>
+          <strong className={classes.numbersMobile}>
+            {account ? <span></span> : "..."}
+            {[...account?.toString()]?.splice(0, 3)}
+            {".."}
+          </strong>
         </Button>
       )}
     </div>
   );
 };
 
-const mapStateToProps = (state) => ({
-  account: state.account,
-});
-
-export default connect(mapStateToProps, {})(Wallet);
+export default React.memo(Wallet);

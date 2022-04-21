@@ -3,7 +3,6 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Avatar, Button, Card } from "@material-ui/core";
 import Loader from "./Loader";
 import { formatCurrency, formatLargeNumber } from "../utils/helper";
-import { maticNetwork } from "../constants";
 import { connect } from "react-redux";
 import { fetchPbrMarketData } from "../actions/stakeActions";
 
@@ -118,7 +117,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const PbrStatistics = ({
-  account: { currentAccount, currentNetwork },
+  account: { currentChain },
   stake: { pbrMarketData, poolLoading },
   fetchPbrMarketData,
 }) => {
@@ -162,7 +161,7 @@ const PbrStatistics = ({
             <a
               target="_blank"
               href={
-                currentNetwork === maticNetwork
+                currentChain === "137"
                   ? "https://quickswap.exchange/#/swap?inputCurrency=MATIC&outputCurrency=0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0"
                   : "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x298d492e8c1d909d3f63bc4a36c66c64acb3d695"
               }

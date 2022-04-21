@@ -1,5 +1,5 @@
 import { Button, Card, Divider, makeStyles } from "@material-ui/core";
-import React, { useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { BigNumber } from "bignumber.js";
 
 import CustomButton from "./CustomButton";
@@ -14,12 +14,10 @@ import {
   confirmAllowance,
   getUserStakedData,
   getPoolInfo,
-  unstakeTokens,
 } from "../actions/stakeActions";
 import { getAccountBalance } from "../actions/accountActions";
 import {
   claimTokens,
-  bscNetwork,
   poolId,
   unsupportedStaking,
   tokenInfo,
@@ -27,12 +25,19 @@ import {
   tokenName,
   LABS,
   CORGIB,
+  tokenAddresses,
+  STAKE_ADDRESSES,
 } from "../constants";
 import Loader from "./../common/Loader";
 import DotCircle from "./../common/DotCircle";
-import { useWeb3React } from "@web3-react/core";
-import { RESET_USER_STAKE } from "../actions/types";
-import store from "../store";
+import useActiveWeb3React from "../hooks/useActiveWeb3React";
+import { useTokenContract } from "../hooks/useContract";
+import { useTokenAllowance } from "hooks/useAllowance";
+import { usePoolStakedInfo } from "hooks/usePoolStakedInfo";
+import { useUserStakedInfo } from "hooks/useUserStakedInfo";
+import { useTokenPrice } from "hooks/useTokenPrice";
+import { useStakeCallback } from "hooks/useStakeCallback";
+import StakeDialog from "common/StakeDialog";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -242,74 +247,85 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Staking = ({
-  stake: { stake, pool, approved },
-  account: { currentAccount, currentNetwork, loading },
+  stake: { stake },
+  account: { currentChain },
   tokenType,
-  getUserStakedData,
   confirmAllowance,
-  getPoolInfo,
-  getAccountBalance,
-  unstakeTokens,
-  onStake,
-  onUnstake,
   stopped = false,
 }) => {
   const classes = useStyles();
-  const { active } = useWeb3React();
+  const { chainId, active, account } = useActiveWeb3React();
 
-  useEffect(async () => {
-    // if (!currentNetwork || !currentAccount) {
-    //   return
-    // }
+  const [dialog, setDialog] = React.useState({
+    open: false,
+    type: null,
+    tokenType: null,
+  });
 
-    const pid = poolId?.[tokenType];
-    await Promise.all([
-      getPoolInfo(tokenType, pid, currentAccount, currentNetwork),
-      getUserStakedData(tokenType, currentNetwork),
-    ]);
-  }, [currentAccount, currentNetwork]);
+  const onStake = (tokenType) => {
+    setDialog({ open: true, type: "stake", tokenType: tokenType });
+  };
 
-  useEffect(() => {
-    if (!active) {
-      store.dispatch({
-        type: RESET_USER_STAKE,
-      });
-    }
-  }, [active]);
+  const onUnStake = (tokenType) => {
+    setDialog({ open: true, type: "unstake", tokenType: tokenType });
+  };
 
-  const handleApprove = async (tokenType) => {
+  const handleClose = () => {
+    setDialog({ open: false, type: null });
+  };
+
+  const tokenContract = useTokenContract(
+    tokenAddresses?.[tokenType]?.[chainId]
+  );
+
+  const poolToken = useMemo(() => {
+    return {
+      symbol: tokenType,
+      address: tokenAddresses?.[tokenType]?.[chainId],
+    };
+  }, [tokenType, chainId]);
+
+  const currentTokenAllowance = useTokenAllowance(
+    poolToken,
+    account,
+    STAKE_ADDRESSES?.[chainId]
+  );
+
+  const poolStakedInfo = usePoolStakedInfo(
+    poolId?.[tokenType],
+    poolToken,
+    currentChain
+  );
+
+  const userStakedInfo = useUserStakedInfo(poolId?.[tokenType], account);
+
+  const handleApprove = useCallback(() => {
     const tokenWeiAmountToApprove =
-      currentNetwork === bscNetwork
+      tokenType === CORGIB
         ? "999999999999999999999999999999999999"
         : toWei("999999999");
-
-    await confirmAllowance(
+    confirmAllowance(
       tokenWeiAmountToApprove,
       tokenType,
-      currentNetwork,
-      currentAccount
+      tokenContract,
+      account,
+      chainId
     );
-    // alert(
-    //   `tokenType: ${tokenType}  currentNetwork: ${currentNetwork} tokenAmount:  ${tokenWeiAmountToApprove}`
-    // );
-    await getUserStakedData(tokenType, currentNetwork);
-  };
+  }, [tokenContract, chainId]);
+
+  const poolTokenPrice = useTokenPrice(poolToken);
+
+  const [transactionStatus, stakeTokens, unstakeTokens] =
+    useStakeCallback(tokenType);
+
+  useEffect(() => {
+    console.log("stake transaction update ", transactionStatus);
+  }, [transactionStatus]);
 
   const handleClaim = async (tokenType) => {
     const tokensToClaim = claimTokens;
 
-    await unstakeTokens(
-      tokensToClaim,
-      currentAccount,
-      tokenType,
-      currentNetwork
-    );
-
-    const pid = poolId?.[tokenType];
-    await Promise.all([
-      getPoolInfo(tokenType, pid, currentAccount, currentNetwork),
-      getAccountBalance(currentNetwork),
-    ]);
+    await unstakeTokens(tokensToClaim, poolId?.[tokenType]);
   };
 
   const currentAmount = (tokenType) => {
@@ -324,13 +340,13 @@ const Staking = ({
     return currentAmount(_tokenType) == 0;
   };
 
-  const stakeDisableStatus = (_tokenType) => {
-    if (unsupportedStaking?.[currentNetwork]?.includes(_tokenType)) {
+  const stakeDisableStatus = useMemo(() => {
+    if (unsupportedStaking?.[chainId]?.includes(tokenType)) {
       return true;
     }
 
     return false;
-  };
+  }, [tokenType, chainId]);
 
   const withdrawDisableStatus = (_tokenType) => {
     return false;
@@ -341,32 +357,30 @@ const Staking = ({
   };
 
   const totalValueLocked = useMemo(() => {
-    if (!pool?.[tokenType]) {
-      return "0";
-    }
-
-    if (tokenType === CORGIB) {
-      const _locked = new BigNumber(
-        fromWei(pool?.[tokenType]?.totalTokenStaked)
-      )
-        .multipliedBy(pool?.[tokenType]?.tokenPriceCorgib)
-        .toString();
-    }
     return formatLargeNumber(
-      new BigNumber(fromWei(pool?.[tokenType]?.totalTokenStaked))
-        .multipliedBy(pool?.[tokenType]?.tokenPrice)
+      new BigNumber(fromWei(poolStakedInfo?.staked))
+        .multipliedBy(poolTokenPrice ? poolTokenPrice : 0)
         .toString()
     );
-  }, [pool, tokenType]);
+  }, [poolStakedInfo, poolTokenPrice]);
 
   return (
     <Card elevation={10} className={classes.card}>
-      {loading[tokenType] && (
+      <StakeDialog
+        open={dialog.open}
+        type={dialog.type}
+        tokenType={dialog.tokenType}
+        handleClose={handleClose}
+        stakeTokens={stakeTokens}
+        unstakeTokens={unstakeTokens}
+        transactionStatus={transactionStatus}
+      />
+      {transactionStatus?.status === "pending" && (
         <div className="text-center">
           <Loader height={300} />
         </div>
       )}
-      {!loading[tokenType] && (
+      {transactionStatus?.status !== "pending" && (
         <div style={{ width: "100%" }}>
           <div className="d-flex justify-content-center align-items-center pt-2 pb-1">
             <img className={classes.avatar} src={tokenLogo[tokenType]} />
@@ -404,18 +418,12 @@ const Staking = ({
                 </Button>
               </a>
             )}
-            <a
-              href={tokenInfo?.[tokenType]?.[currentNetwork]?.buy}
-              target="_blank"
-            >
+            <a href={tokenInfo?.[tokenType]?.[chainId]?.buy} target="_blank">
               <Button variant="contained" className={classes.borderButton}>
                 Buy
               </Button>
             </a>
-            <a
-              href={tokenInfo?.[tokenType]?.[currentNetwork]?.info}
-              target="_blank"
-            >
+            <a href={tokenInfo?.[tokenType]?.[chainId]?.info} target="_blank">
               <Button variant="contained" className={classes.borderButton}>
                 Info
               </Button>
@@ -430,7 +438,7 @@ const Staking = ({
                   </div>
                 </div>
                 <div className={classes.tokenAmount}>
-                  {formatCurrency(pool?.[tokenType]?.apy, false, 1, true)}%
+                  {formatCurrency(poolStakedInfo?.apy, false, 1, true)}%
                 </div>
               </div>
               <div className="d-flex justify-content-between mt-2">
@@ -440,10 +448,7 @@ const Staking = ({
                   </div>
                 </div>
                 <div className={classes.tokenAmount}>
-                  {getCurrencyFormatForToken(
-                    tokenType,
-                    pool[tokenType] ? pool[tokenType].totalTokenStaked : "0"
-                  )}
+                  {formatLargeNumber(fromWei(poolStakedInfo?.staked))}
                 </div>
               </div>
               <div className="d-flex justify-content-between mt-2">
@@ -453,11 +458,7 @@ const Staking = ({
                   </div>
                 </div>
                 <div className={classes.tokenAmount}>
-                  {formatLargeNumber(
-                    fromWei(
-                      pool[tokenType] ? pool[tokenType].totalTokenClaimed : "0"
-                    )
-                  )}
+                  {formatLargeNumber(fromWei(poolStakedInfo?.claimed))}
                 </div>
               </div>
               <div className="d-flex justify-content-center my-4">
@@ -483,12 +484,12 @@ const Staking = ({
                   {" "}
                   {tokenType === "PWAR"
                     ? formatCurrency(
-                        fromWei(stake?.[tokenType]?.amount),
+                        fromWei(userStakedInfo?.staked),
                         false,
                         1,
                         true
                       )
-                    : formatCurrency(fromWei(stake?.[tokenType]?.amount))}{" "}
+                    : formatCurrency(fromWei(userStakedInfo?.staked))}{" "}
                 </div>
               </div>
               <div className="text-center mt-4">
@@ -497,14 +498,12 @@ const Staking = ({
                   {" "}
                   {tokenType === "PWAR"
                     ? formatCurrency(
-                        fromWei(stake?.[tokenType]?.rewardClaimed),
+                        fromWei(userStakedInfo?.claimed),
                         false,
                         1,
                         true
                       )
-                    : formatCurrency(
-                        fromWei(stake?.[tokenType]?.rewardClaimed)
-                      )}{" "}
+                    : formatCurrency(fromWei(userStakedInfo?.claimed))}{" "}
                 </div>
               </div>
               <div className="text-center mt-4">
@@ -513,14 +512,12 @@ const Staking = ({
                   {" "}
                   {tokenType === "PWAR"
                     ? formatCurrency(
-                        fromWei(stake?.[tokenType]?.pendingReward),
+                        fromWei(userStakedInfo?.pending),
                         false,
                         1,
                         true
                       )
-                    : formatCurrency(
-                        fromWei(stake?.[tokenType]?.pendingReward)
-                      )}{" "}
+                    : formatCurrency(fromWei(userStakedInfo?.pending))}{" "}
                 </div>
               </div>
             </div>
@@ -532,7 +529,7 @@ const Staking = ({
                 <p className={classes.hint}>Connect wallet</p>
               </div>
             )}
-            {active && !approved?.[tokenType] && (
+            {active && !currentTokenAllowance && (
               <div className="text-center">
                 <CustomButton
                   disabled={approveDisableStatus(tokenType)}
@@ -548,7 +545,7 @@ const Staking = ({
                 </p>
               </div>
             )}
-            {active && approved?.[tokenType] && (
+            {active && currentTokenAllowance && (
               <div className={classes.stakeButtons}>
                 <CustomButton
                   hidden={stopped}
@@ -559,7 +556,7 @@ const Staking = ({
                 </CustomButton>
 
                 <CustomButton
-                  disabled={stakeDisableStatus(tokenType)}
+                  disabled={stakeDisableStatus}
                   hidden={stopped}
                   onClick={() => onStake(tokenType)}
                 >
@@ -567,7 +564,7 @@ const Staking = ({
                 </CustomButton>
                 <CustomButton
                   disabled={withdrawDisableStatus(tokenType)}
-                  onClick={() => onUnstake(tokenType)}
+                  onClick={() => onUnStake(tokenType)}
                   variant="light"
                 >
                   Unstake
@@ -591,5 +588,4 @@ export default connect(mapStateToProps, {
   confirmAllowance,
   getPoolInfo,
   getAccountBalance,
-  unstakeTokens,
-})(React.memo(Staking));
+})(Staking);

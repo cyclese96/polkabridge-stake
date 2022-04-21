@@ -1,22 +1,18 @@
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import React, { useEffect, useMemo } from "react";
 import SingleStakeCard from "../components/SingleStakeCard";
-import StakeDialog from "../common/StakeDialog";
 import Navbar from "../common/Navbar";
 import Footer from "../common/Footer";
-
 import Wallet from "../common/Wallet";
-import PropTypes from "prop-types";
-import { getAccountBalance } from "../actions/accountActions";
 import { connect } from "react-redux";
-
 import { supportedStaking, unsupportedStaking } from "../constants";
 import { CHANGE_NETWORK, CONNECT_WALLET } from "../actions/types";
 import store from "../store";
 import BalanceCard from "../common/BalanceCard";
 import PbrStatistics from "../common/PbrStatistics";
-import { useWeb3React } from "@web3-react/core";
 import { getCurrentNetworkName } from "../utils/helper";
+import useActiveWeb3React from "../hooks/useActiveWeb3React";
+import { useStakeContract } from "hooks/useContract";
 
 const useStyles = makeStyles((theme) => ({
   background: {
@@ -135,42 +131,29 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Home = ({
-  account: { connected, currentNetwork, error, loading },
-  getAccountBalance,
-}) => {
+const Home = ({ account: { error, currentChain } }) => {
   const classes = useStyles();
-  const [dialog, setDialog] = React.useState({
-    open: false,
-    type: null,
-    tokenType: null,
-  });
 
-  const { active, account, chainId } = useWeb3React();
+  const { active, account, chainId } = useActiveWeb3React();
 
-  const onStake = (tokenType) => {
-    setDialog({ open: true, type: "stake", tokenType: tokenType });
-  };
-
-  const onUnStake = (tokenType) => {
-    setDialog({ open: true, type: "unstake", tokenType: tokenType });
-  };
-
-  const handleClose = () => {
-    setDialog({ open: false, type: null });
-  };
+  const stakeContract = useStakeContract();
 
   useEffect(() => {
     if (!chainId || !active) {
-      if (localStorage.currentNetwork) {
-        console.log("currenNetwork", localStorage.currentNetwork);
-        const _network = getCurrentNetworkName(chainId);
+      // check if there is existing cached selected network other wise select ethereum chain by default
 
-        store.dispatch({
-          type: CHANGE_NETWORK,
-          payload: _network,
-        });
+      const cachedChain = localStorage.getItem("cachedChain");
+      if (!cachedChain) {
+        localStorage.setItem("cachedChain", 1);
       }
+
+      const _network = getCurrentNetworkName(cachedChain || 1);
+      console.log("setting cached chain to select chain id ", cachedChain || 1);
+
+      store.dispatch({
+        type: CHANGE_NETWORK,
+        payload: { network: _network, chain: cachedChain || 1 },
+      });
 
       return;
     }
@@ -183,10 +166,8 @@ const Home = ({
     });
     store.dispatch({
       type: CHANGE_NETWORK,
-      payload: _network,
+      payload: { network: _network, chain: chainId },
     });
-
-    getAccountBalance(account, _network);
   }, [chainId, active, account]);
 
   useEffect(() => {
@@ -209,8 +190,20 @@ const Home = ({
   }, []);
 
   useEffect(() => {
-    console.log("current network ", currentNetwork);
-  }, [currentNetwork]);
+    if (!currentChain) {
+      return;
+    }
+    console.log("chain changed ", currentChain);
+    const cachedChain = localStorage.getItem("cachedChain");
+
+    if (cachedChain && currentChain?.toString() !== cachedChain) {
+      localStorage.setItem("cachedChain", currentChain?.toString());
+
+      window.location.reload();
+    } else if (!cachedChain) {
+      localStorage.setItem("cachedChain", currentChain?.toString());
+    }
+  }, [currentChain]);
 
   useEffect(() => {
     if (JSON.stringify(error).includes("-32000")) {
@@ -223,12 +216,22 @@ const Home = ({
   }, [JSON.stringify(error)]);
 
   const supportedStakingPools = useMemo(
-    () => supportedStaking[currentNetwork],
-    [currentNetwork]
+    () =>
+      Object.keys(supportedStaking).includes(currentChain?.toString())
+        ? supportedStaking?.[currentChain]
+        : !currentChain
+        ? supportedStaking[1]
+        : [],
+    [currentChain]
   );
   const unSupportedStakingPools = useMemo(
-    () => unsupportedStaking[currentNetwork],
-    [currentNetwork]
+    () =>
+      Object.keys(unsupportedStaking).includes(currentChain?.toString())
+        ? unsupportedStaking?.[currentChain]
+        : !currentChain
+        ? unsupportedStaking[1]
+        : [],
+    [currentChain]
   );
 
   return (
@@ -246,12 +249,12 @@ const Home = ({
             </div>
             <div className="col-md-4">
               <div>
-                <BalanceCard tokens={supportedStaking[currentNetwork]} />
+                <BalanceCard tokens={supportedStaking[chainId]} />
               </div>
             </div>
           </div>
 
-          {!connected && !loading && (
+          {!active && (
             <div className={classes.cardsContainer2}>
               <Wallet />
               <p className={classes.subheading}>
@@ -276,11 +279,7 @@ const Home = ({
                   {supportedStakingPools.map((token) => (
                     <div className="col-md-4">
                       <div className={classes.card}>
-                        <SingleStakeCard
-                          onStake={onStake}
-                          onUnstake={onUnStake}
-                          tokenType={token}
-                        />
+                        <SingleStakeCard tokenType={token} />
                       </div>
                     </div>
                   ))}
@@ -303,12 +302,7 @@ const Home = ({
                   {unSupportedStakingPools.map((token) => (
                     <div className="col-md-4 mt-3">
                       <div className={classes.card}>
-                        <SingleStakeCard
-                          onStake={onStake}
-                          onUnstake={onUnStake}
-                          tokenType={token}
-                          stopped={true}
-                        />
+                        <SingleStakeCard tokenType={token} stopped={true} />
                       </div>
                     </div>
                   ))}
@@ -316,13 +310,6 @@ const Home = ({
               )}
             </div>
           }
-
-          <StakeDialog
-            open={dialog.open}
-            type={dialog.type}
-            tokenType={dialog.tokenType}
-            handleClose={handleClose}
-          />
         </div>
 
         <div className="d-flex justify-content-center pb-3">
@@ -333,15 +320,8 @@ const Home = ({
   );
 };
 
-Home.propTypes = {
-  connectWallet: PropTypes.func.isRequired,
-  account: PropTypes.object.isRequired,
-};
-
 const mapStateToProps = (state) => ({
   account: state.account,
 });
 
-export default connect(mapStateToProps, {
-  getAccountBalance,
-})(Home);
+export default connect(mapStateToProps, {})(Home);

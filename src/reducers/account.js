@@ -17,6 +17,7 @@ const initalState = {
   error: null,
   loading: {},
   currentNetwork: etheriumNetwork,
+  currentChain: null,
 };
 
 export default function (state = initalState, action) {
@@ -58,7 +59,8 @@ export default function (state = initalState, action) {
     case CHANGE_NETWORK:
       return {
         ...state,
-        currentNetwork: action.payload,
+        currentNetwork: action.payload.network,
+        currentChain: action.payload.chain,
       };
     case HIDE_LOADING:
       return {

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -14,16 +14,11 @@ import {
   isNumber,
   resetCurrencyFormatting,
 } from "../utils/helper";
-import { connect } from "react-redux";
-import {
-  getPoolInfo,
-  stakeTokens,
-  unstakeTokens,
-  getUserStakedData,
-} from "../actions/stakeActions";
-import { getAccountBalance } from "../actions/accountActions";
-import { minimumStakingAmount, poolId } from "../constants";
+import { minimumStakingAmount, poolId, tokenAddresses } from "../constants";
 import BigNumber from "bignumber.js";
+import useActiveWeb3React from "../hooks/useActiveWeb3React";
+import { useTokenBalance } from "hooks/useBalance";
+import { useUserStakedInfo } from "hooks/useUserStakedInfo";
 
 const styles = (theme) => ({
   root: {
@@ -156,22 +151,30 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const StakeDialog = ({
-  account: { currentAccount, currentNetwork, balance, loading },
-  stake: { stake },
-  stakeTokens,
-  unstakeTokens,
-  getAccountBalance,
-  getUserStakedData,
-  getPoolInfo,
   open,
   handleClose,
   type,
   tokenType,
+  stakeTokens,
+  unstakeTokens,
+  transactionStatus,
 }) => {
   const classes = useStyles();
   const [inputTokens, setTokenValue] = useState("");
-  const [formattedInputTokens, setFormattedValue] = useState("");
+  // const [formattedInputTokens, setFormattedValue] = useState("");
   const [error, setError] = useState({ status: false, message: "" });
+  const { account, chainId } = useActiveWeb3React();
+
+  const poolToken = useMemo(() => {
+    return {
+      symbol: tokenType,
+      address: tokenAddresses?.[tokenType]?.[chainId],
+    };
+  }, [tokenType, chainId]);
+
+  const userStakedInfo = useUserStakedInfo(poolId?.[tokenType], account);
+
+  const poolTokenBalance = useTokenBalance(account, poolToken);
 
   const handleInputChange = (e) => {
     if (
@@ -190,8 +193,8 @@ const StakeDialog = ({
 
   const onConfirm = async () => {
     let enteredTokens = inputTokens;
-    const stakedTokens = parseFloat(fromWei(stake[tokenType].amount));
-    const balanceTokens = parseFloat(fromWei(balance[tokenType]));
+    const stakedTokens = fromWei(userStakedInfo?.staked)?.toString();
+    const balanceTokens = fromWei(poolTokenBalance)?.toString();
 
     if (enteredTokens === "" || new BigNumber(enteredTokens).eq(0)) {
       setError({
@@ -234,46 +237,22 @@ const StakeDialog = ({
     setError({});
 
     if (type === "stake") {
-      // console.log('staking tokens', { inputTokens, currentAccount, tokenType, currentNetwork })
-
-      if (
-        parseFloat(enteredTokens) === parseFloat(fromWei(balance[tokenType]))
-      ) {
-        // console.log("max ");
+      if (parseFloat(enteredTokens) === parseFloat(fromWei(balanceTokens))) {
         enteredTokens -= 1;
       }
 
-      // console.log({
-      //   entered: enteredTokens,
-      //   input: inputTokens,
-      //   bal: parseFloat(fromWei(balance[tokenType])),
-      // });
-      await stakeTokens(
-        enteredTokens.toString(),
-        currentAccount,
-        tokenType,
-        currentNetwork
-      );
+      await stakeTokens(enteredTokens.toString(), poolId?.[tokenType]);
     } else {
-      await unstakeTokens(
-        inputTokens,
-        currentAccount,
-        tokenType,
-        currentNetwork
-      );
+      await unstakeTokens(enteredTokens?.toString(), poolId?.[tokenType]);
     }
     handleClose();
-    const pid = poolId?.[tokenType];
-    getPoolInfo(tokenType, pid, currentAccount, currentNetwork);
-    getAccountBalance(currentNetwork);
-    getUserStakedData(tokenType, currentNetwork);
   };
 
   const handleMax = () => {
     if (type === "stake") {
-      setTokenValue(fromWei(balance[tokenType]));
+      setTokenValue(fromWei(poolTokenBalance));
     } else {
-      setTokenValue(fromWei(stake[tokenType].amount));
+      setTokenValue(fromWei(userStakedInfo?.staked));
     }
   };
 
@@ -285,30 +264,22 @@ const StakeDialog = ({
 
   const currentFormattedBalance = () => {
     if (tokenType === "PWAR") {
-      return formatCurrency(fromWei(balance[tokenType]), false, 1, true);
+      return formatCurrency(fromWei(poolTokenBalance), false, 1, true);
     }
 
-    return formatCurrency(fromWei(balance[tokenType]));
+    return formatCurrency(fromWei(poolTokenBalance));
   };
 
   const currentFormattedStakedBal = () => {
     if (tokenType === "PWAR") {
-      return formatCurrency(
-        fromWei(stake[tokenType] ? stake[tokenType].amount : 0),
-        false,
-        1,
-        true
-      );
+      return formatCurrency(fromWei(userStakedInfo?.staked), false, 1, true);
     }
 
-    return formatCurrency(
-      fromWei(stake[tokenType] ? stake[tokenType].amount : 0)
-    );
+    return formatCurrency(fromWei(userStakedInfo?.staked));
   };
   return (
     <div>
       <Dialog
-        // onClose={onClose}
         onExited={onClose}
         open={open}
         disableBackdropClick
@@ -337,31 +308,11 @@ const StakeDialog = ({
               value={
                 inputTokens ? formatCurrency(inputTokens, false, 0, true) : ""
               }
-              // name={[pbrTokens]}
               onChange={handleInputChange}
               label={`Enter ${tokenType} tokens`}
               className={classes.input}
             />
-            {/* <TextField
-              InputProps={{
-                classes: {
-                  root: classes.cssOutlinedInput,
-                  focused: classes.cssFocused,
-                  notchedOutline: classes.notchedOutline,
-                },
-              }}
-              InputLabelProps={{
-                classes: {
-                  root: classes.cssInputLabel,
-                  focused: classes.cssInputFocused,
-                },
-              }}
-              className={classes.input}
-              id="outlined-basic"
-              variant="outlined"
-             
-              focused={true}
-            /> */}
+
             <Button className={classes.maxBtn} onClick={handleMax}>
               Max
             </Button>
@@ -372,8 +323,12 @@ const StakeDialog = ({
             ""
           )}
           <div className={classes.buttons}>
-            {loading[tokenType] ? (
-              <CircularProgress className={classes.numbers} />
+            {transactionStatus?.status &&
+            transactionStatus?.status === "waiting" ? (
+              <div className="text-center">
+                <CircularProgress className={classes.numbers} />
+                <p className={classes.subheading}>Waiting for confirmation</p>
+              </div>
             ) : (
               <>
                 <CustomButton variant="light" onClick={onClose}>
@@ -389,15 +344,4 @@ const StakeDialog = ({
   );
 };
 
-const mapStateToProps = (state) => ({
-  stake: state.stake,
-  account: state.account,
-});
-
-export default connect(mapStateToProps, {
-  stakeTokens,
-  unstakeTokens,
-  getAccountBalance,
-  getPoolInfo,
-  getUserStakedData,
-})(StakeDialog);
+export default StakeDialog;

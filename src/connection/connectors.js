@@ -1,18 +1,18 @@
 import { UAuthConnector } from "@uauth/web3-react";
 // import { AbstractConnector } from '@web3-react/abstract-connector'
 import { InjectedConnector } from "@web3-react/injected-connector";
-import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
-import { ankrRpc, supportedChainIds } from "../constants";
+import { WalletConnectConnector } from "web3-react-walletconnect-connector";
+import { ALL_SUPPORTED_CHAIN_IDS } from "../utils/chains";
+import { INFURA_NETWORK_URLS } from "../utils/infura";
 
 // Instanciate your other connectors.
 export const injected = new InjectedConnector({
-  supportedChainIds: supportedChainIds,
+  supportedChainIds: ALL_SUPPORTED_CHAIN_IDS,
 });
 
 export const walletconnect = new WalletConnectConnector({
-  supportedChainIds: supportedChainIds,
-  infuraId: ankrRpc.ethereum,
-  // rpc: { 1: process.env.REACT_APP_INFURA_ID },
+  supportedChainIds: ALL_SUPPORTED_CHAIN_IDS,
+  rpc: INFURA_NETWORK_URLS,
   qrcode: true,
 });
 

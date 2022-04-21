@@ -5,12 +5,19 @@ import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import CustomButton from "../components/CustomButton";
 import { FileCopy } from "@material-ui/icons";
-import { tokenName, tokenLogo, supportedStaking, CORGIB } from "../constants";
+import {
+  tokenName,
+  tokenLogo,
+  supportedStaking,
+  CORGIB,
+  tokenAddresses,
+} from "../constants";
 import { formatCurrency, fromWei } from "../utils/helper";
 import { connect } from "react-redux";
 import { logout } from "../actions/accountActions";
 import { Card } from "@material-ui/core";
-import { useWeb3React } from "@web3-react/core";
+import useActiveWeb3React from "../hooks/useActiveWeb3React";
+import { useCurrencyBalances } from "hooks/useBalance";
 
 const useStyles = makeStyles((theme) => ({
   background: {
@@ -144,29 +151,23 @@ const AccountDialog = ({
   handleClose,
   handleLogout,
   handleConnection,
-  account: { currentAccount, balance, currentNetwork },
 }) => {
   const classes = useStyles();
 
+  const { active, chainId, account } = useActiveWeb3React();
+
   const onSingOut = () => {
-    localStorage.setItem(`logout${currentAccount}`, currentAccount);
+    localStorage.setItem(`logout${account}`, account);
     handleLogout();
     handleClose();
   };
 
-  const { active } = useWeb3React();
-
-  const balanceTokens = useMemo(() => {
-    return supportedStaking?.[currentNetwork].map((_token) => {
-      return {
-        coin: _token,
-        balance:
-          _token !== CORGIB
-            ? formatCurrency(fromWei(balance?.[_token]), false, 1, true)
-            : formatCurrency(fromWei(balance?.[_token])),
-      };
+  const tokens = useMemo(() => {
+    return supportedStaking?.[chainId]?.map((_symbol) => {
+      return { symbol: _symbol, address: tokenAddresses?.[_symbol]?.[chainId] };
     });
-  }, [currentNetwork, balance]);
+  }, [chainId]);
+  const balances = useCurrencyBalances(account, tokens);
 
   return (
     <div>
@@ -198,18 +199,13 @@ const AccountDialog = ({
                 }}
               >
                 <h6 htmlFor="username" className={classes.subheading}>
-                  {[...currentAccount].splice(0, 7)} {"..."}
-                  {[...currentAccount].splice(
-                    [...currentAccount].length - 7,
-                    7
-                  )}
+                  {[...account].splice(0, 7)} {"..."}
+                  {[...account].splice([...account].length - 7, 7)}
                   <IconButton style={{ padding: 0 }}>
                     {" "}
                     <FileCopy
                       className={classes.copyIcon}
-                      onClick={() =>
-                        navigator.clipboard.writeText(currentAccount)
-                      }
+                      onClick={() => navigator.clipboard.writeText(account)}
                     />
                   </IconButton>
                 </h6>
@@ -217,24 +213,35 @@ const AccountDialog = ({
             </div>
 
             <div style={{ width: "100%", paddingLeft: 20, paddingRight: 20 }}>
-              {balanceTokens?.map(function (coinObj, index) {
+              {tokens?.map(function (token, index) {
                 return (
                   <div className="d-flex justify-content-between mt-4">
                     <div className="d-flex justify-content-start">
                       <div className={classes.logoWrapper}>
                         <img
-                          src={tokenLogo?.[coinObj.coin]}
+                          src={tokenLogo?.[token?.symbol]}
                           className={classes.logo}
                         />
                       </div>
                       <div>
-                        <div className={classes.tokenTitle}>{coinObj.coin}</div>
+                        <div className={classes.tokenTitle}>
+                          {token?.symbol}
+                        </div>
                         <div className={classes.tokenSubtitle}>
-                          {tokenName?.[coinObj.coin]}
+                          {tokenName?.[token?.symbol]}
                         </div>
                       </div>
                     </div>
-                    <div className={classes.tokenAmount}>{coinObj.balance}</div>
+                    <div className={classes.tokenAmount}>
+                      {token?.symbol === CORGIB
+                        ? formatCurrency(fromWei(balances?.[index]))
+                        : formatCurrency(
+                            fromWei(balances?.[index]),
+                            false,
+                            1,
+                            true
+                          )}
+                    </div>
                   </div>
                 );
               })}

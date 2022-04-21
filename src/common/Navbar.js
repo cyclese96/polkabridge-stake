@@ -15,15 +15,14 @@ import PeopleAltOutlined from "@material-ui/icons/PeopleAltOutlined";
 import FlareOutlined from "@material-ui/icons/FlareOutlined";
 import TouchAppOutlined from "@material-ui/icons/TouchAppOutlined";
 import VpnLockOutlined from "@material-ui/icons/VpnLockOutlined";
-import CategoryIcon from "@material-ui/icons/Category";
 import { EqualizerOutlined } from "@material-ui/icons";
 import Wallet from "./Wallet";
 import AccountDialog from "./AccountDialog";
 import DotCircle from "./DotCircle";
 import NetworkSelect from "./NetworkSelect";
-import { useWeb3React } from "@web3-react/core";
 import connectors from "../connection/connectors";
-import { WalletConnectConnector } from "@web3-react/walletconnect-connector";
+import { WalletConnectConnector } from "web3-react-walletconnect-connector";
+import useActiveWeb3React from "../hooks/useActiveWeb3React";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -219,7 +218,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Navbar = ({ currentNetwork, chainId }) => {
+const Navbar = ({ chainId }) => {
   const classes = useStyles();
 
   const [state, setState] = React.useState({
@@ -232,7 +231,7 @@ const Navbar = ({ currentNetwork, chainId }) => {
     setState({ ...state, [anchor]: open });
   };
 
-  const { active, account, activate, deactivate } = useWeb3React();
+  const { active, account, activate, deactivate } = useActiveWeb3React();
 
   const createConnectHandler = async (connector) => {
     try {
@@ -262,23 +261,27 @@ const Navbar = ({ currentNetwork, chainId }) => {
   };
 
   const handleWalletConnect = (connectorType = "injected") => {
-    let connector;
-    if (connectorType === "injected") {
-      connector = connectors.injected;
-    } else if (connectorType === "walletConnect") {
-      connector = connectors.walletconnect;
-    } else if (connectorType === "unstoppable") {
-      connector = connectors.uauth;
-    } else {
-      connector = connectors.injected;
-    }
+    try {
+      let connector;
+      if (connectorType === "injected") {
+        connector = connectors.injected;
+      } else if (connectorType === "walletConnect") {
+        connector = connectors.walletconnect;
+      } else if (connectorType === "unstoppable") {
+        connector = connectors.uauth;
+      } else {
+        connector = connectors.injected;
+      }
 
-    createConnectHandler(connector);
-    setAccountDialog(false);
+      createConnectHandler(connector);
+      setAccountDialog(false);
+    } catch (error) {}
   };
 
   const handleWalletClick = () => {
-    setAccountDialog(true);
+    try {
+      setAccountDialog(true);
+    } catch (error) {}
   };
 
   const list = (anchor) => (
@@ -336,7 +339,7 @@ const Navbar = ({ currentNetwork, chainId }) => {
         ))}
         <Divider />
         <ListItem button style={{ marginLeft: 10 }}>
-          <Wallet onWalletClick={handleWalletClick} />
+          {/* <Wallet onWalletClick={handleWalletClick} /> */}
         </ListItem>
         <ListItem button style={{ marginLeft: 10, marginTop: 10 }}>
           {<NetworkSelect />}
@@ -418,10 +421,6 @@ const Navbar = ({ currentNetwork, chainId }) => {
             </a>
           </div>
 
-
-
-
-
           <div className={classes.grow} />
           <div>{<NetworkSelect selectedNetwork={chainId} />}</div>
           <Wallet onWalletClick={handleWalletClick} />
@@ -434,6 +433,9 @@ const Navbar = ({ currentNetwork, chainId }) => {
               src="img/logo-white.png"
               style={{ height: 38, width: 150 }}
             />
+          </div>
+          <div style={{ marginTop: 10 }}>
+            <Wallet onWalletClick={handleWalletClick} />
           </div>
 
           <div>
