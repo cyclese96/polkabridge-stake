@@ -193,8 +193,8 @@ const StakeDialog = ({
 
   const onConfirm = async () => {
     let enteredTokens = inputTokens;
-    const stakedTokens = parseFloat(fromWei(userStakedInfo?.staked));
-    const balanceTokens = parseFloat(fromWei(poolTokenBalance));
+    const stakedTokens = fromWei(userStakedInfo?.staked)?.toString();
+    const balanceTokens = fromWei(poolTokenBalance)?.toString();
 
     if (enteredTokens === "" || new BigNumber(enteredTokens).eq(0)) {
       setError({

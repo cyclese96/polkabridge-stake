@@ -1,12 +1,9 @@
 import makeStyles from "@material-ui/core/styles/makeStyles";
 import React, { useEffect, useMemo } from "react";
 import SingleStakeCard from "../components/SingleStakeCard";
-import StakeDialog from "../common/StakeDialog";
 import Navbar from "../common/Navbar";
 import Footer from "../common/Footer";
 import Wallet from "../common/Wallet";
-import PropTypes from "prop-types";
-import { getAccountBalance } from "../actions/accountActions";
 import { connect } from "react-redux";
 import { supportedStaking, unsupportedStaking } from "../constants";
 import { CHANGE_NETWORK, CONNECT_WALLET } from "../actions/types";
@@ -134,30 +131,10 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Home = ({
-  account: { connected, error, loading, currentChain },
-  getAccountBalance,
-}) => {
+const Home = ({ account: { error, currentChain } }) => {
   const classes = useStyles();
-  const [dialog, setDialog] = React.useState({
-    open: false,
-    type: null,
-    tokenType: null,
-  });
 
   const { active, account, chainId } = useActiveWeb3React();
-
-  const onStake = (tokenType) => {
-    setDialog({ open: true, type: "stake", tokenType: tokenType });
-  };
-
-  const onUnStake = (tokenType) => {
-    setDialog({ open: true, type: "unstake", tokenType: tokenType });
-  };
-
-  const handleClose = () => {
-    setDialog({ open: false, type: null });
-  };
 
   const stakeContract = useStakeContract();
 
@@ -191,8 +168,6 @@ const Home = ({
       type: CHANGE_NETWORK,
       payload: { network: _network, chain: chainId },
     });
-
-    getAccountBalance(account, _network);
   }, [chainId, active, account]);
 
   useEffect(() => {
@@ -279,7 +254,7 @@ const Home = ({
             </div>
           </div>
 
-          {!connected && !loading && (
+          {!active && (
             <div className={classes.cardsContainer2}>
               <Wallet />
               <p className={classes.subheading}>
@@ -327,13 +302,7 @@ const Home = ({
                   {unSupportedStakingPools.map((token) => (
                     <div className="col-md-4 mt-3">
                       <div className={classes.card}>
-                        <SingleStakeCard
-                          // onStake={onStake}
-                          // onUnstake={onUnStake}
-                          tokenType={token}
-                          stopped={true}
-                          stakeContract={stakeContract}
-                        />
+                        <SingleStakeCard tokenType={token} stopped={true} />
                       </div>
                     </div>
                   ))}
@@ -341,14 +310,6 @@ const Home = ({
               )}
             </div>
           }
-
-          {/* <StakeDialog
-            open={dialog.open}
-            type={dialog.type}
-            tokenType={dialog.tokenType}
-            handleClose={handleClose}
-            stakeContract={stakeContract}
-          /> */}
         </div>
 
         <div className="d-flex justify-content-center pb-3">
@@ -359,15 +320,8 @@ const Home = ({
   );
 };
 
-Home.propTypes = {
-  connectWallet: PropTypes.func.isRequired,
-  account: PropTypes.object.isRequired,
-};
-
 const mapStateToProps = (state) => ({
   account: state.account,
 });
 
-export default connect(mapStateToProps, {
-  getAccountBalance,
-})(Home);
+export default connect(mapStateToProps, {})(Home);

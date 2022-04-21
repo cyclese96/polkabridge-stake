@@ -12,21 +12,34 @@ import {
 } from "../constants";
 import config from "./config";
 
-export const fromWei = (tokens) => {
-  const web3 = new Web3(window?.ethereum);
-  if (!tokens) {
-    return web3.utils.fromWei("0", "ether");
+export const fromWei = (tokens, decimals = 18) => {
+  try {
+    if (!tokens) {
+      return new BigNumber(0).toString();
+    }
+
+    return new BigNumber(tokens)
+      .div(new BigNumber(10).exponentiatedBy(decimals))
+      .toString();
+  } catch (error) {
+    console.log("exeption in fromWei ", error);
+    return null;
   }
-  let amount = web3.utils.fromWei(tokens, "ether");
-  return amount;
 };
 
-export const toWei = (tokens) => {
-  const web3 = new Web3(window?.ethereum);
-  if (!tokens) {
-    return web3.utils.toWei("0", "ether");
+export const toWei = (tokens, decimals = 18) => {
+  try {
+    if (!tokens) {
+      return new BigNumber(0).toString();
+    }
+    return new BigNumber(tokens)
+      .multipliedBy(new BigNumber(10).exponentiatedBy(decimals))
+      .toFixed(0)
+      .toString();
+  } catch (error) {
+    console.log("exeption in toWei , ", error);
+    return null;
   }
-  return web3.utils.toWei(tokens, "ether");
 };
 
 export const getCurrentAccount = async () => {
@@ -40,32 +53,6 @@ export const getCurrentAccount = async () => {
   } catch (error) {
     console.log("getAccounts", error);
     return error;
-  }
-};
-
-export const getNetworkBalance = async (accountAddress) => {
-  try {
-    const web3 = new Web3(window?.ethereum);
-    const bal = web3.eth.getBalance(accountAddress);
-    return bal;
-  } catch (error) {
-    console.log("getAccountBalance", error);
-    return null;
-  }
-};
-
-export const getCurrentNetworkId = async () => {
-  const web3 = new Web3(window.ethereum);
-  if (window.ethereum) {
-    const id = await web3.eth.getChainId();
-
-    if (id) {
-      return id;
-    } else {
-      return await web3.eth.getChainId();
-    }
-  } else {
-    return await web3.eth.getChainId();
   }
 };
 
