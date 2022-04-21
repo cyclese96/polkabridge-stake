@@ -1,6 +1,5 @@
 import axios from "axios";
 import BigNumber from "bignumber.js";
-import Web3 from "web3";
 import {
   apyConstants,
   bscNetwork,

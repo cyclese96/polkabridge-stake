@@ -588,4 +588,4 @@ export default connect(mapStateToProps, {
   confirmAllowance,
   getPoolInfo,
   getAccountBalance,
-})(React.memo(Staking));
+})(Staking);

@@ -1,6 +1,6 @@
 import { Button, makeStyles } from "@material-ui/core";
 import { AccountBalanceWallet } from "@material-ui/icons";
-import { connect } from "react-redux";
+import React from "react";
 import useActiveWeb3React from "../hooks/useActiveWeb3React";
 
 const useStyles = makeStyles((theme) => ({
@@ -112,8 +112,4 @@ const Wallet = ({ onWalletClick }) => {
   );
 };
 
-const mapStateToProps = (state) => ({
-  account: state.account,
-});
-
-export default connect(mapStateToProps, {})(Wallet);
+export default React.memo(Wallet);
