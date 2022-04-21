@@ -327,7 +327,7 @@ export const tokenInfo = {
 };
 
 //given token name and network, --> poolId
-export const poolId = {
+export const poolId: { [index: string]: number } = {
   PBR: 0,
   BITE: 1,
   CORGIB: 0,

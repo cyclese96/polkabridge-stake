@@ -47,7 +47,7 @@ function useBlock() {
     return undefined;
   }, [chainId, library, onBlock, windowVisible]);
 
-  const debouncedBlock = useDebounce(state.block, 1000);
+  const debouncedBlock = useDebounce(state.block, 2000);
   return state.block ? debouncedBlock : undefined;
 }
 

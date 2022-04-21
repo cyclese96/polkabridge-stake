@@ -15,7 +15,6 @@ import PeopleAltOutlined from "@material-ui/icons/PeopleAltOutlined";
 import FlareOutlined from "@material-ui/icons/FlareOutlined";
 import TouchAppOutlined from "@material-ui/icons/TouchAppOutlined";
 import VpnLockOutlined from "@material-ui/icons/VpnLockOutlined";
-import CategoryIcon from "@material-ui/icons/Category";
 import { EqualizerOutlined } from "@material-ui/icons";
 import Wallet from "./Wallet";
 import AccountDialog from "./AccountDialog";

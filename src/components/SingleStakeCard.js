@@ -1,5 +1,5 @@
 import { Button, Card, Divider, makeStyles } from "@material-ui/core";
-import React, { useCallback, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { BigNumber } from "bignumber.js";
 
 import CustomButton from "./CustomButton";
@@ -14,7 +14,6 @@ import {
   confirmAllowance,
   getUserStakedData,
   getPoolInfo,
-  unstakeTokens,
 } from "../actions/stakeActions";
 import { getAccountBalance } from "../actions/accountActions";
 import {
@@ -37,6 +36,8 @@ import { useTokenAllowance } from "hooks/useAllowance";
 import { usePoolStakedInfo } from "hooks/usePoolStakedInfo";
 import { useUserStakedInfo } from "hooks/useUserStakedInfo";
 import { useTokenPrice } from "hooks/useTokenPrice";
+import { useStakeCallback } from "hooks/useStakeCallback";
+import StakeDialog from "common/StakeDialog";
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -246,38 +247,36 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Staking = ({
-  stake: { stake, pool, approved },
-  account: { loading, currentChain },
+  stake: { stake },
+  account: { currentChain },
   tokenType,
   confirmAllowance,
-  unstakeTokens,
-  onStake,
-  onUnstake,
   stopped = false,
-  stakeContract,
 }) => {
   const classes = useStyles();
   const { chainId, active, account } = useActiveWeb3React();
 
+  const [dialog, setDialog] = React.useState({
+    open: false,
+    type: null,
+    tokenType: null,
+  });
+
+  const onStake = (tokenType) => {
+    setDialog({ open: true, type: "stake", tokenType: tokenType });
+  };
+
+  const onUnStake = (tokenType) => {
+    setDialog({ open: true, type: "unstake", tokenType: tokenType });
+  };
+
+  const handleClose = () => {
+    setDialog({ open: false, type: null });
+  };
+
   const tokenContract = useTokenContract(
     tokenAddresses?.[tokenType]?.[chainId]
   );
-
-  // useEffect(async () => {
-  //   const pid = poolId?.[tokenType];
-  //   await Promise.all([
-  //     // getPoolInfo(tokenType, pid, currentAccount, currentNetwork),
-  //     // getUserStakedData(tokenType, currentNetwork, library),
-  //   ]);
-  // }, [account]);
-
-  // useEffect(() => {
-  //   if (!active) {
-  //     store.dispatch({
-  //       type: RESET_USER_STAKE,
-  //     });
-  //   }
-  // }, [active]);
 
   const poolToken = useMemo(() => {
     return {
@@ -316,10 +315,17 @@ const Staking = ({
 
   const poolTokenPrice = useTokenPrice(poolToken);
 
+  const [transactionStatus, stakeTokens, unstakeTokens] =
+    useStakeCallback(tokenType);
+
+  useEffect(() => {
+    console.log("stake transaction update ", transactionStatus);
+  }, [transactionStatus]);
+
   const handleClaim = async (tokenType) => {
     const tokensToClaim = claimTokens;
 
-    await unstakeTokens(tokensToClaim, account, tokenType, stakeContract);
+    await unstakeTokens(tokensToClaim, poolId?.[tokenType]);
   };
 
   const currentAmount = (tokenType) => {
@@ -360,12 +366,21 @@ const Staking = ({
 
   return (
     <Card elevation={10} className={classes.card}>
-      {loading[tokenType] && (
+      <StakeDialog
+        open={dialog.open}
+        type={dialog.type}
+        tokenType={dialog.tokenType}
+        handleClose={handleClose}
+        stakeTokens={stakeTokens}
+        unstakeTokens={unstakeTokens}
+        transactionStatus={transactionStatus}
+      />
+      {transactionStatus?.status === "pending" && (
         <div className="text-center">
           <Loader height={300} />
         </div>
       )}
-      {!loading[tokenType] && (
+      {transactionStatus?.status !== "pending" && (
         <div style={{ width: "100%" }}>
           <div className="d-flex justify-content-center align-items-center pt-2 pb-1">
             <img className={classes.avatar} src={tokenLogo[tokenType]} />
@@ -549,7 +564,7 @@ const Staking = ({
                 </CustomButton>
                 <CustomButton
                   disabled={withdrawDisableStatus(tokenType)}
-                  onClick={() => onUnstake(tokenType)}
+                  onClick={() => onUnStake(tokenType)}
                   variant="light"
                 >
                   Unstake
@@ -573,5 +588,4 @@ export default connect(mapStateToProps, {
   confirmAllowance,
   getPoolInfo,
   getAccountBalance,
-  unstakeTokens,
 })(React.memo(Staking));

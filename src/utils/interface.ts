@@ -16,3 +16,8 @@ export interface UserStakedInfo {
   claimed: string;
   pending: string;
 }
+
+export interface TransactionStatus {
+  status: string;
+  hash: string | null;
+}

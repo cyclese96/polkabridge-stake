@@ -15,13 +15,9 @@ import { toWei, getCurrentAccount, getApy } from "../utils/helper";
 import BigNumber from "bignumber.js";
 import config from "../config";
 import {
-  bscNetwork,
   AOG,
-  maticNetwork,
   poolId,
   tokenContarctAddresses,
-  tokenPriceConstants,
-  coingeckoTokenId,
   stakeContractAdrresses,
   STAKE_ADDRESSES,
 } from "../constants";
@@ -234,7 +230,7 @@ export const getUserStakedData =
   };
 
 export const stakeTokens =
-  (tokens, account, tokenType, network) => async (dispatch) => {
+  (tokens, account, tokenType, chainId, stakeContract) => async (dispatch) => {
     const loadingObj = {};
     loadingObj[`${tokenType}`] = true;
     dispatch({
@@ -246,48 +242,48 @@ export const stakeTokens =
     const pool = poolId[tokenType];
 
     try {
-      const tokenAddress = tokenContarctAddresses?.[network]?.[tokenType];
-      const currTokenContract = erc20TokenContract(network, tokenAddress);
-      const currStakeContract = stakeContract(network);
-
-      if (network === maticNetwork) {
-        await currStakeContract.methods
-          .deposit(pool, depositTokens)
-          .send({ from: account, gasPrice: 100000000000 });
+      // const tokenAddress = tokenContarctAddresses?.[network]?.[tokenType];
+      // const currTokenContract = erc20TokenContract(network, tokenAddress);
+      // const currStakeContract = stakeContract(network);
+      let callback;
+      if (chainId?.toString() === "137") {
+        // set gas for polygon
+        callback = await stakeContract.deposit(pool, depositTokens);
+        // .send({ from: account, gasPrice: 100000000000 });
       } else {
-        await currStakeContract.methods
-          .deposit(pool, depositTokens)
-          .send({ from: account });
+        callback = await stakeContract.deposit(pool, depositTokens);
+        // .send({ from: account });
       }
 
-      const [balanceWei, stakedData, pendingReward] = await Promise.all([
-        currTokenContract.methods.balanceOf(account).call(),
-        currStakeContract.methods.userInfo(pool, account).call(),
-        currStakeContract.methods.pendingReward(pool, account).call(),
-      ]);
+      // const [balanceWei, stakedData, pendingReward] = await Promise.all([
+      //   currTokenContract.methods.balanceOf(account).call(),
+      //   currStakeContract.methods.userInfo(pool, account).call(),
+      //   currStakeContract.methods.pendingReward(pool, account).call(),
+      // ]);
 
-      const balanceObj = {};
-      balanceObj[`${tokenType}`] = balanceWei;
-      dispatch({
-        type: LOAD_BALANCE,
-        payload: balanceObj,
-      });
+      // const balanceObj = {};
+      // balanceObj[`${tokenType}`] = balanceWei;
+      // dispatch({
+      //   type: LOAD_BALANCE,
+      //   payload: balanceObj,
+      // });
 
-      const stakeObj = {};
-      stakeObj[tokenType] = {
-        amount: stakedData.amount,
-        rewardClaimed: stakedData.rewardClaimed,
-        pendingReward: pendingReward,
-      };
-      dispatch({
-        type: GET_USER_STAKE_DATA,
-        payload: stakeObj,
-      });
+      // const stakeObj = {};
+      // stakeObj[tokenType] = {
+      //   amount: stakedData.amount,
+      //   rewardClaimed: stakedData.rewardClaimed,
+      //   pendingReward: pendingReward,
+      // };
+      // dispatch({
+      //   type: GET_USER_STAKE_DATA,
+      //   payload: stakeObj,
+      // });
     } catch (error) {
-      dispatch({
-        type: ERROR,
-        payload: network === bscNetwork ? error.message : error,
-      });
+      console.log("stake error ", error);
+      // dispatch({
+      //   type: ERROR,
+      //   payload: network === bscNetwork ? error.message : error,
+      // });
     }
     dispatch({
       type: HIDE_LOADING,
@@ -296,7 +292,7 @@ export const stakeTokens =
   };
 
 export const unstakeTokens =
-  (tokens, account, tokenType, network) => async (dispatch) => {
+  (tokens, account, tokenType, chainId, stakeContract) => async (dispatch) => {
     const loadingObj = {};
     loadingObj[`${tokenType}`] = true;
     dispatch({
@@ -306,58 +302,22 @@ export const unstakeTokens =
 
     const depositTokens = toWei(tokens, "ether");
     const pool = poolId[tokenType];
-    const currStakeContract = stakeContract(network);
-
-    const tokenAddress = tokenContarctAddresses?.[network]?.[tokenType];
-    const currTokenContract = erc20TokenContract(network, tokenAddress);
-
+    let stakeCallback;
     try {
-      if (network === maticNetwork) {
-        await currStakeContract.methods
-          .withdraw(pool, depositTokens)
-          .send({ from: account, gasPrice: 100000000000 });
+      if (chainId?.toString() === "137") {
+        stakeCallback = await stakeContract.withdraw(pool, depositTokens);
+        // .send({ from: account, gasPrice: 100000000000 });
       } else {
         if (tokenType === AOG) {
-          await currStakeContract.methods
-            .emergencyWithdraw(pool)
-            .send({ from: account });
+          stakeCallback = await stakeContract.emergencyWithdraw(pool);
+          // .send({ from: account });
         } else {
-          await currStakeContract.methods
-            .withdraw(pool, depositTokens)
-            .send({ from: account });
+          stakeCallback = await stakeContract.withdraw(pool, depositTokens);
+          // .send({ from: account });
         }
       }
-
-      const [balanceWei, stakedData, pendingReward] = await Promise.all([
-        currTokenContract.methods.balanceOf(account).call(),
-        currStakeContract.methods.userInfo(pool, account).call(),
-        currStakeContract.methods.pendingReward(pool, account).call(),
-      ]);
-
-      const balanceObj = {};
-      balanceObj[`${tokenType}`] = balanceWei;
-
-      dispatch({
-        type: LOAD_BALANCE,
-        payload: balanceObj,
-      });
-
-      const stakeObj = {};
-      stakeObj[tokenType] = {
-        amount: stakedData.amount,
-        rewardClaimed: stakedData.rewardClaimed,
-        pendingReward: pendingReward,
-      };
-
-      dispatch({
-        type: GET_USER_STAKE_DATA,
-        payload: stakeObj,
-      });
     } catch (error) {
-      dispatch({
-        type: ERROR,
-        payload: network === bscNetwork ? error.message : error,
-      });
+      console.log("unstake error ", error);
     }
     dispatch({
       type: HIDE_LOADING,

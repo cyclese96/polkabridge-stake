@@ -304,11 +304,7 @@ const Home = ({
                   {supportedStakingPools.map((token) => (
                     <div className="col-md-4">
                       <div className={classes.card}>
-                        <SingleStakeCard
-                          onStake={onStake}
-                          onUnstake={onUnStake}
-                          tokenType={token}
-                        />
+                        <SingleStakeCard tokenType={token} />
                       </div>
                     </div>
                   ))}
@@ -332,8 +328,8 @@ const Home = ({
                     <div className="col-md-4 mt-3">
                       <div className={classes.card}>
                         <SingleStakeCard
-                          onStake={onStake}
-                          onUnstake={onUnStake}
+                          // onStake={onStake}
+                          // onUnstake={onUnStake}
                           tokenType={token}
                           stopped={true}
                           stakeContract={stakeContract}
@@ -346,13 +342,13 @@ const Home = ({
             </div>
           }
 
-          <StakeDialog
+          {/* <StakeDialog
             open={dialog.open}
             type={dialog.type}
             tokenType={dialog.tokenType}
             handleClose={handleClose}
             stakeContract={stakeContract}
-          />
+          /> */}
         </div>
 
         <div className="d-flex justify-content-center pb-3">

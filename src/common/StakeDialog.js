@@ -14,14 +14,6 @@ import {
   isNumber,
   resetCurrencyFormatting,
 } from "../utils/helper";
-import { connect } from "react-redux";
-import {
-  getPoolInfo,
-  stakeTokens,
-  unstakeTokens,
-  getUserStakedData,
-} from "../actions/stakeActions";
-import { getAccountBalance } from "../actions/accountActions";
 import { minimumStakingAmount, poolId, tokenAddresses } from "../constants";
 import BigNumber from "bignumber.js";
 import useActiveWeb3React from "../hooks/useActiveWeb3React";
@@ -159,24 +151,19 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const StakeDialog = ({
-  account: { balance, loading },
-  // stake: { stake },
-  stakeTokens,
-  unstakeTokens,
-  getAccountBalance,
-  getUserStakedData,
-  getPoolInfo,
   open,
   handleClose,
   type,
   tokenType,
-  stakeContract,
+  stakeTokens,
+  unstakeTokens,
+  transactionStatus,
 }) => {
   const classes = useStyles();
   const [inputTokens, setTokenValue] = useState("");
-  const [formattedInputTokens, setFormattedValue] = useState("");
+  // const [formattedInputTokens, setFormattedValue] = useState("");
   const [error, setError] = useState({ status: false, message: "" });
-  const { active, account, chainId } = useActiveWeb3React();
+  const { account, chainId } = useActiveWeb3React();
 
   const poolToken = useMemo(() => {
     return {
@@ -250,27 +237,13 @@ const StakeDialog = ({
     setError({});
 
     if (type === "stake") {
-      if (
-        parseFloat(enteredTokens) === parseFloat(fromWei(balance[tokenType]))
-      ) {
+      if (parseFloat(enteredTokens) === parseFloat(fromWei(balanceTokens))) {
         enteredTokens -= 1;
       }
 
-      await stakeTokens(
-        enteredTokens.toString(),
-        account,
-        tokenType,
-        chainId,
-        stakeContract
-      );
+      await stakeTokens(enteredTokens.toString(), poolId?.[tokenType]);
     } else {
-      await unstakeTokens(
-        inputTokens,
-        account,
-        tokenType,
-        chainId,
-        stakeContract
-      );
+      await unstakeTokens(enteredTokens?.toString(), poolId?.[tokenType]);
     }
     handleClose();
   };
@@ -307,7 +280,6 @@ const StakeDialog = ({
   return (
     <div>
       <Dialog
-        // onClose={onClose}
         onExited={onClose}
         open={open}
         disableBackdropClick
@@ -336,31 +308,11 @@ const StakeDialog = ({
               value={
                 inputTokens ? formatCurrency(inputTokens, false, 0, true) : ""
               }
-              // name={[pbrTokens]}
               onChange={handleInputChange}
               label={`Enter ${tokenType} tokens`}
               className={classes.input}
             />
-            {/* <TextField
-              InputProps={{
-                classes: {
-                  root: classes.cssOutlinedInput,
-                  focused: classes.cssFocused,
-                  notchedOutline: classes.notchedOutline,
-                },
-              }}
-              InputLabelProps={{
-                classes: {
-                  root: classes.cssInputLabel,
-                  focused: classes.cssInputFocused,
-                },
-              }}
-              className={classes.input}
-              id="outlined-basic"
-              variant="outlined"
-             
-              focused={true}
-            /> */}
+
             <Button className={classes.maxBtn} onClick={handleMax}>
               Max
             </Button>
@@ -371,8 +323,12 @@ const StakeDialog = ({
             ""
           )}
           <div className={classes.buttons}>
-            {loading[tokenType] ? (
-              <CircularProgress className={classes.numbers} />
+            {transactionStatus?.status &&
+            transactionStatus?.status === "waiting" ? (
+              <div className="text-center">
+                <CircularProgress className={classes.numbers} />
+                <p className={classes.subheading}>Waiting for confirmation</p>
+              </div>
             ) : (
               <>
                 <CustomButton variant="light" onClick={onClose}>
@@ -388,15 +344,4 @@ const StakeDialog = ({
   );
 };
 
-const mapStateToProps = (state) => ({
-  stake: state.stake,
-  account: state.account,
-});
-
-export default connect(mapStateToProps, {
-  stakeTokens,
-  unstakeTokens,
-  getAccountBalance,
-  getPoolInfo,
-  getUserStakedData,
-})(StakeDialog);
+export default StakeDialog;

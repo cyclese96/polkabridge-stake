@@ -15,7 +15,6 @@ import { currentConnection } from "../constants";
 
 import etherIcon from "../assets/ether.png";
 import binanceIcon from "../assets/binance.png";
-import harmonyIcon from "../assets/one.png";
 import polygonIcon from "../assets/polygon.png";
 import { CHANGE_NETWORK } from "../actions/types";
 import store from "../store";
@@ -152,13 +151,13 @@ const NetworkSelect = ({ account: { currentChain } }) => {
             <span className={classes.networkName}>Polygon</span>
             <img className={classes.imgIcon} src={polygonIcon} />
           </MenuItem>
-          <MenuItem
+          {/* <MenuItem
             value={currentConnection === "testnet" ? 1666700000 : 1666600000}
             className={classes.buttonDrop}
           >
             <span className={classes.networkName}>Harmony</span>
             <img className={classes.imgIcon} src={harmonyIcon} />
-          </MenuItem>
+          </MenuItem> */}
         </Select>
       </FormControl>
     </div>
