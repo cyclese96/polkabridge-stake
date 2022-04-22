@@ -9,8 +9,8 @@ import {
   CORGIB,
   tokenAddresses,
 } from "../constants";
-import useActiveWeb3React from "hooks/useActiveWeb3React";
-import { useCurrencyBalances } from "hooks/useBalance";
+import useActiveWeb3React from "../hooks/useActiveWeb3React";
+import { useCurrencyBalances } from "../hooks/useBalance";
 
 const useStyles = makeStyles((theme) => ({
   card: {
