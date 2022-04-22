@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { toWei } from "utils/helper";
+import { toWei } from "../utils/helper";
 import { TransactionStatus } from "../utils/interface";
 import useActiveWeb3React from "./useActiveWeb3React";
 import useBlockNumber from "./useBlockNumber";

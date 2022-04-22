@@ -17,7 +17,7 @@ import { connect } from "react-redux";
 import { logout } from "../actions/accountActions";
 import { Card } from "@material-ui/core";
 import useActiveWeb3React from "../hooks/useActiveWeb3React";
-import { useCurrencyBalances } from "hooks/useBalance";
+import { useCurrencyBalances } from "../hooks/useBalance";
 
 const useStyles = makeStyles((theme) => ({
   background: {

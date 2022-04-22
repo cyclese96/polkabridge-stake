@@ -3,9 +3,9 @@ import { useEffect, useMemo, useState } from "react";
 import { useSingleCallResult } from "../state/multicall/hooks";
 import { useStakeContract } from "./useContract";
 import { PoolInfo, Token } from "../utils/interface";
-import { getApy, getCurrentNetworkName } from "utils/helper";
+import { getApy, getCurrentNetworkName } from "../utils/helper";
 import useActiveWeb3React from "./useActiveWeb3React";
-import { stakeContract } from "contracts/connections/index";
+import { stakeContract } from "../contracts/connections/index";
 
 export function usePoolStakedInfo(
   poolId?: number,

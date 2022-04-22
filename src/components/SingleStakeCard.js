@@ -32,12 +32,12 @@ import Loader from "./../common/Loader";
 import DotCircle from "./../common/DotCircle";
 import useActiveWeb3React from "../hooks/useActiveWeb3React";
 import { useTokenContract } from "../hooks/useContract";
-import { useTokenAllowance } from "hooks/useAllowance";
-import { usePoolStakedInfo } from "hooks/usePoolStakedInfo";
-import { useUserStakedInfo } from "hooks/useUserStakedInfo";
-import { useTokenPrice } from "hooks/useTokenPrice";
-import { useStakeCallback } from "hooks/useStakeCallback";
-import StakeDialog from "common/StakeDialog";
+import { useTokenAllowance } from "../hooks/useAllowance";
+import { usePoolStakedInfo } from "../hooks/usePoolStakedInfo";
+import { useUserStakedInfo } from "../hooks/useUserStakedInfo";
+import { useTokenPrice } from "../hooks/useTokenPrice";
+import { useStakeCallback } from "../hooks/useStakeCallback";
+import StakeDialog from "../common/StakeDialog";
 
 const useStyles = makeStyles((theme) => ({
   card: {

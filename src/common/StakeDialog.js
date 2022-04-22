@@ -17,8 +17,8 @@ import {
 import { minimumStakingAmount, poolId, tokenAddresses } from "../constants";
 import BigNumber from "bignumber.js";
 import useActiveWeb3React from "../hooks/useActiveWeb3React";
-import { useTokenBalance } from "hooks/useBalance";
-import { useUserStakedInfo } from "hooks/useUserStakedInfo";
+import { useTokenBalance } from "../hooks/useBalance";
+import { useUserStakedInfo } from "../hooks/useUserStakedInfo";
 
 const styles = (theme) => ({
   root: {

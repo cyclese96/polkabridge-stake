@@ -12,7 +12,6 @@ import BalanceCard from "../common/BalanceCard";
 import PbrStatistics from "../common/PbrStatistics";
 import { getCurrentNetworkName } from "../utils/helper";
 import useActiveWeb3React from "../hooks/useActiveWeb3React";
-import { useStakeContract } from "hooks/useContract";
 
 const useStyles = makeStyles((theme) => ({
   background: {
@@ -135,8 +134,6 @@ const Home = ({ account: { error, currentChain } }) => {
   const classes = useStyles();
 
   const { active, account, chainId } = useActiveWeb3React();
-
-  const stakeContract = useStakeContract();
 
   useEffect(() => {
     if (!chainId || !active) {

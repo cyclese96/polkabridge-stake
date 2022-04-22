@@ -3,7 +3,7 @@ export const currentConnection = testing ? "testnet" : "mainnet";
 
 export const STAKE_ADDRESSES: { [index: number]: string } = {
   1: "0x1b46b72c5280f30Fbe8A958B4f3c348FD0fD2E55",
-  4: "0x7678f0AF7304e01554E2D49D96E55C8de4975c66",
+  42: "0x7678f0AF7304e01554E2D49D96E55C8de4975c66",
   137: "0x6335aF028e77B574423733443678aD4cb9e15B3D",
   80001: "0x55950cF279Ba5b43263f4Df54833b85F684B333F",
   1666600000: "0x7a1238cba81de51158c150ffb48a2dba14b987bd", //harmony mainnet
