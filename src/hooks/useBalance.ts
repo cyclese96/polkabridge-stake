@@ -2,12 +2,11 @@ import { useMemo } from "react";
 import {
   useMultipleContractSingleData,
   useSingleContractMultipleData,
-} from "state/multicall/hooks";
-import { isAddress } from "utils/contractUtils";
+} from "../state/multicall/hooks";
+import { isAddress } from "../utils/contractUtils";
 import { useInterfaceMulticall } from "./useContract";
 import ERC20_ABI from "../contracts/abi/erc20.json";
 import { Interface } from "@ethersproject/abi";
-// import { ETH, NATIVE_TOKEN } from "constants/index";
 import useActiveWeb3React from "./useActiveWeb3React";
 import { Token } from "../utils/interface";
 import { NATIVE_TOKEN } from "../utils/chains";
