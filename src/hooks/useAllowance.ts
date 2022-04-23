@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-
 import { useSingleCallResult } from "../state/multicall/hooks";
 import { useTokenContract } from "./useContract";
 import { Token } from "../utils/interface";

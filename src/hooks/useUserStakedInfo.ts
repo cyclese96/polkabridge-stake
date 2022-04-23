@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-
 import { useSingleCallResult } from "../state/multicall/hooks";
 import { useStakeContract } from "./useContract";
 import { UserStakedInfo } from "../utils/interface";

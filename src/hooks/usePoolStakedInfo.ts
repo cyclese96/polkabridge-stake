@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from "react";
-
 import { useSingleCallResult } from "../state/multicall/hooks";
 import { useStakeContract } from "./useContract";
 import { PoolInfo, Token } from "../utils/interface";
