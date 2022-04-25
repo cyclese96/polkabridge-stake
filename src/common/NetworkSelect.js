@@ -12,7 +12,6 @@ import {
 import { getCurrentNetworkName, setupNetwork } from "../utils/helper";
 import config from "../utils/config";
 import { currentConnection } from "../constants";
-
 import etherIcon from "../assets/ether.png";
 import binanceIcon from "../assets/binance.png";
 import polygonIcon from "../assets/polygon.png";

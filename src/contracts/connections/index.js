@@ -5,7 +5,7 @@ import PolkaBridgeStakingMatic from "../abi/polkabridgeStakingMatic.json";
 import CorgibStaking from "../abi/CorgibStaking.json";
 import { ankrRpc, STAKE_ADDRESSES } from "../../constants";
 import { isMetaMaskInstalled } from "../../utils/helper";
-import config from "utils/config";
+import config from "../../utils/config";
 
 export const erc20TokenContract = (chainId, tokenAddress, library) => {
   const abi = PolkaBridge;
