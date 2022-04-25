@@ -1,8 +1,6 @@
 import { Contract } from "@ethersproject/contracts";
 import { useEffect, useMemo, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-// import { chunkArray } from "utils/chunkArray";
-// import { retry } from "utils/retry";
 import { AppDispatch, AppState } from "../../state";
 import {
   Call,
