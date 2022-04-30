@@ -1,7 +1,7 @@
 import { UAuthConnector } from "@uauth/web3-react";
 import { InjectedConnector } from "@web3-react/injected-connector";
 import { WalletConnectConnector } from "web3-react-walletconnect-connector";
-import { ALL_SUPPORTED_CHAIN_IDS } from "../utils/chains";
+import { ALL_SUPPORTED_CHAIN_IDS } from "../constants/chains";
 import { INFURA_NETWORK_URLS } from "../utils/infura";
 
 // Instanciate your other connectors.

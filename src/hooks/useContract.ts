@@ -5,8 +5,8 @@ import MulticallABI from "../contracts/abi/multicall.json";
 import useActiveWeb3React from "./useActiveWeb3React";
 import ERC20_ABI from "../contracts/abi/erc20.json";
 import STAKE_ABI from "../contracts/abi/PolkaBridgeStaking.json";
-import { STAKE_ADDRESSES } from "../constants";
-import { MULTICALL_ADDRESS } from "../utils/chains";
+import { MULTICALL_ADDRESS } from "../constants/chains";
+import { STAKE_ADDRESSES } from "../constants/index";
 
 // returns null on errors
 export function useContract<T extends Contract = Contract>(

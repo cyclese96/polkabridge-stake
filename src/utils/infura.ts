@@ -1,4 +1,4 @@
-import { SupportedChainId } from "./chains";
+import { SupportedChainId } from "../constants/chains";
 
 const INFURA_KEY = "8af4f9aa936e427f85063ea3a4adaa35";
 if (typeof INFURA_KEY === "undefined") {
