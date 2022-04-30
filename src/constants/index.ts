@@ -520,5 +520,6 @@ export const ankrRpc = {
 
 export const NetworkContextName = "NETWORK";
 
-export const TokenAllowanceAmount = "999999999";
-export const CorgibAllowanceAmount = "999999999999999999999999999999999999";
+export const TOKEN_ALLOWANCE_ALLOWANCE = "999999999";
+export const CORGIB_ALLOWANCE_ALLOWANCE =
+  "999999999999999999999999999999999999";

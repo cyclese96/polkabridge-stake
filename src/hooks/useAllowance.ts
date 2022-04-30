@@ -2,8 +2,8 @@ import { useMemo } from "react";
 import { useSingleCallResult } from "../state/multicall/hooks";
 import { useTokenContract } from "./useContract";
 import { Token } from "../utils/interface";
-import { TokenAllowanceAmount } from "../constants";
 import BigNumber from "bignumber.js";
+import { TOKEN_ALLOWANCE_ALLOWANCE } from "../constants/index";
 
 export function useTokenAllowance(
   token?: Token,
@@ -21,7 +21,7 @@ export function useTokenAllowance(
   return useMemo(
     () =>
       token && allowance
-        ? new BigNumber(allowance[0]?.toString()).gte(TokenAllowanceAmount)
+        ? new BigNumber(allowance[0]?.toString()).gte(TOKEN_ALLOWANCE_ALLOWANCE)
           ? true
           : false
         : false,

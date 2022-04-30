@@ -328,17 +328,9 @@ const Staking = ({
     await unstakeTokens(tokensToClaim, poolId?.[tokenType]);
   };
 
-  const currentAmount = (tokenType) => {
-    return stake[tokenType] ? stake[tokenType].amount : 0;
-  };
-
-  const getCurrencyFormatForToken = (tokenType, tokens) => {
-    return formatLargeNumber(fromWei(tokens));
-  };
-
-  const claimDisableStatus = (_tokenType) => {
-    return currentAmount(_tokenType) == 0;
-  };
+  const claimDisableStatus = useMemo(() => {
+    return userStakedInfo?.staked === 0;
+  }, userStakedInfo);
 
   const stakeDisableStatus = useMemo(() => {
     if (unsupportedStaking?.[chainId]?.includes(tokenType)) {
@@ -549,7 +541,7 @@ const Staking = ({
               <div className={classes.stakeButtons}>
                 <CustomButton
                   hidden={stopped}
-                  disabled={claimDisableStatus(tokenType)}
+                  disabled={claimDisableStatus}
                   onClick={() => handleClaim(tokenType)}
                 >
                   Claim

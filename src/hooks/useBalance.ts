@@ -9,7 +9,7 @@ import ERC20_ABI from "../contracts/abi/erc20.json";
 import { Interface } from "@ethersproject/abi";
 import useActiveWeb3React from "./useActiveWeb3React";
 import { Token } from "../utils/interface";
-import { NATIVE_TOKEN } from "../utils/chains";
+import { NATIVE_TOKEN } from "../constants/chains";
 
 const ERC20_INTERFACE = new Interface(ERC20_ABI);
 
