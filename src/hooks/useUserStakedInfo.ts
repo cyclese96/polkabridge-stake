@@ -1,9 +1,10 @@
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useSingleCallResult } from "../state/multicall/hooks";
 import { useStakeContract } from "./useContract";
 import { UserStakedInfo } from "../utils/interface";
 
 export function useUserStakedInfo(
+  tokenSymbol: string,
   poolId?: number,
   account?: string
 ): UserStakedInfo | null {
@@ -26,11 +27,11 @@ export function useUserStakedInfo(
     () =>
       userInfo && pendingReward
         ? {
-            staked: userInfo?.[0]?.toString(),
-            claimed: userInfo?.[1]?.toString(),
+            staked: userInfo?.amount?.toString(),
+            claimed: userInfo?.rewardClaimed?.toString(),
             pending: pendingReward?.toString(),
           }
         : null,
-    [userInfo]
+    [userInfo, poolId, account, tokenSymbol]
   );
 }
