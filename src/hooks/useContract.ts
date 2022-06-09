@@ -62,7 +62,7 @@ export function useStakeContract(
   const { chainId } = useActiveWeb3React();
 
   return useContract(
-    STAKE_ADDRESSES[!chainId ? 1 : chainId],
+    STAKE_ADDRESSES[chainId ? chainId : 1],
     STAKE_ABI,
     withSignerIfPossible
   );

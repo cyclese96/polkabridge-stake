@@ -297,7 +297,11 @@ const Staking = ({
     currentChain
   );
 
-  const userStakedInfo = useUserStakedInfo(poolId?.[tokenType], account);
+  const userStakedInfo = useUserStakedInfo(
+    tokenType,
+    poolId?.[tokenType],
+    account
+  );
 
   const handleApprove = useCallback(() => {
     const tokenWeiAmountToApprove =
@@ -317,10 +321,6 @@ const Staking = ({
 
   const [transactionStatus, stakeTokens, unstakeTokens] =
     useStakeCallback(tokenType);
-
-  useEffect(() => {
-    console.log("stake transaction update ", transactionStatus);
-  }, [transactionStatus]);
 
   const handleClaim = async (tokenType) => {
     const tokensToClaim = claimTokens;
