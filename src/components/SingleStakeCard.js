@@ -11,7 +11,7 @@ import {
 } from "../utils/helper";
 import { connect } from "react-redux";
 import {
-  confirmAllowance,
+  // confirmAllowance,
   getUserStakedData,
   getPoolInfo,
 } from "../actions/stakeActions";
@@ -250,7 +250,7 @@ const Staking = ({
   stake: { stake },
   account: { currentChain },
   tokenType,
-  confirmAllowance,
+  // confirmAllowance,
   stopped = false,
 }) => {
   const classes = useStyles();
@@ -285,7 +285,7 @@ const Staking = ({
     };
   }, [tokenType, chainId]);
 
-  const currentTokenAllowance = useTokenAllowance(
+  const [currentTokenAllowance, confirmAllowance] = useTokenAllowance(
     poolToken,
     account,
     STAKE_ADDRESSES?.[chainId]
@@ -308,13 +308,7 @@ const Staking = ({
       tokenType === CORGIB
         ? "999999999999999999999999999999999999"
         : toWei("999999999");
-    confirmAllowance(
-      tokenWeiAmountToApprove,
-      tokenType,
-      tokenContract,
-      account,
-      chainId
-    );
+    confirmAllowance(tokenWeiAmountToApprove);
   }, [tokenContract, chainId]);
 
   const poolTokenPrice = useTokenPrice(poolToken);
@@ -577,7 +571,7 @@ const mapStateToProps = (state) => ({
 
 export default connect(mapStateToProps, {
   getUserStakedData,
-  confirmAllowance,
+  // confirmAllowance,
   getPoolInfo,
   getAccountBalance,
 })(Staking);
