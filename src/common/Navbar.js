@@ -20,9 +20,8 @@ import Wallet from "./Wallet";
 import AccountDialog from "./AccountDialog";
 import DotCircle from "./DotCircle";
 import NetworkSelect from "./NetworkSelect";
-import connectors from "../connection/connectors";
-import { WalletConnectConnector } from "web3-react-walletconnect-connector";
 import useActiveWeb3React from "../hooks/useActiveWeb3React";
+import { useWalletConnectCallback } from "hooks/useWalletConnectCallback";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -85,12 +84,12 @@ const useStyles = makeStyles((theme) => ({
   menuIcon: {
     color: "#212121",
   },
-  list: {
-    width: "250px",
-    height: "100%",
-    backgroundColor: "transparent",
-    color: "#f9f9f9",
-  },
+  // list: {
+  //   width: "250px",
+  //   height: "100%",
+  //   backgroundColor: "transparent",
+  //   color: "#f9f9f9",
+  // },
   fullList: {
     width: "auto",
   },
@@ -212,7 +211,6 @@ const useStyles = makeStyles((theme) => ({
     width: "250px",
     borderLeft: "5px solid pink",
     borderColor: "#3A1242",
-    // borderColor: "#220c3d",
     height: "100%",
     backgroundColor: "#100525",
   },
@@ -231,27 +229,11 @@ const Navbar = ({ chainId }) => {
     setState({ ...state, [anchor]: open });
   };
 
-  const { active, account, activate, deactivate } = useActiveWeb3React();
-
-  const createConnectHandler = async (connector) => {
-    try {
-      console.log("trying connection with ", connector);
-      // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
-      if (connector instanceof WalletConnectConnector) {
-        connector.walletConnectProvider = undefined;
-      }
-
-      await activate(connector);
-      localStorage.connected = "yes";
-    } catch (error) {
-      console.error("createConnectHandler", error);
-    }
-  };
+  const { active, deactivate } = useActiveWeb3React();
 
   useEffect(() => {
     if (!active && localStorage.connected === "yes") {
-      const connector = connectors.injected;
-      createConnectHandler(connector);
+      connectWallet(localStorage.connectorType);
     }
   }, [active]);
 
@@ -260,28 +242,15 @@ const Navbar = ({ chainId }) => {
     deactivate();
   };
 
-  const handleWalletConnect = (connectorType = "injected") => {
-    try {
-      let connector;
-      if (connectorType === "injected") {
-        connector = connectors.injected;
-      } else if (connectorType === "walletConnect") {
-        connector = connectors.walletconnect;
-      } else if (connectorType === "unstoppable") {
-        connector = connectors.uauth;
-      } else {
-        connector = connectors.injected;
-      }
+  const [connectWallet] = useWalletConnectCallback();
 
-      createConnectHandler(connector);
-      setAccountDialog(false);
-    } catch (error) {}
+  const handleWalletConnect = (connectorType = "injected") => {
+    connectWallet(connectorType);
+    setAccountDialog(false);
   };
 
   const handleWalletClick = () => {
-    try {
-      setAccountDialog(true);
-    } catch (error) {}
+    setAccountDialog(true);
   };
 
   const list = (anchor) => (

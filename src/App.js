@@ -11,6 +11,7 @@ import { NetworkContextName } from "./constants";
 import getLibrary from "./utils/getLibrary";
 import { BlockUpdater } from "./hooks/useBlockNumber";
 import MulticallUpdater from "./state/multicall/updater";
+import TransactionUpdater from "./state/transactions/updater";
 
 const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName);
 
@@ -20,6 +21,8 @@ function App() {
       <Web3ReactProvider getLibrary={getLibrary}>
         <Web3ProviderNetwork getLibrary={getLibrary}>
           <ThemeProvider theme={theme}>
+            <TransactionUpdater />
+
             <MulticallUpdater />
             <BlockUpdater />
             <Fragment>

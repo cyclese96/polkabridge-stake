@@ -22,7 +22,12 @@ export function useStakeCallback(
         setData({ ...data, status: "waiting" });
 
         stakeRes = await stakeContract?.deposit(poolId, depositTokens);
-        setData({ ...data, hash: stakeRes?.hash, status: "pending" });
+
+        if (stakeRes) {
+          setData({ ...data, hash: stakeRes?.hash, status: "pending" });
+        } else {
+          setData({ ...data, status: "failed" });
+        }
       } catch (error) {
         setData({ ...data, status: "" });
 
@@ -50,7 +55,11 @@ export function useStakeCallback(
           }
         }
 
-        setData({ ...data, hash: unstakeRes?.hash, status: "pending" });
+        if (stakeRes) {
+          setData({ ...data, hash: unstakeRes?.hash, status: "pending" });
+        } else {
+          setData({ ...data, status: "failed" });
+        }
       } catch (error) {
         setData({ ...data, status: "" });
 

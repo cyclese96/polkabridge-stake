@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Card } from "@material-ui/core";
 import { formatCurrency, fromWei } from "../utils/helper";
@@ -95,6 +95,7 @@ function BalanceCard() {
                   <img
                     src={tokenLogo?.[token?.symbol]}
                     className={classes.logo}
+                    alt=""
                   />
                 </div>
                 <div>

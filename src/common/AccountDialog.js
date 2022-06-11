@@ -221,6 +221,7 @@ const AccountDialog = ({
                         <img
                           src={tokenLogo?.[token?.symbol]}
                           className={classes.logo}
+                          alt=""
                         />
                       </div>
                       <div>
@@ -279,13 +280,14 @@ const AccountDialog = ({
                             "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/1200px-MetaMask_Fox.svg.png"
                           }
                           className={classes.logo}
+                          alt=""
                         />
                       </div>
                       <div className={classes.tokenTitle}>Metamask</div>
                     </div>
                   </div>
 
-                  <div
+                  {/* <div
                     className={classes.singleWalletCard}
                     onClick={() => handleConnection("unstoppable")}
                   >
@@ -296,13 +298,14 @@ const AccountDialog = ({
                             "https://avatars.githubusercontent.com/u/36172275?s=280&v=4"
                           }
                           className={classes.logo}
+                          alt=""
                         />
                       </div>
                       <div className={classes.tokenTitle}>
                         Unstoppable Domains
                       </div>
                     </div>
-                  </div>
+                  </div> */}
 
                   <div
                     className={classes.singleWalletCard}
@@ -310,7 +313,7 @@ const AccountDialog = ({
                   >
                     <div className="d-flex justify-content-start align-items-center">
                       <div className={classes.logoWrapper}>
-                        <img src="img/wc.png" className={classes.logo} />
+                        <img src="img/wc.png" className={classes.logo} alt="" />
                       </div>
                       <div className={classes.tokenTitle}>Walletconnect</div>
                     </div>
