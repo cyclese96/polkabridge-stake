@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import useActiveWeb3React from "./useActiveWeb3React";
 import { WalletConnectConnector } from "web3-react-walletconnect-connector";
-import connectors from "connection/connectors";
+import connectors from "../connection/connectors";
 
 export function useWalletConnectCallback() {
   const { activate } = useActiveWeb3React();
