@@ -33,8 +33,8 @@ import { useUserStakedInfo } from "../hooks/useUserStakedInfo";
 import { useTokenPrice } from "../hooks/useTokenPrice";
 import { useStakeCallback } from "../hooks/useStakeCallback";
 import StakeDialog from "../common/StakeDialog";
-import { useWalletConnectCallback } from "hooks/useWalletConnectCallback";
-import AccountDialog from "common/AccountDialog";
+import { useWalletConnectCallback } from "../hooks/useWalletConnectCallback";
+import AccountDialog from "./../common/AccountDialog";
 
 const useStyles = makeStyles((theme) => ({
   card: {
