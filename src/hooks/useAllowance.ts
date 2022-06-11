@@ -5,7 +5,7 @@ import { Token, TransactionStatus } from "../utils/interface";
 import BigNumber from "bignumber.js";
 import { STAKE_ADDRESSES, TOKEN_ALLOWANCE_ALLOWANCE } from "../constants/index";
 import useActiveWeb3React from "./useActiveWeb3React";
-import { useTransactionAdder } from "state/transactions/hooks";
+// import { useTransactionAdder } from "state/transactions/hooks";
 import useBlockNumber from "./useBlockNumber";
 
 export function useTokenAllowance(
@@ -30,7 +30,7 @@ export function useTokenAllowance(
 
   const currentAllowance = !allowance ? null : allowance?.[0]?.toString();
 
-  const addTransaction = useTransactionAdder();
+  // const addTransaction = useTransactionAdder();
   const confirmAllowance = useCallback(
     async (balance: string) => {
       try {
@@ -53,7 +53,7 @@ export function useTokenAllowance(
         console.log("approve error ", { error });
       }
     },
-    [chainId, tokenContract, addTransaction]
+    [chainId, tokenContract]
   );
 
   useEffect(() => {

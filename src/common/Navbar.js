@@ -21,7 +21,7 @@ import AccountDialog from "./AccountDialog";
 import DotCircle from "./DotCircle";
 import NetworkSelect from "./NetworkSelect";
 import useActiveWeb3React from "../hooks/useActiveWeb3React";
-import { useWalletConnectCallback } from "hooks/useWalletConnectCallback";
+import { useWalletConnectCallback } from "../hooks/useWalletConnectCallback";
 
 const useStyles = makeStyles((theme) => ({
   grow: {

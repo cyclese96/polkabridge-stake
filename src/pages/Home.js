@@ -3,7 +3,7 @@ import React, { useEffect, useMemo } from "react";
 import SingleStakeCard from "../components/SingleStakeCard";
 import Navbar from "../common/Navbar";
 import Footer from "../common/Footer";
-import Wallet from "../common/Wallet";
+// import Wallet from "../common/Wallet";
 import { connect } from "react-redux";
 import { supportedStaking, unsupportedStaking } from "../constants";
 import { CHANGE_NETWORK, CONNECT_WALLET } from "../actions/types";
