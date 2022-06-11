@@ -18,7 +18,6 @@ import { minimumStakingAmount, poolId, tokenAddresses } from "../constants";
 import BigNumber from "bignumber.js";
 import useActiveWeb3React from "../hooks/useActiveWeb3React";
 import { useTokenBalance } from "../hooks/useBalance";
-import { useUserStakedInfo } from "../hooks/useUserStakedInfo";
 
 const styles = (theme) => ({
   root: {
@@ -158,10 +157,10 @@ const StakeDialog = ({
   stakeTokens,
   unstakeTokens,
   transactionStatus,
+  userStakedInfo,
 }) => {
   const classes = useStyles();
   const [inputTokens, setTokenValue] = useState("");
-  // const [formattedInputTokens, setFormattedValue] = useState("");
   const [error, setError] = useState({ status: false, message: "" });
   const { account, chainId } = useActiveWeb3React();
 
@@ -171,8 +170,6 @@ const StakeDialog = ({
       address: tokenAddresses?.[tokenType]?.[chainId],
     };
   }, [tokenType, chainId]);
-
-  const userStakedInfo = useUserStakedInfo(poolId?.[tokenType], account);
 
   const poolTokenBalance = useTokenBalance(account, poolToken);
 
@@ -262,21 +259,22 @@ const StakeDialog = ({
     setError({});
   };
 
-  const currentFormattedBalance = () => {
+  const formattedBalance = useMemo(() => {
     if (tokenType === "PWAR") {
       return formatCurrency(fromWei(poolTokenBalance), false, 1, true);
     }
 
     return formatCurrency(fromWei(poolTokenBalance));
-  };
+  }, [poolTokenBalance, account, tokenType]);
 
-  const currentFormattedStakedBal = () => {
+  const formattedStakedBalance = useMemo(() => {
     if (tokenType === "PWAR") {
       return formatCurrency(fromWei(userStakedInfo?.staked), false, 1, true);
     }
 
     return formatCurrency(fromWei(userStakedInfo?.staked));
-  };
+  }, [userStakedInfo, tokenType, account]);
+
   return (
     <div>
       <Dialog
@@ -299,8 +297,8 @@ const StakeDialog = ({
 
           <p className={classes.subheading}>
             {type === "stake"
-              ? `Available tokens: ${currentFormattedBalance()}  ${tokenType}`
-              : `Staked tokens: ${currentFormattedStakedBal()} ${tokenType}`}
+              ? `Available tokens: ${formattedBalance}  ${tokenType}`
+              : `Staked tokens: ${formattedStakedBalance} ${tokenType}`}
           </p>
           <div className={classes.inputGroup}>
             <input

@@ -251,14 +251,14 @@ const Home = ({ account: { error, currentChain } }) => {
             </div>
           </div>
 
-          {!active && (
+          {/* {!active && (
             <div className={classes.cardsContainer2}>
               <Wallet />
               <p className={classes.subheading}>
                 Connect your Wallet to stake tokens
               </p>
             </div>
-          )}
+          )} */}
           {
             <div className="mt-3">
               {supportedStakingPools.length === 0 && (

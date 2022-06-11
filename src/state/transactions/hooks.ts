@@ -126,7 +126,7 @@ export function useAllTransactions(): { [txHash: string]: TransactionDetails } {
     (state) => state.transactions
   );
 
-  return chainId ? state[chainId] ?? {} : {};
+  return chainId ? state?.[chainId] ?? {} : {};
 }
 
 export function useIsTransactionPending(transactionHash?: string): boolean {

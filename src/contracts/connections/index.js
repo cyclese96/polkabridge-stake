@@ -45,19 +45,6 @@ export const stakeContract = (chainId) => {
 };
 
 const getCurrentConnection = (chainId, abi, contractAddress) => {
-  // console.log('initializing   matic instance', blockChainNetwork)
-  // const infura =
-  //   currentConnection === "testnet"
-  //     ? `https://kovan.infura.io/v3/${process.env.REACT_APP_INFURA_KEY.split(
-  //         ""
-  //       )
-  //         .reverse()
-  //         .join("")}`
-  //     : `https://mainnet.infura.io/v3/${process.env.REACT_APP_INFURA_KEY.split(
-  //         ""
-  //       )
-  //         .reverse()
-  //         .join("")}`;
   const _ankrRpc = ankrRpc?.[chainId];
 
   const web3 = isMetaMaskInstalled()

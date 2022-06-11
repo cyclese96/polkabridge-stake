@@ -18,7 +18,7 @@ export const connectWallet =
       const accountAddress = await getCurrentAccount();
       // console.log("connect wallet", accountAddress);
       if (
-        localStorage.getItem(`logout${accountAddress}`) == accountAddress &&
+        localStorage.getItem(`logout${accountAddress}`) === accountAddress &&
         !connect
       ) {
         dispatch({
@@ -26,7 +26,7 @@ export const connectWallet =
         });
         return;
       } else if (
-        localStorage.getItem(`logout${accountAddress}`) == accountAddress &&
+        localStorage.getItem(`logout${accountAddress}`) === accountAddress &&
         connect
       ) {
         localStorage.removeItem(`logout${accountAddress}`);
@@ -77,7 +77,6 @@ export const getAccountBalance =
         payload: balObj,
       });
     } catch (error) {
-      // console.log("getAccountBalance", { error, address, network });
       dispatch({
         type: ERROR,
         payload: "Failed to load balance!",
