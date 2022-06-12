@@ -2,12 +2,13 @@ import { useCallback } from "react";
 import useActiveWeb3React from "./useActiveWeb3React";
 import { WalletConnectConnector } from "web3-react-walletconnect-connector";
 import connectors from "../connection/connectors";
+import { AbstractConnector } from "@web3-react/abstract-connector";
 
 export function useWalletConnectCallback() {
   const { activate } = useActiveWeb3React();
 
   const createConnectHandler = useCallback(
-    async (connector) => {
+    async (connector: AbstractConnector) => {
       try {
         // const connector = connectors.injected;
         // if the connector is walletconnect and the user has already tried to connect, manually reset the connector
