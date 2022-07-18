@@ -10,7 +10,7 @@ export function useStakeCallback(
 ): [TransactionStatus, () => {}, () => {}] {
   const { library, chainId } = useActiveWeb3React();
   const stakeContract = useStakeContract();
-  const [data, setData] = useState({ hash: "", status: "" });
+  const [data, setData] = useState({ hash: "", status: "none" });
   const blockNumber = useBlockNumber();
 
   let stakeRes: any = null;
@@ -29,7 +29,7 @@ export function useStakeCallback(
           setData({ ...data, status: "failed" });
         }
       } catch (error) {
-        setData({ ...data, status: "" });
+        setData({ ...data, status: "failed" });
 
         console.log("stake trx error from hook ", {
           error,
@@ -65,7 +65,7 @@ export function useStakeCallback(
           setData({ ...data, status: "failed" });
         }
       } catch (error) {
-        setData({ ...data, status: "" });
+        setData({ ...data, status: "failed" });
 
         console.log("unstake error ", error);
       }

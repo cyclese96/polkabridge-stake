@@ -319,12 +319,12 @@ const Staking = ({
   const [transactionStatus, stakeTokens, unstakeTokens] =
     useStakeCallback(tokenType);
 
-  // useEffect(() => {
-  //   console.log("is  pending transaction", {
-  //     transactionStatus,
-  //     allowanceTrxStatus,
-  //   });
-  // }, [transactionStatus, allowanceTrxStatus]);
+  useEffect(() => {
+    console.log("is  pending transaction", {
+      transactionStatus,
+      allowanceTrxStatus,
+    });
+  }, [transactionStatus, allowanceTrxStatus]);
 
   const handleClaim = async (tokenType) => {
     const tokensToClaim = claimTokens;
@@ -351,10 +351,6 @@ const Staking = ({
   const withdrawDisableStatus = (_tokenType) => {
     return false;
   };
-
-  useEffect(() => {
-    console.log("stake test ", { transactionStatus, allowanceTrxStatus });
-  }, [transactionStatus, allowanceTrxStatus]);
 
   const [connectWallet] = useWalletConnectCallback();
 
@@ -394,12 +390,11 @@ const Staking = ({
         handleClose={() => setAccountDialog(false)}
         handleConnection={handleWalletConnect}
       />
-      {transactionStatus?.status === "pending" ||
-        (allowanceTrxStatus?.status === "pending" && (
-          <div className="text-center">
-            <Loader height={300} />
-          </div>
-        ))}
+      {transactionStatus?.status === "pending" && (
+        <div className="text-center">
+          <Loader height={300} />
+        </div>
+      )}
       {transactionStatus?.status !== "pending" &&
         allowanceTrxStatus?.status !== "pending" && (
           <div style={{ width: "100%" }}>
