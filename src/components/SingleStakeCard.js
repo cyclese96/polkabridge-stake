@@ -1,5 +1,5 @@
 import { Button, Card, Divider, makeStyles } from "@material-ui/core";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber } from "bignumber.js";
 import CustomButton from "./CustomButton";
 import {
@@ -261,11 +261,9 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Staking = ({
-  stake: { stake },
   account: { currentChain },
   tokenType,
   poolId,
-  confirmAllowance,
   stopped = false,
 }) => {
   const classes = useStyles();
@@ -353,6 +351,10 @@ const Staking = ({
   const withdrawDisableStatus = (_tokenType) => {
     return false;
   };
+
+  useEffect(() => {
+    console.log("stake test ", { transactionStatus, allowanceTrxStatus });
+  }, [transactionStatus, allowanceTrxStatus]);
 
   const [connectWallet] = useWalletConnectCallback();
 
