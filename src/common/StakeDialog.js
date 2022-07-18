@@ -14,7 +14,7 @@ import {
   isNumber,
   resetCurrencyFormatting,
 } from "../utils/helper";
-import { minimumStakingAmount, poolId, tokenAddresses } from "../constants";
+import { minimumStakingAmount, tokenAddresses } from "../constants";
 import BigNumber from "bignumber.js";
 import useActiveWeb3React from "../hooks/useActiveWeb3React";
 import { useTokenBalance } from "../hooks/useBalance";
@@ -154,6 +154,7 @@ const StakeDialog = ({
   handleClose,
   type,
   tokenType,
+  poolId,
   stakeTokens,
   unstakeTokens,
   transactionStatus,
@@ -238,9 +239,9 @@ const StakeDialog = ({
         enteredTokens -= 1;
       }
 
-      await stakeTokens(enteredTokens.toString(), poolId?.[tokenType]);
+      await stakeTokens(enteredTokens.toString(), poolId);
     } else {
-      await unstakeTokens(enteredTokens?.toString(), poolId?.[tokenType]);
+      await unstakeTokens(enteredTokens?.toString(), poolId);
     }
     handleClose();
   };

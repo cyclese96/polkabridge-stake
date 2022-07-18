@@ -1,5 +1,5 @@
 import { Button, Card, Divider, makeStyles } from "@material-ui/core";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { BigNumber } from "bignumber.js";
 import CustomButton from "./CustomButton";
 import {
@@ -9,11 +9,9 @@ import {
   toWei,
 } from "../utils/helper";
 import { connect } from "react-redux";
-import { getUserStakedData, getPoolInfo } from "../actions/stakeActions";
 import { getAccountBalance } from "../actions/accountActions";
 import {
   claimTokens,
-  poolId,
   unsupportedStaking,
   tokenInfo,
   tokenLogo,
@@ -262,7 +260,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Staking = ({ account: { currentChain }, tokenType, stopped = false }) => {
+const Staking = ({
+  account: { currentChain },
+  tokenType,
+  poolId,
+  stopped = false,
+}) => {
   const classes = useStyles();
   const { chainId, active, account } = useActiveWeb3React();
   const [accountDialog, setAccountDialog] = useState(false);
@@ -299,17 +302,9 @@ const Staking = ({ account: { currentChain }, tokenType, stopped = false }) => {
   const [currentTokenAllowance, confirmAllowance, allowanceTrxStatus] =
     useTokenAllowance(poolToken, account, STAKE_ADDRESSES?.[chainId]);
 
-  const poolStakedInfo = usePoolStakedInfo(
-    poolId?.[tokenType],
-    poolToken,
-    currentChain
-  );
+  const poolStakedInfo = usePoolStakedInfo(poolId, poolToken, currentChain);
 
-  const userStakedInfo = useUserStakedInfo(
-    tokenType,
-    poolId?.[tokenType],
-    account
-  );
+  const userStakedInfo = useUserStakedInfo(tokenType, poolId, account);
 
   const handleApprove = useCallback(() => {
     const tokenWeiAmountToApprove =
@@ -324,17 +319,17 @@ const Staking = ({ account: { currentChain }, tokenType, stopped = false }) => {
   const [transactionStatus, stakeTokens, unstakeTokens] =
     useStakeCallback(tokenType);
 
-  // useEffect(() => {
-  //   console.log("is  pending transaction", {
-  //     transactionStatus,
-  //     allowanceTrxStatus,
-  //   });
-  // }, [transactionStatus, allowanceTrxStatus]);
+  useEffect(() => {
+    console.log("is  pending transaction", {
+      transactionStatus,
+      allowanceTrxStatus,
+    });
+  }, [transactionStatus, allowanceTrxStatus]);
 
   const handleClaim = async (tokenType) => {
     const tokensToClaim = claimTokens;
 
-    await unstakeTokens(tokensToClaim, poolId?.[tokenType]);
+    await unstakeTokens(tokensToClaim, poolId);
   };
 
   const claimDisableStatus = useMemo(() => {
@@ -382,6 +377,7 @@ const Staking = ({ account: { currentChain }, tokenType, stopped = false }) => {
         open={dialog.open}
         type={dialog.type}
         tokenType={dialog.tokenType}
+        poolId={poolId}
         handleClose={handleClose}
         stakeTokens={stakeTokens}
         unstakeTokens={unstakeTokens}
@@ -394,12 +390,11 @@ const Staking = ({ account: { currentChain }, tokenType, stopped = false }) => {
         handleClose={() => setAccountDialog(false)}
         handleConnection={handleWalletConnect}
       />
-      {transactionStatus?.status === "pending" ||
-        (allowanceTrxStatus?.status === "pending" && (
-          <div className="text-center">
-            <Loader height={300} />
-          </div>
-        ))}
+      {transactionStatus?.status === "pending" && (
+        <div className="text-center">
+          <Loader height={300} />
+        </div>
+      )}
       {transactionStatus?.status !== "pending" &&
         allowanceTrxStatus?.status !== "pending" && (
           <div style={{ width: "100%" }}>
@@ -616,7 +611,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, {
-  getUserStakedData,
-  getPoolInfo,
   getAccountBalance,
 })(Staking);

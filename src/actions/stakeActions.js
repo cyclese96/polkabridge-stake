@@ -14,13 +14,7 @@ import { stakeContract, erc20TokenContract } from "../contracts/connections";
 import { toWei, getCurrentAccount, getApy } from "../utils/helper";
 import BigNumber from "bignumber.js";
 import config from "../config";
-import {
-  AOG,
-  poolId,
-  tokenContarctAddresses,
-  stakeContractAdrresses,
-  STAKE_ADDRESSES,
-} from "../constants";
+import { AOG, tokenContarctAddresses, STAKE_ADDRESSES } from "../constants";
 
 // Note: these functions has been depricated
 export const fetchPbrMarketData = () => async (dispatch) => {
@@ -102,40 +96,40 @@ export const getPoolInfo =
     }
   };
 
-export const checkAllowance =
-  (tokenSymbol, account, network) => async (dispatch) => {
-    try {
-      if (!account) {
-        return;
-      }
+// export const checkAllowance =
+//   (tokenSymbol, account, network) => async (dispatch) => {
+//     try {
+//       if (!account) {
+//         return;
+//       }
 
-      const stakeContractAddress = stakeContractAdrresses?.[network];
+//       const stakeContractAddress = stakeContractAdrresses?.[network];
 
-      const tokenAddress = tokenContarctAddresses?.[network]?.[tokenSymbol];
-      const currTokenContract = erc20TokenContract(network, tokenAddress);
+//       const tokenAddress = tokenContarctAddresses?.[network]?.[tokenSymbol];
+//       const currTokenContract = erc20TokenContract(network, tokenAddress);
 
-      const allowance = await currTokenContract.methods
-        .allowance(account, stakeContractAddress)
-        .call();
+//       const allowance = await currTokenContract.methods
+//         .allowance(account, stakeContractAddress)
+//         .call();
 
-      const apprObj = {};
-      if (new BigNumber(allowance).gt(0)) {
-        apprObj[tokenSymbol] = true;
-      } else {
-        apprObj[tokenSymbol] = false;
-      }
+//       const apprObj = {};
+//       if (new BigNumber(allowance).gt(0)) {
+//         apprObj[tokenSymbol] = true;
+//       } else {
+//         apprObj[tokenSymbol] = false;
+//       }
 
-      dispatch({
-        type: ALLOWANCE_UPDATE,
-        payload: apprObj,
-      });
-    } catch (error) {
-      dispatch({
-        type: ERROR,
-        payload: "Alowance Error!",
-      });
-    }
-  };
+//       dispatch({
+//         type: ALLOWANCE_UPDATE,
+//         payload: apprObj,
+//       });
+//     } catch (error) {
+//       dispatch({
+//         type: ERROR,
+//         payload: "Alowance Error!",
+//       });
+//     }
+//   };
 
 export const confirmAllowance =
   (balance, tokenType, tokenContract, account, chainId) => async (dispatch) => {
@@ -166,161 +160,164 @@ export const confirmAllowance =
     });
   };
 
-export const getUserStakedData =
-  (tokenType, network, library) => async (dispatch) => {
-    const loadingObj = {};
-    loadingObj[`${tokenType}`] = true;
-    dispatch({
-      type: SHOW_LOADING,
-      payload: loadingObj,
-    });
+// export const getUserStakedData =
+//   (tokenType, network, library) => async (dispatch) => {
+//     const loadingObj = {};
+//     loadingObj[`${tokenType}`] = true;
+//     dispatch({
+//       type: SHOW_LOADING,
+//       payload: loadingObj,
+//     });
 
-    try {
-      const account = await getCurrentAccount();
+//     try {
+//       const account = await getCurrentAccount();
 
-      const tokenAddress = tokenContarctAddresses?.[network]?.[tokenType];
-      const tokenContract = erc20TokenContract(network, tokenAddress, library);
+//       const tokenAddress = tokenContarctAddresses?.[network]?.[tokenType];
+//       const tokenContract = erc20TokenContract(network, tokenAddress, library);
 
-      const pool = poolId[tokenType];
-      const currStakeContract = stakeContract(network, library);
+//       const pool = poolId[tokenType];
+//       const currStakeContract = stakeContract(network, library);
 
-      const allowance = await tokenContract
-        .allowance(account, currStakeContract._address)
-        .call();
+//       const allowance = await tokenContract
+//         .allowance(account, currStakeContract._address)
+//         .call();
 
-      const apprObj = {};
-      if (new BigNumber(allowance).gt(0)) {
-        apprObj[tokenType] = true;
-      } else {
-        apprObj[tokenType] = false;
-      }
+//       const apprObj = {};
+//       if (new BigNumber(allowance).gt(0)) {
+//         apprObj[tokenType] = true;
+//       } else {
+//         apprObj[tokenType] = false;
+//       }
 
-      dispatch({
-        type: ALLOWANCE_UPDATE,
-        payload: apprObj,
-      });
+//       dispatch({
+//         type: ALLOWANCE_UPDATE,
+//         payload: apprObj,
+//       });
 
-      const [stakedData, pendingReward] = await Promise.all([
-        currStakeContract?.estimateGas.userInfo(pool, account),
-        currStakeContract?.estimateGas?.pendingReward(pool, account),
-      ]);
+//       const [stakedData, pendingReward] = await Promise.all([
+//         currStakeContract?.estimateGas.userInfo(pool, account),
+//         currStakeContract?.estimateGas?.pendingReward(pool, account),
+//       ]);
 
-      const stakeObj = {};
+//       const stakeObj = {};
 
-      stakeObj[tokenType] = {
-        amount: stakedData.amount,
-        rewardClaimed: stakedData.rewardClaimed,
-        pendingReward: pendingReward,
-      };
+//       stakeObj[tokenType] = {
+//         amount: stakedData.amount,
+//         rewardClaimed: stakedData.rewardClaimed,
+//         pendingReward: pendingReward,
+//       };
 
-      dispatch({
-        type: GET_USER_STAKE_DATA,
-        payload: stakeObj,
-      });
-    } catch (error) {
-      dispatch({
-        type: ERROR,
-        payload: "Failed to update balance",
-      });
-    }
-    dispatch({
-      type: HIDE_LOADING,
-      payload: tokenType,
-    });
-  };
+//       dispatch({
+//         type: GET_USER_STAKE_DATA,
+//         payload: stakeObj,
+//       });
+//     } catch (error) {
+//       dispatch({
+//         type: ERROR,
+//         payload: "Failed to update balance",
+//       });
+//     }
+//     dispatch({
+//       type: HIDE_LOADING,
+//       payload: tokenType,
+//     });
+//   };
 
-export const stakeTokens =
-  (tokens, account, tokenType, chainId, stakeContract) => async (dispatch) => {
-    const loadingObj = {};
-    loadingObj[`${tokenType}`] = true;
-    dispatch({
-      type: SHOW_LOADING,
-      payload: loadingObj,
-    });
-    const depositTokens = toWei(tokens, "ether");
+// export const stakeTokens =
+//   (tokens, account, tokenType, chainId, stakeContract) => async (dispatch) => {
+//     const loadingObj = {};
+//     loadingObj[`${tokenType}`] = true;
+//     dispatch({
+//       type: SHOW_LOADING,
+//       payload: loadingObj,
+//     });
+//     const depositTokens = toWei(tokens);
 
-    const pool = poolId[tokenType];
+//     const pool = poolId[tokenType];
 
-    try {
-      // const tokenAddress = tokenContarctAddresses?.[network]?.[tokenType];
-      // const currTokenContract = erc20TokenContract(network, tokenAddress);
-      // const currStakeContract = stakeContract(network);
-      let callback;
-      if (chainId?.toString() === "137") {
-        // set gas for polygon
-        callback = await stakeContract.deposit(pool, depositTokens);
-        // .send({ from: account, gasPrice: 100000000000 });
-      } else {
-        callback = await stakeContract.deposit(pool, depositTokens);
-        // .send({ from: account });
-      }
+//     try {
+//       // const tokenAddress = tokenContarctAddresses?.[network]?.[tokenType];
+//       // const currTokenContract = erc20TokenContract(network, tokenAddress);
+//       // const currStakeContract = stakeContract(network);
+//       let callback;
+//       if (chainId?.toString() === "137") {
+//         // set gas for polygon
+//         callback = await stakeContract.deposit(pool, depositTokens);
+//         // .send({ from: account, gasPrice: 100000000000 });
+//       } else {
+//         // callback = await stakeContract.deposit(pool, depositTokens, {
+//         //   gasLimit: 200000,
+//         // });
+//         callback = await stakeContract.deposit(pool, depositTokens);
+//         // .send({ from: account });
+//       }
 
-      // const [balanceWei, stakedData, pendingReward] = await Promise.all([
-      //   currTokenContract.methods.balanceOf(account).call(),
-      //   currStakeContract.methods.userInfo(pool, account).call(),
-      //   currStakeContract.methods.pendingReward(pool, account).call(),
-      // ]);
+//       // const [balanceWei, stakedData, pendingReward] = await Promise.all([
+//       //   currTokenContract.methods.balanceOf(account).call(),
+//       //   currStakeContract.methods.userInfo(pool, account).call(),
+//       //   currStakeContract.methods.pendingReward(pool, account).call(),
+//       // ]);
 
-      // const balanceObj = {};
-      // balanceObj[`${tokenType}`] = balanceWei;
-      // dispatch({
-      //   type: LOAD_BALANCE,
-      //   payload: balanceObj,
-      // });
+//       // const balanceObj = {};
+//       // balanceObj[`${tokenType}`] = balanceWei;
+//       // dispatch({
+//       //   type: LOAD_BALANCE,
+//       //   payload: balanceObj,
+//       // });
 
-      // const stakeObj = {};
-      // stakeObj[tokenType] = {
-      //   amount: stakedData.amount,
-      //   rewardClaimed: stakedData.rewardClaimed,
-      //   pendingReward: pendingReward,
-      // };
-      // dispatch({
-      //   type: GET_USER_STAKE_DATA,
-      //   payload: stakeObj,
-      // });
-    } catch (error) {
-      console.log("stake error ", error);
-      // dispatch({
-      //   type: ERROR,
-      //   payload: network === bscNetwork ? error.message : error,
-      // });
-    }
-    dispatch({
-      type: HIDE_LOADING,
-      payload: tokenType,
-    });
-  };
+//       // const stakeObj = {};
+//       // stakeObj[tokenType] = {
+//       //   amount: stakedData.amount,
+//       //   rewardClaimed: stakedData.rewardClaimed,
+//       //   pendingReward: pendingReward,
+//       // };
+//       // dispatch({
+//       //   type: GET_USER_STAKE_DATA,
+//       //   payload: stakeObj,
+//       // });
+//     } catch (error) {
+//       console.log("stake error ", { error, pool, depositTokens });
+//       // dispatch({
+//       //   type: ERROR,
+//       //   payload: network === bscNetwork ? error.message : error,
+//       // });
+//     }
+//     dispatch({
+//       type: HIDE_LOADING,
+//       payload: tokenType,
+//     });
+//   };
 
-export const unstakeTokens =
-  (tokens, account, tokenType, chainId, stakeContract) => async (dispatch) => {
-    const loadingObj = {};
-    loadingObj[`${tokenType}`] = true;
-    dispatch({
-      type: SHOW_LOADING,
-      payload: loadingObj,
-    });
+// export const unstakeTokens =
+//   (tokens, account, tokenType, chainId, stakeContract) => async (dispatch) => {
+//     const loadingObj = {};
+//     loadingObj[`${tokenType}`] = true;
+//     dispatch({
+//       type: SHOW_LOADING,
+//       payload: loadingObj,
+//     });
 
-    const depositTokens = toWei(tokens, "ether");
-    const pool = poolId[tokenType];
-    let stakeCallback;
-    try {
-      if (chainId?.toString() === "137") {
-        stakeCallback = await stakeContract.withdraw(pool, depositTokens);
-        // .send({ from: account, gasPrice: 100000000000 });
-      } else {
-        if (tokenType === AOG) {
-          stakeCallback = await stakeContract.emergencyWithdraw(pool);
-          // .send({ from: account });
-        } else {
-          stakeCallback = await stakeContract.withdraw(pool, depositTokens);
-          // .send({ from: account });
-        }
-      }
-    } catch (error) {
-      console.log("unstake error ", error);
-    }
-    dispatch({
-      type: HIDE_LOADING,
-      payload: tokenType,
-    });
-  };
+//     const depositTokens = toWei(tokens, "ether");
+//     const pool = poolId[tokenType];
+//     let stakeCallback;
+//     try {
+//       if (chainId?.toString() === "137") {
+//         stakeCallback = await stakeContract.withdraw(pool, depositTokens);
+//         // .send({ from: account, gasPrice: 100000000000 });
+//       } else {
+//         if (tokenType === AOG) {
+//           stakeCallback = await stakeContract.emergencyWithdraw(pool);
+//           // .send({ from: account });
+//         } else {
+//           stakeCallback = await stakeContract.withdraw(pool, depositTokens);
+//           // .send({ from: account });
+//         }
+//       }
+//     } catch (error) {
+//       console.log("unstake error ", error);
+//     }
+//     dispatch({
+//       type: HIDE_LOADING,
+//       payload: tokenType,
+//     });
+//   };

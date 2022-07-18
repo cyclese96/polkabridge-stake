@@ -5,7 +5,11 @@ import Navbar from "../common/Navbar";
 import Footer from "../common/Footer";
 // import Wallet from "../common/Wallet";
 import { connect } from "react-redux";
-import { supportedStaking, unsupportedStaking } from "../constants";
+import {
+  POOL_ID_MAPPINGS,
+  supportedStaking,
+  unsupportedStaking,
+} from "../constants";
 import { CHANGE_NETWORK, CONNECT_WALLET } from "../actions/types";
 import store from "../store";
 import BalanceCard from "../common/BalanceCard";
@@ -215,18 +219,38 @@ const Home = ({ account: { error, currentChain } }) => {
   const supportedStakingPools = useMemo(
     () =>
       Object.keys(supportedStaking).includes(currentChain?.toString())
-        ? supportedStaking?.[currentChain]
+        ? supportedStaking?.[currentChain]?.map((item) => {
+            return {
+              poolId: POOL_ID_MAPPINGS?.[currentChain]?.[item],
+              poolToken: item,
+            };
+          })
         : !currentChain
-        ? supportedStaking[1]
+        ? supportedStaking[1]?.map((item) => {
+            return {
+              poolId: POOL_ID_MAPPINGS?.[currentChain]?.[item],
+              poolToken: item,
+            };
+          })
         : [],
     [currentChain]
   );
   const unSupportedStakingPools = useMemo(
     () =>
       Object.keys(unsupportedStaking).includes(currentChain?.toString())
-        ? unsupportedStaking?.[currentChain]
+        ? unsupportedStaking?.[currentChain]?.map((item) => {
+            return {
+              poolId: POOL_ID_MAPPINGS?.[currentChain]?.[item],
+              poolToken: item,
+            };
+          })
         : !currentChain
-        ? unsupportedStaking[1]
+        ? unsupportedStaking[1]?.map((item) => {
+            return {
+              poolId: POOL_ID_MAPPINGS?.[currentChain]?.[item],
+              poolToken: item,
+            };
+          })
         : [],
     [currentChain]
   );
@@ -273,10 +297,13 @@ const Home = ({ account: { error, currentChain } }) => {
                     <h1 className={classes.title}>Active Pools</h1>
                     <div className={classes.dividerPool} />
                   </div>
-                  {supportedStakingPools.map((token) => (
+                  {supportedStakingPools.map((item) => (
                     <div className="col-md-4">
                       <div className={classes.card}>
-                        <SingleStakeCard tokenType={token} />
+                        <SingleStakeCard
+                          tokenType={item?.poolToken}
+                          poolId={item?.poolId}
+                        />
                       </div>
                     </div>
                   ))}
@@ -296,10 +323,14 @@ const Home = ({ account: { error, currentChain } }) => {
                     <h1 className={classes.title}>Ended Pool</h1>
                     <div className={classes.dividerPool} />
                   </div>
-                  {unSupportedStakingPools.map((token) => (
+                  {unSupportedStakingPools.map((item) => (
                     <div className="col-md-4 mt-3">
                       <div className={classes.card}>
-                        <SingleStakeCard tokenType={token} stopped={true} />
+                        <SingleStakeCard
+                          tokenType={item?.poolToken}
+                          poolId={item?.poolId}
+                          stopped={true}
+                        />
                       </div>
                     </div>
                   ))}
