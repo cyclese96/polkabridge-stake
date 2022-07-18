@@ -398,8 +398,8 @@ export const apyConstants = {
       AVG_REWARD_PER_BLOCK: 285000,
     },
     PBR: {
-      NUMBER_BLOCKS_PER_YEAR: 2400000,
-      AVG_REWARD_PER_BLOCK: 1, //0.7
+      NUMBER_BLOCKS_PER_YEAR: 10000000,
+      AVG_REWARD_PER_BLOCK: 0.6, //0.7
     },
   },
 };
