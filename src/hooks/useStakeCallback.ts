@@ -31,7 +31,11 @@ export function useStakeCallback(
       } catch (error) {
         setData({ ...data, status: "" });
 
-        console.log("stake trx error ", { error, poolId });
+        console.log("stake trx error from hook ", {
+          error,
+          poolId,
+          stakeAmount,
+        });
       }
     },
     [stakeContract, setData]

@@ -9,11 +9,9 @@ import {
   toWei,
 } from "../utils/helper";
 import { connect } from "react-redux";
-import { getUserStakedData, getPoolInfo } from "../actions/stakeActions";
 import { getAccountBalance } from "../actions/accountActions";
 import {
   claimTokens,
-  poolId,
   unsupportedStaking,
   tokenInfo,
   tokenLogo,
@@ -262,7 +260,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Staking = ({ account: { currentChain }, tokenType, stopped = false }) => {
+const Staking = ({
+  stake: { stake },
+  account: { currentChain },
+  tokenType,
+  poolId,
+  confirmAllowance,
+  stopped = false,
+}) => {
   const classes = useStyles();
   const { chainId, active, account } = useActiveWeb3React();
   const [accountDialog, setAccountDialog] = useState(false);
@@ -299,17 +304,9 @@ const Staking = ({ account: { currentChain }, tokenType, stopped = false }) => {
   const [currentTokenAllowance, confirmAllowance, allowanceTrxStatus] =
     useTokenAllowance(poolToken, account, STAKE_ADDRESSES?.[chainId]);
 
-  const poolStakedInfo = usePoolStakedInfo(
-    poolId?.[tokenType],
-    poolToken,
-    currentChain
-  );
+  const poolStakedInfo = usePoolStakedInfo(poolId, poolToken, currentChain);
 
-  const userStakedInfo = useUserStakedInfo(
-    tokenType,
-    poolId?.[tokenType],
-    account
-  );
+  const userStakedInfo = useUserStakedInfo(tokenType, poolId, account);
 
   const handleApprove = useCallback(() => {
     const tokenWeiAmountToApprove =
@@ -334,7 +331,7 @@ const Staking = ({ account: { currentChain }, tokenType, stopped = false }) => {
   const handleClaim = async (tokenType) => {
     const tokensToClaim = claimTokens;
 
-    await unstakeTokens(tokensToClaim, poolId?.[tokenType]);
+    await unstakeTokens(tokensToClaim, poolId);
   };
 
   const claimDisableStatus = useMemo(() => {
@@ -382,6 +379,7 @@ const Staking = ({ account: { currentChain }, tokenType, stopped = false }) => {
         open={dialog.open}
         type={dialog.type}
         tokenType={dialog.tokenType}
+        poolId={poolId}
         handleClose={handleClose}
         stakeTokens={stakeTokens}
         unstakeTokens={unstakeTokens}
@@ -616,7 +614,5 @@ const mapStateToProps = (state) => ({
 });
 
 export default connect(mapStateToProps, {
-  getUserStakedData,
-  getPoolInfo,
   getAccountBalance,
 })(Staking);

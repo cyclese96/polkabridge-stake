@@ -12,32 +12,13 @@ export const STAKE_ADDRESSES: { [index: number]: string } = {
   97: "0xA5c2186CFb734828EE89a4087FD571F12Af1E895", // bsc testnet
 };
 
-// stake contract addresses
-export const stakeContractAdrresses = {
-  ethereum:
-    currentConnection === "mainnet"
-      ? "0x1b46b72c5280f30Fbe8A958B4f3c348FD0fD2E55"
-      : "0x7678f0AF7304e01554E2D49D96E55C8de4975c66",
-  matic:
-    currentConnection === "mainnet"
-      ? "0x6335aF028e77B574423733443678aD4cb9e15B3D"
-      : "0x55950cF279Ba5b43263f4Df54833b85F684B333F",
-  harmony:
-    currentConnection === "mainnet"
-      ? "0x7a1238cba81de51158c150ffb48a2dba14b987bd"
-      : "0x7a1238cba81de51158c150ffb48a2dba14b987bd",
-  bsc:
-    currentConnection === "mainnet"
-      ? "0x064dE1e65df3F40Afd7fb9E8A1Af61bD4545f4a1"
-      : "0xA5c2186CFb734828EE89a4087FD571F12Af1E895",
-};
-
 export const tokenAddresses = {
   PBR: {
     1: "0x298d492e8c1d909D3F63Bc4A36C66c64ACB3d695", // mainnet
     42: "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0", // koven
     137: "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0", //  polygon mainnet
     80001: "0x6024ca0b7c12846a396a5d860ff885233ef16dd0", // polygon testnet
+    56: "0x1D1cB8997570e73949930c01Fe5796C88d7336c6", // bsc mainnet testnet
   },
   BITE: {
     1: "0x4eed0fa8de12d5a86517f214c2f11586ba2ed88d",
@@ -327,19 +308,29 @@ export const tokenInfo = {
 };
 
 //given token name and network, --> poolId
-export const poolId: { [index: string]: number } = {
-  PBR: 0,
-  BITE: 1,
-  CORGIB: 0,
-  PWAR: 1,
-  CFL365: 2,
-  PUN: 4,
-  SHOE: 3,
-  WELT: 1,
-  GRAV: 2,
-  DEFLY: 3,
-  AOG: 4,
-  LABS: 5,
+export const POOL_ID_MAPPINGS: {
+  [index: number]: { [index: string]: number };
+} = {
+  1: {
+    PBR: 0,
+    BITE: 1,
+    CFL365: 2,
+    SHOE: 3,
+    PUN: 4,
+    LABS: 5,
+  },
+  137: {
+    PBR: 0,
+    WELT: 1,
+  },
+  56: {
+    CORGIB: 0,
+    PWAR: 1,
+    GRAV: 2,
+    DEFLY: 3,
+    AOG: 4,
+    PBR: 5,
+  },
 };
 
 export const apyConstants = {
@@ -405,6 +396,10 @@ export const apyConstants = {
     CORGIB: {
       NUMBER_BLOCKS_PER_YEAR: 10000000,
       AVG_REWARD_PER_BLOCK: 285000,
+    },
+    PBR: {
+      NUMBER_BLOCKS_PER_YEAR: 2400000,
+      AVG_REWARD_PER_BLOCK: 1, //0.7
     },
   },
 };
@@ -481,7 +476,7 @@ export const supportedNetworks = ["1", "56", "137"];
 export const supportedStaking = {
   1: [PBR, LABS],
   42: [PBR, LABS],
-  56: [CORGIB, PWAR],
+  56: [PBR, CORGIB, PWAR],
   97: [CORGIB, PWAR],
   137: [PBR],
   80001: [PBR],
