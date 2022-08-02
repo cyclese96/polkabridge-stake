@@ -474,7 +474,7 @@ export const claimTokens = "1";
 export const supportedNetworks = ["1", "56", "137"];
 
 export const supportedStaking = {
-  1: [PBR, LABS],
+  1: [PBR],
   42: [PBR, LABS],
   56: [PBR, CORGIB, PWAR],
   97: [CORGIB, PWAR],
@@ -483,7 +483,7 @@ export const supportedStaking = {
 };
 
 export const unsupportedStaking = {
-  1: ["PUN", "CFL365", "SHOE", "BITE"],
+  1: ["PUN", "CFL365", "SHOE", "BITE", "LABS"],
   43: ["PUN", "CFL365", "SHOE", "BITE"],
   56: ["AOG", GRAV, DEFLY],
   97: ["AOG", GRAV, DEFLY],
