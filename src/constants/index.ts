@@ -379,7 +379,7 @@ export const apyConstants = {
   bsc: {
     PWAR: {
       NUMBER_BLOCKS_PER_YEAR: 10220000,
-      AVG_REWARD_PER_BLOCK: 0.15,
+      AVG_REWARD_PER_BLOCK: 0.8,
     },
     GRAV: {
       NUMBER_BLOCKS_PER_YEAR: 10220000,
@@ -399,7 +399,7 @@ export const apyConstants = {
     },
     PBR: {
       NUMBER_BLOCKS_PER_YEAR: 10220000,
-      AVG_REWARD_PER_BLOCK: 0.06, //0.7
+      AVG_REWARD_PER_BLOCK: 0.12, //0.7
     },
   },
 };
