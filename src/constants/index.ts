@@ -337,7 +337,7 @@ export const apyConstants = {
   ethereum: {
     PBR: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
-      AVG_REWARD_PER_BLOCK: 1, //0.7
+      AVG_REWARD_PER_BLOCK: 1.5, //0.7
     },
     BITE: {
       NUMBER_BLOCKS_PER_YEAR: 2400000,
@@ -379,7 +379,7 @@ export const apyConstants = {
   bsc: {
     PWAR: {
       NUMBER_BLOCKS_PER_YEAR: 10220000,
-      AVG_REWARD_PER_BLOCK: 0.8,
+      AVG_REWARD_PER_BLOCK: 1.6,
     },
     GRAV: {
       NUMBER_BLOCKS_PER_YEAR: 10220000,
@@ -395,11 +395,11 @@ export const apyConstants = {
     },
     CORGIB: {
       NUMBER_BLOCKS_PER_YEAR: 10220000,
-      AVG_REWARD_PER_BLOCK: 285000,
+      AVG_REWARD_PER_BLOCK: 1285000,
     },
     PBR: {
       NUMBER_BLOCKS_PER_YEAR: 10220000,
-      AVG_REWARD_PER_BLOCK: 0.12, //0.7
+      AVG_REWARD_PER_BLOCK: 0.17, //0.7
     },
   },
 };
