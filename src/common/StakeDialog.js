@@ -13,6 +13,7 @@ import {
   fromWei,
   isNumber,
   resetCurrencyFormatting,
+  toWei,
 } from "../utils/helper";
 import { minimumStakingAmount, tokenAddresses } from "../constants";
 import BigNumber from "bignumber.js";
@@ -202,7 +203,7 @@ const StakeDialog = ({
       return;
     }
 
-    if (type !== "stake" && enteredTokens > stakedTokens) {
+    if (type !== "stake" && new BigNumber(enteredTokens).gt(stakedTokens)) {
       setError({
         status: true,
         message: `Maximum withdraw amount can not exceed ${formatCurrency(
@@ -212,7 +213,10 @@ const StakeDialog = ({
       return;
     }
 
-    if (type === "stake" && enteredTokens < minimumStakingAmount[tokenType]) {
+    if (
+      type === "stake" &&
+      new BigNumber(enteredTokens).lt(minimumStakingAmount[tokenType])
+    ) {
       setError({
         status: true,
         message: `Minimum ${formatCurrency(
@@ -222,7 +226,7 @@ const StakeDialog = ({
       return;
     }
 
-    if (type === "stake" && enteredTokens > balanceTokens) {
+    if (type === "stake" && new BigNumber(enteredTokens).gt(balanceTokens)) {
       setError({
         status: true,
         message: `Can not stake more that ${formatCurrency(
@@ -235,7 +239,7 @@ const StakeDialog = ({
     setError({});
 
     if (type === "stake") {
-      if (parseFloat(enteredTokens) === parseFloat(fromWei(balanceTokens))) {
+      if (new BigNumber(enteredTokens).eq(balanceTokens)) {
         enteredTokens -= 1;
       }
 
