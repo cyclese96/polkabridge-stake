@@ -182,6 +182,10 @@ export const tokenInfo = {
       buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x298d492e8c1d909d3f63bc4a36c66c64acb3d695",
       info: "https://www.coingecko.com/en/coins/polkabridge",
     },
+    56: {
+      buy: "https://swap.polkabridge.org/",
+      info: "https://www.coingecko.com/en/coins/polkabridge",
+    },
     42: {
       buy: "https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=0x298d492e8c1d909d3f63bc4a36c66c64acb3d695",
       info: "https://www.coingecko.com/en/coins/polkabridge",
