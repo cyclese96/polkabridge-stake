@@ -552,7 +552,7 @@ const Staking = ({
                   </Button>
                 </div>
               )}
-              {active && !currentTokenAllowance && (
+              {active && !currentTokenAllowance && !stopped && (
                 <div className="text-center">
                   <CustomButton
                     disabled={allowanceTrxStatus?.status === "waiting"}
