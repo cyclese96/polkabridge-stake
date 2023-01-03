@@ -160,6 +160,7 @@ const StakeDialog = ({
   unstakeTokens,
   transactionStatus,
   userStakedInfo,
+  stopped
 }) => {
   const classes = useStyles();
   const [inputTokens, setTokenValue] = useState("");
@@ -245,7 +246,7 @@ const StakeDialog = ({
 
       await stakeTokens(enteredTokens.toString(), poolId);
     } else {
-      await unstakeTokens(enteredTokens?.toString(), poolId);
+      await unstakeTokens(enteredTokens?.toString(), poolId, stopped);
     }
     handleClose();
   };

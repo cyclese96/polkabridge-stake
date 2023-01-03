@@ -329,7 +329,7 @@ const Staking = ({
   const handleClaim = async (tokenType) => {
     const tokensToClaim = claimTokens;
 
-    await unstakeTokens(tokensToClaim, poolId);
+    await unstakeTokens(tokensToClaim, poolId, stopped);
   };
 
   const claimDisableStatus = useMemo(() => {
@@ -383,6 +383,7 @@ const Staking = ({
         unstakeTokens={unstakeTokens}
         transactionStatus={transactionStatus}
         userStakedInfo={userStakedInfo}
+        stopped={stopped}
       />
       <AccountDialog
         open={accountDialog}
