@@ -42,20 +42,30 @@ export function useStakeCallback(
   );
 
   const unstakeTokens = useCallback(
-    async (unstakeAmount?: string, poolId?: number) => {
+    async (unstakeAmount?: string, poolId?: number, isEnded?: boolean) => {
       const withdrawTokens = toWei(unstakeAmount);
 
       try {
         setData({ ...data, status: "waiting" });
 
         let unstakeRes: any = null;
-        if (chainId?.toString() === "137") {
-          unstakeRes = await stakeContract?.withdraw(poolId, withdrawTokens);
+
+        if (isEnded) {
+          // console.log("calling emerguncy withdraw", { isEnded });
+          unstakeRes = await stakeContract?.emergencyWithdraw(poolId);
         } else {
-          if (tokenSymbol === "AOG") {
-            unstakeRes = await stakeContract?.emergencyWithdraw(poolId);
-          } else {
+          // console.log("calling normal withdraw", { isEnded });
+          if (chainId?.toString() === "137") {
             unstakeRes = await stakeContract?.withdraw(poolId, withdrawTokens);
+          } else {
+            if (tokenSymbol === "AOG") {
+              unstakeRes = await stakeContract?.emergencyWithdraw(poolId);
+            } else {
+              unstakeRes = await stakeContract?.withdraw(
+                poolId,
+                withdrawTokens
+              );
+            }
           }
         }
 
