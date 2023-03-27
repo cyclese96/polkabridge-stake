@@ -39,7 +39,7 @@ export const polygonNetworkDetail = {
     chainName: "Polygon Mainnet",
     nativeCurrency: {
       name: "MATIC",
-      symbol: "matic",
+      symbol: "MATIC",
       decimals: 18,
     },
     rpcUrls: polygonNodes,
