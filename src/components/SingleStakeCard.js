@@ -371,6 +371,14 @@ const Staking = ({
     );
   }, [poolStakedInfo, poolTokenPrice]);
 
+  useEffect(() => {
+    console.log("stake data test ", {
+      active,
+      currentTokenAllowance,
+      stopped,
+      tokenType,
+    });
+  }, [active, currentTokenAllowance, stopped, tokenType]);
   return (
     <Card elevation={10} className={classes.card}>
       <StakeDialog
@@ -571,7 +579,7 @@ const Staking = ({
                   </p>
                 </div>
               )}
-              {active && currentTokenAllowance && (
+              {active && (
                 <div className={classes.stakeButtons}>
                   <CustomButton
                     hidden={stopped}
