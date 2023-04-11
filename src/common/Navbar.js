@@ -289,8 +289,8 @@ const Navbar = ({ chainId }) => {
             icon: <VpnLockOutlined />,
           },
           {
-            name: "Lending",
-            link: "#",
+            name: "P2P",
+            link: "https://p2p.polkabridge.org/",
             id: "features",
             icon: <FlareOutlined />,
           },
@@ -385,8 +385,8 @@ const Navbar = ({ chainId }) => {
           </div>
 
           <div>
-            <a href="#" className={classes.navbarItemsDesktop}>
-              Lending <DotCircle />
+            <a href="https://p2p.polkabridge.org/" className={classes.navbarItemsDesktop}>
+              P2P <DotCircle />
             </a>
           </div>
 
