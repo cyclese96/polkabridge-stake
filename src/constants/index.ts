@@ -10,7 +10,7 @@ export const STAKE_ADDRESSES: { [index: number]: string } = {
   1666700000: "0x7a1238cba81de51158c150ffb48a2dba14b987bd", // harmony testnet,
   56: "0x064dE1e65df3F40Afd7fb9E8A1Af61bD4545f4a1", // bsc mainnet
   97: "0xA5c2186CFb734828EE89a4087FD571F12Af1E895", // bsc testnet
-  42161: "0xdebB6227FA8593A26F7C84B4c288518c7A5e242B",
+  42161: "0x951edbcf28bfd78b0902dbf2bfd495bd4ad3d18f",
 };
 
 export const tokenAddresses = {
@@ -424,8 +424,8 @@ export const apyConstants = {
   },
   arbitrum: {
     AIBB: {
-      NUMBER_BLOCKS_PER_YEAR: 116800000,
-      AVG_REWARD_PER_BLOCK: 3000000,
+      NUMBER_BLOCKS_PER_YEAR: 2555000,
+      AVG_REWARD_PER_BLOCK: 47000000,
     },
   },
 };
