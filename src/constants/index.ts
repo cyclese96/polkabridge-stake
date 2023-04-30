@@ -318,7 +318,7 @@ export const tokenInfo = {
   },
   AIBB: {
     42161: {
-      buy: `https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=${tokenAddresses.AIBB[42161]}`,
+      buy: `https://app.camelot.exchange/?outputCurrency=0xb9af4762c039d63e30039f1712dfab77026408c7`,
       info: "https://coinmarketcap.com/currencies/bullbear-ai/",
     },
   },
@@ -425,7 +425,7 @@ export const apyConstants = {
   arbitrum: {
     AIBB: {
       NUMBER_BLOCKS_PER_YEAR: 116800000,
-      AVG_REWARD_PER_BLOCK: 5208333,
+      AVG_REWARD_PER_BLOCK: 3000000,
     },
   },
 };

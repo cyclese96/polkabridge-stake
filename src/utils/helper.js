@@ -7,6 +7,7 @@ import {
   etheriumNetwork,
   harmonyNetwork,
   maticNetwork,
+  arbitrum,
   tokenPriceConstants,
 } from "../constants";
 import config from "./config";
@@ -132,6 +133,7 @@ export const isMetaMaskInstalled = () => {
 
 //apy calculation
 const getCalculatedApy = (blocksPerYear, rewardPerBlock, totalTokenStaked) => {
+ 
   const apy = new BigNumber(blocksPerYear)
     .times(new BigNumber(rewardPerBlock))
     .div(totalTokenStaked)
@@ -148,6 +150,8 @@ export const getApy = (tokenType, poolObj, network) => {
       apyConstants?.[network]?.[tokenType]?.NUMBER_BLOCKS_PER_YEAR;
     const rewardPerBlock =
       apyConstants?.[network]?.[tokenType]?.AVG_REWARD_PER_BLOCK;
+      console.log("APY----------",network+" "+tokenType)
+
     if (!rewardPerBlock || !blocksPerYear) {
       return "0";
     }
@@ -205,7 +209,10 @@ export const getCurrentNetworkName = (networkId) => {
   ) {
     return maticNetwork;
   } else if ([config.hmyChainMainnet, config.hmyChainMainnet].includes(_id)) {
-    return harmonyNetwork;
+    return harmonyNetwork;}
+    
+    else if ([config.arbitrumChain, config.arbitrumChain].includes(_id)) {
+      return arbitrum;
   } else {
     return etheriumNetwork;
   }
