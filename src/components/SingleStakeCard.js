@@ -310,7 +310,7 @@ const Staking = ({
     const tokenWeiAmountToApprove =
       tokenType === CORGIB
         ? "999999999999999999999999999999999999"
-        : toWei("999999999");
+        : toWei("100000000000000000");
     confirmAllowance(tokenWeiAmountToApprove);
   }, [tokenContract, chainId]);
 

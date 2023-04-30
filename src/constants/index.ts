@@ -433,7 +433,7 @@ export const apyConstants = {
 export const tokenPriceConstants = {
   DEFLY: 0.06,
   AOG: 0.3,
-  AIBB: 0.00000000003,
+  AIBB: 0.0000000007,
 };
 
 export const coingeckoTokenId = {
