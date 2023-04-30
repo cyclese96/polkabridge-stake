@@ -10,6 +10,7 @@ export const STAKE_ADDRESSES: { [index: number]: string } = {
   1666700000: "0x7a1238cba81de51158c150ffb48a2dba14b987bd", // harmony testnet,
   56: "0x064dE1e65df3F40Afd7fb9E8A1Af61bD4545f4a1", // bsc mainnet
   97: "0xA5c2186CFb734828EE89a4087FD571F12Af1E895", // bsc testnet
+  42161: "0xdebB6227FA8593A26F7C84B4c288518c7A5e242B",
 };
 
 export const tokenAddresses = {
@@ -63,6 +64,9 @@ export const tokenAddresses = {
   GRAV: {
     56: "0xa6168c7e5eb7c5c379f3a1d7cf1073e09b2f031e",
     97: "0x16153214E683018D5aA318864c8e692b66E16778",
+  },
+  AIBB: {
+    42161: "0xB9AF4762c039D63e30039F1712dfaB77026408c7",
   },
 };
 
@@ -145,6 +149,7 @@ export const GRAV = "GRAV";
 export const DEFLY = "DEFLY";
 export const AOG = "AOG";
 export const LABS = "LABS";
+export const AIBB = "AIBB";
 
 export const tokenLogo = {
   PBR: "img/symbol.png",
@@ -159,6 +164,7 @@ export const tokenLogo = {
   DEFLY: "img/defly.png",
   AOG: "img/aog.png",
   LABS: "img/labs.png",
+  AIBB: "https://s2.coinmarketcap.com/static/img/coins/64x64/24742.png",
 };
 
 export const tokenName = {
@@ -174,6 +180,7 @@ export const tokenName = {
   DEFLY: "DeflyBall",
   AOG: "Age of Gods",
   LABS: "LABS Group",
+  AIBB: "AI BullBEAR",
 };
 
 export const tokenInfo = {
@@ -309,6 +316,12 @@ export const tokenInfo = {
       info: "https://www.dextools.io/app/polygon/pair-explorer/0x55e49f32fbba12aa360eec55200dafd1ac47aaed",
     },
   },
+  AIBB: {
+    42161: {
+      buy: `https://app.uniswap.org/#/swap?inputCurrency=ETH&outputCurrency=${tokenAddresses.AIBB[42161]}`,
+      info: "https://coinmarketcap.com/currencies/bullbear-ai/",
+    },
+  },
 };
 
 //given token name and network, --> poolId
@@ -334,6 +347,9 @@ export const POOL_ID_MAPPINGS: {
     DEFLY: 3,
     AOG: 4,
     PBR: 5,
+  },
+  42161: {
+    AIBB: 0,
   },
 };
 
@@ -406,11 +422,18 @@ export const apyConstants = {
       AVG_REWARD_PER_BLOCK: 0.15,
     },
   },
+  arbitrum: {
+    AIBB: {
+      NUMBER_BLOCKS_PER_YEAR: 116800000,
+      AVG_REWARD_PER_BLOCK: 5208333,
+    },
+  },
 };
 
 export const tokenPriceConstants = {
   DEFLY: 0.06,
   AOG: 0.3,
+  AIBB: 0.00000000003,
 };
 
 export const coingeckoTokenId = {
@@ -430,6 +453,7 @@ export const etheriumNetwork = "ethereum";
 export const bscNetwork = "bsc";
 export const maticNetwork = "matic";
 export const harmonyNetwork = "harmony";
+export const arbitrum = "arbitrum";
 
 export const etherConfig = {
   network_id: {
@@ -445,8 +469,8 @@ export const supportedChainIds = [
   97,
   137,
   80001,
-  1666600000, //harmony mainnet
-  1666700000, // harmony testnet,
+  42161, //arbitrum mainnet
+  421613, // arbitrum testnet,
   5,
 ];
 
@@ -484,6 +508,8 @@ export const supportedStaking = {
   97: [CORGIB, PWAR],
   137: [PBR],
   80001: [PBR],
+  42161: [AIBB],
+  421613: [AIBB],
 };
 
 export const unsupportedStaking = {
@@ -509,6 +535,7 @@ export const minimumStakingAmount = {
   GRAV: 1,
   DEFLY: 1,
   AOG: 1,
+  AIBB: 100000000,
 };
 
 export const ankrRpc = {

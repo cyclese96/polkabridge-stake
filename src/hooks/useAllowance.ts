@@ -30,6 +30,12 @@ export function useTokenAllowance(
 
   const currentAllowance = !allowance ? null : allowance?.[0]?.toString();
 
+  console.log("allowance test ", {
+    currentAllowance,
+    TOKEN_ALLOWANCE_ALLOWANCE,
+    token,
+  });
+
   // const addTransaction = useTransactionAdder();
   const confirmAllowance = useCallback(
     async (balance: string) => {
