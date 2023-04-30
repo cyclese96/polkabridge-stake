@@ -4,6 +4,7 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import {
+  arbitrumNetworkDetail,
   bscNetworkDetail,
   ethereumNetworkDetail,
   harmonyNetworkDetail,
@@ -104,11 +105,11 @@ const NetworkSelect = ({ account: { currentChain } }) => {
           ? polygonNetworkDetail.mainnet
           : polygonNetworkDetail.testnet
       );
-    } else if ([1666600000, 1666700000].includes(_selected)) {
+    } else if ([421613, 42161].includes(_selected)) {
       setupNetwork(
         currentConnection === "mainnet"
-          ? harmonyNetworkDetail.mainnet
-          : harmonyNetworkDetail.testnet
+          ? arbitrumNetworkDetail.mainnet
+          : arbitrumNetworkDetail.testnet
       );
     } else {
       setupNetwork(
@@ -136,6 +137,21 @@ const NetworkSelect = ({ account: { currentChain } }) => {
             <span className={classes.networkName}>Ethereum</span>
             <img className={classes.imgIcon} src={etherIcon} />
           </MenuItem>
+
+          <MenuItem
+            value={currentConnection === "testnet" ? 421613 : 42161}
+            className={classes.buttonDrop}
+          >
+            <span className={classes.networkName}>Arbitrum one</span>
+            <img
+              className={classes.imgIcon}
+              alt="arbitrum"
+              src={
+                "https://s2.coinmarketcap.com/static/img/coins/64x64/11841.png"
+              }
+            />
+          </MenuItem>
+
           <MenuItem
             value={currentConnection === "testnet" ? 97 : 56}
             className={classes.buttonDrop}
@@ -150,13 +166,6 @@ const NetworkSelect = ({ account: { currentChain } }) => {
             <span className={classes.networkName}>Polygon</span>
             <img className={classes.imgIcon} src={polygonIcon} />
           </MenuItem>
-          {/* <MenuItem
-            value={currentConnection === "testnet" ? 1666700000 : 1666600000}
-            className={classes.buttonDrop}
-          >
-            <span className={classes.networkName}>Harmony</span>
-            <img className={classes.imgIcon} src={harmonyIcon} />
-          </MenuItem> */}
         </Select>
       </FormControl>
     </div>

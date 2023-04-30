@@ -579,7 +579,7 @@ const Staking = ({
                   </p>
                 </div>
               )}
-              {active && (
+              {active && currentTokenAllowance && (
                 <div className={classes.stakeButtons}>
                   <CustomButton
                     hidden={stopped}

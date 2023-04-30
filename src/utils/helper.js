@@ -217,6 +217,10 @@ export const fetchTokenPrice = async (tokenSymbol) => {
       return null;
     }
 
+    console.log("price test ", {
+      price: tokenPriceConstants?.[tokenSymbol],
+      tokenSymbol: tokenSymbol,
+    });
     if (Object.keys(tokenPriceConstants).includes(tokenSymbol)) {
       return tokenPriceConstants[tokenSymbol];
     }

@@ -25,5 +25,11 @@ export const polygonNodesTestnet = [
 ];
 
 export const harmonyNodes = ["https://api.harmony.one"];
+export const arbitrumNodes = [
+  "https://arb1.arbitrum.io/rpc",
+  "https://arb-mainnet-public.unifra.io",
+  "https://arbitrum-one.public.blastapi.io	",
+];
+export const arbitrumTestNodes = ["https://goerli-rollup.arbitrum.io/rpc"];
 
 export const harmonyNodesTestnet = ["https://api.s0.b.hmny.io"];

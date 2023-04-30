@@ -24,6 +24,7 @@ export const CHAIN_IDS_TO_NAMES = {
   [SupportedChainId.RINKEBY]: "rinkeby",
   [SupportedChainId.POLYGON]: "polygon",
   [SupportedChainId.POLYGON_MUMBAI]: "polygon_mumbai",
+  [SupportedChainId.ARBITRUM_ONE]: "arbitrum",
 };
 
 export const ALL_SUPPORTED_CHAIN_IDS: SupportedChainId[] = Object.values(
@@ -36,6 +37,7 @@ export const MULTICALL_ADDRESS: { [index: string]: string } = {
   97: "0x688EC8C059592104fC713E0dA9276e649302C4Ab",
   56: "0x6e568FcE995F5c7ddaFB8C0b74B3241328498F8A",
   137: "0xbfB508313126cf61CFb3BD7e570cC79C67998A53",
+  42161: "0x0D6ae2a429df13e44A07Cd2969E085e4833f64A0",
 };
 
 export const NATIVE_TOKEN: { [index: number]: string } = {
@@ -47,4 +49,5 @@ export const NATIVE_TOKEN: { [index: number]: string } = {
   80001: "MATIC",
   1666600000: "ONE",
   1666700000: "ONE",
+  42161: "ETH",
 };

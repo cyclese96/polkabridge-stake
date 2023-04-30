@@ -12,4 +12,8 @@ export default {
   polygon_chain_testnet: 80001,
   api: "http://localhost:8020",
   coingecko: "https://api.coingecko.com/api",
+  arbitrumChain: 42161,
+  arbitrumRpc: "https://arb1.arbitrum.io/rpc",
+  arbitrumGoerliChain: 421613,
+  arbitrumGoerliRpc: "https://goerli-rollup.arbitrum.io/rpc",
 };

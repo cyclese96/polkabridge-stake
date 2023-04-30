@@ -1,5 +1,6 @@
 import config from "./config";
 import {
+  arbitrumNodes,
   bscNodes,
   bscNodesTestnet,
   harmonyNodes,
@@ -80,6 +81,31 @@ export const harmonyNetworkDetail = {
     },
     rpcUrls: harmonyNodesTestnet,
     blockExplorerUrls: [`https://explorer.pops.one/`],
+  },
+};
+
+export const arbitrumNetworkDetail = {
+  mainnet: {
+    chainId: `0x${config.arbitrumChain.toString(16)}`,
+    chainName: "Arbitrum one",
+    nativeCurrency: {
+      name: "ETH",
+      symbol: "ETH",
+      decimals: 18,
+    },
+    rpcUrls: arbitrumNodes,
+    blockExplorerUrls: [`https://arbiscan.io/`],
+  },
+  testnet: {
+    chainId: `0x${config.arbitrumGoerliChain.toString(16)}`,
+    chainName: "Arbitrum goerli",
+    nativeCurrency: {
+      name: "AGOR",
+      symbol: "aogr",
+      decimals: 18,
+    },
+    rpcUrls: harmonyNodesTestnet,
+    blockExplorerUrls: [`https://goerli-rollup-explorer.arbitrum.io/`],
   },
 };
 

@@ -82,6 +82,8 @@ function BalanceCard() {
   }, [chainId]);
   const balances = useCurrencyBalances(account, tokens);
 
+  console.log("balance test ", { tokens, balances });
+
   return (
     <Card className={classes.card} elevation={10}>
       <h6 className={classes.title}>Your Balance</h6>

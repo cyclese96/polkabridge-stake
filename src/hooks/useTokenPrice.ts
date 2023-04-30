@@ -9,6 +9,7 @@ export function useTokenPrice(poolToken?: Token): string | null {
 
   async function fetchData() {
     try {
+      console.log("price test fetching price ", poolToken);
       let res = await fetchTokenPrice(poolToken?.symbol);
       setTokenPrice(res);
     } catch (error) {
