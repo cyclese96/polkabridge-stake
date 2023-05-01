@@ -514,7 +514,7 @@ const Staking = ({
                           1,
                           true
                         )
-                      : formatCurrency(fromWei(userStakedInfo?.staked))}{" "}
+                      : formatLargeNumber(fromWei(userStakedInfo?.staked))}{" "}
                   </div>
                 </div>
                 <div className="text-center mt-4">
@@ -528,7 +528,9 @@ const Staking = ({
                           1,
                           true
                         )
-                      : formatCurrency(fromWei(userStakedInfo?.claimed))}{" "}
+                      : formatLargeNumber(
+                          fromWei(userStakedInfo?.claimed)
+                        )}{" "}
                   </div>
                 </div>
                 <div className="text-center mt-4">
@@ -542,7 +544,9 @@ const Staking = ({
                           1,
                           true
                         )
-                      : formatCurrency(fromWei(userStakedInfo?.pending))}{" "}
+                      : formatLargeNumber(
+                          fromWei(userStakedInfo?.pending)
+                        )}{" "}
                   </div>
                 </div>
               </div>
