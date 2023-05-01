@@ -327,7 +327,7 @@ const StakeDialog = ({
     if (transactionStatus.status === "completed") {
       handleClose();
     }
-  }, [transactionStatus, handleClose]);
+  }, [transactionStatus]);
 
   const handleMax = () => {
     if (type === "stake") {
