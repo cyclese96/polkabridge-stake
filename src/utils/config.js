@@ -13,7 +13,7 @@ export default {
   api: "http://localhost:8020",
   coingecko: "https://api.coingecko.com/api",
   arbitrumChain: 42161,
-  arbitrumRpc: "https://arb1.arbitrum.io/rpc",
+  arbitrumRpc: "https://arbitrum-mainnet.infura.io/v3/898b1725b971464bbca3f7023dd5f8a0",
   arbitrumGoerliChain: 421613,
   arbitrumGoerliRpc: "https://goerli-rollup.arbitrum.io/rpc",
 };
