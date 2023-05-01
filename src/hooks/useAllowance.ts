@@ -14,6 +14,7 @@ import {
 import useActiveWeb3React from "./useActiveWeb3React";
 // import { useTransactionAdder } from "state/transactions/hooks";
 import useBlockNumber from "./useBlockNumber";
+import { useCurrencyBalance } from "./useBalance";
 
 export function useTokenAllowance(
   token?: Token,
@@ -24,6 +25,8 @@ export function useTokenAllowance(
   const { library, chainId } = useActiveWeb3React();
   const [data, setData] = useState({ hash: "", status: "" });
   const blockNumber = useBlockNumber();
+
+  const tokenBalance = useCurrencyBalance(owner, token);
 
   const inputs = useMemo(
     () => [owner?.toLowerCase(), spender?.toLowerCase()],
@@ -110,10 +113,11 @@ export function useTokenAllowance(
     console.log("allowance test ", {
       currentAllowance,
       tokenWeiAmountToApprove,
+      tokenBalance,
     });
 
-    return new BigNumber(currentAllowance).gte(tokenWeiAmountToApprove);
-  }, [token, currentAllowance]);
+    return new BigNumber(currentAllowance).gte(tokenBalance?.toString() || "1");
+  }, [token, currentAllowance, tokenBalance]);
 
   return [approved, confirmAllowance, transactionStatus];
 }

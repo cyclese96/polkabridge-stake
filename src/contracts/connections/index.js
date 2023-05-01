@@ -36,6 +36,11 @@ export const stakeContract = (chainId) => {
     const abi = PolkaBridgeStaking;
     const connection = getCurrentConnection(chainId, abi, address);
     return connection;
+  } else if (chainId?.toString() === "42161") {
+    const address = STAKE_ADDRESSES?.[chainId];
+    const abi = PolkaBridgeStaking;
+    const connection = getCurrentConnection(chainId, abi, address);
+    return connection;
   } else {
     const address = STAKE_ADDRESSES?.[1];
     const abi = PolkaBridgeStaking;
