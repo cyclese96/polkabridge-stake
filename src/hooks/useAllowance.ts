@@ -116,6 +116,10 @@ export function useTokenAllowance(
       tokenBalance,
     });
 
+    if (new BigNumber(currentAllowance).lte(0)) {
+      return false;
+    }
+
     return new BigNumber(currentAllowance).gte(tokenBalance?.toString() || "1");
   }, [token, currentAllowance, tokenBalance]);
 
