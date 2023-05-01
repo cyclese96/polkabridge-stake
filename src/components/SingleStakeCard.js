@@ -315,6 +315,7 @@ const Staking = ({
       tokenWeiAmountToApprove = AIBB_ALLOWANCE;
     }
 
+    console.log("allowance test ", { tokenWeiAmountToApprove });
     confirmAllowance(tokenWeiAmountToApprove);
   }, [confirmAllowance, tokenType]);
 
