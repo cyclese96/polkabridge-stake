@@ -1,5 +1,5 @@
 import { Button, Card, Divider, makeStyles } from "@material-ui/core";
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { BigNumber } from "bignumber.js";
 import CustomButton from "./CustomButton";
 import {
@@ -8,10 +8,9 @@ import {
   fromWei,
   toWei,
 } from "../utils/helper";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { getAccountBalance } from "../actions/accountActions";
 import {
-  claimTokens,
   unsupportedStaking,
   tokenInfo,
   tokenLogo,
@@ -20,16 +19,18 @@ import {
   CORGIB,
   tokenAddresses,
   STAKE_ADDRESSES,
+  TOKEN_ALLOWANCE_ALLOWANCE,
+  CORGIB_ALLOWANCE_ALLOWANCE,
+  AIBB,
+  AIBB_ALLOWANCE,
 } from "../constants";
 import Loader from "./../common/Loader";
 import DotCircle from "./../common/DotCircle";
 import useActiveWeb3React from "../hooks/useActiveWeb3React";
-import { useTokenContract } from "../hooks/useContract";
 import { useTokenAllowance } from "../hooks/useAllowance";
 import { usePoolStakedInfo } from "../hooks/usePoolStakedInfo";
 import { useUserStakedInfo } from "../hooks/useUserStakedInfo";
 import { useTokenPrice } from "../hooks/useTokenPrice";
-import { useStakeCallback } from "../hooks/useStakeCallback";
 import StakeDialog from "../common/StakeDialog";
 import { useWalletConnectCallback } from "../hooks/useWalletConnectCallback";
 import AccountDialog from "./../common/AccountDialog";
@@ -288,9 +289,9 @@ const Staking = ({
     setDialog({ open: false, type: null });
   };
 
-  const tokenContract = useTokenContract(
-    tokenAddresses?.[tokenType]?.[chainId]
-  );
+  // const tokenContract = useTokenContract(
+  //   tokenAddresses?.[tokenType]?.[chainId]
+  // );
 
   const poolToken = useMemo(() => {
     return {
@@ -307,38 +308,37 @@ const Staking = ({
   const userStakedInfo = useUserStakedInfo(tokenType, poolId, account);
 
   const handleApprove = useCallback(() => {
-    const tokenWeiAmountToApprove =
-      tokenType === CORGIB
-        ? "999999999999999999999999999999999999"
-        : toWei("100000000000000000");
+    let tokenWeiAmountToApprove = TOKEN_ALLOWANCE_ALLOWANCE;
+    if (tokenType === CORGIB) {
+      tokenWeiAmountToApprove = CORGIB_ALLOWANCE_ALLOWANCE;
+    } else if (tokenType === AIBB) {
+      tokenWeiAmountToApprove = AIBB_ALLOWANCE;
+    }
+
     confirmAllowance(tokenWeiAmountToApprove);
-  }, [tokenContract, chainId]);
+  }, [confirmAllowance, tokenType]);
 
-  const poolTokenPrice = useTokenPrice(poolToken);
+  const priceLoading = useTokenPrice(poolToken);
 
-  const [transactionStatus, stakeTokens, unstakeTokens] =
-    useStakeCallback(tokenType);
-
-  useEffect(() => {
-    console.log("is  pending transaction", {
-      transactionStatus,
-      allowanceTrxStatus,
-    });
-  }, [transactionStatus, allowanceTrxStatus]);
+  // const [transactionStatus, stakeTokens, unstakeTokens] =
+  //   useStakeCallback(tokenType);
 
   const handleClaim = async (tokenType) => {
-    const tokensToClaim = claimTokens;
-
-    await unstakeTokens(tokensToClaim, poolId, stopped);
+    setDialog({ open: true, type: "claim", tokenType: tokenType });
   };
 
-  const claimDisableStatus = useMemo(() => {
-    return (
-      new BigNumber(userStakedInfo?.staked).eq(0) ||
-      transactionStatus.status === "waiting" ||
-      transactionStatus.status === "pending"
-    );
-  }, [userStakedInfo, transactionStatus]);
+  // // minimum AIBB to claim  500M
+  // const claimDisableStatus = useMemo(() => {
+  //   if (
+  //     tokenType === AIBB &&
+  //     new BigNumber(fromWei(userStakedInfo?.pending)).lte(500000000)
+  //   )
+  //     return (
+  //       new BigNumber(userStakedInfo?.staked).eq(0) ||
+  //       transactionStatus.status === "waiting" ||
+  //       transactionStatus.status === "pending"
+  //     );
+  // }, [userStakedInfo, transactionStatus, tokenType]);
 
   const stakeDisableStatus = useMemo(() => {
     if (unsupportedStaking?.[chainId]?.includes(tokenType)) {
@@ -363,22 +363,19 @@ const Staking = ({
     setAccountDialog(true);
   }, [setAccountDialog]);
 
+  const tokenPrices = useSelector((state) => state?.stake?.tokenPrices);
+  const currentTokenPrice = useMemo(() => {
+    return !tokenPrices?.[tokenType] ? "0" : tokenPrices?.[tokenType];
+  }, [tokenPrices, tokenType]);
+
   const totalValueLocked = useMemo(() => {
     return formatLargeNumber(
       new BigNumber(fromWei(poolStakedInfo?.staked))
-        .multipliedBy(poolTokenPrice ? poolTokenPrice : 0)
+        .multipliedBy(currentTokenPrice)
         .toString()
     );
-  }, [poolStakedInfo, poolTokenPrice]);
+  }, [poolStakedInfo, currentTokenPrice]);
 
-  useEffect(() => {
-    console.log("stake data test ", {
-      active,
-      currentTokenAllowance,
-      stopped,
-      tokenType,
-    });
-  }, [active, currentTokenAllowance, stopped, tokenType]);
   return (
     <Card elevation={10} className={classes.card}>
       <StakeDialog
@@ -387,9 +384,6 @@ const Staking = ({
         tokenType={dialog.tokenType}
         poolId={poolId}
         handleClose={handleClose}
-        stakeTokens={stakeTokens}
-        unstakeTokens={unstakeTokens}
-        transactionStatus={transactionStatus}
         userStakedInfo={userStakedInfo}
         stopped={stopped}
       />
@@ -399,222 +393,213 @@ const Staking = ({
         handleClose={() => setAccountDialog(false)}
         handleConnection={handleWalletConnect}
       />
-      {transactionStatus?.status === "pending" && (
+      {/* {transactionStatus?.status === "pending" && (
         <div className="text-center">
           <Loader height={300} />
         </div>
-      )}
-      {transactionStatus?.status !== "pending" &&
-        allowanceTrxStatus?.status !== "pending" && (
-          <div style={{ width: "100%" }}>
-            <div className="d-flex justify-content-center align-items-center pt-2 pb-1">
-              <img className={classes.avatar} src={tokenLogo[tokenType]} />
-              <small
-                style={{
-                  color: "#f9f9f9",
-                  marginLeft: 10,
-                  fontSize: 18,
-                }}
-              >
-                {tokenType}
-              </small>
-            </div>
+      )} */}
+      {allowanceTrxStatus?.status !== "pending" && (
+        <div style={{ width: "100%" }}>
+          <div className="d-flex justify-content-center align-items-center pt-2 pb-1">
+            <img className={classes.avatar} src={tokenLogo[tokenType]} />
+            <small
+              style={{
+                color: "#f9f9f9",
+                marginLeft: 10,
+                fontSize: 18,
+              }}
+            >
+              {tokenType}
+            </small>
+          </div>
 
-            <div className="d-flex justify-content-center align-items-center ">
-              <div
-                style={{
-                  backgroundColor: "#C80C81",
-                  borderRadius: "50%",
-                  height: "5px",
-                  width: "5px",
-                  marginRight: 5,
-                }}
-              ></div>
-              <div className={classes.earn}>Earn {tokenName[tokenType]}</div>
-            </div>
-            <div className="d-flex justify-content-center  pt-3">
-              {tokenType === LABS && (
-                <a href="https://forms.gle/jqadUuQmKhzSrf678" target="_blank">
-                  <Button
-                    variant="contained"
-                    className={classes.borderButtonRegister}
-                  >
-                    IDO Register
-                  </Button>
-                </a>
-              )}
-              <a href={tokenInfo?.[tokenType]?.[chainId]?.buy} target="_blank">
-                <Button variant="contained" className={classes.borderButton}>
-                  Buy
+          <div className="d-flex justify-content-center align-items-center ">
+            <div
+              style={{
+                backgroundColor: "#C80C81",
+                borderRadius: "50%",
+                height: "5px",
+                width: "5px",
+                marginRight: 5,
+              }}
+            ></div>
+            <div className={classes.earn}>Earn {tokenName[tokenType]}</div>
+          </div>
+          <div className="d-flex justify-content-center  pt-3">
+            {tokenType === LABS && (
+              <a href="https://forms.gle/jqadUuQmKhzSrf678" target="_blank">
+                <Button
+                  variant="contained"
+                  className={classes.borderButtonRegister}
+                >
+                  IDO Register
                 </Button>
               </a>
-              <a href={tokenInfo?.[tokenType]?.[chainId]?.info} target="_blank">
-                <Button variant="contained" className={classes.borderButton}>
-                  Info
-                </Button>
-              </a>
-            </div>
-            <div style={{ minHeight: 120, paddingLeft: 10, paddingRight: 10 }}>
-              <div className="mt-3">
-                <div className="d-flex justify-content-between mt-1">
-                  <div className="d-flex justify-content-start">
-                    <div>
-                      <div className={classes.tokenTitle}>APY</div>
-                    </div>
-                  </div>
-                  <div className={classes.tokenAmount}>
-                    {formatCurrency(poolStakedInfo?.apy, false, 1, true)}%
-                  </div>
-                </div>
-                <div className="d-flex justify-content-between mt-2">
-                  <div className="d-flex justify-content-start">
-                    <div>
-                      <div className={classes.tokenTitle}>Total Staked</div>
-                    </div>
-                  </div>
-                  <div className={classes.tokenAmount}>
-                    {formatLargeNumber(fromWei(poolStakedInfo?.staked))}
-                  </div>
-                </div>
-                <div className="d-flex justify-content-between mt-2">
-                  <div className="d-flex justify-content-start">
-                    <div>
-                      <div className={classes.tokenTitle}>Total Claimed</div>
-                    </div>
-                  </div>
-                  <div className={classes.tokenAmount}>
-                    {formatLargeNumber(fromWei(poolStakedInfo?.claimed))}
-                  </div>
-                </div>
-                <div className="d-flex justify-content-center my-4">
-                  <div>
-                    <div className={classes.tokenTitleTvl}>
-                      Total Value Locked:{" "}
-                      <span className={classes.tokenAmountTvl}>
-                        $ {totalValueLocked}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <Divider style={{ backgroundColor: "#616161", height: 1 }} />
-
-            {active && (
-              <div className={classes.desktop}>
-                <div className="text-center mt-4">
-                  <div className={classes.tokenTitle}>Staked</div>
-                  <div className={classes.tokenAmount}>
-                    {" "}
-                    {tokenType === "PWAR"
-                      ? formatCurrency(
-                          fromWei(userStakedInfo?.staked),
-                          false,
-                          1,
-                          true
-                        )
-                      : formatLargeNumber(fromWei(userStakedInfo?.staked))}{" "}
-                  </div>
-                </div>
-                <div className="text-center mt-4">
-                  <div className={classes.tokenTitle}>Claimed</div>
-                  <div className={classes.tokenAmount}>
-                    {" "}
-                    {tokenType === "PWAR"
-                      ? formatCurrency(
-                          fromWei(userStakedInfo?.claimed),
-                          false,
-                          1,
-                          true
-                        )
-                      : formatLargeNumber(
-                          fromWei(userStakedInfo?.claimed)
-                        )}{" "}
-                  </div>
-                </div>
-                <div className="text-center mt-4">
-                  <div className={classes.tokenTitle}>Pending</div>
-                  <div className={classes.tokenAmount}>
-                    {" "}
-                    {tokenType === "PWAR"
-                      ? formatCurrency(
-                          fromWei(userStakedInfo?.pending),
-                          false,
-                          1,
-                          true
-                        )
-                      : formatLargeNumber(
-                          fromWei(userStakedInfo?.pending)
-                        )}{" "}
-                  </div>
-                </div>
-              </div>
             )}
-
-            <div className={classes.buttons}>
-              {!active && (
-                <div className="text-center">
-                  {/* <p className={classes.hint}>Connect wallet</p> */}
-                  <Button
-                    onClick={handleWalletClick}
-                    className={classes.navbarButton}
-                    variant="contained"
-                  >
-                    Connect Wallet
-                  </Button>
+            <a href={tokenInfo?.[tokenType]?.[chainId]?.buy} target="_blank">
+              <Button variant="contained" className={classes.borderButton}>
+                Buy
+              </Button>
+            </a>
+            <a href={tokenInfo?.[tokenType]?.[chainId]?.info} target="_blank">
+              <Button variant="contained" className={classes.borderButton}>
+                Info
+              </Button>
+            </a>
+          </div>
+          <div style={{ minHeight: 120, paddingLeft: 10, paddingRight: 10 }}>
+            <div className="mt-3">
+              <div className="d-flex justify-content-between mt-1">
+                <div className="d-flex justify-content-start">
+                  <div>
+                    <div className={classes.tokenTitle}>APY</div>
+                  </div>
                 </div>
-              )}
-              {active && !currentTokenAllowance && !stopped && (
-                <div className="text-center">
-                  <CustomButton
-                    disabled={allowanceTrxStatus?.status === "waiting"}
-                    onClick={() => handleApprove(tokenType)}
-                  >
-                    {allowanceTrxStatus?.status === "waiting"
-                      ? "Waiting for confirmation"
-                      : "Approve"}
-                  </CustomButton>
-                  <p className={classes.hint}>
-                    <DotCircle />
-                    <span style={{ paddingLeft: 5 }}>
-                      Approve {tokenType} tokens to start staking
+                <div className={classes.tokenAmount}>
+                  {formatCurrency(poolStakedInfo?.apy, false, 1, true)}%
+                </div>
+              </div>
+              <div className="d-flex justify-content-between mt-2">
+                <div className="d-flex justify-content-start">
+                  <div>
+                    <div className={classes.tokenTitle}>Total Staked</div>
+                  </div>
+                </div>
+                <div className={classes.tokenAmount}>
+                  {formatLargeNumber(fromWei(poolStakedInfo?.staked))}
+                </div>
+              </div>
+              <div className="d-flex justify-content-between mt-2">
+                <div className="d-flex justify-content-start">
+                  <div>
+                    <div className={classes.tokenTitle}>Total Claimed</div>
+                  </div>
+                </div>
+                <div className={classes.tokenAmount}>
+                  {formatLargeNumber(fromWei(poolStakedInfo?.claimed))}
+                </div>
+              </div>
+              <div className="d-flex justify-content-center my-4">
+                <div>
+                  <div className={classes.tokenTitleTvl}>
+                    Total Value Locked:{" "}
+                    <span className={classes.tokenAmountTvl}>
+                      $ {totalValueLocked}
                     </span>
-                  </p>
+                  </div>
                 </div>
-              )}
-              {active && currentTokenAllowance && (
-                <div className={classes.stakeButtons}>
-                  <CustomButton
-                    hidden={stopped}
-                    disabled={claimDisableStatus}
-                    onClick={() => handleClaim(tokenType)}
-                  >
-                    {transactionStatus.status === "waiting" ||
-                    transactionStatus.status === "pending"
-                      ? "Pending..."
-                      : "Claim"}
-                  </CustomButton>
-
-                  <CustomButton
-                    disabled={stakeDisableStatus}
-                    hidden={stopped}
-                    onClick={() => onStake(tokenType)}
-                  >
-                    Stake
-                  </CustomButton>
-                  <CustomButton
-                    disabled={withdrawDisableStatus(tokenType)}
-                    onClick={() => onUnStake(tokenType)}
-                    variant="light"
-                  >
-                    Unstake
-                  </CustomButton>
-                </div>
-              )}
+              </div>
             </div>
           </div>
-        )}
+
+          <Divider style={{ backgroundColor: "#616161", height: 1 }} />
+
+          {active && (
+            <div className={classes.desktop}>
+              <div className="text-center mt-4">
+                <div className={classes.tokenTitle}>Staked</div>
+                <div className={classes.tokenAmount}>
+                  {" "}
+                  {tokenType === "PWAR"
+                    ? formatCurrency(
+                        fromWei(userStakedInfo?.staked),
+                        false,
+                        1,
+                        true
+                      )
+                    : formatLargeNumber(fromWei(userStakedInfo?.staked))}{" "}
+                </div>
+              </div>
+              <div className="text-center mt-4">
+                <div className={classes.tokenTitle}>Claimed</div>
+                <div className={classes.tokenAmount}>
+                  {" "}
+                  {tokenType === "PWAR"
+                    ? formatCurrency(
+                        fromWei(userStakedInfo?.claimed),
+                        false,
+                        1,
+                        true
+                      )
+                    : formatLargeNumber(fromWei(userStakedInfo?.claimed))}{" "}
+                </div>
+              </div>
+              <div className="text-center mt-4">
+                <div className={classes.tokenTitle}>Pending</div>
+                <div className={classes.tokenAmount}>
+                  {" "}
+                  {tokenType === "PWAR"
+                    ? formatCurrency(
+                        fromWei(userStakedInfo?.pending),
+                        false,
+                        1,
+                        true
+                      )
+                    : formatLargeNumber(fromWei(userStakedInfo?.pending))}{" "}
+                </div>
+              </div>
+            </div>
+          )}
+
+          <div className={classes.buttons}>
+            {!active && (
+              <div className="text-center">
+                {/* <p className={classes.hint}>Connect wallet</p> */}
+                <Button
+                  onClick={handleWalletClick}
+                  className={classes.navbarButton}
+                  variant="contained"
+                >
+                  Connect Wallet
+                </Button>
+              </div>
+            )}
+            {active && !currentTokenAllowance && !stopped && (
+              <div className="text-center">
+                <CustomButton
+                  disabled={allowanceTrxStatus?.status === "waiting"}
+                  onClick={() => handleApprove(tokenType)}
+                >
+                  {allowanceTrxStatus?.status === "waiting"
+                    ? "Waiting for confirmation"
+                    : "Approve"}
+                </CustomButton>
+                <p className={classes.hint}>
+                  <DotCircle />
+                  <span style={{ paddingLeft: 5 }}>
+                    Approve {tokenType} tokens to start staking
+                  </span>
+                </p>
+              </div>
+            )}
+            {active && currentTokenAllowance && (
+              <div className={classes.stakeButtons}>
+                <CustomButton
+                  hidden={stopped}
+                  onClick={() => handleClaim(tokenType)}
+                >
+                  Claim
+                </CustomButton>
+
+                <CustomButton
+                  disabled={stakeDisableStatus}
+                  hidden={stopped}
+                  onClick={() => onStake(tokenType)}
+                >
+                  Stake
+                </CustomButton>
+                <CustomButton
+                  disabled={withdrawDisableStatus(tokenType)}
+                  onClick={() => onUnStake(tokenType)}
+                  variant="light"
+                >
+                  Unstake
+                </CustomButton>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </Card>
   );
 };
