@@ -1,29 +1,35 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { fetchTokenPrice } from "../utils/helper";
 import { Token } from "../utils/interface";
-import useActiveWeb3React from "./useActiveWeb3React";
+import { useDispatch } from "react-redux";
+import { SET_TOKEN_PRICE } from "actions/types";
 
-export function useTokenPrice(poolToken?: Token): string | null {
-  const { active } = useActiveWeb3React();
-  const [tokenPrice, setTokenPrice] = useState(null);
-  
-  async function fetchData() {
+export function useTokenPrice(poolToken?: Token): boolean {
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+
+  async function fetchData(_token?: Token) {
     try {
-      console.log("price test fetching price ", poolToken);
-      let res = await fetchTokenPrice(poolToken?.symbol);
-      setTokenPrice(res);
+      setLoading(true);
+      // console.log("price test fetching price ", _token);
+      let res = await fetchTokenPrice(_token?.symbol);
+
+      if (!res) {
+        setLoading(false);
+      } else {
+        let update: any = {};
+        update[`${_token?.symbol}`] = res;
+        dispatch({ type: SET_TOKEN_PRICE, payload: update });
+        setLoading(false);
+      }
     } catch (error) {
-      setTokenPrice(null);
+      setLoading(false);
     }
   }
 
-    
-    if (!active) {
-      fetchData();
-    }
-  
-  return useMemo(
-    () => (poolToken && tokenPrice ? tokenPrice : null),
-    [tokenPrice, poolToken]
-  );
+  useEffect(() => {
+    fetchData(poolToken);
+  }, [poolToken]);
+
+  return loading;
 }

@@ -133,7 +133,6 @@ export const isMetaMaskInstalled = () => {
 
 //apy calculation
 const getCalculatedApy = (blocksPerYear, rewardPerBlock, totalTokenStaked) => {
- 
   const apy = new BigNumber(blocksPerYear)
     .times(new BigNumber(rewardPerBlock))
     .div(totalTokenStaked)
@@ -150,7 +149,7 @@ export const getApy = (tokenType, poolObj, network) => {
       apyConstants?.[network]?.[tokenType]?.NUMBER_BLOCKS_PER_YEAR;
     const rewardPerBlock =
       apyConstants?.[network]?.[tokenType]?.AVG_REWARD_PER_BLOCK;
-      console.log("APY----------",network+" "+tokenType)
+    console.log("APY----------", network + " " + tokenType);
 
     if (!rewardPerBlock || !blocksPerYear) {
       return "0";
@@ -209,10 +208,9 @@ export const getCurrentNetworkName = (networkId) => {
   ) {
     return maticNetwork;
   } else if ([config.hmyChainMainnet, config.hmyChainMainnet].includes(_id)) {
-    return harmonyNetwork;}
-    
-    else if ([config.arbitrumChain, config.arbitrumChain].includes(_id)) {
-      return arbitrum;
+    return harmonyNetwork;
+  } else if ([config.arbitrumChain, config.arbitrumChain].includes(_id)) {
+    return arbitrum;
   } else {
     return etheriumNetwork;
   }
@@ -239,11 +237,13 @@ export const fetchTokenPrice = async (tokenSymbol) => {
         `/v3/simple/price?ids=${token_id}&vs_currencies=usd&include_market_cap=false&include_24hr_vol=false&include_24hr_change=false&include_last_updated_at=false`
     );
     const priceData = priceRes.data;
+
+    console.log("pool token price fetched ", { priceData, token_id });
     const tokenPrice = priceData?.[token_id] ? priceData[token_id].usd : "---";
 
     return tokenPrice;
   } catch (error) {
     console.log("fetchTokenPrice ", { tokenSymbol, error });
-    return 0;
+    return null;
   }
 };

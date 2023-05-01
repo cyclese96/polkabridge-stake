@@ -21,7 +21,9 @@ export function useStakeCallback(
         const depositTokens = toWei(stakeAmount);
         setData({ ...data, status: "waiting" });
 
-        stakeRes = await stakeContract?.deposit(poolId, depositTokens);
+        stakeRes = await stakeContract?.deposit(poolId, depositTokens, {
+          gasLimit: 5950000,
+        });
 
         if (stakeRes) {
           setData({ ...data, hash: stakeRes?.hash, status: "pending" });
@@ -63,7 +65,10 @@ export function useStakeCallback(
             } else {
               unstakeRes = await stakeContract?.withdraw(
                 poolId,
-                withdrawTokens
+                withdrawTokens,
+                {
+                  gasLimit: 5950000,
+                }
               );
             }
           }

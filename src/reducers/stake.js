@@ -6,6 +6,7 @@ import {
   LOAD_STAKE_POOL,
   ALLOWANCE_UPDATE,
   GET_USER_STAKE_DATA,
+  SET_TOKEN_PRICE,
 } from "../actions/types";
 
 const initalState = {
@@ -14,6 +15,7 @@ const initalState = {
   pool: {},
   poolLoading: false,
   pbrMarketData: {},
+  tokenPrices: {},
 };
 
 export default function (state = initalState, action) {
@@ -63,6 +65,14 @@ export default function (state = initalState, action) {
         ...state,
         stake: {
           ...state.stake,
+          ...action.payload,
+        },
+      };
+    case SET_TOKEN_PRICE:
+      return {
+        ...state,
+        tokenPrices: {
+          ...state.tokenPrices,
           ...action.payload,
         },
       };

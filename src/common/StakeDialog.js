@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import Dialog from "@material-ui/core/Dialog";
@@ -10,15 +10,22 @@ import { CircularProgress } from "@material-ui/core";
 import CustomButton from "./../components/CustomButton";
 import {
   formatCurrency,
+  formatLargeNumber,
   fromWei,
   isNumber,
   resetCurrencyFormatting,
   toWei,
 } from "../utils/helper";
-import { minimumStakingAmount, tokenAddresses } from "../constants";
+import {
+  AIBB,
+  minimumStakingAmount,
+  minimumUnstakeAmount,
+  tokenAddresses,
+} from "../constants";
 import BigNumber from "bignumber.js";
 import useActiveWeb3React from "../hooks/useActiveWeb3React";
 import { useTokenBalance } from "../hooks/useBalance";
+import { useStakeCallback } from "hooks/useStakeCallback";
 
 const styles = (theme) => ({
   root: {
@@ -75,6 +82,7 @@ const useStyles = makeStyles((theme) => ({
     fontSize: 18,
     fontWeight: 400,
     color: "#919191",
+    padding: 20,
   },
   inputGroup: {
     display: "flex",
@@ -146,7 +154,8 @@ const useStyles = makeStyles((theme) => ({
   error: {
     alignSelf: "center",
     justifySelf: "center",
-    paddingTop: 20,
+    textAlign: "center",
+    padding: 20,
   },
 }));
 
@@ -156,11 +165,8 @@ const StakeDialog = ({
   type,
   tokenType,
   poolId,
-  stakeTokens,
-  unstakeTokens,
-  transactionStatus,
   userStakedInfo,
-  stopped
+  stopped,
 }) => {
   const classes = useStyles();
   const [inputTokens, setTokenValue] = useState("");
@@ -191,7 +197,42 @@ const StakeDialog = ({
     }
   };
 
+  const [transactionStatus, stakeTokens, unstakeTokens] =
+    useStakeCallback(tokenType);
+
   const onConfirm = async () => {
+    if (type === "claim") {
+      if (
+        tokenType === AIBB &&
+        new BigNumber(fromWei(userStakedInfo?.pending)).lt(
+          minimumUnstakeAmount?.[tokenType]
+        )
+      ) {
+        setError({
+          status: true,
+          message: `The minimum reward for claim is 500M. Please wait more time or you can deposit more to earn more $AIBB rewards`,
+        });
+        return;
+      }
+
+      if (new BigNumber(fromWei(userStakedInfo?.pending)).lte(1)) {
+        setError({
+          status: true,
+          message: `Not enough rewards to claim`,
+        });
+        return;
+      }
+
+      const unstakeAmountForClaim =
+        tokenType === AIBB ? minimumUnstakeAmount?.[tokenType] : "1";
+
+      await unstakeTokens(unstakeAmountForClaim, poolId, stopped);
+
+      // handleClose();
+
+      return;
+    }
+
     let enteredTokens = inputTokens;
     const stakedTokens = fromWei(userStakedInfo?.staked)?.toString();
     const balanceTokens = fromWei(poolTokenBalance)?.toString();
@@ -220,9 +261,40 @@ const StakeDialog = ({
     ) {
       setError({
         status: true,
-        message: `Minimum ${formatCurrency(
+        message: `Minimum ${formatLargeNumber(
           minimumStakingAmount[tokenType]
         )} ${tokenType} required to stake!`,
+      });
+      return;
+    }
+
+    if (
+      type === "unstake" &&
+      tokenType === AIBB &&
+      new BigNumber(enteredTokens).lt(minimumUnstakeAmount?.[tokenType])
+    ) {
+      setError({
+        status: true,
+        message: `Minimum ${formatLargeNumber(
+          minimumUnstakeAmount?.[tokenType]
+        )} ${tokenType} required to unstake!`,
+      });
+      return;
+    }
+
+    if (
+      type === "unstake" &&
+      tokenType === AIBB &&
+      new BigNumber(fromWei(userStakedInfo?.pending)).lt(
+        minimumUnstakeAmount?.[tokenType]
+      )
+    ) {
+      setError({
+        status: true,
+        message: `Your reward is less than  ${formatLargeNumber(
+          minimumUnstakeAmount?.[tokenType]
+        )} ${tokenType} Please wait more time or you can deposit more to earn more $AIBB
+        `,
       });
       return;
     }
@@ -230,7 +302,7 @@ const StakeDialog = ({
     if (type === "stake" && new BigNumber(enteredTokens).gt(balanceTokens)) {
       setError({
         status: true,
-        message: `Can not stake more that ${formatCurrency(
+        message: `Can not stake more than balance: ${formatLargeNumber(
           balanceTokens
         )} ${tokenType}!`,
       });
@@ -248,8 +320,14 @@ const StakeDialog = ({
     } else {
       await unstakeTokens(enteredTokens?.toString(), poolId, stopped);
     }
-    handleClose();
+    // handleClose();
   };
+
+  useEffect(() => {
+    if (transactionStatus.status === "completed") {
+      handleClose();
+    }
+  }, [transactionStatus, handleClose]);
 
   const handleMax = () => {
     if (type === "stake") {
@@ -297,35 +375,47 @@ const StakeDialog = ({
         <div className={classes.background}>
           <DialogTitle onClose={handleClose}>
             <span className={classes.heading}>
-              {type === "stake" ? "Stake tokens" : "Withdraw tokens"}
+              {type === "stake" && "Stake tokens"}
+              {type === "unstake" && "Withdraw tokens"}
+              {type === "claim" && "Claim rewards"}
             </span>
           </DialogTitle>
 
           <p className={classes.subheading}>
-            {type === "stake"
-              ? `Available tokens: ${formattedBalance}  ${tokenType}`
-              : `Staked tokens: ${formattedStakedBalance} ${tokenType}`}
+            {type === "stake" &&
+              `Available tokens: ${formattedBalance}  ${tokenType}`}
+            {type === "unstake" &&
+              `Staked tokens: ${formattedStakedBalance} ${tokenType}`}
+            {type === "claim" &&
+              `Pending rewards: ${formatLargeNumber(
+                fromWei(userStakedInfo?.pending)
+              )} ${tokenType}`}
           </p>
-          <div className={classes.inputGroup}>
-            <input
-              placeholder="0"
-              value={
-                inputTokens ? formatCurrency(inputTokens, false, 0, true) : ""
-              }
-              onChange={handleInputChange}
-              label={`Enter ${tokenType} tokens`}
-              className={classes.input}
-            />
 
-            <Button className={classes.maxBtn} onClick={handleMax}>
-              Max
-            </Button>
-          </div>
+          {["stake", "unstake"].includes(type) && (
+            <div className={classes.inputGroup}>
+              <input
+                placeholder="0"
+                value={
+                  inputTokens ? formatCurrency(inputTokens, false, 0, true) : ""
+                }
+                onChange={handleInputChange}
+                label={`Enter ${tokenType} tokens`}
+                className={classes.input}
+              />
+
+              <Button className={classes.maxBtn} onClick={handleMax}>
+                Max
+              </Button>
+            </div>
+          )}
+
           {error.status ? (
             <span className={classes.error}>{error.message}</span>
           ) : (
             ""
           )}
+
           <div className={classes.buttons}>
             {transactionStatus?.status &&
             transactionStatus?.status === "waiting" ? (
@@ -338,7 +428,14 @@ const StakeDialog = ({
                 <CustomButton variant="light" onClick={onClose}>
                   Cancel
                 </CustomButton>
-                <CustomButton onClick={onConfirm}>Confirm</CustomButton>
+                <CustomButton
+                  onClick={onConfirm}
+                  disabled={transactionStatus?.status === "pending"}
+                >
+                  {transactionStatus?.status === "pending"
+                    ? "Pending Trx..."
+                    : "Confirm"}
+                </CustomButton>
               </>
             )}
           </div>

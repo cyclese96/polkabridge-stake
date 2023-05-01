@@ -216,25 +216,25 @@ const Home = ({ account: { error, currentChain } }) => {
     }
   }, [JSON.stringify(error)]);
 
-  const supportedStakingPools = useMemo(
-    () =>
-      Object.keys(supportedStaking).includes(currentChain?.toString())
-        ? supportedStaking?.[currentChain]?.map((item) => {
-            return {
-              poolId: POOL_ID_MAPPINGS?.[currentChain]?.[item],
-              poolToken: item,
-            };
-          })
-        : !currentChain
-        ? supportedStaking[1]?.map((item) => {
-            return {
-              poolId: POOL_ID_MAPPINGS?.[currentChain]?.[item],
-              poolToken: item,
-            };
-          })
-        : [],
-    [currentChain]
-  );
+  const supportedStakingPools = useMemo(() => {
+    if (!active || !chainId) {
+      return supportedStaking[1]?.map((item) => {
+        return {
+          poolId: POOL_ID_MAPPINGS?.[currentChain]?.[item],
+          poolToken: item,
+        };
+      });
+    }
+    return Object.keys(supportedStaking).includes(chainId?.toString())
+      ? supportedStaking?.[chainId]?.map((item) => {
+          return {
+            poolId: POOL_ID_MAPPINGS?.[chainId]?.[item],
+            poolToken: item,
+          };
+        })
+      : [];
+  }, [chainId, active]);
+
   const unSupportedStakingPools = useMemo(
     () =>
       Object.keys(unsupportedStaking).includes(currentChain?.toString())

@@ -3,7 +3,14 @@ import { useSingleCallResult } from "../state/multicall/hooks";
 import { useTokenContract } from "./useContract";
 import { Token, TransactionStatus } from "../utils/interface";
 import BigNumber from "bignumber.js";
-import { STAKE_ADDRESSES, TOKEN_ALLOWANCE_ALLOWANCE } from "../constants/index";
+import {
+  AIBB,
+  AIBB_ALLOWANCE,
+  CORGIB,
+  CORGIB_ALLOWANCE_ALLOWANCE,
+  STAKE_ADDRESSES,
+  TOKEN_ALLOWANCE_ALLOWANCE,
+} from "../constants/index";
 import useActiveWeb3React from "./useActiveWeb3React";
 // import { useTransactionAdder } from "state/transactions/hooks";
 import useBlockNumber from "./useBlockNumber";
@@ -89,12 +96,24 @@ export function useTokenAllowance(
   }, [data]);
 
   const approved = useMemo(() => {
+    let tokenWeiAmountToApprove = TOKEN_ALLOWANCE_ALLOWANCE;
+    if (token?.symbol === CORGIB) {
+      tokenWeiAmountToApprove = CORGIB_ALLOWANCE_ALLOWANCE;
+    } else if (token?.symbol === AIBB) {
+      tokenWeiAmountToApprove = AIBB_ALLOWANCE;
+    }
+
     if (!currentAllowance || !token) {
       return false;
     }
 
-    return new BigNumber(currentAllowance).gte(TOKEN_ALLOWANCE_ALLOWANCE);
-  }, [token, allowance]);
+    console.log("allowance test ", {
+      currentAllowance,
+      tokenWeiAmountToApprove,
+    });
+
+    return new BigNumber(currentAllowance).gte(tokenWeiAmountToApprove);
+  }, [token, currentAllowance]);
 
   return [approved, confirmAllowance, transactionStatus];
 }

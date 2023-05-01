@@ -535,7 +535,11 @@ export const minimumStakingAmount = {
   GRAV: 1,
   DEFLY: 1,
   AOG: 1,
-  AIBB: 100000000,
+  AIBB: 50000000000, // 50B
+};
+
+export const minimumUnstakeAmount = {
+  AIBB: 500000000, // 500M
 };
 
 export const ankrRpc = {
@@ -549,3 +553,4 @@ export const NetworkContextName = "NETWORK";
 export const TOKEN_ALLOWANCE_ALLOWANCE = "999999999";
 export const CORGIB_ALLOWANCE_ALLOWANCE =
   "999999999999999999999999999999999999";
+export const AIBB_ALLOWANCE = "1000000000000000000000000000000000000";
