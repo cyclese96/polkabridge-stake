@@ -157,6 +157,13 @@ const useStyles = makeStyles((theme) => ({
     textAlign: "center",
     padding: 20,
   },
+  warning: {
+    alignSelf: "center",
+    justifySelf: "center",
+    textAlign: "center",
+    padding: 20,
+    color: "red",
+  },
 }));
 
 const StakeDialog = ({
@@ -197,8 +204,12 @@ const StakeDialog = ({
     }
   };
 
-  const [transactionStatus, stakeTokens, unstakeTokens] =
-    useStakeCallback(tokenType);
+  const [
+    transactionStatus,
+    stakeTokens,
+    unstakeTokens,
+    emergencyWithdrawTokens,
+  ] = useStakeCallback(tokenType);
 
   const onConfirm = async () => {
     if (type === "claim") {
@@ -227,6 +238,14 @@ const StakeDialog = ({
         tokenType === AIBB ? minimumUnstakeAmount?.[tokenType] : "1";
 
       await unstakeTokens(unstakeAmountForClaim, poolId, stopped);
+
+      // handleClose();
+
+      return;
+    }
+
+    if (type === "emergency") {
+      await emergencyWithdrawTokens(poolId);
 
       // handleClose();
 
@@ -377,6 +396,7 @@ const StakeDialog = ({
             <span className={classes.heading}>
               {type === "stake" && "Stake tokens"}
               {type === "unstake" && "Withdraw tokens"}
+              {type === "emergency" && "Emergency withdraw"}
               {type === "claim" && "Claim rewards"}
             </span>
           </DialogTitle>
@@ -384,7 +404,7 @@ const StakeDialog = ({
           <p className={classes.subheading}>
             {type === "stake" &&
               `Available tokens: ${formattedBalance}  ${tokenType}`}
-            {type === "unstake" &&
+            {(type === "unstake" || type === "emergency") &&
               `Staked tokens: ${formattedStakedBalance} ${tokenType}`}
             {type === "claim" &&
               `Pending rewards: ${formatLargeNumber(
@@ -412,6 +432,14 @@ const StakeDialog = ({
 
           {error.status ? (
             <span className={classes.error}>{error.message}</span>
+          ) : (
+            ""
+          )}
+          {type === "emergency" ? (
+            <span className={classes.warning}>
+              You will not receive staking reward when execute this function.
+              Please note about it
+            </span>
           ) : (
             ""
           )}

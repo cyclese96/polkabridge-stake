@@ -281,8 +281,12 @@ const Staking = ({
     setDialog({ open: true, type: "stake", tokenType: tokenType });
   };
 
-  const onUnStake = (tokenType) => {
-    setDialog({ open: true, type: "unstake", tokenType: tokenType });
+  const onUnStake = (tokenType, emergency = false) => {
+    if (emergency) {
+      setDialog({ open: true, type: "emergency", tokenType: tokenType });
+    } else {
+      setDialog({ open: true, type: "unstake", tokenType: tokenType });
+    }
   };
 
   const handleClose = () => {
@@ -596,6 +600,16 @@ const Staking = ({
                 >
                   Unstake
                 </CustomButton>
+                {tokenType === AIBB && (
+                  <CustomButton
+                    onClick={() => onUnStake(tokenType, true)}
+                    disabled={new BigNumber(
+                      fromWei(userStakedInfo?.staked)
+                    ).lte(1)}
+                  >
+                    Emergency withdraw
+                  </CustomButton>
+                )}
               </div>
             )}
           </div>

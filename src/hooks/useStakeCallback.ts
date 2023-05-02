@@ -7,7 +7,7 @@ import { useStakeContract } from "./useContract";
 
 export function useStakeCallback(
   tokenSymbol?: string
-): [TransactionStatus, () => {}, () => {}] {
+): [TransactionStatus, () => {}, () => {}, () => {}] {
   const { library, chainId } = useActiveWeb3React();
   const stakeContract = useStakeContract();
   const [data, setData] = useState({ hash: "", status: "none" });
@@ -74,7 +74,7 @@ export function useStakeCallback(
           }
         }
 
-        if (stakeRes) {
+        if (unstakeRes) {
           setData({ ...data, hash: unstakeRes?.hash, status: "pending" });
         } else {
           setData({ ...data, status: "failed" });
@@ -85,7 +85,45 @@ export function useStakeCallback(
         console.log("unstake error ", error);
       }
     },
-    [stakeContract, setData]
+    [stakeContract, setData, data, chainId, tokenSymbol]
+  );
+
+  const emergencyWithdrawTokens = useCallback(
+    async (poolId?: number) => {
+      try {
+        setData({ ...data, status: "waiting" });
+
+        let unstakeRes: any = null;
+
+        // console.log("calling normal withdraw", { isEnded });
+        if (chainId?.toString() === "137") {
+          unstakeRes = await stakeContract?.emergencyWithdraw(poolId);
+        } else {
+          if (tokenSymbol === "AOG") {
+            unstakeRes = await stakeContract?.emergencyWithdraw(poolId);
+          } else {
+            unstakeRes = await stakeContract?.emergencyWithdraw(
+              poolId,
+
+              {
+                gasLimit: 5950000,
+              }
+            );
+          }
+        }
+
+        if (unstakeRes) {
+          setData({ ...data, hash: unstakeRes?.hash, status: "pending" });
+        } else {
+          setData({ ...data, status: "failed" });
+        }
+      } catch (error) {
+        setData({ ...data, status: "failed" });
+
+        console.log("unstake error ", error);
+      }
+    },
+    [stakeContract, setData, chainId, data, tokenSymbol]
   );
 
   useEffect(() => {
@@ -114,5 +152,10 @@ export function useStakeCallback(
     return { status: data?.status, hash: data?.hash };
   }, [data]);
 
-  return [transactionStatus, stakeTokens, unstakeTokens];
+  return [
+    transactionStatus,
+    stakeTokens,
+    unstakeTokens,
+    emergencyWithdrawTokens,
+  ];
 }
