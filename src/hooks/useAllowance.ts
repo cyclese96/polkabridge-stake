@@ -12,7 +12,7 @@ import {
   TOKEN_ALLOWANCE_ALLOWANCE,
 } from "../constants/index";
 import useActiveWeb3React from "./useActiveWeb3React";
-// import { useTransactionAdder } from "state/transactions/hooks";
+
 import useBlockNumber from "./useBlockNumber";
 import { useCurrencyBalance } from "./useBalance";
 
