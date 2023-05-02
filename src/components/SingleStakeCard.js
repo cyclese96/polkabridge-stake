@@ -447,6 +447,17 @@ const Staking = ({
                 Info
               </Button>
             </a>
+
+            {tokenType === AIBB && (
+              <a href="https://twitter.com/bullbear_ai/status/1653002325013975042" target="_blank">
+                <Button
+                  variant="contained"
+                  className={classes.borderButtonRegister}
+                >
+                  Rule
+                </Button>
+              </a>
+            )}
           </div>
           <div style={{ minHeight: 120, paddingLeft: 10, paddingRight: 10 }}>
             <div className="mt-3">
