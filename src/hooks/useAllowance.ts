@@ -40,11 +40,11 @@ export function useTokenAllowance(
 
   const currentAllowance = !allowance ? null : allowance?.[0]?.toString();
 
-  console.log("allowance test ", {
-    currentAllowance,
-    TOKEN_ALLOWANCE_ALLOWANCE,
-    token,
-  });
+  // console.log("allowance test ", {
+  //   currentAllowance,
+  //   TOKEN_ALLOWANCE_ALLOWANCE,
+  //   token,
+  // });
 
   // const addTransaction = useTransactionAdder();
   const confirmAllowance = useCallback(
@@ -57,7 +57,7 @@ export function useTokenAllowance(
           stakeContractAddress,
           balance
         );
-        console.log("transaction  response ", response);
+        // console.log("transaction  response ", response);
         if (response) {
           setData({ ...data, hash: response?.hash, status: "pending" });
         } else {
@@ -110,11 +110,11 @@ export function useTokenAllowance(
       return false;
     }
 
-    console.log("allowance test ", {
-      currentAllowance,
-      tokenWeiAmountToApprove,
-      tokenBalance,
-    });
+    // console.log("allowance test ", {
+    //   currentAllowance,
+    //   tokenWeiAmountToApprove,
+    //   tokenBalance,
+    // });
 
     if (new BigNumber(currentAllowance).lte(0)) {
       return false;

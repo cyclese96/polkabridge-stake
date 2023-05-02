@@ -24,9 +24,9 @@ export function usePoolStakedInfo(
     poolInfoInputs
   ).result;
 
-  async function fetchData() {
+  async function fetchData(_poolId: any) {
     try {
-      let res = await _stakeContract.methods.getPoolInfo(poolId).call();
+      let res = await _stakeContract.methods.getPoolInfo(_poolId).call();
       setPoolData(res);
     } catch (error) {
       setPoolData(null);
@@ -35,9 +35,10 @@ export function usePoolStakedInfo(
 
   useEffect(() => {
     if (!active && selectedChain) {
-      fetchData();
+      console.log("pool data test ", { poolToken, poolId });
+      fetchData(poolId);
     }
-  }, [selectedChain]);
+  }, [selectedChain, poolId, poolToken]);
 
   const poolObj = {
     accTokenPerShare: active ? poolInfo?.[0]?.toString() : poolInfo2?.[0],
