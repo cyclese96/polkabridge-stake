@@ -21,9 +21,14 @@ export function useStakeCallback(
         const depositTokens = toWei(stakeAmount);
         setData({ ...data, status: "waiting" });
 
-        stakeRes = await stakeContract?.deposit(poolId, depositTokens, {
-          gasLimit: 5950000,
-        });
+        // console.log("stake test ", { depositTokens, poolId });
+        if (chainId === 1) {
+          stakeRes = await stakeContract?.deposit(poolId, depositTokens);
+        } else {
+          stakeRes = await stakeContract?.deposit(poolId, depositTokens, {
+            gasLimit: 5950000,
+          });
+        }
 
         if (stakeRes) {
           setData({ ...data, hash: stakeRes?.hash, status: "pending" });
@@ -40,7 +45,7 @@ export function useStakeCallback(
         });
       }
     },
-    [stakeContract, setData]
+    [stakeContract, setData, chainId]
   );
 
   const unstakeTokens = useCallback(
@@ -57,7 +62,7 @@ export function useStakeCallback(
           unstakeRes = await stakeContract?.emergencyWithdraw(poolId);
         } else {
           // console.log("calling normal withdraw", { isEnded });
-          if (chainId?.toString() === "137") {
+          if (chainId?.toString() === "137" || chainId === 1) {
             unstakeRes = await stakeContract?.withdraw(poolId, withdrawTokens);
           } else {
             if (tokenSymbol === "AOG") {
@@ -96,7 +101,7 @@ export function useStakeCallback(
         let unstakeRes: any = null;
 
         // console.log("calling normal withdraw", { isEnded });
-        if (chainId?.toString() === "137") {
+        if (chainId?.toString() === "137" || chainId === 1) {
           unstakeRes = await stakeContract?.emergencyWithdraw(poolId);
         } else {
           if (tokenSymbol === "AOG") {
