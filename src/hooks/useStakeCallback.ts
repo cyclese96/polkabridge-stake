@@ -4,6 +4,7 @@ import { TransactionStatus } from "../utils/interface";
 import useActiveWeb3React from "./useActiveWeb3React";
 import useBlockNumber from "./useBlockNumber";
 import { useStakeContract } from "./useContract";
+import config from "utils/config";
 
 export function useStakeCallback(
   tokenSymbol?: string
@@ -22,12 +23,12 @@ export function useStakeCallback(
         setData({ ...data, status: "waiting" });
 
         // console.log("stake test ", { depositTokens, poolId });
-        if (chainId === 1) {
-          stakeRes = await stakeContract?.deposit(poolId, depositTokens);
-        } else {
+        if (chainId === config.arbitrumChain) {
           stakeRes = await stakeContract?.deposit(poolId, depositTokens, {
             gasLimit: 5950000,
           });
+        } else {
+          stakeRes = await stakeContract?.deposit(poolId, depositTokens);
         }
 
         if (stakeRes) {
@@ -57,26 +58,14 @@ export function useStakeCallback(
 
         let unstakeRes: any = null;
 
-        if (isEnded) {
-          // console.log("calling emerguncy withdraw", { isEnded });
+        if (isEnded || tokenSymbol === "AOG") {
           unstakeRes = await stakeContract?.emergencyWithdraw(poolId);
+        } else if (chainId === config.arbitrumChain) {
+          unstakeRes = await stakeContract?.withdraw(poolId, withdrawTokens, {
+            gasLimit: 5950000,
+          });
         } else {
-          // console.log("calling normal withdraw", { isEnded });
-          if (chainId?.toString() === "137" || chainId === 1) {
-            unstakeRes = await stakeContract?.withdraw(poolId, withdrawTokens);
-          } else {
-            if (tokenSymbol === "AOG") {
-              unstakeRes = await stakeContract?.emergencyWithdraw(poolId);
-            } else {
-              unstakeRes = await stakeContract?.withdraw(
-                poolId,
-                withdrawTokens,
-                {
-                  gasLimit: 5950000,
-                }
-              );
-            }
-          }
+          unstakeRes = await stakeContract?.withdraw(poolId, withdrawTokens);
         }
 
         if (unstakeRes) {
@@ -100,21 +89,16 @@ export function useStakeCallback(
 
         let unstakeRes: any = null;
 
-        // console.log("calling normal withdraw", { isEnded });
-        if (chainId?.toString() === "137" || chainId === 1) {
-          unstakeRes = await stakeContract?.emergencyWithdraw(poolId);
-        } else {
-          if (tokenSymbol === "AOG") {
-            unstakeRes = await stakeContract?.emergencyWithdraw(poolId);
-          } else {
-            unstakeRes = await stakeContract?.emergencyWithdraw(
-              poolId,
+        if (chainId === config.arbitrumChain) {
+          unstakeRes = await stakeContract?.emergencyWithdraw(
+            poolId,
 
-              {
-                gasLimit: 5950000,
-              }
-            );
-          }
+            {
+              gasLimit: 5950000,
+            }
+          );
+        } else {
+          unstakeRes = await stakeContract?.emergencyWithdraw(poolId);
         }
 
         if (unstakeRes) {
