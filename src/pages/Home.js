@@ -3,7 +3,6 @@ import React, { useEffect, useMemo } from "react";
 import SingleStakeCard from "../components/SingleStakeCard";
 import Navbar from "../common/Navbar";
 import Footer from "../common/Footer";
-// import Wallet from "../common/Wallet";
 import { connect } from "react-redux";
 import {
   POOL_ID_MAPPINGS,
@@ -137,90 +136,137 @@ const useStyles = makeStyles((theme) => ({
 const Home = ({ account: { error, currentChain } }) => {
   const classes = useStyles();
 
-  const { active, account, chainId } = useActiveWeb3React();
+  const { isActive, account, chainId } = useActiveWeb3React();
 
+  // watch on chain change and reload
   useEffect(() => {
-    if (!chainId || !active) {
-      // check if there is existing cached selected network other wise select ethereum chain by default
+    if (!chainId) {
+      return;
+    }
+    const cachedChain = localStorage.getItem("cachedChain");
 
-      const cachedChain = localStorage.getItem("cachedChain");
-      if (!cachedChain) {
-        localStorage.setItem("cachedChain", 1);
-      }
+    if (cachedChain && chainId?.toString() !== cachedChain) {
+      localStorage.setItem("cachedChain", chainId?.toString());
 
-      const _network = getCurrentNetworkName(cachedChain || 1);
-      console.log("setting cached chain to select chain id ", cachedChain || 1);
+      window.location.reload();
+    } else if (!cachedChain) {
+      localStorage.setItem("cachedChain", chainId?.toString());
+    }
+  }, [chainId, account]);
 
-      store.dispatch({
-        type: CHANGE_NETWORK,
-        payload: { network: _network, chain: cachedChain || 1 },
-      });
+  // watch on account change and reload
+  useEffect(() => {
+    if (!account) {
+      return;
+    }
+    const cachedAccount = localStorage.getItem("cachedAccount");
 
+    if (cachedAccount && account?.toString() !== cachedAccount) {
+      localStorage.setItem("cachedAccount", account?.toString());
+
+      window.location.reload();
+    } else if (!cachedAccount) {
+      localStorage.setItem("cachedAccount", account?.toString());
+    }
+  }, [account]);
+
+  // set current selected chain on reducer
+  useEffect(() => {
+    if (!chainId) {
       return;
     }
 
-    const _network = getCurrentNetworkName(chainId);
+    localStorage.setItem("cachedChain", chainId?.toString());
 
-    store.dispatch({
-      type: CONNECT_WALLET,
-      payload: account,
-    });
+    const _network = getCurrentNetworkName(chainId);
     store.dispatch({
       type: CHANGE_NETWORK,
       payload: { network: _network, chain: chainId },
     });
-  }, [chainId, active, account]);
+  }, [chainId]);
 
-  useEffect(() => {
-    async function onNetworkChangeUpdate() {
-      if (typeof window.web3 !== "undefined") {
-        window.ethereum.on("accountsChanged", async (accounts) => {
-          if (accounts.length === 0) {
-            localStorage.connected = "none";
-            return;
-          }
-        });
+  // useEffect(() => {
+  //   if (!chainId || !active) {
+  //     // check if there is existing cached selected network other wise select ethereum chain by default
 
-        window.ethereum.on("disconnect", (error) => {
-          console.log("disconnected ", error);
-          localStorage.connected = "none";
-        });
-      }
-    }
-    onNetworkChangeUpdate();
-  }, []);
+  //     const cachedChain = localStorage.getItem("cachedChain");
+  //     if (!cachedChain) {
+  //       localStorage.setItem("cachedChain", 1);
+  //     }
 
-  useEffect(() => {
-    if (!currentChain) {
-      return;
-    }
-    console.log("chain changed ", currentChain);
-    const cachedChain = localStorage.getItem("cachedChain");
+  //     const _network = getCurrentNetworkName(cachedChain || 1);
+  //     console.log("setting cached chain to select chain id ", cachedChain || 1);
 
-    if (cachedChain && currentChain?.toString() !== cachedChain) {
-      localStorage.setItem("cachedChain", currentChain?.toString());
+  //     store.dispatch({
+  //       type: CHANGE_NETWORK,
+  //       payload: { network: _network, chain: cachedChain || 1 },
+  //     });
 
-      window.location.reload();
-    } else if (!cachedChain) {
-      localStorage.setItem("cachedChain", currentChain?.toString());
-    }
-  }, [currentChain]);
+  //     return;
+  //   }
 
-  useEffect(() => {
-    if (JSON.stringify(error).includes("-32000")) {
-      alert(
-        `You don't have enough balance to pay gas fee for the transaction!`
-      );
-    } else if (JSON.stringify(error).includes("User rejected transaction")) {
-      alert(`Transaction cancelled`);
-    }
-  }, [JSON.stringify(error)]);
+  //   const _network = getCurrentNetworkName(chainId);
+
+  //   store.dispatch({
+  //     type: CONNECT_WALLET,
+  //     payload: account,
+  //   });
+  //   store.dispatch({
+  //     type: CHANGE_NETWORK,
+  //     payload: { network: _network, chain: chainId },
+  //   });
+  // }, [chainId, active, account]);
+
+  // useEffect(() => {
+  //   async function onNetworkChangeUpdate() {
+  //     if (typeof window.web3 !== "undefined") {
+  //       window.ethereum.on("accountsChanged", async (accounts) => {
+  //         if (accounts.length === 0) {
+  //           localStorage.connected = "none";
+  //           return;
+  //         }
+  //       });
+
+  //       window.ethereum.on("disconnect", (error) => {
+  //         console.log("disconnected ", error);
+  //         localStorage.connected = "none";
+  //       });
+  //     }
+  //   }
+  //   onNetworkChangeUpdate();
+  // }, []);
+
+  // useEffect(() => {
+  //   if (!currentChain) {
+  //     return;
+  //   }
+  //   console.log("chain changed ", currentChain);
+  //   const cachedChain = localStorage.getItem("cachedChain");
+
+  //   if (cachedChain && currentChain?.toString() !== cachedChain) {
+  //     localStorage.setItem("cachedChain", currentChain?.toString());
+
+  //     window.location.reload();
+  //   } else if (!cachedChain) {
+  //     localStorage.setItem("cachedChain", currentChain?.toString());
+  //   }
+  // }, [currentChain]);
+
+  // useEffect(() => {
+  //   if (JSON.stringify(error).includes("-32000")) {
+  //     alert(
+  //       `You don't have enough balance to pay gas fee for the transaction!`
+  //     );
+  //   } else if (JSON.stringify(error).includes("User rejected transaction")) {
+  //     alert(`Transaction cancelled`);
+  //   }
+  // }, [JSON.stringify(error)]);
 
   const supportedStakingPools = useMemo(() => {
     if (!currentChain) {
       return [];
     }
-    if (!active) {
+    if (!isActive) {
       return supportedStaking[currentChain]?.map((item) => {
         return {
           poolId: POOL_ID_MAPPINGS?.[currentChain]?.[item],
@@ -236,7 +282,7 @@ const Home = ({ account: { error, currentChain } }) => {
           };
         })
       : [];
-  }, [currentChain, active]);
+  }, [currentChain, isActive]);
 
   const unSupportedStakingPools = useMemo(
     () =>

@@ -72,13 +72,13 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Wallet = ({ onWalletClick }) => {
-  const { active, account } = useActiveWeb3React();
+  const { isActive, account } = useActiveWeb3React();
 
   const classes = useStyles();
 
   return (
     <div>
-      {!active ? (
+      {!isActive ? (
         <Button
           onClick={onWalletClick}
           className={classes.navbarButton}

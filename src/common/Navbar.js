@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
@@ -20,8 +20,6 @@ import Wallet from "./Wallet";
 import AccountDialog from "./AccountDialog";
 import DotCircle from "./DotCircle";
 import NetworkSelect from "./NetworkSelect";
-import useActiveWeb3React from "../hooks/useActiveWeb3React";
-import { useWalletConnectCallback } from "../hooks/useWalletConnectCallback";
 
 const useStyles = makeStyles((theme) => ({
   grow: {
@@ -84,12 +82,6 @@ const useStyles = makeStyles((theme) => ({
   menuIcon: {
     color: "#212121",
   },
-  // list: {
-  //   width: "250px",
-  //   height: "100%",
-  //   backgroundColor: "transparent",
-  //   color: "#f9f9f9",
-  // },
   fullList: {
     width: "auto",
   },
@@ -229,26 +221,6 @@ const Navbar = ({ chainId }) => {
     setState({ ...state, [anchor]: open });
   };
 
-  const { active, deactivate } = useActiveWeb3React();
-
-  useEffect(() => {
-    if (!active && localStorage.connected === "yes") {
-      connectWallet(localStorage.connectorType);
-    }
-  }, [active]);
-
-  const handleLogout = () => {
-    localStorage.connected = "none";
-    deactivate();
-  };
-
-  const [connectWallet] = useWalletConnectCallback();
-
-  const handleWalletConnect = (connectorType = "injected") => {
-    connectWallet(connectorType);
-    setAccountDialog(false);
-  };
-
   const handleWalletClick = () => {
     setAccountDialog(true);
   };
@@ -321,9 +293,7 @@ const Navbar = ({ chainId }) => {
     <div className={classes.grow}>
       <AccountDialog
         open={accountDialog}
-        handleLogout={handleLogout}
         handleClose={() => setAccountDialog(false)}
-        handleConnection={handleWalletConnect}
       />
       <AppBar
         color="transparent"
@@ -385,7 +355,10 @@ const Navbar = ({ chainId }) => {
           </div>
 
           <div>
-            <a href="https://p2p.polkabridge.org/" className={classes.navbarItemsDesktop}>
+            <a
+              href="https://p2p.polkabridge.org/"
+              className={classes.navbarItemsDesktop}
+            >
               P2P <DotCircle />
             </a>
           </div>

@@ -2,12 +2,7 @@ import { Button, Card, Divider, makeStyles } from "@material-ui/core";
 import React, { useCallback, useMemo, useState } from "react";
 import { BigNumber } from "bignumber.js";
 import CustomButton from "./CustomButton";
-import {
-  formatCurrency,
-  formatLargeNumber,
-  fromWei,
-  toWei,
-} from "../utils/helper";
+import { formatCurrency, formatLargeNumber, fromWei } from "../utils/helper";
 import { connect, useSelector } from "react-redux";
 import { getAccountBalance } from "../actions/accountActions";
 import {
@@ -24,7 +19,6 @@ import {
   AIBB,
   AIBB_ALLOWANCE,
 } from "../constants";
-import Loader from "./../common/Loader";
 import DotCircle from "./../common/DotCircle";
 import useActiveWeb3React from "../hooks/useActiveWeb3React";
 import { useTokenAllowance } from "../hooks/useAllowance";
@@ -32,7 +26,6 @@ import { usePoolStakedInfo } from "../hooks/usePoolStakedInfo";
 import { useUserStakedInfo } from "../hooks/useUserStakedInfo";
 import { useTokenPrice } from "../hooks/useTokenPrice";
 import StakeDialog from "../common/StakeDialog";
-import { useWalletConnectCallback } from "../hooks/useWalletConnectCallback";
 import AccountDialog from "./../common/AccountDialog";
 
 const useStyles = makeStyles((theme) => ({
@@ -268,7 +261,7 @@ const Staking = ({
   stopped = false,
 }) => {
   const classes = useStyles();
-  const { chainId, active, account } = useActiveWeb3React();
+  const { chainId, isActive, account } = useActiveWeb3React();
   const [accountDialog, setAccountDialog] = useState(false);
 
   const [dialog, setDialog] = React.useState({
@@ -293,10 +286,6 @@ const Staking = ({
     setDialog({ open: false, type: null });
   };
 
-  // const tokenContract = useTokenContract(
-  //   tokenAddresses?.[tokenType]?.[chainId]
-  // );
-
   const poolToken = useMemo(() => {
     return {
       symbol: tokenType,
@@ -304,12 +293,15 @@ const Staking = ({
     };
   }, [tokenType, chainId]);
 
-  const [currentTokenAllowance, confirmAllowance, allowanceTrxStatus] =
-    useTokenAllowance(poolToken, account, STAKE_ADDRESSES?.[chainId]);
+  const {
+    approved: currentTokenAllowance,
+    confirmAllowance,
+    transactionStatus: allowanceTrxStatus,
+  } = useTokenAllowance(poolToken, account, STAKE_ADDRESSES?.[chainId]);
 
   const poolStakedInfo = usePoolStakedInfo(poolId, poolToken, currentChain);
 
-  const userStakedInfo = useUserStakedInfo(tokenType, poolId, account);
+  const userStakedInfo = useUserStakedInfo(poolId);
 
   const handleApprove = useCallback(() => {
     let tokenWeiAmountToApprove = TOKEN_ALLOWANCE_ALLOWANCE;
@@ -325,25 +317,9 @@ const Staking = ({
 
   const priceLoading = useTokenPrice(poolToken);
 
-  // const [transactionStatus, stakeTokens, unstakeTokens] =
-  //   useStakeCallback(tokenType);
-
   const handleClaim = async (tokenType) => {
     setDialog({ open: true, type: "claim", tokenType: tokenType });
   };
-
-  // // minimum AIBB to claim  500M
-  // const claimDisableStatus = useMemo(() => {
-  //   if (
-  //     tokenType === AIBB &&
-  //     new BigNumber(fromWei(userStakedInfo?.pending)).lte(500000000)
-  //   )
-  //     return (
-  //       new BigNumber(userStakedInfo?.staked).eq(0) ||
-  //       transactionStatus.status === "waiting" ||
-  //       transactionStatus.status === "pending"
-  //     );
-  // }, [userStakedInfo, transactionStatus, tokenType]);
 
   const stakeDisableStatus = useMemo(() => {
     if (unsupportedStaking?.[chainId]?.includes(tokenType)) {
@@ -355,13 +331,6 @@ const Staking = ({
 
   const withdrawDisableStatus = (_tokenType) => {
     return false;
-  };
-
-  const [connectWallet] = useWalletConnectCallback();
-
-  const handleWalletConnect = (connectorType = "injected") => {
-    connectWallet(connectorType);
-    setAccountDialog(false);
   };
 
   const handleWalletClick = useCallback(() => {
@@ -394,9 +363,7 @@ const Staking = ({
       />
       <AccountDialog
         open={accountDialog}
-        handleLogout={() => {}}
         handleClose={() => setAccountDialog(false)}
-        handleConnection={handleWalletConnect}
       />
       {/* {transactionStatus?.status === "pending" && (
         <div className="text-center">
@@ -453,7 +420,10 @@ const Staking = ({
             </a>
 
             {tokenType === AIBB && (
-              <a href="https://twitter.com/bullbear_ai/status/1653002325013975042" target="_blank">
+              <a
+                href="https://twitter.com/bullbear_ai/status/1653002325013975042"
+                target="_blank"
+              >
                 <Button
                   variant="contained"
                   className={classes.borderButtonRegister}
@@ -510,7 +480,7 @@ const Staking = ({
 
           <Divider style={{ backgroundColor: "#616161", height: 1 }} />
 
-          {active && (
+          {isActive && (
             <div className={classes.desktop}>
               <div className="text-center mt-4">
                 <div className={classes.tokenTitle}>Staked</div>
@@ -558,7 +528,7 @@ const Staking = ({
           )}
 
           <div className={classes.buttons}>
-            {!active && (
+            {!isActive && (
               <div className="text-center">
                 {/* <p className={classes.hint}>Connect wallet</p> */}
                 <Button
@@ -570,7 +540,7 @@ const Staking = ({
                 </Button>
               </div>
             )}
-            {active && !currentTokenAllowance && !stopped && (
+            {isActive && !currentTokenAllowance && !stopped && (
               <div className="text-center">
                 <CustomButton
                   disabled={allowanceTrxStatus?.status === "waiting"}
@@ -588,7 +558,7 @@ const Staking = ({
                 </p>
               </div>
             )}
-            {active && currentTokenAllowance && (
+            {isActive && currentTokenAllowance && (
               <div className={classes.stakeButtons}>
                 <CustomButton
                   hidden={stopped}

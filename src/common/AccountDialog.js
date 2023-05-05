@@ -1,23 +1,19 @@
-import React, { useMemo } from "react";
+import React, { useCallback, useEffect, useMemo } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Dialog from "@material-ui/core/Dialog";
 import IconButton from "@material-ui/core/IconButton";
 import CloseIcon from "@material-ui/icons/Close";
 import CustomButton from "../components/CustomButton";
 import { FileCopy } from "@material-ui/icons";
-import {
-  tokenName,
-  tokenLogo,
-  supportedStaking,
-  CORGIB,
-  tokenAddresses,
-} from "../constants";
-import { formatCurrency, fromWei } from "../utils/helper";
+import { supportedStaking, tokenAddresses } from "../constants";
+import { formattedAddress, isMetaMaskInstalled } from "../utils/helper";
 import { connect } from "react-redux";
 import { logout } from "../actions/accountActions";
 import { Card } from "@material-ui/core";
 import useActiveWeb3React from "../hooks/useActiveWeb3React";
-import { useCurrencyBalances } from "../hooks/useBalance";
+import { Web3Button, useWeb3Modal } from "@web3modal/react";
+import { useConnect, useDisconnect } from "wagmi";
+import BalanceRow from "./BalanceRow";
 
 const useStyles = makeStyles((theme) => ({
   background: {
@@ -32,8 +28,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: "space-around",
 
     [theme.breakpoints.down("sm")]: {
-      minWidth: 200,
-      width: "100%",
+      minWidth: 320,
       height: 450,
     },
   },
@@ -146,28 +141,34 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const AccountDialog = ({
-  open,
-  handleClose,
-  handleLogout,
-  handleConnection,
-}) => {
+const AccountDialog = ({ open, handleClose }) => {
   const classes = useStyles();
 
-  const { active, chainId, account } = useActiveWeb3React();
+  const { isActive, chainId, account } = useActiveWeb3React();
 
-  const onSingOut = () => {
+  const { isOpen } = useWeb3Modal();
+  const { connectors, connectAsync, error, isLoading, pendingConnector } =
+    useConnect();
+
+  const { disconnect } = useDisconnect();
+
+  const onSingOut = useCallback(() => {
     localStorage.setItem(`logout${account}`, account);
-    handleLogout();
+    disconnect();
     handleClose();
-  };
+  }, [disconnect, account, handleClose]);
 
   const tokens = useMemo(() => {
     return supportedStaking?.[chainId]?.map((_symbol) => {
       return { symbol: _symbol, address: tokenAddresses?.[_symbol]?.[chainId] };
     });
   }, [chainId]);
-  const balances = useCurrencyBalances(account, tokens);
+
+  useEffect(() => {
+    if (isOpen) {
+      handleClose();
+    }
+  }, [isOpen, handleClose]);
 
   return (
     <div>
@@ -181,7 +182,7 @@ const AccountDialog = ({
           style: { borderRadius: 25, backgroundColor: "#121827" },
         }}
       >
-        {active && (
+        {isActive && (
           <Card elevation={10} className={classes.background}>
             <div style={{ width: "100%" }}>
               <div className="d-flex justify-content-between align-items-center">
@@ -199,8 +200,7 @@ const AccountDialog = ({
                 }}
               >
                 <h6 htmlFor="username" className={classes.subheading}>
-                  {[...account].splice(0, 7)} {"..."}
-                  {[...account].splice([...account].length - 7, 7)}
+                  {formattedAddress(account)}
                   <IconButton style={{ padding: 0 }}>
                     {" "}
                     <FileCopy
@@ -214,37 +214,7 @@ const AccountDialog = ({
 
             <div style={{ width: "100%", paddingLeft: 20, paddingRight: 20 }}>
               {tokens?.map(function (token, index) {
-                return (
-                  <div className="d-flex justify-content-between mt-4">
-                    <div className="d-flex justify-content-start">
-                      <div className={classes.logoWrapper}>
-                        <img
-                          src={tokenLogo?.[token?.symbol]}
-                          className={classes.logo}
-                          alt=""
-                        />
-                      </div>
-                      <div>
-                        <div className={classes.tokenTitle}>
-                          {token?.symbol}
-                        </div>
-                        <div className={classes.tokenSubtitle}>
-                          {tokenName?.[token?.symbol]}
-                        </div>
-                      </div>
-                    </div>
-                    <div className={classes.tokenAmount}>
-                      {token?.symbol === CORGIB
-                        ? formatCurrency(fromWei(balances?.[index]))
-                        : formatCurrency(
-                            fromWei(balances?.[index]),
-                            false,
-                            1,
-                            true
-                          )}
-                    </div>
-                  </div>
-                );
+                return <BalanceRow token={token} key={index} />;
               })}
             </div>
 
@@ -256,7 +226,7 @@ const AccountDialog = ({
             </div>
           </Card>
         )}
-        {!active && (
+        {!isActive && (
           <Card elevation={10} className={classes.background}>
             <div style={{ width: "100%" }}>
               <div className="d-flex justify-content-between align-items-center">
@@ -271,7 +241,15 @@ const AccountDialog = ({
                 <div className="mt-4">
                   <div
                     className={classes.singleWalletCard}
-                    onClick={() => handleConnection("injected")}
+                    onClick={() => {
+                      isMetaMaskInstalled()
+                        ? connectAsync({ connector: connectors?.[1] })
+                        : window.open(
+                            "https://metamask.app.link/dapp/stake.polkabridge.org/",
+                            "_blank",
+                            "noopener,noreferrer"
+                          );
+                    }}
                   >
                     <div className="d-flex justify-content-start align-items-center">
                       <div className={classes.logoWrapper}>
@@ -287,35 +265,16 @@ const AccountDialog = ({
                     </div>
                   </div>
 
-                  {/* <div
-                    className={classes.singleWalletCard}
-                    onClick={() => handleConnection("unstoppable")}
-                  >
-                    <div className="d-flex justify-content-start align-items-center">
-                      <div className={classes.logoWrapper}>
-                        <img
-                          src={
-                            "https://avatars.githubusercontent.com/u/36172275?s=280&v=4"
-                          }
-                          className={classes.logo}
-                          alt=""
-                        />
-                      </div>
-                      <div className={classes.tokenTitle}>
-                        Unstoppable Domains
-                      </div>
-                    </div>
-                  </div> */}
-
                   <div
                     className={classes.singleWalletCard}
-                    onClick={() => handleConnection("walletConnect")}
+                    // onClick={() => handleConnection("walletConnect")}
                   >
+                    <Web3Button />
                     <div className="d-flex justify-content-start align-items-center">
-                      <div className={classes.logoWrapper}>
+                      {/* <div className={classes.logoWrapper}>
                         <img src="img/wc.png" className={classes.logo} alt="" />
                       </div>
-                      <div className={classes.tokenTitle}>Walletconnect</div>
+                      <div className={classes.tokenTitle}>Walletconnect</div> */}
                     </div>
                   </div>
                 </div>

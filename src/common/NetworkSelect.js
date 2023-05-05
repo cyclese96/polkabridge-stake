@@ -1,16 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
-import {
-  arbitrumNetworkDetail,
-  bscNetworkDetail,
-  ethereumNetworkDetail,
-  harmonyNetworkDetail,
-  polygonNetworkDetail,
-} from "../utils/networkConstants";
-import { getCurrentNetworkName, setupNetwork } from "../utils/helper";
+
+import { getCurrentNetworkName } from "../utils/helper";
 import config from "../utils/config";
 import { currentConnection } from "../constants";
 import etherIcon from "../assets/ether.png";
@@ -18,8 +12,8 @@ import binanceIcon from "../assets/binance.png";
 import polygonIcon from "../assets/polygon.png";
 import { CHANGE_NETWORK } from "../actions/types";
 import store from "../store";
-import useActiveWeb3React from "../hooks/useActiveWeb3React";
 import { connect } from "react-redux";
+import { useSwitchNetwork } from "wagmi";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -57,74 +51,51 @@ const useStyles = makeStyles((theme) => ({
 const NetworkSelect = ({ account: { currentChain } }) => {
   const classes = useStyles();
 
-  const [network, setNetwork] = React.useState(
-    parseInt(localStorage.getItem("currentNetwork") || config.chainId)
+  const [selectedChain, setSelectedChain] = React.useState(
+    parseInt(localStorage.getItem("cachedChain") || config.chainId)
   );
 
-  const { active } = useActiveWeb3React();
+  const { switchNetwork } = useSwitchNetwork();
 
-  useEffect(() => {
-    if (!currentChain) {
-      return;
-    }
+  const handleChange = useCallback(
+    async (targetChain) => {
+      try {
+        switchNetwork(targetChain);
+      } catch (error) {
+        localStorage.cachedChain = targetChain;
+        const _network = getCurrentNetworkName(targetChain);
+        store.dispatch({
+          type: CHANGE_NETWORK,
+          payload: { network: _network, chain: targetChain },
+        });
+        setSelectedChain(targetChain);
+        console.log("chain switch error ", error);
+      }
+    },
+    [switchNetwork]
+  );
 
-    setNetwork(currentChain);
-  }, [currentChain]);
+  // useEffect(() => {
+  //   if (!chainId) {
+  //     return;
+  //   }
+  //   store.dispatch({
+  //     type: CHANGE_NETWORK,
+  //     payload: {
+  //       network: getCurrentNetworkName(chainId),
+  //       chain: chainId,
+  //     },
+  //   });
+  //   localStorage.setItem("currentNetwork", chainId);
 
-  const handleChangeNetwork = (_selected) => {
-    store.dispatch({
-      type: CHANGE_NETWORK,
-      payload: {
-        network: getCurrentNetworkName(_selected),
-        chain: _selected,
-      },
-    });
-    setNetwork(_selected);
-  };
-
-  const handleChange = (_selected) => {
-    if (network === _selected) {
-      return;
-    }
-    localStorage.setItem("currentNetwork", _selected);
-
-    // handle network stated when metamask in not available
-    if (!active) {
-      handleChangeNetwork(_selected);
-    }
-
-    if ([56, 97].includes(_selected)) {
-      setupNetwork(
-        currentConnection === "mainnet"
-          ? bscNetworkDetail.mainnet
-          : bscNetworkDetail.testnet
-      );
-    } else if ([137, 80001].includes(_selected)) {
-      setupNetwork(
-        currentConnection === "mainnet"
-          ? polygonNetworkDetail.mainnet
-          : polygonNetworkDetail.testnet
-      );
-    } else if ([421613, 42161].includes(_selected)) {
-      setupNetwork(
-        currentConnection === "mainnet"
-          ? arbitrumNetworkDetail.mainnet
-          : arbitrumNetworkDetail.testnet
-      );
-    } else {
-      setupNetwork(
-        currentConnection === "mainnet"
-          ? ethereumNetworkDetail.mainnet
-          : ethereumNetworkDetail.testnet
-      );
-    }
-  };
+  //   setSelectedChain(chainId);
+  // }, [chainId]);
   return (
     <div>
       <FormControl className={classes.root}>
         <Select
           className={classes.main}
-          value={network}
+          value={selectedChain}
           disableUnderline={true}
           notched={true}
           id="adornment-weight"
