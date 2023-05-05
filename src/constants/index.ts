@@ -425,7 +425,7 @@ export const apyConstants = {
   arbitrum: {
     AIBB: {
       NUMBER_BLOCKS_PER_YEAR: 2555000,
-      AVG_REWARD_PER_BLOCK: 47000000,
+      AVG_REWARD_PER_BLOCK: 80000000,
     },
   },
 };
