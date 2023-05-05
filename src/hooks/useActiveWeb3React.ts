@@ -1,17 +1,23 @@
-/* eslint-disable react-hooks/rules-of-hooks */
-import { Web3Provider } from "@ethersproject/providers";
-import { useWeb3React } from "web3-react-core";
-import { NetworkContextName } from "../constants";
+// /* eslint-disable react-hooks/rules-of-hooks */
+
+import { useMemo } from "react";
+import { useAccount, useNetwork, useProvider, useSigner } from "wagmi";
 
 export default function useActiveWeb3React() {
-  const interfaceContext = useWeb3React<Web3Provider>();
-  const interfaceNetworkContext = useWeb3React<Web3Provider>(
-    process.env.REACT_APP_IS_WIDGET ? undefined : NetworkContextName
-  );
+  const { address, connector, isConnected } = useAccount();
+  const { chain } = useNetwork();
+  const provider = useProvider();
+  const { data: signer } = useSigner();
 
-  if (interfaceContext.active) {
-    return interfaceContext;
-  }
-
-  return interfaceNetworkContext;
+  const interfaceContext = useMemo(() => {
+    return {
+      account: address,
+      isActive: isConnected,
+      connector: connector,
+      chainId: chain?.id,
+      provider: provider,
+      signer: signer,
+    };
+  }, [address, isConnected, connector, chain, provider, signer]);
+  return interfaceContext;
 }

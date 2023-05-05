@@ -56,6 +56,17 @@ export const getCurrentAccount = async () => {
   }
 };
 
+export const formattedAddress = (address, count = 4) => {
+  const _address = address?.toString();
+  if (!address) {
+    return "";
+  }
+
+  const _formatted =
+    _address?.slice(0, count) + "..." + _address?.slice(-count);
+  return _formatted;
+};
+
 export const formatLargeNumber = (value, precision = 2) => {
   const _value = !value ? "0" : value;
   const formatter = new Intl.NumberFormat("en-US", {
@@ -247,3 +258,16 @@ export const fetchTokenPrice = async (tokenSymbol) => {
     return null;
   }
 };
+
+export function isValidNumber(str) {
+  // Use the unary plus operator to convert the string to a number
+  const num = +str;
+
+  // Check if the result is a finite non-negative number or a big number
+  return (
+    typeof num === "number" &&
+    !isNaN(num) &&
+    num >= 0 &&
+    (isFinite(num) || new BigNumber(str).isFinite())
+  );
+}

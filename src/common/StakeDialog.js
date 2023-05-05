@@ -24,8 +24,8 @@ import {
 } from "../constants";
 import BigNumber from "bignumber.js";
 import useActiveWeb3React from "../hooks/useActiveWeb3React";
-import { useTokenBalance } from "../hooks/useBalance";
 import { useStakeCallback } from "hooks/useStakeCallback";
+import useTokenBalance from "hooks/useTokenBalance";
 
 const styles = (theme) => ({
   root: {
@@ -187,7 +187,7 @@ const StakeDialog = ({
     };
   }, [tokenType, chainId]);
 
-  const poolTokenBalance = useTokenBalance(account, poolToken);
+  const poolTokenBalance = useTokenBalance(poolToken?.address);
 
   const handleInputChange = (e) => {
     if (

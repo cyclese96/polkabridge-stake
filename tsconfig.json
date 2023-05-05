@@ -1,11 +1,15 @@
 {
   "compilerOptions": {
-    "baseUrl": "./src",
-    "target": "es5",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "target": "ESNext",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext",
+      "DOM", "DOM.Iterable", "ESNext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
-    "esModuleInterop": true,
+    "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "strict": true,
     "forceConsistentCasingInFileNames": true,
@@ -15,7 +19,20 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "types": [
+      "jest"
+    ],
+    "useUnknownInCatchVariables": false,
+    "noImplicitThis": true,
+    "noUnusedLocals": false,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "baseUrl": "src",
+    "downlevelIteration": true,
+    "useDefineForClassFields": true
   },
-  "include": ["src"]
+  "include": [
+    "src"
+  ]
 }
