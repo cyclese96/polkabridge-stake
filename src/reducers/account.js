@@ -1,3 +1,4 @@
+import { getCurrentNetworkName, isValidNumber } from "utils/helper";
 import {
   CONNECT_WALLET,
   DISCONNECT_WALLET,
@@ -10,14 +11,20 @@ import {
 } from "../actions/types";
 import { etheriumNetwork } from "../constants";
 
+function defaultChain() {
+  return isValidNumber(localStorage.cachedChain)
+    ? parseInt(localStorage.cachedChain)
+    : 1;
+}
+
 const initalState = {
   connected: false,
   currentAccount: "",
   balance: {},
   error: null,
   loading: {},
-  currentNetwork: etheriumNetwork,
-  currentChain: null,
+  currentNetwork: getCurrentNetworkName(defaultChain()),
+  currentChain: defaultChain(),
 };
 
 export default function (state = initalState, action) {

@@ -6,31 +6,35 @@ import { Fragment } from "react";
 import Home from "./pages/Home";
 import { Provider } from "react-redux";
 import store from "./store";
-import { createWeb3ReactRoot, Web3ReactProvider } from "web3-react-core";
-import { NetworkContextName } from "./constants";
-import getLibrary from "./utils/getLibrary";
-import { BlockUpdater } from "./hooks/useBlockNumber";
-import MulticallUpdater from "./state/multicall/updater";
-import TransactionUpdater from "./state/transactions/updater";
-
-const Web3ProviderNetwork = createWeb3ReactRoot(NetworkContextName);
+import { WagmiConfig } from "wagmi";
+import {
+  ethereumClient,
+  projectId,
+  wagmiClient,
+} from "./web3Connection/wagmiClient";
+import { Web3Modal } from "@web3modal/react";
 
 function App() {
   return (
     <Provider store={store}>
-      <Web3ReactProvider getLibrary={getLibrary}>
-        <Web3ProviderNetwork getLibrary={getLibrary}>
-          <ThemeProvider theme={theme}>
-            <TransactionUpdater />
-
-            <MulticallUpdater />
-            <BlockUpdater />
-            <Fragment>
-              <Home />
-            </Fragment>
-          </ThemeProvider>
-        </Web3ProviderNetwork>
-      </Web3ReactProvider>
+      <ThemeProvider theme={theme}>
+        <WagmiConfig client={wagmiClient}>
+          <Fragment>
+            <Home />
+          </Fragment>
+        </WagmiConfig>
+        <Web3Modal
+          projectId={projectId}
+          ethereumClient={ethereumClient}
+          themeVariables={{
+            "--w3m-background-color": "#000000",
+            "--w3m-z-index": 12,
+            "--w3m-accent-fill-color": "#ffffff",
+            "--w3m-text-big-bold-size": 18,
+            "--w3m-accent-color": "#121827",
+          }}
+        />
+      </ThemeProvider>
     </Provider>
   );
 }
