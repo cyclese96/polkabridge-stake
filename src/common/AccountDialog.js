@@ -239,44 +239,43 @@ const AccountDialog = ({ open, handleClose }) => {
 
               <div style={{ width: "100%", paddingLeft: 20, paddingRight: 20 }}>
                 <div className="mt-4">
-                  <div
-                    className={classes.singleWalletCard}
-                    onClick={() => {
-                      isMetaMaskInstalled()
-                        ? connectAsync({ connector: connectors?.[1] })
-                        : window.open(
-                            "https://metamask.app.link/dapp/stake.polkabridge.org/",
-                            "_blank",
-                            "noopener,noreferrer"
-                          );
-                    }}
-                  >
-                    <div className="d-flex justify-content-start align-items-center">
-                      <div className={classes.logoWrapper}>
-                        <img
-                          src={
-                            "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/1200px-MetaMask_Fox.svg.png"
-                          }
-                          className={classes.logo}
-                          alt=""
-                        />
-                      </div>
-                      <div className={classes.tokenTitle}>Metamask</div>
-                    </div>
-                  </div>
-
-                  <div
-                    className={classes.singleWalletCard}
-                    // onClick={() => handleConnection("walletConnect")}
-                  >
-                    <Web3Button />
-                    <div className="d-flex justify-content-start align-items-center">
-                      {/* <div className={classes.logoWrapper}>
-                        <img src="img/wc.png" className={classes.logo} alt="" />
-                      </div>
-                      <div className={classes.tokenTitle}>Walletconnect</div> */}
-                    </div>
-                  </div>
+                  {connectors.map((connector) => (
+                    <>
+                      {connector.id === "walletConnectLegacy" && (
+                        <div className={classes.singleWalletCard}>
+                          <Web3Button />
+                          <div className="d-flex justify-content-start align-items-center"></div>
+                        </div>
+                      )}
+                      {connector.id === "injected" && (
+                        <div
+                          className={classes.singleWalletCard}
+                          onClick={() => {
+                            isMetaMaskInstalled()
+                              ? connectAsync({ connector: connector })
+                              : window.open(
+                                  "https://metamask.app.link/dapp/stake.polkabridge.org/",
+                                  "_blank",
+                                  "noopener,noreferrer"
+                                );
+                          }}
+                        >
+                          <div className="d-flex justify-content-start align-items-center">
+                            <div className={classes.logoWrapper}>
+                              <img
+                                src={
+                                  "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/MetaMask_Fox.svg/1200px-MetaMask_Fox.svg.png"
+                                }
+                                className={classes.logo}
+                                alt=""
+                              />
+                            </div>
+                            <div className={classes.tokenTitle}>Metamask</div>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  ))}
                 </div>
               </div>
             </div>

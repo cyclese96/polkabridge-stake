@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-// import { Token, TransactionStatus } from "../utils/interface";
 import BigNumber from "bignumber.js";
 import { STAKE_ADDRESSES } from "../constants/index";
 import useActiveWeb3React from "./useActiveWeb3React";
@@ -26,10 +25,7 @@ export function useTokenAllowance(token, owner, spender) {
           functionName: "allowance",
           args: [_owner, _spender],
         });
-        // console.log("allowance test ", {
-        //   allowance: data?.toString(),
-        //   _tokenBalance,
-        // });
+
         if (
           new BigNumber(data?.toString()).gte(_tokenBalance) &&
           !new BigNumber(data?.toString()).lte(0)
@@ -104,56 +100,9 @@ export function useTokenAllowance(token, owner, spender) {
     }
   }, [trxWatchData, trxWatchLoading, isError]);
 
-  // useEffect(() => {
-  //   if (!data?.hash) {
-  //     return;
-  //   }
-
-  //   if (data?.status === "completed" || data?.status === "failed") {
-  //     return;
-  //   }
-
-  //   library
-  //     ?.getTransactionReceipt(data?.hash)
-  //     .then((res) => {
-  //       if (res?.blockHash && res?.blockNumber) {
-  //         setData({ ...data, status: "completed" });
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       console.log("transaction failed ", err);
-  //       setData({ ...data, status: "failed" });
-  //     });
-  // }, [blockNumber]);
-
   const transactionStatus = useMemo(() => {
     return { status: data?.status, hash: data?.hash };
   }, [data]);
-
-  // const approved = useMemo(() => {
-  //   let tokenWeiAmountToApprove = TOKEN_ALLOWANCE_ALLOWANCE;
-  //   if (token?.symbol === CORGIB) {
-  //     tokenWeiAmountToApprove = CORGIB_ALLOWANCE_ALLOWANCE;
-  //   } else if (token?.symbol === AIBB) {
-  //     tokenWeiAmountToApprove = AIBB_ALLOWANCE;
-  //   }
-
-  //   if (!currentAllowance || !token) {
-  //     return false;
-  //   }
-
-  //   // console.log("allowance test ", {
-  //   //   currentAllowance,
-  //   //   tokenWeiAmountToApprove,
-  //   //   tokenBalance,
-  //   // });
-
-  //   if (new BigNumber(currentAllowance).lte(0)) {
-  //     return false;
-  //   }
-
-  //   return new BigNumber(currentAllowance).gte(tokenBalance?.toString() || "1");
-  // }, [token, currentAllowance, tokenBalance]);
 
   return {
     approved: approved,
