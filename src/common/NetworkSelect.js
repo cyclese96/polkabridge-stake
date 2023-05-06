@@ -60,6 +60,7 @@ const NetworkSelect = ({ account: { currentChain } }) => {
   const handleChange = useCallback(
     async (targetChain) => {
       try {
+        console.log("target chain", targetChain);
         switchNetwork(targetChain);
       } catch (error) {
         localStorage.cachedChain = targetChain;
