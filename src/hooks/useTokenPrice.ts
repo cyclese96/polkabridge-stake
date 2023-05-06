@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { fetchTokenPrice } from "../utils/helper";
 import { Token } from "../utils/interface";
 import { useDispatch } from "react-redux";
-import { SET_TOKEN_PRICE } from "actions/types";
+import { SET_TOKEN_PRICE } from "../actions/types";
 
 export function useTokenPrice(poolToken?: Token): boolean {
   const [loading, setLoading] = useState(false);
@@ -11,8 +11,9 @@ export function useTokenPrice(poolToken?: Token): boolean {
   async function fetchData(_token?: Token) {
     try {
       setLoading(true);
-      // console.log("price test fetching price ", _token);
       let res = await fetchTokenPrice(_token?.symbol);
+
+      console.log("price test fetching price ", res);
 
       if (!res) {
         setLoading(false);

@@ -433,7 +433,7 @@ export const apyConstants = {
 export const tokenPriceConstants = {
   DEFLY: 0.06,
   AOG: 0.3,
-  AIBB: 0.0000000015,
+  // AIBB: 0.0000000007,
 };
 
 export const coingeckoTokenId = {
@@ -447,6 +447,7 @@ export const coingeckoTokenId = {
   PWAR: "polkawar",
   GRAV: "graviton-zero",
   LABS: "labs-group",
+  AIBB: "bullbear-ai",
 };
 
 export const etheriumNetwork = "ethereum";
