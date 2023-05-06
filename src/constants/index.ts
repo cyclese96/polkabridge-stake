@@ -425,7 +425,7 @@ export const apyConstants = {
   arbitrum: {
     AIBB: {
       NUMBER_BLOCKS_PER_YEAR: 2555000,
-      AVG_REWARD_PER_BLOCK: 80000000,
+      AVG_REWARD_PER_BLOCK: 16000000,
     },
   },
 };
@@ -433,7 +433,7 @@ export const apyConstants = {
 export const tokenPriceConstants = {
   DEFLY: 0.06,
   AOG: 0.3,
-  AIBB: 0.0000000007,
+  AIBB: 0.0000000015,
 };
 
 export const coingeckoTokenId = {
