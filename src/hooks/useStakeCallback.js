@@ -116,6 +116,7 @@ export function useStakeCallback(tokenSymbol) {
   const emergencyWithdrawTokens = useCallback(
     async (poolId) => {
       try {
+        console.log("calling emergency withdraw!");
         setData({ ...data, status: "waiting" });
 
         let unstakeRes = null;
