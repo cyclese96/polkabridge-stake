@@ -505,7 +505,7 @@ export const supportedNetworks = ["1", "56", "137"];
 export const supportedStaking = {
   1: [PBR],
   42: [PBR, LABS],
-  56: [PBR, CORGIB, PWAR],
+  56: [PBR],
   97: [CORGIB, PWAR],
   137: [PBR],
   80001: [PBR],
@@ -516,7 +516,7 @@ export const supportedStaking = {
 export const unsupportedStaking = {
   1: ["PUN", "CFL365", "SHOE", "BITE", "LABS"],
   43: ["PUN", "CFL365", "SHOE", "BITE"],
-  56: ["AOG", GRAV, DEFLY],
+  56: ["AOG", GRAV, DEFLY, CORGIB, PWAR],
   97: ["AOG", GRAV, DEFLY],
   137: [WELT],
   80001: [WELT],

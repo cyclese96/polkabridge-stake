@@ -337,7 +337,11 @@ const StakeDialog = ({
 
       await stakeTokens(enteredTokens.toString(), poolId);
     } else {
-      await unstakeTokens(enteredTokens?.toString(), poolId, stopped);
+      if (stopped) {
+        await emergencyWithdrawTokens(poolId);
+      } else {
+        await unstakeTokens(enteredTokens?.toString(), poolId, stopped);
+      }
     }
     // handleClose();
   };
