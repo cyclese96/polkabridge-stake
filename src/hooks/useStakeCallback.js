@@ -56,13 +56,18 @@ export function useStakeCallback(tokenSymbol) {
   const unstakeTokens = useCallback(
     async (unstakeAmount, poolId, isEnded) => {
       const withdrawTokens = toWei(unstakeAmount);
-
+      // console.log("calling  for ,", {
+      //   unstakeAmount,
+      //   poolId,
+      //   isEnded,
+      //   tokenSymbol,
+      // });
       try {
         setData({ ...data, status: "waiting" });
 
         let unstakeRes = null;
 
-        if (isEnded || tokenSymbol === "AOG") {
+        if (isEnded && tokenSymbol === "AOG") {
           unstakeRes = await writeContract({
             address: STAKE_ADDRESSES[chainId || ""],
             abi: STAKE_ABI,
@@ -78,6 +83,12 @@ export function useStakeCallback(tokenSymbol) {
             overrides: { gasLimit: 5950000 },
           });
         } else {
+          // console.log("calling withdraw for ,", {
+          //   unstakeAmount,
+          //   poolId,
+          //   isEnded,
+          //   tokenSymbol,
+          // });
           unstakeRes = await writeContract({
             address: STAKE_ADDRESSES[chainId || ""],
             abi: STAKE_ABI,
