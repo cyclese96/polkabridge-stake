@@ -10,7 +10,7 @@ import { WagmiConfig } from "wagmi";
 import {
   ethereumClient,
   projectId,
-  wagmiClient,
+  wagmiConfig,
 } from "./web3Connection/wagmiClient";
 import { Web3Modal } from "@web3modal/react";
 
@@ -18,7 +18,7 @@ function App() {
   return (
     <Provider store={store}>
       <ThemeProvider theme={theme}>
-        <WagmiConfig client={wagmiClient}>
+        <WagmiConfig config={wagmiConfig}>
           <Fragment>
             <Home />
           </Fragment>

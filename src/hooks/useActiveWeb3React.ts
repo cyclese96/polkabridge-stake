@@ -1,13 +1,21 @@
 // /* eslint-disable react-hooks/rules-of-hooks */
+// import { useWeb3React } from "@web3-react/core";
+
+// export default function useActiveWeb3React() {
+//   const interfaceContext = useWeb3React();
+
+//   return interfaceContext;
+// }
+
+/* eslint-disable react-hooks/rules-of-hooks */
+// import { useWeb3React } from "@web3-react/core";
 
 import { useMemo } from "react";
-import { useAccount, useNetwork, useProvider, useSigner } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 
 export default function useActiveWeb3React() {
   const { address, connector, isConnected } = useAccount();
   const { chain } = useNetwork();
-  const provider = useProvider();
-  const { data: signer } = useSigner();
 
   const interfaceContext = useMemo(() => {
     return {
@@ -15,9 +23,7 @@ export default function useActiveWeb3React() {
       isActive: isConnected,
       connector: connector,
       chainId: chain?.id,
-      provider: provider,
-      signer: signer,
     };
-  }, [address, isConnected, connector, chain, provider, signer]);
+  }, [address, isConnected, connector, chain]);
   return interfaceContext;
 }
