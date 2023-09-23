@@ -3,7 +3,7 @@ import {
   w3mConnectors,
   w3mProvider,
 } from "@web3modal/ethereum";
-import { configureChains, createClient } from "wagmi";
+import { configureChains, createConfig } from "wagmi";
 import {
   bsc,
   mainnet,
@@ -14,7 +14,7 @@ import {
   polygonMumbai,
   arbitrumGoerli,
 } from "wagmi/chains";
-
+import { publicProvider } from "wagmi/providers/public";
 const chains = [
   mainnet,
   goerli,
@@ -26,12 +26,15 @@ const chains = [
   polygonMumbai,
 ];
 export const projectId = process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID;
-
-const { provider } = configureChains(chains, [w3mProvider({ projectId })]);
-export const wagmiClient = createClient({
+console.log("running");
+const { publicClient } = configureChains(chains, [
+  publicProvider(),
+  w3mProvider({ projectId }),
+]);
+export const wagmiConfig = createConfig({
   autoConnect: true,
-  connectors: w3mConnectors({ projectId, version: 1, chains }),
-  provider,
+  connectors: w3mConnectors({ projectId, chains }),
+  publicClient,
 });
 
-export const ethereumClient = new EthereumClient(wagmiClient, chains);
+export const ethereumClient = new EthereumClient(wagmiConfig, chains);
