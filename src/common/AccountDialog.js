@@ -149,7 +149,6 @@ const AccountDialog = ({ open, handleClose }) => {
   const { isOpen } = useWeb3Modal();
   const { connectors, connectAsync, error, isLoading, pendingConnector } =
     useConnect();
-
   const { disconnect } = useDisconnect();
 
   const onSingOut = useCallback(() => {
@@ -241,7 +240,7 @@ const AccountDialog = ({ open, handleClose }) => {
                 <div className="mt-4">
                   {connectors.map((connector) => (
                     <>
-                      {connector.id === "walletConnectLegacy" && (
+                      {connector.id === "walletConnect" && (
                         <div className={classes.singleWalletCard}>
                           <Web3Button />
                           <div className="d-flex justify-content-start align-items-center"></div>
