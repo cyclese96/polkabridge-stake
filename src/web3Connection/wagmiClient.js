@@ -14,7 +14,6 @@ import {
   polygonMumbai,
   arbitrumGoerli,
 } from "wagmi/chains";
-import { publicProvider } from "wagmi/providers/public";
 const chains = [
   mainnet,
   goerli,
@@ -26,14 +25,10 @@ const chains = [
   polygonMumbai,
 ];
 export const projectId = process.env.REACT_APP_WALLET_CONNECT_PROJECT_ID;
-console.log("running");
-const { publicClient } = configureChains(chains, [
-  publicProvider(),
-  w3mProvider({ projectId }),
-]);
+const { publicClient } = configureChains(chains, [w3mProvider({ projectId })]);
 export const wagmiConfig = createConfig({
   autoConnect: true,
-  connectors: w3mConnectors({ projectId, chains }),
+  connectors: w3mConnectors({ projectId, chains, version: 2 }),
   publicClient,
 });
 
