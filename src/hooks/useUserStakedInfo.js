@@ -50,11 +50,10 @@ export function useUserStakedInfo(poolId) {
             },
           ],
         });
-
         setUserInfo({
-          pending: _pendingRewards?.toString(),
-          staked: _userInfo?.[0]?.toString(),
-          claimed: _userInfo?.[2]?.toString(),
+          pending: _pendingRewards?.result?.toString(),
+          staked: _userInfo?.result?.[0]?.toString(),
+          claimed: _userInfo?.result?.[2]?.toString(),
         });
       } catch (error) {
         console.log("user staked info fetch error ", error);
@@ -63,6 +62,5 @@ export function useUserStakedInfo(poolId) {
 
     fetchData();
   }, [chainId, account, poolId, blockNumber]);
-
   return { ...userInfo };
 }
